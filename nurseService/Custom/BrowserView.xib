@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="9531" systemVersion="15B42" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="BrowserView">
+            <connections>
+                <outlet property="view" destination="1" id="3"/>
+                <outlet property="webView" destination="deO-8s-4GA" id="diw-aw-n1U"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="1">
+            <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <webView contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="deO-8s-4GA">
+                    <rect key="frame" x="0.0" y="-66" width="320" height="634"/>
+                    <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                </webView>
+            </subviews>
+            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstItem="deO-8s-4GA" firstAttribute="leading" secondItem="1" secondAttribute="leading" id="AmP-hz-aEc"/>
+                <constraint firstItem="deO-8s-4GA" firstAttribute="top" secondItem="1" secondAttribute="top" id="Zuu-dc-BYa"/>
+                <constraint firstAttribute="bottom" secondItem="deO-8s-4GA" secondAttribute="bottom" id="iHf-qU-Ud1"/>
+                <constraint firstAttribute="trailing" secondItem="deO-8s-4GA" secondAttribute="trailing" id="nY1-4g-2NN"/>
+            </constraints>
+            <variation key="default">
+                <mask key="constraints">
+                    <exclude reference="AmP-hz-aEc"/>
+                    <exclude reference="Zuu-dc-BYa"/>
+                    <exclude reference="iHf-qU-Ud1"/>
+                    <exclude reference="nY1-4g-2NN"/>
+                </mask>
+            </variation>
+            <variation key="heightClass=regular-widthClass=compact">
+                <mask key="constraints">
+                    <include reference="AmP-hz-aEc"/>
+                    <include reference="Zuu-dc-BYa"/>
+                    <include reference="iHf-qU-Ud1"/>
+                    <include reference="nY1-4g-2NN"/>
+                </mask>
+            </variation>
+            <point key="canvasLocation" x="237" y="188"/>
+        </view>
+    </objects>
+</document>
