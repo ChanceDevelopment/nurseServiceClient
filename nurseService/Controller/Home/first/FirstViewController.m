@@ -26,9 +26,7 @@
     addStatusBarHeight = STATUSBAR_HEIGHT;
     //--ios7 or later  添加 bar
     if (iOS7) {
-        //        UILabel *addStatusBar = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, MAINSCREEN_WIDTH, 20)];
-        //        addStatusBar.backgroundColor = [UIColor blackColor];
-        //        [self.view addSubview:addStatusBar];
+    
     }else{
         UILabel *addStatusBar = [[UILabel alloc] initWithFrame:CGRectMake(0, -20, MAINSCREEN_WIDTH, 20)];
         addStatusBar.backgroundColor = TOPNAVIBGCOLOR;
@@ -85,7 +83,7 @@
     mainScrollView.userInteractionEnabled = YES;
     mainScrollView.scrollEnabled = YES;
     mainScrollView.contentSize = CGSizeMake(MAINSCREEN_WIDTH, MAINSCREEN_HEIGHT+100);
-    mainScrollView.backgroundColor = [UIColor grayColor];
+    mainScrollView.backgroundColor = [UIColor clearColor];
     [self.view addSubview:mainScrollView];
     
     NSArray * imageNames = @[@"index1", @"index2"];

@@ -13,8 +13,6 @@
 #define ALBUMNAME @"KunYuanDocument"
 //#define ALBUMNAMEDOCUMENT @"FuYangDocument"
 #define NAVTINTCOLOR [UIColor whiteColor]
-#define SCREENWIDTH ([UIScreen mainScreen].bounds.size.width)
-#define SCREENHEIGH ([UIScreen mainScreen].bounds.size.height)
 #define ISIOS7 ([[[UIDevice currentDevice] systemVersion] floatValue] > 6.9)
 #define ISIOS6 ([[[UIDevice currentDevice] systemVersion] floatValue] < 6.9)
 #define IOS7OFFSET        64

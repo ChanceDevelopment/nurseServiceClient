@@ -60,7 +60,7 @@
         if (ISIOS6) {
             offset = IOS7OFFSET;
         }
-        self.table = [[SIMenuTable alloc] initWithFrame:CGRectMake(0, offset, SCREENWIDTH, SCREENHEIGH) items:self.items];
+        self.table = [[SIMenuTable alloc] initWithFrame:CGRectMake(0, offset, MAINSCREEN_WIDTH, MAINSCREEN_HEIGHT) items:self.items];
         self.table.menuDelegate = self;
     }
     [self.menuContainer addSubview:self.table];

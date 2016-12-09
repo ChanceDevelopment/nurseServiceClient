@@ -67,6 +67,8 @@
 
 #define MAINSCREEN_WIDTH ([UIScreen mainScreen].bounds.size.width)
 #define MAINSCREEN_HEIGHT ([UIScreen mainScreen].bounds.size.height)
+#define SCREENWIDTH [UIScreen mainScreen].bounds.size.width
+#define SCREENHEIGH [UIScreen mainScreen].bounds.size.height
 
 #define TEXTFONT ([UIFont systemFontOfSize:12.0])
 #define TEXTFONTSMALL ([UIFont systemFontOfSize:12])
