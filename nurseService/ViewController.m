@@ -7,7 +7,7 @@
 //
 
 #import "ViewController.h"
-
+#import "RDVTabBarController.h"
 @interface ViewController ()
 
 @end
@@ -17,6 +17,12 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
+    
+//    RDVTabBarController *rdvTabBarC = [[RDVTabBarController alloc] init];
+//    [self.view addSubview:rdvTabBarC];
+    
+//    [self.view setBackgroundColor:[UIColor blueColor]];
+    
 }
 
 - (void)didReceiveMemoryWarning {
