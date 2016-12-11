@@ -29,18 +29,18 @@
     addStatusBarHeight = STATUSBAR_HEIGHT;
     //--ios7 or later  添加 bar
     if (iOS7) {
-//        UILabel *addStatusBar = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, MAINSCREEN_WIDTH, 20)];
+//        UILabel *addStatusBar = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, 20)];
 //        addStatusBar.backgroundColor = [UIColor blackColor];
 //        [self.view addSubview:addStatusBar];
     }else{
-        UILabel *addStatusBar = [[UILabel alloc] initWithFrame:CGRectMake(0, -20, MAINSCREEN_WIDTH, 20)];
+        UILabel *addStatusBar = [[UILabel alloc] initWithFrame:CGRectMake(0, -20, SCREENWIDTH, 20)];
         addStatusBar.backgroundColor = TOPNAVIBGCOLOR;
         [self.view addSubview:addStatusBar];
     }
     [super viewDidLoad];
     
     //top
-    topNaviView_topClass = [[UIView alloc] initWithFrame:CGRectMake(0, 0, MAINSCREEN_WIDTH, TOPNAVIHEIGHT + addStatusBarHeight)];
+    topNaviView_topClass = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, TOPNAVIHEIGHT + addStatusBarHeight)];
     [self.view addSubview:topNaviView_topClass];
     topNaviView_topClass.userInteractionEnabled = YES;//这样才可以点击
     topNaviView_topClass.backgroundColor = [self getTopNaviColor];
@@ -51,7 +51,7 @@
     [goBack addTarget:self action:@selector(onClickBack) forControlEvents:UIControlEventTouchUpInside];
     
     //文字
-    topNaviText = [[UILabel alloc] initWithFrame:CGRectMake(60, 0+ addStatusBarHeight, MAINSCREEN_WIDTH-120, TOPNAVIHEIGHT)];
+    topNaviText = [[UILabel alloc] initWithFrame:CGRectMake(60, 0+ addStatusBarHeight, SCREENWIDTH-120, TOPNAVIHEIGHT)];
     topNaviText.textAlignment = NSTextAlignmentCenter;
     topNaviText.text = [self getTitle]; //60, 0, 250, TOPNAVIHEIGHT
     topNaviText.font = [UIFont systemFontOfSize:18];
@@ -160,7 +160,7 @@
     UILabel *searchText = [[UILabel alloc] initWithFrame:CGRectMake(30, 0, 140, 30)];
     [searchView addSubview:searchText];
     searchText.backgroundColor = [UIColor whiteColor];
-    searchText.font = TEXTFONT;
+//    searchText.font = TEXTFONT;
     searchText.text = @"搜索店铺商品";
     searchText.textColor = [UIColor grayColor];
 }
@@ -180,7 +180,7 @@
 //------添加搜索-----
 -(void)addFinishButton{
     //搜索
-    UIButton *finishBtn = [[UIButton alloc] initWithFrame:CGRectMake(MAINSCREEN_WIDTH - 60, 5+ addStatusBarHeight, 60, 34)];
+    UIButton *finishBtn = [[UIButton alloc] initWithFrame:CGRectMake(SCREENWIDTH - 60, 5+ addStatusBarHeight, 60, 34)];
     [topNaviView_topClass addSubview:finishBtn];
     finishBtn.backgroundColor = [UIColor clearColor];
     finishBtn.titleLabel.textColor = [UIColor whiteColor];
@@ -206,7 +206,7 @@
     NSInteger btnWidth = 40;
     NSInteger gap = 15;
     if(titleCount > 0){
-        NSInteger starLeft = MAINSCREEN_WIDTH - (btnWidth + gap) * titleCount + gap - 5;
+        NSInteger starLeft = SCREENWIDTH - (btnWidth + gap) * titleCount + gap - 5;
         for (int i = 0; i < titleCount; i++) {
             UIButton *finishBtn = [[UIButton alloc] initWithFrame:CGRectMake(starLeft+(btnWidth+gap)*i, 5+ addStatusBarHeight, btnWidth, 34)];//5 34
             [topNaviView_topClass addSubview:finishBtn];

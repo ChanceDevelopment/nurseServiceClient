@@ -28,7 +28,7 @@
     if (iOS7) {
     
     }else{
-        UILabel *addStatusBar = [[UILabel alloc] initWithFrame:CGRectMake(0, -20, MAINSCREEN_WIDTH, 20)];
+        UILabel *addStatusBar = [[UILabel alloc] initWithFrame:CGRectMake(0, -20, SCREENWIDTH, 20)];
         addStatusBar.backgroundColor = TOPNAVIBGCOLOR;
         [self.view addSubview:addStatusBar];
     }
@@ -42,7 +42,7 @@
     self.view.backgroundColor = [UIColor whiteColor];
     
     //top
-    UIView *topNaviView_topClass = [[UIView alloc] initWithFrame:CGRectMake(0, 0, MAINSCREEN_WIDTH, TOPNAVIHEIGHT + addStatusBarHeight)];
+    UIView *topNaviView_topClass = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, TOPNAVIHEIGHT + addStatusBarHeight)];
     [self.view addSubview:topNaviView_topClass];
     topNaviView_topClass.userInteractionEnabled = YES;//这样才可以点击
     topNaviView_topClass.backgroundColor = [UIColor purpleColor];
@@ -54,7 +54,7 @@
     [goBack addTarget:self action:@selector(presentLeftMenuViewController:) forControlEvents:UIControlEventTouchUpInside];
     
     //文字
-    UILabel *topNaviText = [[UILabel alloc] initWithFrame:CGRectMake(60, 0+ addStatusBarHeight, MAINSCREEN_WIDTH-120, TOPNAVIHEIGHT)];
+    UILabel *topNaviText = [[UILabel alloc] initWithFrame:CGRectMake(60, 0+ addStatusBarHeight, SCREENWIDTH-120, TOPNAVIHEIGHT)];
     topNaviText.textAlignment = NSTextAlignmentCenter;
     topNaviText.text = @"i护到家"; //60, 0, 250, TOPNAVIHEIGHT
     topNaviText.font = [UIFont systemFontOfSize:18];
@@ -78,16 +78,16 @@
     
     [self.view addSubview:topNaviView_topClass];
     
-    UIScrollView *mainScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, TOPNAVIHEIGHT+addStatusBarHeight, MAINSCREEN_WIDTH, MAINSCREEN_HEIGHT-TOPNAVIHEIGHT-addStatusBarHeight-49)];
+    UIScrollView *mainScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, TOPNAVIHEIGHT+addStatusBarHeight, SCREENWIDTH, SCREENHEIGH-TOPNAVIHEIGHT-addStatusBarHeight-49)];
     mainScrollView.showsVerticalScrollIndicator = YES;
     mainScrollView.userInteractionEnabled = YES;
     mainScrollView.scrollEnabled = YES;
-    mainScrollView.contentSize = CGSizeMake(MAINSCREEN_WIDTH, MAINSCREEN_HEIGHT+100);
+    mainScrollView.contentSize = CGSizeMake(SCREENWIDTH, SCREENHEIGH+100);
     mainScrollView.backgroundColor = [UIColor clearColor];
     [self.view addSubview:mainScrollView];
     
     NSArray * imageNames = @[@"index1", @"index2"];
-    LBBanner * banner = [[LBBanner alloc] initWithImageNames:imageNames andFrame:CGRectMake(0, 0, MAINSCREEN_WIDTH, 180)];
+    LBBanner * banner = [[LBBanner alloc] initWithImageNames:imageNames andFrame:CGRectMake(0, 0, SCREENWIDTH, 180)];
     banner.delegate = self;
     [mainScrollView addSubview:banner];
 }

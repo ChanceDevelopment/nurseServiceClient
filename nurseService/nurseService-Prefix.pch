@@ -60,27 +60,16 @@
 #define iOS7OFFSET 64
 
 #define TOPNAVIHEIGHT 44
-#define CONTENTHEIGHT (self.view.frame.size.height - addStatusBarHeight - TOPNAVIHEIGHT - 45)
 #define WINDOWHEIGHT ([UIApplication sharedApplication].keyWindow.frame.size.height)
 
 #define STATUSBAR_HEIGHT (iOS7 ? 20 : 0)  //状态栏高度
 
-#define MAINSCREEN_WIDTH ([UIScreen mainScreen].bounds.size.width)
-#define MAINSCREEN_HEIGHT ([UIScreen mainScreen].bounds.size.height)
 #define SCREENWIDTH [UIScreen mainScreen].bounds.size.width
 #define SCREENHEIGH [UIScreen mainScreen].bounds.size.height
 
-#define TEXTFONT ([UIFont systemFontOfSize:12.0])
-#define TEXTFONTSMALL ([UIFont systemFontOfSize:12])
+
 #define TOPNAVIBGCOLOR [UIColor purpleColor]
-//([UIColor colorWithRed:196.0/255 green:0 blue:0 alpha:1])
-#define TOPNAVIBGCOLOR_G ([UIColor colorWithRed:53.0/255 green:163.0/255 blue:124.0/255 alpha:1])
-//([UIColor colorWithRed:53.0/255 green:163.0/255 blue:124.0/255 alpha:1])
-#define BUTTONCOLOR ([UIColor colorWithRed:255.0 / 255.0 green:51.0 / 255.0 blue:51.0 / 255.0 alpha:1])
-#define BUTTONCOLOR_Y ([UIColor colorWithRed:238.0/255 green:146.0/255 blue:0 alpha:1])
-#define VIEWBGCOLOR ([UIColor colorWithRed:0.9 green:0.9 blue:0.9 alpha:1])
-#define BORDERCOLOR ([UIColor colorWithRed:0.8 green:0.8 blue:0.8 alpha:1])
-#define TABLEBGCOLOR ([UIColor colorWithRed:235.0/255.0 green:235.0/255 blue:235.0/255 alpha:1])
+
 
 
 

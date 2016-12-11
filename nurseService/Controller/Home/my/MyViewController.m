@@ -57,7 +57,7 @@
     myTableView = [[UITableView alloc] init];
     myTableView.showsVerticalScrollIndicator = NO;
     myTableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
-    myTableView.frame = CGRectMake(0, 0, MAINSCREEN_WIDTH, MAINSCREEN_HEIGHT-50);
+    myTableView.frame = CGRectMake(0, 0, SCREENWIDTH, SCREENHEIGH-50);
     myTableView.backgroundView = nil;
     myTableView.backgroundColor = [UIColor clearColor];
     [Tools setExtraCellLineHidden:myTableView];
@@ -71,7 +71,7 @@
     CGFloat viewHeight = 200;
     
     UIView *headerView = [[UIView alloc] init];
-    headerView.frame = CGRectMake(0, 0, MAINSCREEN_WIDTH, viewHeight);
+    headerView.frame = CGRectMake(0, 0, SCREENWIDTH, viewHeight);
     headerView.backgroundColor = [UIColor purpleColor];
     
     UIView *footerview = myTableView.tableFooterView;
@@ -83,7 +83,7 @@
 
     //头像
     CGFloat imageDia = 70;              //直径
-    CGFloat imageX = (MAINSCREEN_WIDTH-imageDia)/2.0;
+    CGFloat imageX = (SCREENWIDTH-imageDia)/2.0;
     CGFloat imageY = 40;
     portrait = [[UIImageView alloc] initWithFrame:CGRectMake(imageX, imageY, imageDia, imageDia)];
     portrait.userInteractionEnabled = YES;

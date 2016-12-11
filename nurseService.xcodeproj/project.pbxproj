@@ -1630,12 +1630,12 @@
 		ADCC61E91DFA691B0065866C /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				ADCC61EA1DFA69290065866C /* LBBannerKit */,
 				ADCC621C1DFA85520065866C /* Base */,
 				ADCC62221DFA85520065866C /* HeTabBarVC */,
 				ADCC62161DFA851B0065866C /* XDMultTableView */,
 				ADCC62121DFA84F10065866C /* TopNaviViewController */,
 				ADCC62081DFA7ECE0065866C /* RESideMenu */,
-				ADCC61EA1DFA69290065866C /* LBBannerKit */,
 			);
 			path = Components;
 			sourceTree = "<group>";

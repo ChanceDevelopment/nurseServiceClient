@@ -1,0 +1,32 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "9B2BF7781275301A91B9E1BE5676A2CA801DC65A",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+    "80d212ee-025b-11e3-9445-8bf17458bb2f++2413" : {
+
+    }
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "9B2BF7781275301A91B9E1BE5676A2CA801DC65A" : 0,
+    "80d212ee-025b-11e3-9445-8bf17458bb2f++2413" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "3AE7A19F-C575-424B-BEED-5ED59CD88F92",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "9B2BF7781275301A91B9E1BE5676A2CA801DC65A" : "nurseServiceClient\/",
+    "80d212ee-025b-11e3-9445-8bf17458bb2f++2413" : "nurseServiceClient\/nurseService\/Components\/LBBannerKit\/LBBannerTools\/UIViewExt\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "nurseService",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "nurseService.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "http:\/\/svn.dfb365.com\/repos\/dfb365",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Subversion",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "80d212ee-025b-11e3-9445-8bf17458bb2f++2413"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/ChanceDevelopment\/nurseServiceClient.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "9B2BF7781275301A91B9E1BE5676A2CA801DC65A"
+    }
+  ]
+}

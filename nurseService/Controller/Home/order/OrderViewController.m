@@ -27,7 +27,7 @@
     if (iOS7) {
         
     }else{
-        UILabel *addStatusBar = [[UILabel alloc] initWithFrame:CGRectMake(0, -20, MAINSCREEN_WIDTH, 20)];
+        UILabel *addStatusBar = [[UILabel alloc] initWithFrame:CGRectMake(0, -20, SCREENWIDTH, 20)];
         addStatusBar.backgroundColor = TOPNAVIBGCOLOR;
         [self.view addSubview:addStatusBar];
     }
@@ -42,7 +42,7 @@
     self.view.backgroundColor = [UIColor whiteColor];
     
     //top
-    UIView *topNaviView_topClass = [[UIView alloc] initWithFrame:CGRectMake(0, 0, MAINSCREEN_WIDTH, TOPNAVIHEIGHT + addStatusBarHeight)];
+    UIView *topNaviView_topClass = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, TOPNAVIHEIGHT + addStatusBarHeight)];
     [self.view addSubview:topNaviView_topClass];
     topNaviView_topClass.userInteractionEnabled = YES;//这样才可以点击
     topNaviView_topClass.backgroundColor = [UIColor purpleColor];
@@ -54,7 +54,7 @@
     [goBack addTarget:self action:@selector(presentLeftMenuViewController:) forControlEvents:UIControlEventTouchUpInside];
     
     //文字
-    UILabel *topNaviText = [[UILabel alloc] initWithFrame:CGRectMake(60, 0+ addStatusBarHeight, MAINSCREEN_WIDTH-120, TOPNAVIHEIGHT)];
+    UILabel *topNaviText = [[UILabel alloc] initWithFrame:CGRectMake(60, 0+ addStatusBarHeight, SCREENWIDTH-120, TOPNAVIHEIGHT)];
     topNaviText.textAlignment = NSTextAlignmentCenter;
     topNaviText.text = @"订单"; //60, 0, 250, TOPNAVIHEIGHT
     topNaviText.font = [UIFont systemFontOfSize:18];
