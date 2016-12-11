@@ -10,7 +10,6 @@
 #import "Tools.h"
 @interface MyViewController ()<UITableViewDataSource,UITableViewDelegate>
 {
-//    NSInteger addStatusBarHeight;
     NSArray *iconArr;
     NSArray *tableItemArr;
     UIImageView *portrait;        //头像
@@ -47,13 +46,6 @@
 {
     self.view.backgroundColor = [UIColor whiteColor];
     
-//    addStatusBarHeight = 0;
-//    NSInteger barHeight = 0;
-//    if (iOS7) {
-//        addStatusBarHeight = iOS7OFFSET;
-//    }else{
-//        barHeight = 20;
-//    }
     myTableView = [[UITableView alloc] init];
     myTableView.showsVerticalScrollIndicator = NO;
     myTableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
