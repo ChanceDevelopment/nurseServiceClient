@@ -619,7 +619,7 @@
 		ADCC623F1DFA9EB30065866C /* icon_protected_person.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_protected_person.png; sourceTree = "<group>"; };
 		ADCC62401DFA9EB30065866C /* icon_report.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_report.png; sourceTree = "<group>"; };
 		ADCC62411DFA9EB30065866C /* icon_star_yellow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_star_yellow.png; sourceTree = "<group>"; };
-		EAC2D4251D4B031500E282A8 /* 护士上门客户端.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "护士上门客户端.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		EAC2D4251D4B031500E282A8 /* 用户端.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "用户端.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EAC2D4291D4B031500E282A8 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		EAC2D42B1D4B031500E282A8 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		EAC2D42C1D4B031500E282A8 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -1811,7 +1811,7 @@
 		EAC2D4261D4B031500E282A8 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				EAC2D4251D4B031500E282A8 /* 护士上门客户端.app */,
+				EAC2D4251D4B031500E282A8 /* 用户端.app */,
 				EAC2D43E1D4B031500E282A8 /* nurseServiceTests.xctest */,
 				EAC2D4491D4B031500E282A8 /* nurseServiceUITests.xctest */,
 			);
@@ -3509,7 +3509,7 @@
 			);
 			name = nurseService;
 			productName = nurseService;
-			productReference = EAC2D4251D4B031500E282A8 /* 护士上门客户端.app */;
+			productReference = EAC2D4251D4B031500E282A8 /* 用户端.app */;
 			productType = "com.apple.product-type.application";
 		};
 		EAC2D43D1D4B031500E282A8 /* nurseServiceTests */ = {
@@ -4252,7 +4252,7 @@
 					"$(PROJECT_DIR)/nurseService/ThirdPartySDK/ZBarSDK",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.channce.nurseServiceClient;
-				PRODUCT_NAME = "护士上门客户端";
+				PRODUCT_NAME = "用户端";
 				PROVISIONING_PROFILE = "0e09bdf6-092d-4705-81ad-8647bb726a00";
 				PROVISIONING_PROFILE_SPECIFIER = 20161202_nurseServiceClient_Development;
 			};
@@ -4289,7 +4289,7 @@
 					"$(PROJECT_DIR)/nurseService/ThirdPartySDK/ZBarSDK",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.channce.nurseServiceClient;
-				PRODUCT_NAME = "护士上门客户端";
+				PRODUCT_NAME = "用户端";
 				PROVISIONING_PROFILE = "5bed0bd0-f773-4f2c-9457-d2f18d177213";
 				PROVISIONING_PROFILE_SPECIFIER = 20161202_nurseServiceClient_Release;
 			};
@@ -4409,7 +4409,7 @@
 					"$(PROJECT_DIR)/nurseService/ThirdPartySDK/ZBarSDK",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.channce.nurseServiceClient;
-				PRODUCT_NAME = "护士上门客户端";
+				PRODUCT_NAME = "用户端";
 				PROVISIONING_PROFILE = "6536ae5a-e7bb-4cc2-8569-032ae06a662f";
 				PROVISIONING_PROFILE_SPECIFIER = 20161202_nurseServiceClient_Distribution;
 			};
