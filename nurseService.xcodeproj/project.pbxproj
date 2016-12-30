@@ -4253,8 +4253,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.channce.nurseServiceClient;
 				PRODUCT_NAME = "用户端";
-				PROVISIONING_PROFILE = "0e09bdf6-092d-4705-81ad-8647bb726a00";
-				PROVISIONING_PROFILE_SPECIFIER = 20161202_nurseServiceClient_Development;
+				PROVISIONING_PROFILE = "5b359414-8bb6-4084-a8b1-f2423be72084";
+				PROVISIONING_PROFILE_SPECIFIER = "20161229_ nurseServiceClient_Development";
 			};
 			name = Debug;
 		};
@@ -4290,8 +4290,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.channce.nurseServiceClient;
 				PRODUCT_NAME = "用户端";
-				PROVISIONING_PROFILE = "5bed0bd0-f773-4f2c-9457-d2f18d177213";
-				PROVISIONING_PROFILE_SPECIFIER = 20161202_nurseServiceClient_Release;
+				PROVISIONING_PROFILE = "e8961a7c-ebdb-4c81-bc75-f03868eace11";
+				PROVISIONING_PROFILE_SPECIFIER = "20161229_ nurseServiceClient_Release";
 			};
 			name = Release;
 		};
@@ -4410,8 +4410,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.channce.nurseServiceClient;
 				PRODUCT_NAME = "用户端";
-				PROVISIONING_PROFILE = "6536ae5a-e7bb-4cc2-8569-032ae06a662f";
-				PROVISIONING_PROFILE_SPECIFIER = 20161202_nurseServiceClient_Distribution;
+				PROVISIONING_PROFILE = "7e5b9530-b2c2-48ac-9d91-16d330fedef1";
+				PROVISIONING_PROFILE_SPECIFIER = "20161229_ nurseServiceClient_Distribution";
 			};
 			name = Distribution;
 		};
