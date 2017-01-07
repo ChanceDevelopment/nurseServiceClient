@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "EAC2D4241D4B031500E282A8"
-               BuildableName = "&#x62a4;&#x58eb;&#x4e0a;&#x95e8;&#x5ba2;&#x6237;&#x7aef;.app"
+               BuildableName = "&#x7528;&#x6237;&#x7aef;.app"
                BlueprintName = "nurseService"
                ReferencedContainer = "container:nurseService.xcodeproj">
             </BuildableReference>
@@ -53,7 +53,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "EAC2D4241D4B031500E282A8"
-            BuildableName = "&#x62a4;&#x58eb;&#x4e0a;&#x95e8;&#x5ba2;&#x6237;&#x7aef;.app"
+            BuildableName = "&#x7528;&#x6237;&#x7aef;.app"
             BlueprintName = "nurseService"
             ReferencedContainer = "container:nurseService.xcodeproj">
          </BuildableReference>
@@ -76,7 +76,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "EAC2D4241D4B031500E282A8"
-            BuildableName = "&#x62a4;&#x58eb;&#x4e0a;&#x95e8;&#x5ba2;&#x6237;&#x7aef;.app"
+            BuildableName = "&#x7528;&#x6237;&#x7aef;.app"
             BlueprintName = "nurseService"
             ReferencedContainer = "container:nurseService.xcodeproj">
          </BuildableReference>
@@ -95,7 +95,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "EAC2D4241D4B031500E282A8"
-            BuildableName = "&#x62a4;&#x58eb;&#x4e0a;&#x95e8;&#x5ba2;&#x6237;&#x7aef;.app"
+            BuildableName = "&#x7528;&#x6237;&#x7aef;.app"
             BlueprintName = "nurseService"
             ReferencedContainer = "container:nurseService.xcodeproj">
          </BuildableReference>

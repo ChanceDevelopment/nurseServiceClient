@@ -47,7 +47,7 @@
     topNaviView_topClass.userInteractionEnabled = YES;//这样才可以点击
     topNaviView_topClass.backgroundColor = [UIColor purpleColor];
     
-    //----返回----
+    //----右划----
     UIButton *goBack = [[UIButton alloc] initWithFrame:CGRectMake(10, (TOPNAVIHEIGHT-19)/2+ addStatusBarHeight, 24, 19)];
     [topNaviView_topClass addSubview:goBack];
     [goBack setBackgroundImage:[UIImage imageNamed:@"icon_list"] forState:UIControlStateNormal];

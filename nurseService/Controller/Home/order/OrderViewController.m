@@ -7,11 +7,14 @@
 //
 
 #import "OrderViewController.h"
+#import "DLNavigationTabBar.h"
 
 @interface OrderViewController ()
 {
     NSInteger addStatusBarHeight;
 }
+@property(nonatomic,strong)DLNavigationTabBar *navigationTabBar;
+
 @end
 
 @implementation OrderViewController
@@ -19,6 +22,23 @@
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
+}
+
+-(DLNavigationTabBar *)navigationTabBar
+{
+    if (!_navigationTabBar) {
+        self.navigationTabBar = [[DLNavigationTabBar alloc] initWithTitles:@[@"预约框",@"已预约",@"进行中",@"已完成"]];
+        self.navigationTabBar.backgroundColor = [UIColor colorWithWhite:237.0 / 255.0 alpha:1.0];
+        self.navigationTabBar.frame = CGRectMake(0, TOPNAVIHEIGHT+addStatusBarHeight, SCREENWIDTH, 44);
+        self.navigationTabBar.sliderBackgroundColor = APPDEFAULTORANGE;
+        self.navigationTabBar.buttonNormalTitleColor = [UIColor grayColor];
+        self.navigationTabBar.buttonSelectedTileColor = APPDEFAULTORANGE;
+        __weak typeof(self) weakSelf = self;
+        [self.navigationTabBar setDidClickAtIndex:^(NSInteger index){
+            [weakSelf navigationDidSelectedControllerIndex:index];
+        }];
+    }
+    return _navigationTabBar;
 }
 
 - (void)viewDidLoad {
@@ -40,18 +60,13 @@
 - (void)initView{
     
     self.view.backgroundColor = [UIColor whiteColor];
-    
+    [self.view addSubview:self.navigationTabBar];
+
     //top
     UIView *topNaviView_topClass = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, TOPNAVIHEIGHT + addStatusBarHeight)];
     [self.view addSubview:topNaviView_topClass];
     topNaviView_topClass.userInteractionEnabled = YES;//这样才可以点击
     topNaviView_topClass.backgroundColor = [UIColor purpleColor];
-    
-    //----返回----
-    UIButton *goBack = [[UIButton alloc] initWithFrame:CGRectMake(10, (TOPNAVIHEIGHT-19)/2+ addStatusBarHeight, 24, 19)];
-    [topNaviView_topClass addSubview:goBack];
-    [goBack setBackgroundImage:[UIImage imageNamed:@"icon_list"] forState:UIControlStateNormal];
-    [goBack addTarget:self action:@selector(presentLeftMenuViewController:) forControlEvents:UIControlEventTouchUpInside];
     
     //文字
     UILabel *topNaviText = [[UILabel alloc] initWithFrame:CGRectMake(60, 0+ addStatusBarHeight, SCREENWIDTH-120, TOPNAVIHEIGHT)];
@@ -62,11 +77,6 @@
     topNaviText.userInteractionEnabled = YES;//这样才可以点击
     topNaviText.backgroundColor = [UIColor clearColor];
     [topNaviView_topClass addSubview:topNaviText];
-    
-    
-    //    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(chooseCity)];
-    //    [cityText addGestureRecognizer:tap];
-    //
     [self.view addSubview:topNaviView_topClass];
 }
 
@@ -82,7 +92,11 @@
     return UIStatusBarStyleLightContent;
 }
 
-
+#pragma mark - PrivateMethod
+- (void)navigationDidSelectedControllerIndex:(NSInteger)index {
+    NSLog(@"index = %ld",index);
+    
+}
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.

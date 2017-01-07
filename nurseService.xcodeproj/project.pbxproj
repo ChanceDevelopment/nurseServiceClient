@@ -75,6 +75,7 @@
 		ADCC62491DFA9EB30065866C /* icon_protected_person.png in Resources */ = {isa = PBXBuildFile; fileRef = ADCC623F1DFA9EB30065866C /* icon_protected_person.png */; };
 		ADCC624A1DFA9EB30065866C /* icon_report.png in Resources */ = {isa = PBXBuildFile; fileRef = ADCC62401DFA9EB30065866C /* icon_report.png */; };
 		ADCC624B1DFA9EB30065866C /* icon_star_yellow.png in Resources */ = {isa = PBXBuildFile; fileRef = ADCC62411DFA9EB30065866C /* icon_star_yellow.png */; };
+		ADEE55F81E2156C000E7A277 /* DLNavigationTabBar.m in Sources */ = {isa = PBXBuildFile; fileRef = ADEE55F71E2156C000E7A277 /* DLNavigationTabBar.m */; };
 		EAC2D42A1D4B031500E282A8 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = EAC2D4291D4B031500E282A8 /* main.m */; };
 		EAC2D42D1D4B031500E282A8 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = EAC2D42C1D4B031500E282A8 /* AppDelegate.m */; };
 		EAC2D4301D4B031500E282A8 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EAC2D42F1D4B031500E282A8 /* ViewController.m */; };
@@ -619,6 +620,8 @@
 		ADCC623F1DFA9EB30065866C /* icon_protected_person.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_protected_person.png; sourceTree = "<group>"; };
 		ADCC62401DFA9EB30065866C /* icon_report.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_report.png; sourceTree = "<group>"; };
 		ADCC62411DFA9EB30065866C /* icon_star_yellow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_star_yellow.png; sourceTree = "<group>"; };
+		ADEE55F61E2156C000E7A277 /* DLNavigationTabBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLNavigationTabBar.h; sourceTree = "<group>"; };
+		ADEE55F71E2156C000E7A277 /* DLNavigationTabBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLNavigationTabBar.m; sourceTree = "<group>"; };
 		EAC2D4251D4B031500E282A8 /* 用户端.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "用户端.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EAC2D4291D4B031500E282A8 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		EAC2D42B1D4B031500E282A8 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -1797,6 +1800,15 @@
 			path = myIcon;
 			sourceTree = "<group>";
 		};
+		ADEE55F51E2156C000E7A277 /* NavigationTabBar */ = {
+			isa = PBXGroup;
+			children = (
+				ADEE55F61E2156C000E7A277 /* DLNavigationTabBar.h */,
+				ADEE55F71E2156C000E7A277 /* DLNavigationTabBar.m */,
+			);
+			path = NavigationTabBar;
+			sourceTree = "<group>";
+		};
 		EAC2D41C1D4B031500E282A8 = {
 			isa = PBXGroup;
 			children = (
@@ -1957,6 +1969,7 @@
 		EAC2D4B61D4B063900E282A8 /* Custom */ = {
 			isa = PBXGroup;
 			children = (
+				ADEE55F51E2156C000E7A277 /* NavigationTabBar */,
 				EAC2D4B71D4B063900E282A8 /* AFNetworking */,
 				EAC2D4E31D4B063900E282A8 /* ALAssetsLibrary+CustomPhotoAlbum.h */,
 				EAC2D4E41D4B063900E282A8 /* ALAssetsLibrary+CustomPhotoAlbum.m */,
@@ -3930,6 +3943,7 @@
 				EAC2D90B1D4B063B00E282A8 /* RACScheduler.m in Sources */,
 				ADCC62151DFA84F10065866C /* TopNaviViewController.m in Sources */,
 				EAC2D9791D4B063B00E282A8 /* NSData+ASE128.m in Sources */,
+				ADEE55F81E2156C000E7A277 /* DLNavigationTabBar.m in Sources */,
 				EAC2D8961D4B063B00E282A8 /* MBProgressHUD+Add.m in Sources */,
 				EAC2D95A1D4B063B00E282A8 /* TSLocation.m in Sources */,
 				EAC2D8E81D4B063B00E282A8 /* NSSet+RACSequenceAdditions.m in Sources */,
