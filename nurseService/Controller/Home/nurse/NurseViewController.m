@@ -11,6 +11,7 @@
 #import "HeNurseTableViewCell.h"
 #import "DOPDropDownMenu.h"
 #import "HeNurseDetailVC.h"
+#import "HeSearchInfoVC.h"
 
 @interface NurseViewController ()<UITableViewDelegate,UITableViewDataSource,DOPDropDownMenuDataSource,DOPDropDownMenuDelegate>
 @property (nonatomic, strong) NSArray *classifys;
@@ -77,6 +78,26 @@
     tableview.backgroundView = nil;
     tableview.backgroundColor = [UIColor colorWithWhite:237.0 / 255/0 alpha:1.0];
     [self initSelectView];
+    
+    UIButton *searchButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 25, 25)];
+    [searchButton addTarget:self action:@selector(searchOrder) forControlEvents:UIControlEventTouchUpInside];
+    [searchButton setBackgroundImage:[UIImage imageNamed:@"icon_search_white"] forState:UIControlStateNormal];
+    
+    UIBarButtonItem *searchItem = [[UIBarButtonItem alloc] initWithCustomView:searchButton];
+//    searchItem.image = [UIImage imageNamed:@"icon_search_white"];
+//    searchItem.target = self;
+//    searchItem.action = @selector(searchOrder);
+    
+    UIButton *scanButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 25, 25)];
+    [scanButton addTarget:self action:@selector(scanOrder) forControlEvents:UIControlEventTouchUpInside];
+    [scanButton setBackgroundImage:[UIImage imageNamed:@"icon_scan_white"] forState:UIControlStateNormal];
+    
+    UIBarButtonItem *scanItem = [[UIBarButtonItem alloc] initWithCustomView:scanButton];
+//    scanItem.image = [UIImage imageNamed:@"icon_scan_white"];
+//    scanItem.target = self;
+//    scanItem.action = @selector(scanOrder);
+    
+    self.navigationItem.rightBarButtonItems = @[scanItem,searchItem];
 }
 
 - (void)initSelectView
@@ -103,6 +124,20 @@
     
     // 创建menu 第一次显示 不会调用点击代理，可以用这个手动调用
     [menu selectDefalutIndexPath];
+}
+
+
+- (void)searchOrder
+{
+    NSLog(@"searchOrder");
+    HeSearchInfoVC *searchInfoVC = [[HeSearchInfoVC alloc] init];
+    searchInfoVC.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:searchInfoVC animated:YES];
+}
+
+- (void)scanOrder
+{
+    NSLog(@"scanOrder");
 }
 
 - (void)menuReloadData

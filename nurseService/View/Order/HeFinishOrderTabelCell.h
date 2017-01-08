@@ -1,26 +1,27 @@
 //
-//  HeOrderTableViewCell.h
+//  HeFinishOrderTabelCell.h
 //  nurseService
 //
 //  Created by HeDongMing on 2017/1/8.
 //  Copyright © 2017年 iMac. All rights reserved.
-//
+//  已完成
 
 #import "HeBaseTableViewCell.h"
 
-@interface HeOrderTableViewCell : HeBaseTableViewCell
+@interface HeFinishOrderTabelCell : HeBaseTableViewCell
 @property (nonatomic,strong)UILabel *serviceContentL;
 @property (nonatomic,strong)UILabel *stopTimeL;
 @property (nonatomic,strong)UILabel *orderMoney;
 @property (nonatomic,strong)UILabel *addressL;
 @property (nonatomic,strong)UILabel *userInfoL;
 @property (nonatomic,strong)UILabel *payStatusLabel;
+@property (nonatomic,strong)UILabel *nurseInfoL;
 
 @property (nonatomic,strong)void(^showOrderDetailBlock)();
+@property (nonatomic,strong)void(^reCreateOrderBlock)();
+@property (nonatomic,strong)void(^commentNurseBlock)();
 @property (nonatomic,strong)void(^locationBlock)();
 @property (nonatomic,strong)void(^showUserInfoBlock)();
-@property (nonatomic,strong)void(^cancleOrderBlock)();
-@property (nonatomic,strong)void(^payMoneyBlock)();
 
 @property(strong,nonatomic)NSDictionary *orderInfoDict;
 

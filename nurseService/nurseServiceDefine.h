@@ -136,4 +136,12 @@ typedef enum {
     ENUM_SEX_Girl //女
 } ENUM_SEXType;
 
+typedef enum{
+    eOrderStatusTypeReceive = 0,
+    eOrderStatusTypeContact,
+    eOrderStatusTypeGo,
+    eOrderStatusTypeStart,
+    eOrderStatusTypeFinish
+} eOrderStatusType;
+
 #endif /* nurseServiceDefine_h */

@@ -1,14 +1,14 @@
 //
-//  HeOrderTableViewCell.m
+//  HeBookOrderTableCell.m
 //  nurseService
 //
 //  Created by HeDongMing on 2017/1/8.
 //  Copyright © 2017年 iMac. All rights reserved.
 //
 
-#import "HeOrderTableViewCell.h"
+#import "HeBookOrderTableCell.h"
 
-@implementation HeOrderTableViewCell
+@implementation HeBookOrderTableCell
 @synthesize serviceContentL;
 @synthesize stopTimeL;
 @synthesize orderMoney;
@@ -54,7 +54,7 @@
         CGFloat payStatusLabelH = serviceContentLH;
         
         payStatusLabel = [[UILabel alloc] initWithFrame:CGRectMake(payStatusLabelX, payStatusLabelY, payStatusLabelW, payStatusLabelH)];
-        payStatusLabel.text = @"待付款";
+        payStatusLabel.text = @"已付款";
         payStatusLabel.textAlignment = NSTextAlignmentRight;
         payStatusLabel.userInteractionEnabled = YES;
         payStatusLabel.textColor = [UIColor blackColor];
@@ -206,12 +206,11 @@
         cancleL.userInteractionEnabled = YES;
         cancleL.textAlignment = NSTextAlignmentCenter;
         cancleL.font = [UIFont systemFontOfSize:15.0];
-        cancleL.text = @"删除服务";
+        cancleL.text = @"";
         cancleL.backgroundColor = [UIColor clearColor];
         [bgView addSubview:cancleL];
         
-        UITapGestureRecognizer *cancleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(cancelOrder)];
-        [cancleL addGestureRecognizer:cancleTap];
+        
         
         cancleLX = CGRectGetMaxX(cancleL.frame);
         UILabel *nextStepL = [[UILabel alloc] initWithFrame:CGRectMake(cancleLX, cancleLY, cancleLW, cancleLH)];
@@ -219,7 +218,7 @@
         nextStepL.userInteractionEnabled = YES;
         nextStepL.textAlignment = NSTextAlignmentCenter;
         nextStepL.font = [UIFont systemFontOfSize:15.0];
-        nextStepL.text = @"立即付款";
+        nextStepL.text = @"取消付款";
         nextStepL.backgroundColor = [UIColor clearColor];
         [bgView addSubview:nextStepL];
         
@@ -243,9 +242,12 @@
         UILabel *line4 = [[UILabel alloc] initWithFrame:CGRectMake(line4X, line4Y, line4W, line4H)];
         [bgView addSubview:line4];
         line4.backgroundColor = [UIColor grayColor];
+
+        UITapGestureRecognizer *cancleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(cancleService)];
+        [cancleL addGestureRecognizer:cancleTap];
         
-        UITapGestureRecognizer *nextStepTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(payMoney)];
-        [nextStepL addGestureRecognizer:nextStepTap];
+//        UITapGestureRecognizer *nextStepTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(nextStepRequst)];
+//        [nextStepL addGestureRecognizer:nextStepTap];
     }
     return self;
 }
@@ -256,17 +258,17 @@
     }
 }
 
-- (void)cancelOrder{
-    if (self.cancleOrderBlock) {
-        self.cancleOrderBlock();
+- (void)cancleService{
+    if (self.cancleServiceBlock) {
+        self.cancleServiceBlock();
     }
 }
 
-- (void)payMoney{
-    if (self.payMoneyBlock) {
-        self.payMoneyBlock();
-    }
-}
+//- (void)nextStepRequst{
+//    if (self.nextStepBlock) {
+//        self.nextStepBlock();
+//    }
+//}
 
 - (void)goToLocationView{
     if (self.locationBlock) {
@@ -296,8 +298,6 @@
     CGContextSetStrokeColorWithColor(context, ([UIColor clearColor]).CGColor);
     CGContextStrokeRect(context, CGRectMake(0, rect.size.height, rect.size.width, 1));
 }
-
-
 /*
 // Only override drawRect: if you perform custom drawing.
 // An empty implementation adversely affects performance during animation.

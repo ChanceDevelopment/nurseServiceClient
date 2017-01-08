@@ -1,14 +1,14 @@
 //
-//  HeOrderTableViewCell.m
+//  HeFinishOrderTabelCell.m
 //  nurseService
 //
 //  Created by HeDongMing on 2017/1/8.
 //  Copyright © 2017年 iMac. All rights reserved.
 //
 
-#import "HeOrderTableViewCell.h"
+#import "HeFinishOrderTabelCell.h"
 
-@implementation HeOrderTableViewCell
+@implementation HeFinishOrderTabelCell
 @synthesize serviceContentL;
 @synthesize stopTimeL;
 @synthesize orderMoney;
@@ -16,6 +16,7 @@
 @synthesize userInfoL;
 @synthesize payStatusLabel;
 @synthesize orderInfoDict;
+@synthesize nurseInfoL;
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier cellSize:(CGSize)cellsize orderType:(NSInteger)orderType
 {
@@ -54,10 +55,10 @@
         CGFloat payStatusLabelH = serviceContentLH;
         
         payStatusLabel = [[UILabel alloc] initWithFrame:CGRectMake(payStatusLabelX, payStatusLabelY, payStatusLabelW, payStatusLabelH)];
-        payStatusLabel.text = @"待付款";
+        payStatusLabel.text = @"已付款";
         payStatusLabel.textAlignment = NSTextAlignmentRight;
         payStatusLabel.userInteractionEnabled = YES;
-        payStatusLabel.textColor = [UIColor blackColor];
+        payStatusLabel.textColor = [UIColor grayColor];
         payStatusLabel.font = [UIFont systemFontOfSize:15.0];
         payStatusLabel.backgroundColor = [UIColor clearColor];
         [bgView addSubview:payStatusLabel];
@@ -184,11 +185,60 @@
         rightV1.userInteractionEnabled = YES;
         [bgView addSubview:rightV1];
         
+        
+        
+        CGFloat line5X = 5;
+        CGFloat line5Y = CGRectGetMaxY(userTip.frame);
+        CGFloat line5W = bgView_W - 2 * line5X;
+        CGFloat line5H = 1;
+        
+        UILabel *line5 = [[UILabel alloc] initWithFrame:CGRectMake(line5X, line5Y, line5W, line5H)];
+        [bgView addSubview:line5];
+        line5.backgroundColor = [UIColor colorWithWhite:237.0 / 255.0 alpha:1.0];
+        
+        CGFloat nurseTipX = 10;
+        CGFloat nurseTipY = CGRectGetMaxY(line5.frame);
+        CGFloat nurseTipW = 150;
+        CGFloat nurseTipH = 40;
+        
+        UILabel *nurseTip = [[UILabel alloc] initWithFrame:CGRectMake(nurseTipX, nurseTipY, nurseTipW, nurseTipH)];
+        nurseTip.textColor = [UIColor blackColor];
+        nurseTip.text = @"护士信息";
+        nurseTip.font = [UIFont systemFontOfSize:15.0];
+        nurseTip.backgroundColor = [UIColor clearColor];
+        [bgView addSubview:nurseTip];
+        
+        
+        CGFloat nurseInfoLY = nurseTipY;
+        CGFloat nurseInfoLW = 130;
+        CGFloat nurseInfoLX = bgView_W - nurseTipW - 30;
+        CGFloat nurseInfoLH = nurseTipH;
+        
+        nurseInfoL = [[UILabel alloc] initWithFrame:CGRectMake(nurseInfoLX, nurseInfoLY, nurseInfoLW, nurseInfoLH)];
+        nurseInfoL.textColor = [UIColor blackColor];
+        nurseInfoL.text = @"大明 男 23岁";
+        nurseInfoL.userInteractionEnabled = YES;
+        nurseInfoL.font = [UIFont systemFontOfSize:15.0];
+        nurseInfoL.textAlignment = NSTextAlignmentRight;
+        nurseInfoL.backgroundColor = [UIColor clearColor];
+        [bgView addSubview:nurseInfoL];
+        
+        CGFloat rightV3W = 20;
+        CGFloat rightV3H = 20;
+        CGFloat rightV3Y = nurseInfoL.center.y - rightV1H / 2.0;
+        CGFloat rightV3X = bgView_W - 30;
+        
+        UIImageView *rightV3 = [[UIImageView alloc] initWithFrame:CGRectMake(rightV3X, rightV3Y, rightV3W, rightV3H)];
+        rightV3.backgroundColor = [UIColor clearColor];
+        rightV3.image = [UIImage imageNamed:@"icon_into_right"];
+        rightV3.userInteractionEnabled = YES;
+        [bgView addSubview:rightV3];
+        
         UITapGestureRecognizer *userInfoTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showUserInfo)];
-        [userInfoL addGestureRecognizer:userInfoTap];
+        [nurseInfoL addGestureRecognizer:userInfoTap];
         
         CGFloat line2X = 5;
-        CGFloat line2Y = CGRectGetMaxY(userTip.frame);
+        CGFloat line2Y = CGRectGetMaxY(nurseTip.frame);
         CGFloat line2W = bgView_W - 2 * line2X;
         CGFloat line2H = 1;
         
@@ -206,11 +256,11 @@
         cancleL.userInteractionEnabled = YES;
         cancleL.textAlignment = NSTextAlignmentCenter;
         cancleL.font = [UIFont systemFontOfSize:15.0];
-        cancleL.text = @"删除服务";
+        cancleL.text = @"再来一单";
         cancleL.backgroundColor = [UIColor clearColor];
         [bgView addSubview:cancleL];
         
-        UITapGestureRecognizer *cancleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(cancelOrder)];
+        UITapGestureRecognizer *cancleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(reCreateOrder)];
         [cancleL addGestureRecognizer:cancleTap];
         
         cancleLX = CGRectGetMaxX(cancleL.frame);
@@ -219,7 +269,7 @@
         nextStepL.userInteractionEnabled = YES;
         nextStepL.textAlignment = NSTextAlignmentCenter;
         nextStepL.font = [UIFont systemFontOfSize:15.0];
-        nextStepL.text = @"立即付款";
+        nextStepL.text = @"前往评价";
         nextStepL.backgroundColor = [UIColor clearColor];
         [bgView addSubview:nextStepL];
         
@@ -244,7 +294,7 @@
         [bgView addSubview:line4];
         line4.backgroundColor = [UIColor grayColor];
         
-        UITapGestureRecognizer *nextStepTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(payMoney)];
+        UITapGestureRecognizer *nextStepTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(commentNurse)];
         [nextStepL addGestureRecognizer:nextStepTap];
     }
     return self;
@@ -256,17 +306,19 @@
     }
 }
 
-- (void)cancelOrder{
-    if (self.cancleOrderBlock) {
-        self.cancleOrderBlock();
+- (void)reCreateOrder{
+    if (self.reCreateOrderBlock) {
+        self.reCreateOrderBlock();
     }
 }
 
-- (void)payMoney{
-    if (self.payMoneyBlock) {
-        self.payMoneyBlock();
+
+- (void)commentNurse{
+    if (self.commentNurseBlock) {
+        self.commentNurseBlock();
     }
 }
+
 
 - (void)goToLocationView{
     if (self.locationBlock) {
@@ -296,8 +348,6 @@
     CGContextSetStrokeColorWithColor(context, ([UIColor clearColor]).CGColor);
     CGContextStrokeRect(context, CGRectMake(0, rect.size.height, rect.size.width, 1));
 }
-
-
 /*
 // Only override drawRect: if you perform custom drawing.
 // An empty implementation adversely affects performance during animation.
