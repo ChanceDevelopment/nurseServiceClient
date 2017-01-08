@@ -8,22 +8,37 @@
 
 #import "MyViewController.h"
 #import "Tools.h"
-@interface MyViewController ()<UITableViewDataSource,UITableViewDelegate>
+#import "HeBaseIconTitleTableCell.h"
+
+@interface MyViewController ()<UITableViewDataSource,UITableViewDelegate,UIAlertViewDelegate>
 {
     NSArray *iconArr;
     NSArray *tableItemArr;
     UIImageView *portrait;        //头像
     UILabel *userNameL;       //用户名
 }
-@property(strong,nonatomic)UITableView *myTableView;
+@property(strong,nonatomic)IBOutlet UITableView *myTableView;
 @end
 
 @implementation MyViewController
 @synthesize myTableView;
 
-- (void)viewDidAppear:(BOOL)animated
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
-    [super viewDidAppear:animated];
+    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    if (self) {
+        // Custom initialization
+        UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
+        label.backgroundColor = [UIColor clearColor];
+        label.font = APPDEFAULTTITLETEXTFONT;
+        label.textColor = APPDEFAULTTITLECOLOR;
+        label.textAlignment = NSTextAlignmentCenter;
+        self.navigationItem.titleView = label;
+        label.text = @"我的";
+        [label sizeToFit];
+        self.title = @"我的";
+    }
+    return self;
 }
 
 - (void)viewDidLoad {
@@ -33,45 +48,46 @@
     [self initView];
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:YES];
+    //本界面导航栏隐藏
+    self.navigationController.navigationBarHidden = YES;
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:YES];
+    //虽然本界面导航栏隐藏，但不能影响其他界面导航栏的显示
+    self.navigationController.navigationBarHidden = NO;
+}
+
 - (void)initialization
 {
-//    viewControllerArray = @[@"OrderListController",@"BookOrderController",@"WalletViewController",@"GoldCarrotController",@"FavoriteViewController",@"WebViewController",@"WebViewController",@"AnnouncementController"];
-
-    iconArr = @[@"icon_protected_person",@"icon_report",@"icon_order_center",@"icon_integral_mall",@"icon_star_yellow",@"icon_myinvite",@"icon_about",@"icon_advice"];
-    tableItemArr = @[@"        被受护人信息",@"        护理报告",@"        订单中心",@"        积分商城",@"        收藏夹",@"        我的邀请",@"        关于我们",@"        投诉建议"];
+    [super initializaiton];
+    iconArr = @[@"icon_protected_person_gray",@"icon_report_gray",@"icon_order_center_gray",@"icon_integral_mall_gray",@"icon_favorites_gray",@"icon_myinvite_gray",@"icon_aboutus_gray",@"icon_advice_gray"];
+    tableItemArr = @[@"被受护人信息",@"护理报告",@"订单中心",@"积分商城",@"收藏夹",@"我的邀请",@"关于我们",@"投诉建议"];
 
 }
 
 - (void)initView
 {
+    [super initView];
     self.view.backgroundColor = [UIColor whiteColor];
-    
-    myTableView = [[UITableView alloc] init];
-    myTableView.showsVerticalScrollIndicator = NO;
-    myTableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
-    myTableView.frame = CGRectMake(0, 0, SCREENWIDTH, SCREENHEIGH-50);
+
     myTableView.backgroundView = nil;
     myTableView.backgroundColor = [UIColor clearColor];
     [Tools setExtraCellLineHidden:myTableView];
     myTableView.delegate = self;
     myTableView.dataSource = self;
     [self.view addSubview:myTableView];
-    
 
-//    self.navigationController.navigationBarHidden = YES;
     
     CGFloat viewHeight = 200;
     
     UIView *headerView = [[UIView alloc] init];
     headerView.frame = CGRectMake(0, 0, SCREENWIDTH, viewHeight);
-    headerView.backgroundColor = [UIColor purpleColor];
-    
-    UIView *footerview = myTableView.tableFooterView;
-    footerview.userInteractionEnabled = YES;
-    CGRect headFrame = footerview.frame;
-    headFrame.size.height = 100;
-    footerview.frame = headFrame;
-    myTableView.tableFooterView = footerview;
+    headerView.backgroundColor = APPDEFAULTORANGE;
 
     //头像
     CGFloat imageDia = 70;              //直径
@@ -86,26 +102,9 @@
     [headerView addSubview:portrait];
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(openCamera)];
     [portrait addGestureRecognizer:tap];
-    
-//    [self setPortaitImg:nil];
+
     myTableView.tableHeaderView = headerView;
     
-    //登录按钮
-//    loginBtn = [[UIButton alloc] initWithFrame:CGRectMake(imageY + imageW + 10, 37, 80, 30)];
-//    loginBtn.center = profileBg.center;
-//    CGRect loginFrame = loginBtn.frame;
-//    loginFrame.origin.x = imageY + imageW + 10;
-//    loginBtn.frame = loginFrame;
-//    
-//    [profileBg addSubview:loginBtn];
-//    [loginBtn.layer setMasksToBounds:YES];
-//    [loginBtn.layer setCornerRadius:5];//设置矩形四个圆角半径
-//    loginBtn.backgroundColor = [UIColor whiteColor];
-//    [loginBtn setTitle:@"登录/注册" forState:UIControlStateNormal];
-//    [loginBtn.titleLabel setFont:[UIFont fontWithName:@"Helvetica" size:15.0]];
-//    [loginBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-//    [loginBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
-//    [loginBtn addTarget:self action:@selector(onClickLogin) forControlEvents:UIControlEventTouchUpInside];
     
     //用户名
     CGFloat labelX = imageX;
@@ -159,76 +158,20 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *cellIndentifier = @"cellIndentifier";
-    UITableViewCell *userCell = [tableView cellForRowAtIndexPath:indexPath];
+    HeBaseIconTitleTableCell *userCell = [tableView cellForRowAtIndexPath:indexPath];
+    CGSize cellSize = [tableView rectForRowAtIndexPath:indexPath].size;
     if (!userCell) {
-        userCell = [[UITableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIndentifier];
+        userCell = [[HeBaseIconTitleTableCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIndentifier cellSize:cellSize];
     }
     NSInteger row = indexPath.row;
     NSInteger section = indexPath.section;
-    CGSize cellSize = [tableView rectForRowAtIndexPath:indexPath].size;
-    CGFloat iconY = 10;
-    CGFloat iconH = cellSize.height - 2 * iconY;
-    CGFloat iconX = 10;
-    CGFloat iconW = iconH;
-    switch (section) {
-        case 0:
-        {
-            UIImageView *icon = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[iconArr objectAtIndex:row]]];
-            icon.frame = CGRectMake(iconX, iconY, iconW, iconH);
-            [userCell addSubview:icon];
-            userCell.textLabel.text = tableItemArr[row];
-            userCell.textLabel.textColor = [UIColor grayColor];
-            userCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-//            switch (row) {
-//                case 0:
-//                {
-//                    
-//                    UIImageView *icon = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[iconArr objectAtIndex:row]]];
-//                    icon.frame = CGRectMake(iconX, iconY, iconW, iconH);
-//                    [userCell addSubview:icon];
-//                    userCell.textLabel.text = tableItemArr[row];
-//                    userCell.textLabel.textColor = [UIColor grayColor];
-//                    userCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-//                    break;
-//                }
-//                case 1:
-//                {
-//                    UIImageView *icon = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[iconArr objectAtIndex:row]]];
-//                    icon.frame = CGRectMake(iconX, iconY, iconW, iconH);
-//                    [userCell addSubview:icon];
-//                    userCell.textLabel.text = tableItemArr[row];
-//                    userCell.textLabel.textColor = [UIColor grayColor];
-//                    userCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-//                    break;
-//                }
-//                case 2:
-//                {
-//                    UIImageView *icon = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[iconArr objectAtIndex:row]]];
-//                    icon.frame = CGRectMake(iconX, iconY, iconW, iconH);
-//                    [userCell addSubview:icon];
-//                    userCell.textLabel.text = tableItemArr[row];
-//                    userCell.textLabel.textColor = [UIColor grayColor];
-//                    userCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-//                    break;
-//                }
-//                case 3:
-//                {
-//                    UIImageView *icon = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[iconArr objectAtIndex:row]]];
-//                    icon.frame = CGRectMake(iconX, iconY, iconW, iconH);
-//                    [userCell addSubview:icon];
-//                    userCell.textLabel.text = tableItemArr[row];
-//                    userCell.textLabel.textColor = [UIColor grayColor];
-//                    userCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-//                    break;
-//                }
-//                default:
-//                    break;
-//            }
-            break;
-        }
-        default:
-            break;
-    }
+    
+    NSString *title = tableItemArr[row];
+    NSString *iconName = iconArr[row];
+    
+    userCell.topicLabel.text = title;
+    userCell.icon.image = [UIImage imageNamed:iconName];
+    
     return userCell;
 }
 
@@ -240,8 +183,10 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    NSInteger index = indexPath.row;
-    NSLog(@"index:%ld",index);
+    NSInteger row = indexPath.row;
+    NSInteger section = indexPath.section;
+    
+    NSLog(@"row = %ld , section = %ld",row,section);
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section

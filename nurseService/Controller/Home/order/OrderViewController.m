@@ -8,20 +8,38 @@
 
 #import "OrderViewController.h"
 #import "DLNavigationTabBar.h"
+#import "HeOrderTableViewCell.h"
 
-@interface OrderViewController ()
+@interface OrderViewController ()<UITableViewDelegate,UITableViewDataSource>
 {
-    NSInteger addStatusBarHeight;
+    NSInteger currentOrderType;
 }
 @property(nonatomic,strong)DLNavigationTabBar *navigationTabBar;
+@property(strong,nonatomic)IBOutlet UITableView *tableview;
+@property(strong,nonatomic)NSMutableArray *dataSource;
 
 @end
 
 @implementation OrderViewController
+@synthesize tableview;
+@synthesize dataSource;
 
-- (void)viewDidAppear:(BOOL)animated
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
-    [super viewDidAppear:animated];
+    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    if (self) {
+        // Custom initialization
+        UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
+        label.backgroundColor = [UIColor clearColor];
+        label.font = APPDEFAULTTITLETEXTFONT;
+        label.textColor = APPDEFAULTTITLECOLOR;
+        label.textAlignment = NSTextAlignmentCenter;
+        self.navigationItem.titleView = label;
+        label.text = @"订单";
+        [label sizeToFit];
+        self.title = @"订单";
+    }
+    return self;
 }
 
 -(DLNavigationTabBar *)navigationTabBar
@@ -29,7 +47,7 @@
     if (!_navigationTabBar) {
         self.navigationTabBar = [[DLNavigationTabBar alloc] initWithTitles:@[@"预约框",@"已预约",@"进行中",@"已完成"]];
         self.navigationTabBar.backgroundColor = [UIColor colorWithWhite:237.0 / 255.0 alpha:1.0];
-        self.navigationTabBar.frame = CGRectMake(0, TOPNAVIHEIGHT+addStatusBarHeight, SCREENWIDTH, 44);
+        self.navigationTabBar.frame = CGRectMake(0, 0, SCREENWIDTH, 44);
         self.navigationTabBar.sliderBackgroundColor = APPDEFAULTORANGE;
         self.navigationTabBar.buttonNormalTitleColor = [UIColor grayColor];
         self.navigationTabBar.buttonSelectedTileColor = APPDEFAULTORANGE;
@@ -41,62 +59,94 @@
     return _navigationTabBar;
 }
 
-- (void)viewDidLoad {
-    addStatusBarHeight = STATUSBAR_HEIGHT;
-    //--ios7 or later  添加 bar
-    if (iOS7) {
-        
-    }else{
-        UILabel *addStatusBar = [[UILabel alloc] initWithFrame:CGRectMake(0, -20, SCREENWIDTH, 20)];
-        addStatusBar.backgroundColor = TOPNAVIBGCOLOR;
-        [self.view addSubview:addStatusBar];
-    }
+- (void)viewDidLoad
+{
     [super viewDidLoad];
+    [self initializaiton];
     [self initView];
-    
-    
 }
 
-- (void)initView{
-    
-    self.view.backgroundColor = [UIColor whiteColor];
+- (void)initializaiton
+{
+    [super initializaiton];
+    dataSource = [[NSMutableArray alloc] initWithCapacity:0];
+    currentOrderType = 0;
+}
+
+- (void)initView
+{
+    [super initView];
     [self.view addSubview:self.navigationTabBar];
-
-    //top
-    UIView *topNaviView_topClass = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, TOPNAVIHEIGHT + addStatusBarHeight)];
-    [self.view addSubview:topNaviView_topClass];
-    topNaviView_topClass.userInteractionEnabled = YES;//这样才可以点击
-    topNaviView_topClass.backgroundColor = [UIColor purpleColor];
-    
-    //文字
-    UILabel *topNaviText = [[UILabel alloc] initWithFrame:CGRectMake(60, 0+ addStatusBarHeight, SCREENWIDTH-120, TOPNAVIHEIGHT)];
-    topNaviText.textAlignment = NSTextAlignmentCenter;
-    topNaviText.text = @"订单"; //60, 0, 250, TOPNAVIHEIGHT
-    topNaviText.font = [UIFont systemFontOfSize:18];
-    topNaviText.textColor = [UIColor whiteColor];
-    topNaviText.userInteractionEnabled = YES;//这样才可以点击
-    topNaviText.backgroundColor = [UIColor clearColor];
-    [topNaviView_topClass addSubview:topNaviText];
-    [self.view addSubview:topNaviView_topClass];
+    [Tool setExtraCellLineHidden:tableview];
+    tableview.backgroundView = nil;
+    tableview.backgroundColor = [UIColor colorWithWhite:237.0 / 255/0 alpha:1.0];
 }
 
-#pragma mark - Configuring the view’s layout behavior
-
-- (BOOL)prefersStatusBarHidden
-{
-    return NO;
-}
-
-- (UIStatusBarStyle)preferredStatusBarStyle
-{
-    return UIStatusBarStyleLightContent;
-}
 
 #pragma mark - PrivateMethod
 - (void)navigationDidSelectedControllerIndex:(NSInteger)index {
     NSLog(@"index = %ld",index);
+    currentOrderType = index;
+}
+
+#pragma mark - TableView Delegate
+
+-(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return 5;
+}
+
+-(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    return 5;
+}
+
+-(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSInteger row = indexPath.row;
+    
+    static NSString *cellIndentifier = @"HeOrderTableViewCell";
+    CGSize cellSize = [tableView rectForRowAtIndexPath:indexPath].size;
+    NSDictionary *dict = nil;
+    
+    HeOrderTableViewCell *cell  = [tableView cellForRowAtIndexPath:indexPath];
+    if (!cell) {
+        
+        cell = [[HeOrderTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIndentifier cellSize:cellSize orderType:currentOrderType];
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    }
+    
+    return cell;
+}
+
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSInteger section = indexPath.section;
+    NSInteger row = indexPath.row;
+    
+    
+    return 100;
+}
+
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    NSInteger row = indexPath.row;
+    NSInteger section = indexPath.section;
+    
+    NSDictionary *dict = nil;
+    @try {
+        dict = dataSource[row];
+    } @catch (NSException *exception) {
+        
+    } @finally {
+        
+    }
     
 }
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.

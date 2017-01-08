@@ -28,6 +28,7 @@
 #import "BrowserView.h"
 #import "TOWebViewController.h"
 #import <SMS_SDK/SMSSDK.h>
+#import "HeTabBarVC.h"
 
 #ifdef NSFoundationVersionNumber_iOS_9_x_Max
 #import <UserNotifications/UserNotifications.h>
@@ -200,19 +201,19 @@ BMKMapManager* _mapManager;
     NSString *userAccount = [[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY];
     BOOL haveLogin = (userAccount == nil) ? NO : YES;
     
-    if (haveLogin) {//登陆成功加载主窗口控制器
+    if (1) {//登陆成功加载主窗口控制器
         [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
         
         [[UINavigationBar appearance] setTitleTextAttributes:
          [NSDictionary dictionaryWithObjectsAndKeys:[UIColor whiteColor], NSForegroundColorAttributeName, [UIFont systemFontOfSize:20.0], NSFontAttributeName, nil]];
         [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent animated:YES];
         
-        HomeTabbarController *first = [[HomeTabbarController alloc] init];
+        HeTabBarVC *tabbarVC = [[HeTabBarVC alloc] init];
         LeftViewController *leftViewController = [[LeftViewController alloc] init];
-        RESideMenu *sideMenuVC = [[RESideMenu alloc] initWithContentViewController:first
+        RESideMenu *sideMenuVC = [[RESideMenu alloc] initWithContentViewController:tabbarVC
                                                             leftMenuViewController:leftViewController
                                                            rightMenuViewController:nil];
-        sideMenuVC.mainController = first;
+        sideMenuVC.mainController = tabbarVC;
         sideMenuVC.menuPreferredStatusBarStyle = 1;
         sideMenuVC.delegate = self;
         sideMenuVC.contentViewShadowColor = [UIColor blackColor];

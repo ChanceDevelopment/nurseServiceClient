@@ -10,15 +10,18 @@
 #import "RDVTabBarItem.h"
 #import "RDVTabBar.h"
 #import "RDVTabBarController.h"
-
 #import "HeSysbsModel.h"
+
 
 @interface HeTabBarVC ()
 
 @end
 
 @implementation HeTabBarVC
-
+@synthesize homePageVC;
+@synthesize nurseVC;
+@synthesize orderVC;
+@synthesize userVC;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -64,7 +67,23 @@
 //设置根控制器的四个子控制器
 - (void)setupSubviews
 {
+    homePageVC = [[FirstViewController alloc] init];
+    CustomNavigationController *homePageNav = [[CustomNavigationController alloc] initWithRootViewController:homePageVC];
     
+    nurseVC = [[NurseViewController alloc] init];
+    CustomNavigationController *nurseNav = [[CustomNavigationController alloc]
+                                           initWithRootViewController:nurseVC];
+    
+    orderVC = [[OrderViewController alloc] init];
+    CustomNavigationController *orderNav = [[CustomNavigationController alloc]
+                                            initWithRootViewController:orderVC];
+    
+    userVC = [[MyViewController alloc] init];
+    CustomNavigationController *userNav = [[CustomNavigationController alloc]
+                                            initWithRootViewController:userVC];
+    
+    [self setViewControllers:@[homePageNav,nurseNav,orderNav,userNav]];
+    [self customizeTabBarForController];
 }
 
 //设置底部的tabbar
@@ -72,14 +91,14 @@
     //    tabbar_normal_background   tabbar_selected_background
     UIImage *finishedImage = [UIImage imageNamed:@"tabbar_normal_background"];
     UIImage *unfinishedImage = [UIImage imageNamed:@"tabbar_normal_background"];
-    NSArray *tabBarItemImages = @[@"tabar_log_icon", @"tabar_plaza_icon", @"tabar_album_icon", @"tabar_user_icon"];
+    NSArray *tabBarItemImages = @[@"main_home", @"main_nurse", @"main_order", @"main_mine"];
     
     NSInteger index = 0;
     for (RDVTabBarItem *item in [[self tabBar] items]) {
         [item setBackgroundSelectedImage:finishedImage withUnselectedImage:unfinishedImage];
-        UIImage *selectedimage = [UIImage imageNamed:[NSString stringWithFormat:@"%@_active",
+        UIImage *selectedimage = [UIImage imageNamed:[NSString stringWithFormat:@"%@_selector",
                                                       [tabBarItemImages objectAtIndex:index]]];
-        UIImage *unselectedimage = [UIImage imageNamed:[NSString stringWithFormat:@"%@_normal",
+        UIImage *unselectedimage = [UIImage imageNamed:[NSString stringWithFormat:@"%@_unselector",
                                                         [tabBarItemImages objectAtIndex:index]]];
         [item setFinishedSelectedImage:selectedimage withFinishedUnselectedImage:unselectedimage];
         

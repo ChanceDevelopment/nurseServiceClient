@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface NurseViewController : UIViewController
+@interface NurseViewController : HeBaseViewController
 
 @end

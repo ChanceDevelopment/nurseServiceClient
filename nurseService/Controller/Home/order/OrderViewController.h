@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "HeBaseViewController.h"
 
-@interface OrderViewController : UIViewController
+@interface OrderViewController : HeBaseViewController
 
 @end
