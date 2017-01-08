@@ -38,6 +38,7 @@
 #import "UIImageView+AFNetworking.h"
 #import "UIImageView+WebCache.h"
 #import "MLLinkLabel.h"
+#import "UIView+Toast.h"
 
 #endif
 

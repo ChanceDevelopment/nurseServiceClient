@@ -11,7 +11,9 @@
 
 @interface BrowserView : HeBaseViewController<UIWebViewDelegate>
 @property(strong,nonatomic)NSString *htmlContent;
+//@property(assign,nonatomic)BOOL isFile;
 
 -(id)initWithWebSite:(NSString*)string;
+-(id)initWithURL:(NSString *)filePath;
 
 @end

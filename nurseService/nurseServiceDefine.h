@@ -17,6 +17,8 @@
 #define ISIOS6 ([[[UIDevice currentDevice] systemVersion] floatValue] < 6.9)
 #define IOS7OFFSET        64
 
+//百度地图的key
+#define BAIDUMAPKEY @"wahybut4ENzt0edEW9GWvxGGQU0z6dt5"
 
 
 //自己服务器的通信模块
@@ -45,7 +47,7 @@
 #define RONGCLOUDAPPSECRET @"3ziF82PRCob"
 #define RONGCLOUDAPPKEY @"25wehl3uwoytw"
 //激光推送的key
-#define JPUSHAPPKEY @"31c72d8929b7054604ba6d35"
+#define JPUSHAPPKEY @"8121db7759363542b25159b8"
 //shareSDK的key
 #define SHARESDKKEY @"119b38d6fc442"
 #define SHARESDKAPPSECRET @"efd6dfd7a49402e2cce8edbddd2cfbd2"
@@ -53,9 +55,9 @@
 #define SHARESDKSMSKEY @"e85925a8eb1a"
 #define SHARESDKSMSAPPSECRET @"d96120d4a619a057e3c6845529e213d9"
 //友盟iPhone的key
-#define UMANALYSISKEY @"57440b4867e58e9e770011bb"
+#define UMANALYSISKEY @"587195a065b6d624cf001b68"
 //友盟iPad的key
-#define UMANALYSISKEY_HD @"57440c64e0f55a69480019d6"
+#define UMANALYSISKEY_HD @"587195a065b6d624cf001b68"
 
 
 //登录状态发生变化的通知
