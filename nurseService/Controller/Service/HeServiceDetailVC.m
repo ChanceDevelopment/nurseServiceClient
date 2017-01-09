@@ -104,8 +104,9 @@
     NSLog(@"phoneCall");
 }
 
-- (IBAction)favButtonClick:(id)sender
+- (IBAction)favButtonClick:(UIButton *)sender
 {
+    sender.selected = !sender.selected;
     NSLog(@"favButtonClick");
 }
 //加入预约框
@@ -198,7 +199,7 @@
                     CGFloat titleLabelX = 10;
                     CGFloat titleLabelY = 0;
                     CGFloat titleLabelH = cellsize.height / 2.0;
-                    CGFloat titleLabelW = 80;
+                    CGFloat titleLabelW = 100;
                     
                     UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(titleLabelX, titleLabelY, titleLabelW, titleLabelH)];
                     titleLabel.font = [UIFont systemFontOfSize:15.0];
@@ -206,7 +207,7 @@
                     [cell addSubview:titleLabel];
                     
                     NSString *infoString = @"小明 男 15768580734";
-                    CGSize size = [MLLabel getViewSizeByString:infoString maxWidth:SCREENWIDTH - 30 - 80 font:[UIFont systemFontOfSize:15.0] lineHeight:1.2 lines:0];
+                    CGSize size = [MLLabel getViewSizeByString:infoString maxWidth:SCREENWIDTH - 30 - titleLabelW font:[UIFont systemFontOfSize:15.0] lineHeight:1.2 lines:0];
                     titleLabelW = size.width;
                     titleLabelX = SCREENWIDTH - titleLabelW - 30;
                     UILabel *nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(titleLabelX, titleLabelY, titleLabelW, titleLabelH)];
@@ -246,6 +247,7 @@
                     CGFloat titleLabelW = 150;
                     
                     UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(titleLabelX, titleLabelY, titleLabelW, titleLabelH)];
+                    titleLabel.textColor = [UIColor grayColor];
                     titleLabel.font = [UIFont systemFontOfSize:13.0];
                     titleLabel.text = @"中国人寿为您保驾护航";
                     [cell addSubview:titleLabel];
