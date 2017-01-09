@@ -11,7 +11,6 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="HeOrderDetailVC">
             <connections>
-                <outlet property="statusView" destination="YfW-66-pRS" id="VfW-3n-EPn"/>
                 <outlet property="tableview" destination="w7I-la-was" id="21x-hh-T0Z"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
@@ -22,27 +21,19 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="w7I-la-was">
-                    <rect key="frame" x="0.0" y="60" width="375" height="607"/>
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     <connections>
                         <outlet property="dataSource" destination="-1" id="YV3-f2-Z4A"/>
                         <outlet property="delegate" destination="-1" id="nKS-qe-zDg"/>
                     </connections>
                 </tableView>
-                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="YfW-66-pRS">
-                    <rect key="frame" x="0.0" y="5" width="375" height="55"/>
-                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                </view>
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
-                <constraint firstItem="w7I-la-was" firstAttribute="top" secondItem="YfW-66-pRS" secondAttribute="bottom" id="079-Yb-tuC"/>
-                <constraint firstItem="w7I-la-was" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="60" id="0sS-kL-ZS9"/>
+                <constraint firstItem="w7I-la-was" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="0sS-kL-ZS9"/>
                 <constraint firstAttribute="bottom" secondItem="w7I-la-was" secondAttribute="bottom" id="DDF-SE-JfV"/>
                 <constraint firstAttribute="trailing" secondItem="w7I-la-was" secondAttribute="trailing" id="LOT-i8-YbU"/>
-                <constraint firstItem="YfW-66-pRS" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="MDa-qV-GTB"/>
-                <constraint firstItem="YfW-66-pRS" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="5" id="NkF-9O-3KT"/>
-                <constraint firstAttribute="trailing" secondItem="YfW-66-pRS" secondAttribute="trailing" id="QJL-0V-Om7"/>
                 <constraint firstItem="w7I-la-was" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="xXl-xF-Yg4"/>
             </constraints>
             <point key="canvasLocation" x="32.5" y="69.5"/>

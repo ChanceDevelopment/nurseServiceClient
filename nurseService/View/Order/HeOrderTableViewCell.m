@@ -34,10 +34,22 @@
         [bgView.layer setMasksToBounds:YES];
         bgView.layer.cornerRadius = 4.0;
         
-        CGFloat serviceContentLX = 10;
+        
+        
+        CGFloat orderViewX = 10;
+        CGFloat orderViewY = 0;
+        CGFloat orderViewW = bgView_W - 2 * orderViewX;
+        CGFloat orderViewH = 54;
+        
+        UIView *orderView = [[UIView alloc] initWithFrame:CGRectMake(orderViewX, orderViewY, orderViewW, orderViewH)];
+        orderView.backgroundColor = [UIColor whiteColor];
+        orderView.userInteractionEnabled = YES;
+        [bgView addSubview:orderView];
+        
+        CGFloat serviceContentLX = 0;
         CGFloat serviceContentLY = 0;
-        CGFloat serviceContentLW = bgView_W - 2 * serviceContentLX;
-        CGFloat serviceContentLH = 44;
+        CGFloat serviceContentLW = orderViewW;
+        CGFloat serviceContentLH = orderViewH;
         
         serviceContentL = [[UILabel alloc] initWithFrame:CGRectMake(serviceContentLX, serviceContentLY, serviceContentLW, serviceContentLH)];
         serviceContentL.text = @"产妇护理套餐";
@@ -45,13 +57,13 @@
         serviceContentL.textColor = APPDEFAULTORANGE;
         serviceContentL.font = [UIFont systemFontOfSize:15.0];
         serviceContentL.backgroundColor = [UIColor clearColor];
-        [bgView addSubview:serviceContentL];
+        [orderView addSubview:serviceContentL];
         
         
-        CGFloat payStatusLabelY = serviceContentLY;
+        CGFloat payStatusLabelY = 0;
         CGFloat payStatusLabelW = 100;
-        CGFloat payStatusLabelX = SCREENWIDTH - payStatusLabelW - 50;
         CGFloat payStatusLabelH = serviceContentLH;
+        CGFloat payStatusLabelX = orderViewW - payStatusLabelW - 30;
         
         payStatusLabel = [[UILabel alloc] initWithFrame:CGRectMake(payStatusLabelX, payStatusLabelY, payStatusLabelW, payStatusLabelH)];
         payStatusLabel.text = @"待付款";
@@ -60,19 +72,19 @@
         payStatusLabel.textColor = [UIColor blackColor];
         payStatusLabel.font = [UIFont systemFontOfSize:15.0];
         payStatusLabel.backgroundColor = [UIColor clearColor];
-        [bgView addSubview:payStatusLabel];
+        [orderView addSubview:payStatusLabel];
         
-        UIImageView *rightV = [[UIImageView alloc] initWithFrame:CGRectMake(bgView_W - 30, 14, 20, 20)];
+        UIImageView *rightV = [[UIImageView alloc] initWithFrame:CGRectMake(orderViewW - 20, (orderViewH - 20) / 2.0, 20, 20)];
         rightV.backgroundColor = [UIColor clearColor];
         rightV.image = [UIImage imageNamed:@"icon_into_right"];
         rightV.userInteractionEnabled = YES;
-        [bgView addSubview:rightV];
+        [orderView addSubview:rightV];
         
         UITapGestureRecognizer *showOrderDetailTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showOrderDetail)];
-        [serviceContentL addGestureRecognizer:showOrderDetailTap];
+        [orderView addGestureRecognizer:showOrderDetailTap];
         
         CGFloat lineX = 5;
-        CGFloat lineY = CGRectGetMaxY(serviceContentL.frame);
+        CGFloat lineY = CGRectGetMaxY(orderView.frame);
         CGFloat lineW = bgView_W - 2 * lineX;
         CGFloat lineH = 1;
         

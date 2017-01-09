@@ -123,16 +123,13 @@
 
 - (void)updateAnnotion
 {
-    if (!userLocationDict) {
-        return;
-    }
     NSString *zoneLocationX = userLocationDict[@"zoneLocationX"];
     if ([zoneLocationX isMemberOfClass:[NSNull class]] || zoneLocationX == nil) {
-        zoneLocationX = @"";
+        zoneLocationX = @"110";
     }
     NSString *zoneLocationY = userLocationDict[@"zoneLocationY"];
     if ([zoneLocationY isMemberOfClass:[NSNull class]] || zoneLocationY == nil) {
-        zoneLocationY = @"";
+        zoneLocationY = @"23";
     }
     [_mapView removeAnnotations:_mapView.annotations];
     BMKPointAnnotation* annotation = [[BMKPointAnnotation alloc] init];

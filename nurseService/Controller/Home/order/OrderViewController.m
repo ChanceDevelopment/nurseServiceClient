@@ -15,6 +15,7 @@
 #import "HePaitentInfoVC.h"
 #import "HeOrderDetailVC.h"
 #import "HeUserLocatiVC.h"
+#import "HeOrderCommitVC.h"
 
 @interface OrderViewController ()<UITableViewDelegate,UITableViewDataSource>
 {
@@ -86,7 +87,7 @@
     [Tool setExtraCellLineHidden:tableview];
     tableview.backgroundView = nil;
     tableview.separatorStyle = UITableViewCellSeparatorStyleNone;
-    tableview.backgroundColor = [UIColor colorWithWhite:237.0 / 255/0 alpha:1.0];
+    tableview.backgroundColor = [UIColor colorWithWhite:237.0 / 255.0 alpha:1.0];
     
     
 }
@@ -109,9 +110,19 @@
 
 - (void)showOrderDetailWithOrder:(NSDictionary *)orderDict
 {
-    HeOrderDetailVC *orderDetailVC = [[HeOrderDetailVC alloc] init];
-    orderDetailVC.hidesBottomBarWhenPushed = YES;
-    [self.navigationController pushViewController:orderDetailVC animated:YES];
+    if (currentOrderType == 0) {
+        //预约框，跳订单确认界面
+        HeOrderCommitVC *orderCommitVC = [[HeOrderCommitVC alloc] init];
+        orderCommitVC.hidesBottomBarWhenPushed = YES;
+        [self.navigationController pushViewController:orderCommitVC animated:YES];
+        return;
+    }
+    else{
+        HeOrderDetailVC *orderDetailVC = [[HeOrderDetailVC alloc] init];
+        orderDetailVC.hidesBottomBarWhenPushed = YES;
+        [self.navigationController pushViewController:orderDetailVC animated:YES];
+    }
+    
 }
 
 - (void)goLocationWithLocation:(NSDictionary *)locationDict
@@ -204,7 +215,7 @@
             };
             cell.locationBlock = ^(){
                 NSLog(@"locationBlock");
-                NSDictionary *userLocationDic = @{@"zoneLocationY":@"113",@"zoneLocationX":@"23"};
+                NSDictionary *userLocationDic = @{@"zoneLocationY":@"23",@"zoneLocationX":@"113"};
                 [weakSelf goLocationWithLocation:userLocationDic];
             };
             cell.showUserInfoBlock = ^(){
@@ -235,7 +246,7 @@
             };
             cell.locationBlock = ^(){
                 NSLog(@"locationBlock");
-                NSDictionary *userLocationDic = @{@"zoneLocationY":@"113",@"zoneLocationX":@"23"};
+                NSDictionary *userLocationDic = @{@"zoneLocationY":@"23",@"zoneLocationX":@"113"};
                 [weakSelf goLocationWithLocation:userLocationDic];
             };
             cell.showUserInfoBlock = ^(){
@@ -270,7 +281,7 @@
             };
             cell.locationBlock = ^(){
                 NSLog(@"locationBlock");
-                NSDictionary *userLocationDic = @{@"zoneLocationY":@"113",@"zoneLocationX":@"23"};
+                NSDictionary *userLocationDic = @{@"zoneLocationY":@"23",@"zoneLocationX":@"113"};
                 [weakSelf goLocationWithLocation:userLocationDic];
             };
             cell.showUserInfoBlock = ^(){
@@ -306,7 +317,7 @@
             };
             cell.locationBlock = ^(){
                 NSLog(@"locationBlock");
-                NSDictionary *userLocationDic = @{@"zoneLocationY":@"113",@"zoneLocationX":@"23"};
+                NSDictionary *userLocationDic = @{@"zoneLocationY":@"23",@"zoneLocationX":@"113"};
                 [weakSelf goLocationWithLocation:userLocationDic];
             };
             cell.showUserInfoBlock = ^(){
@@ -367,7 +378,7 @@
     if (currentOrderType == 2 || currentOrderType == 3) {
         return 230;
     }
-    return 190;
+    return 200;
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath

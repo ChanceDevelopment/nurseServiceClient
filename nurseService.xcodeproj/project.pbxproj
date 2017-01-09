@@ -67,6 +67,18 @@
 		ADCC624A1DFA9EB30065866C /* icon_report.png in Resources */ = {isa = PBXBuildFile; fileRef = ADCC62401DFA9EB30065866C /* icon_report.png */; };
 		ADCC624B1DFA9EB30065866C /* icon_star_yellow.png in Resources */ = {isa = PBXBuildFile; fileRef = ADCC62411DFA9EB30065866C /* icon_star_yellow.png */; };
 		ADEE55F81E2156C000E7A277 /* DLNavigationTabBar.m in Sources */ = {isa = PBXBuildFile; fileRef = ADEE55F71E2156C000E7A277 /* DLNavigationTabBar.m */; };
+		EA34D7921E23244D00CD8BC5 /* HeOrderCommitVC.m in Sources */ = {isa = PBXBuildFile; fileRef = EA34D7901E23244D00CD8BC5 /* HeOrderCommitVC.m */; };
+		EA34D7931E23244D00CD8BC5 /* HeOrderCommitVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = EA34D7911E23244D00CD8BC5 /* HeOrderCommitVC.xib */; };
+		EA34D7951E23270800CD8BC5 /* icon_agree.png in Resources */ = {isa = PBXBuildFile; fileRef = EA34D7941E23270800CD8BC5 /* icon_agree.png */; };
+		EA34D7971E232B6600CD8BC5 /* icon_insurance.png in Resources */ = {isa = PBXBuildFile; fileRef = EA34D7961E232B6600CD8BC5 /* icon_insurance.png */; };
+		EA34D7991E232B7000CD8BC5 /* icon_online.png in Resources */ = {isa = PBXBuildFile; fileRef = EA34D7981E232B7000CD8BC5 /* icon_online.png */; };
+		EA34D79B1E232B8B00CD8BC5 /* icon_alipay.png in Resources */ = {isa = PBXBuildFile; fileRef = EA34D79A1E232B8B00CD8BC5 /* icon_alipay.png */; };
+		EA34D79E1E23333E00CD8BC5 /* ScanPictureView.m in Sources */ = {isa = PBXBuildFile; fileRef = EA34D79D1E23333E00CD8BC5 /* ScanPictureView.m */; };
+		EA34D7A21E233F0300CD8BC5 /* UIView+Genie.m in Sources */ = {isa = PBXBuildFile; fileRef = EA34D7A11E233F0300CD8BC5 /* UIView+Genie.m */; };
+		EA34D7A41E23573F00CD8BC5 /* comonDefaultImage.png in Resources */ = {isa = PBXBuildFile; fileRef = EA34D7A31E23573F00CD8BC5 /* comonDefaultImage.png */; };
+		EA34D7A91E236C1D00CD8BC5 /* UWDatePickerView.m in Sources */ = {isa = PBXBuildFile; fileRef = EA34D7A71E236C1D00CD8BC5 /* UWDatePickerView.m */; };
+		EA34D7AA1E236C1D00CD8BC5 /* UWDatePickerView.xib in Resources */ = {isa = PBXBuildFile; fileRef = EA34D7A81E236C1D00CD8BC5 /* UWDatePickerView.xib */; };
+		EA34D7AD1E236E7200CD8BC5 /* HeServiceTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = EA34D7AC1E236E7200CD8BC5 /* HeServiceTableCell.m */; };
 		EA8C89431E21CAB30093657B /* BaiduMapAPI_Base.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA8C89371E21CAB30093657B /* BaiduMapAPI_Base.framework */; };
 		EA8C89441E21CAB30093657B /* BaiduMapAPI_Cloud.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA8C89381E21CAB30093657B /* BaiduMapAPI_Cloud.framework */; };
 		EA8C89451E21CAB30093657B /* BaiduMapAPI_Location.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA8C89391E21CAB30093657B /* BaiduMapAPI_Location.framework */; };
@@ -140,6 +152,12 @@
 		EA8C89FE1E2267E50093657B /* HeNurseDetailVC.m in Sources */ = {isa = PBXBuildFile; fileRef = EA8C89FC1E2267E50093657B /* HeNurseDetailVC.m */; };
 		EA8C89FF1E2267E50093657B /* HeNurseDetailVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = EA8C89FD1E2267E50093657B /* HeNurseDetailVC.xib */; };
 		EA8C8A031E2269910093657B /* HeOrderTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = EA8C8A021E2269910093657B /* HeOrderTableViewCell.m */; };
+		EA9F23FC1E237995001E4DE9 /* icon_health_authent.png in Resources */ = {isa = PBXBuildFile; fileRef = EA9F23FB1E237995001E4DE9 /* icon_health_authent.png */; };
+		EA9F23FE1E2379A0001E4DE9 /* icon_name_authent.png in Resources */ = {isa = PBXBuildFile; fileRef = EA9F23FD1E2379A0001E4DE9 /* icon_name_authent.png */; };
+		EA9F24011E237DBE001E4DE9 /* img_background.png in Resources */ = {isa = PBXBuildFile; fileRef = EA9F23FF1E237DBE001E4DE9 /* img_background.png */; };
+		EA9F24021E237DBE001E4DE9 /* img_bg.png in Resources */ = {isa = PBXBuildFile; fileRef = EA9F24001E237DBE001E4DE9 /* img_bg.png */; };
+		EA9F24071E237F2F001E4DE9 /* HeServiceDetailVC.m in Sources */ = {isa = PBXBuildFile; fileRef = EA9F24051E237F2F001E4DE9 /* HeServiceDetailVC.m */; };
+		EA9F24081E237F2F001E4DE9 /* HeServiceDetailVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = EA9F24061E237F2F001E4DE9 /* HeServiceDetailVC.xib */; };
 		EA9F726C1E22794E00FED4A3 /* HePaitentInfoVC.m in Sources */ = {isa = PBXBuildFile; fileRef = EA9F726A1E22794E00FED4A3 /* HePaitentInfoVC.m */; };
 		EA9F726D1E22794E00FED4A3 /* HePaitentInfoVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = EA9F726B1E22794E00FED4A3 /* HePaitentInfoVC.xib */; };
 		EA9F72711E22797B00FED4A3 /* HeOrderDetailVC.m in Sources */ = {isa = PBXBuildFile; fileRef = EA9F726F1E22797B00FED4A3 /* HeOrderDetailVC.m */; };
@@ -687,6 +705,24 @@
 		ADCC62411DFA9EB30065866C /* icon_star_yellow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_star_yellow.png; sourceTree = "<group>"; };
 		ADEE55F61E2156C000E7A277 /* DLNavigationTabBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLNavigationTabBar.h; sourceTree = "<group>"; };
 		ADEE55F71E2156C000E7A277 /* DLNavigationTabBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLNavigationTabBar.m; sourceTree = "<group>"; };
+		EA34D78F1E23244D00CD8BC5 /* HeOrderCommitVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HeOrderCommitVC.h; sourceTree = "<group>"; };
+		EA34D7901E23244D00CD8BC5 /* HeOrderCommitVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HeOrderCommitVC.m; sourceTree = "<group>"; };
+		EA34D7911E23244D00CD8BC5 /* HeOrderCommitVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HeOrderCommitVC.xib; sourceTree = "<group>"; };
+		EA34D7941E23270800CD8BC5 /* icon_agree.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_agree.png; sourceTree = "<group>"; };
+		EA34D7961E232B6600CD8BC5 /* icon_insurance.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_insurance.png; sourceTree = "<group>"; };
+		EA34D7981E232B7000CD8BC5 /* icon_online.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_online.png; sourceTree = "<group>"; };
+		EA34D79A1E232B8B00CD8BC5 /* icon_alipay.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_alipay.png; sourceTree = "<group>"; };
+		EA34D79C1E23333E00CD8BC5 /* ScanPictureView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScanPictureView.h; sourceTree = "<group>"; };
+		EA34D79D1E23333E00CD8BC5 /* ScanPictureView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ScanPictureView.m; sourceTree = "<group>"; };
+		EA34D79F1E2334CC00CD8BC5 /* DeleteImageProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DeleteImageProtocol.h; sourceTree = "<group>"; };
+		EA34D7A01E233F0300CD8BC5 /* UIView+Genie.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Genie.h"; sourceTree = "<group>"; };
+		EA34D7A11E233F0300CD8BC5 /* UIView+Genie.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Genie.m"; sourceTree = "<group>"; };
+		EA34D7A31E23573F00CD8BC5 /* comonDefaultImage.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = comonDefaultImage.png; sourceTree = "<group>"; };
+		EA34D7A61E236C1D00CD8BC5 /* UWDatePickerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UWDatePickerView.h; sourceTree = "<group>"; };
+		EA34D7A71E236C1D00CD8BC5 /* UWDatePickerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UWDatePickerView.m; sourceTree = "<group>"; };
+		EA34D7A81E236C1D00CD8BC5 /* UWDatePickerView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = UWDatePickerView.xib; sourceTree = "<group>"; };
+		EA34D7AB1E236E7200CD8BC5 /* HeServiceTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HeServiceTableCell.h; sourceTree = "<group>"; };
+		EA34D7AC1E236E7200CD8BC5 /* HeServiceTableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HeServiceTableCell.m; sourceTree = "<group>"; };
 		EA8C89371E21CAB30093657B /* BaiduMapAPI_Base.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = BaiduMapAPI_Base.framework; sourceTree = "<group>"; };
 		EA8C89381E21CAB30093657B /* BaiduMapAPI_Cloud.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = BaiduMapAPI_Cloud.framework; sourceTree = "<group>"; };
 		EA8C89391E21CAB30093657B /* BaiduMapAPI_Location.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = BaiduMapAPI_Location.framework; sourceTree = "<group>"; };
@@ -788,6 +824,13 @@
 		EA8C89FD1E2267E50093657B /* HeNurseDetailVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HeNurseDetailVC.xib; sourceTree = "<group>"; };
 		EA8C8A011E2269910093657B /* HeOrderTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HeOrderTableViewCell.h; sourceTree = "<group>"; };
 		EA8C8A021E2269910093657B /* HeOrderTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HeOrderTableViewCell.m; sourceTree = "<group>"; };
+		EA9F23FB1E237995001E4DE9 /* icon_health_authent.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_health_authent.png; sourceTree = "<group>"; };
+		EA9F23FD1E2379A0001E4DE9 /* icon_name_authent.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_name_authent.png; sourceTree = "<group>"; };
+		EA9F23FF1E237DBE001E4DE9 /* img_background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = img_background.png; sourceTree = "<group>"; };
+		EA9F24001E237DBE001E4DE9 /* img_bg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = img_bg.png; sourceTree = "<group>"; };
+		EA9F24041E237F2F001E4DE9 /* HeServiceDetailVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HeServiceDetailVC.h; sourceTree = "<group>"; };
+		EA9F24051E237F2F001E4DE9 /* HeServiceDetailVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HeServiceDetailVC.m; sourceTree = "<group>"; };
+		EA9F24061E237F2F001E4DE9 /* HeServiceDetailVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HeServiceDetailVC.xib; sourceTree = "<group>"; };
 		EA9F72691E22794E00FED4A3 /* HePaitentInfoVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HePaitentInfoVC.h; sourceTree = "<group>"; };
 		EA9F726A1E22794E00FED4A3 /* HePaitentInfoVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HePaitentInfoVC.m; sourceTree = "<group>"; };
 		EA9F726B1E22794E00FED4A3 /* HePaitentInfoVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HePaitentInfoVC.xib; sourceTree = "<group>"; };
@@ -1772,6 +1815,7 @@
 		AD6C8EE11DF9C7C100C44A8A /* order */ = {
 			isa = PBXGroup;
 			children = (
+				EA34D79F1E2334CC00CD8BC5 /* DeleteImageProtocol.h */,
 				AD6C8F021DF9C93E00C44A8A /* OrderViewController.h */,
 				AD6C8F031DF9C93E00C44A8A /* OrderViewController.m */,
 				EA8C89B61E21E70C0093657B /* OrderViewController.xib */,
@@ -1781,6 +1825,9 @@
 				EA9F72841E2297E600FED4A3 /* HeSearchInfoVC.h */,
 				EA9F72851E2297E600FED4A3 /* HeSearchInfoVC.m */,
 				EA9F72861E2297E600FED4A3 /* HeSearchInfoVC.xib */,
+				EA34D78F1E23244D00CD8BC5 /* HeOrderCommitVC.h */,
+				EA34D7901E23244D00CD8BC5 /* HeOrderCommitVC.m */,
+				EA34D7911E23244D00CD8BC5 /* HeOrderCommitVC.xib */,
 			);
 			path = order;
 			sourceTree = "<group>";
@@ -2026,6 +2073,16 @@
 			path = NavigationTabBar;
 			sourceTree = "<group>";
 		};
+		EA34D7A51E236C1D00CD8BC5 /* UWDatePickerView */ = {
+			isa = PBXGroup;
+			children = (
+				EA34D7A61E236C1D00CD8BC5 /* UWDatePickerView.h */,
+				EA34D7A71E236C1D00CD8BC5 /* UWDatePickerView.m */,
+				EA34D7A81E236C1D00CD8BC5 /* UWDatePickerView.xib */,
+			);
+			path = UWDatePickerView;
+			sourceTree = "<group>";
+		};
 		EA8C89361E21CAB30093657B /* BaiduMap_v3.2.1 */ = {
 			isa = PBXGroup;
 			children = (
@@ -2126,6 +2183,15 @@
 		EA8C897F1E21D1E10093657B /* Custom */ = {
 			isa = PBXGroup;
 			children = (
+				EA9F23FF1E237DBE001E4DE9 /* img_background.png */,
+				EA9F24001E237DBE001E4DE9 /* img_bg.png */,
+				EA9F23FD1E2379A0001E4DE9 /* icon_name_authent.png */,
+				EA9F23FB1E237995001E4DE9 /* icon_health_authent.png */,
+				EA34D7A31E23573F00CD8BC5 /* comonDefaultImage.png */,
+				EA34D79A1E232B8B00CD8BC5 /* icon_alipay.png */,
+				EA34D7981E232B7000CD8BC5 /* icon_online.png */,
+				EA34D7961E232B6600CD8BC5 /* icon_insurance.png */,
+				EA34D7941E23270800CD8BC5 /* icon_agree.png */,
 				EA8C89F91E2259E70093657B /* icon_address.png */,
 				EA8C89F71E2256B40093657B /* defalut_icon.png */,
 				EA8C89E21E21F6100093657B /* icon_purple_down.png */,
@@ -2232,8 +2298,20 @@
 				EA9F727F1E2289C300FED4A3 /* HeNowOrderTableCell.m */,
 				EA9F72811E2289E500FED4A3 /* HeFinishOrderTabelCell.h */,
 				EA9F72821E2289E500FED4A3 /* HeFinishOrderTabelCell.m */,
+				EA34D7AB1E236E7200CD8BC5 /* HeServiceTableCell.h */,
+				EA34D7AC1E236E7200CD8BC5 /* HeServiceTableCell.m */,
 			);
 			path = Order;
+			sourceTree = "<group>";
+		};
+		EA9F24031E237F12001E4DE9 /* Service */ = {
+			isa = PBXGroup;
+			children = (
+				EA9F24041E237F2F001E4DE9 /* HeServiceDetailVC.h */,
+				EA9F24051E237F2F001E4DE9 /* HeServiceDetailVC.m */,
+				EA9F24061E237F2F001E4DE9 /* HeServiceDetailVC.xib */,
+			);
+			path = Service;
 			sourceTree = "<group>";
 		};
 		EA9F72731E22799200FED4A3 /* Location */ = {
@@ -2365,6 +2443,8 @@
 		EAC2D4961D4B063900E282A8 /* Category */ = {
 			isa = PBXGroup;
 			children = (
+				EA34D7A01E233F0300CD8BC5 /* UIView+Genie.h */,
+				EA34D7A11E233F0300CD8BC5 /* UIView+Genie.m */,
 				EA8C89E41E2215700093657B /* ImageScale.h */,
 				EA8C89E51E2215700093657B /* ImageScale.m */,
 				EA8C89841E21D3F70093657B /* UIButton+countDown.h */,
@@ -2390,6 +2470,7 @@
 		EAC2D4A51D4B063900E282A8 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				EA9F24031E237F12001E4DE9 /* Service */,
 				EA9F72731E22799200FED4A3 /* Location */,
 				EA8C89741E21CC230093657B /* HeInstructionView */,
 				EA8C894D1E21CB140093657B /* LoginEnroll */,
@@ -2416,6 +2497,9 @@
 		EAC2D4B61D4B063900E282A8 /* Custom */ = {
 			isa = PBXGroup;
 			children = (
+				EA34D7A51E236C1D00CD8BC5 /* UWDatePickerView */,
+				EA34D79C1E23333E00CD8BC5 /* ScanPictureView.h */,
+				EA34D79D1E23333E00CD8BC5 /* ScanPictureView.m */,
 				EA8C89F11E22508C0093657B /* DOPDropDownMenu-Enhanced */,
 				EA8C895D1E21CBFB0093657B /* TOWebViewController */,
 				ADEE55F51E2156C000E7A277 /* NavigationTabBar */,
@@ -4056,6 +4140,7 @@
 			files = (
 				EAC2D94E1D4B063B00E282A8 /* SVProgressHUD.bundle in Resources */,
 				ADCC62021DFA69290065866C /* index_banner1@2x.jpg in Resources */,
+				EA34D7A41E23573F00CD8BC5 /* comonDefaultImage.png in Resources */,
 				EAC2D8221D4B063B00E282A8 /* LICENSE in Resources */,
 				EAC2D9481D4B063B00E282A8 /* sr_refresh@2X.png in Resources */,
 				EAC2D8741D4B063B00E282A8 /* blackArrow.png in Resources */,
@@ -4065,7 +4150,9 @@
 				ADCC61CD1DFA4E240065866C /* index2.png in Resources */,
 				EAC2D8C61D4B063B00E282A8 /* arrow_down1.png in Resources */,
 				ADCC62441DFA9EB30065866C /* icon_infromation.png in Resources */,
+				EA9F23FE1E2379A0001E4DE9 /* icon_name_authent.png in Resources */,
 				ADCC62471DFA9EB30065866C /* icon_myinvite.png in Resources */,
+				EA9F24021E237DBE001E4DE9 /* img_bg.png in Resources */,
 				EAC2D95E1D4B063B00E282A8 /* TZImagePickerController.bundle in Resources */,
 				EAC2D99B1D4B063C00E282A8 /* loading_anim2.png in Resources */,
 				EA8C89D91E21EEBF0093657B /* icon_nurse_door.png in Resources */,
@@ -4074,6 +4161,8 @@
 				ADCC61D41DFA4EF70065866C /* icon_list@2x.png in Resources */,
 				EA8C899F1E21D78C0093657B /* icon_openeyes.png in Resources */,
 				EAC2D8761D4B063B00E282A8 /* blueArrow.png in Resources */,
+				EA34D79B1E232B8B00CD8BC5 /* icon_alipay.png in Resources */,
+				EA9F24081E237F2F001E4DE9 /* HeServiceDetailVC.xib in Resources */,
 				EAC2D9571D4B063B00E282A8 /* ProvincesAndCities.plist in Resources */,
 				EA8C89FA1E2259E70093657B /* icon_address.png in Resources */,
 				EA8C89C91E21EE270093657B /* icon_protected_person_gray.png in Resources */,
@@ -4092,13 +4181,16 @@
 				ADCC62031DFA69290065866C /* index_banner2@2x.jpg in Resources */,
 				EAC2D4381D4B031500E282A8 /* LaunchScreen.storyboard in Resources */,
 				ADCC61D51DFA4EF70065866C /* icon_list@3x.png in Resources */,
+				EA34D7AA1E236C1D00CD8BC5 /* UWDatePickerView.xib in Resources */,
 				EAC2D9991D4B063C00E282A8 /* zbar-samples.png in Resources */,
+				EA9F24011E237DBE001E4DE9 /* img_background.png in Resources */,
 				AD6C8F2C1DF9CFE200C44A8A /* icon_conduit.png in Resources */,
 				EAC2D98E1D4B063C00E282A8 /* WeiboSDK.bundle in Resources */,
 				EAC2D8881D4B063B00E282A8 /* IQKeyboardManager.bundle in Resources */,
 				EAC2D8621D4B063B00E282A8 /* fail@3x.png in Resources */,
 				EA8C894A1E21CAB30093657B /* mapapi.bundle in Resources */,
 				EAC2D9531D4B063B00E282A8 /* btn_020@2x.png in Resources */,
+				EA9F23FC1E237995001E4DE9 /* icon_health_authent.png in Resources */,
 				ADCC61CA1DFA4DC30065866C /* icon_scan_white.png in Resources */,
 				EAC2D8C21D4B063B00E282A8 /* LICENSE in Resources */,
 				ADCC62491DFA9EB30065866C /* icon_protected_person.png in Resources */,
@@ -4132,6 +4224,7 @@
 				EA8C89A91E21DE1A0093657B /* tabbar_normal_background.png in Resources */,
 				EA9F727A1E227DFC00FED4A3 /* icon_into_right.png in Resources */,
 				EAC2D9971D4B063C00E282A8 /* zbar-help.html in Resources */,
+				EA34D7971E232B6600CD8BC5 /* icon_insurance.png in Resources */,
 				ADCC61DF1DFA50510065866C /* main_nurse_selector@2x.png in Resources */,
 				ADCC62051DFA69290065866C /* index_banner4@2x.jpg in Resources */,
 				EAC2D9361D4B063B00E282A8 /* sharemore_pic@3x.png in Resources */,
@@ -4164,9 +4257,11 @@
 				ADCC62281DFA85520065866C /* HeBaseViewController.xib in Resources */,
 				EAC2D87E1D4B063B00E282A8 /* LICENSE.txt in Resources */,
 				EAC2D9961D4B063C00E282A8 /* zbar-back.png in Resources */,
+				EA34D7991E232B7000CD8BC5 /* icon_online.png in Resources */,
 				EA8C899D1E21D78C0093657B /* icon_closeeyes.png in Resources */,
 				EAC2D87C1D4B063B00E282A8 /* whiteArrow.png in Resources */,
 				EAC2D8A21D4B063B00E282A8 /* LICENSE in Resources */,
+				EA34D7951E23270800CD8BC5 /* icon_agree.png in Resources */,
 				AD6C8F311DF9CFE200C44A8A /* icon_nursing_workers.png in Resources */,
 				EAC2D8641D4B063B00E282A8 /* refresh@3x.png in Resources */,
 				EAC2D8B11D4B063B00E282A8 /* MJRefresh.bundle in Resources */,
@@ -4178,6 +4273,7 @@
 				AD6C8F321DF9CFE200C44A8A /* icon_wound.png in Resources */,
 				EA8C899C1E21D78C0093657B /* icon_add_photo.png in Resources */,
 				EA9F72881E2297E600FED4A3 /* HeSearchInfoVC.xib in Resources */,
+				EA34D7931E23244D00CD8BC5 /* HeOrderCommitVC.xib in Resources */,
 				ADCC61D31DFA4EF70065866C /* icon_list.png in Resources */,
 				EA8C898E1E21D4B60093657B /* cancle.png in Resources */,
 				ADCC61E31DFA505B0065866C /* main_nurse_unselector@2x.png in Resources */,
@@ -4314,6 +4410,7 @@
 				EAC2D91C1D4B063B00E282A8 /* RACTupleSequence.m in Sources */,
 				EAC2D9841D4B063B00E282A8 /* qrspec.c in Sources */,
 				EAC2D89E1D4B063B00E282A8 /* MJPhotoProgressView.m in Sources */,
+				EA34D7A91E236C1D00CD8BC5 /* UWDatePickerView.m in Sources */,
 				EAC2D8181D4B063B00E282A8 /* AFHttpTool.m in Sources */,
 				EAC2D8321D4B063B00E282A8 /* ASIHTTPRequest.m in Sources */,
 				EAC2D8681D4B063B00E282A8 /* DFDatabaseHelper.m in Sources */,
@@ -4419,6 +4516,7 @@
 				EAC2D8691D4B063B00E282A8 /* DFUserDefaultStorageService.m in Sources */,
 				EA8C89EA1E2245A90093657B /* HeNurseTableViewCell.m in Sources */,
 				EAC2D91A1D4B063B00E282A8 /* RACTestScheduler.m in Sources */,
+				EA34D7AD1E236E7200CD8BC5 /* HeServiceTableCell.m in Sources */,
 				EAC2D4301D4B031500E282A8 /* ViewController.m in Sources */,
 				EAC2D8781D4B063B00E282A8 /* EGORefreshTableFootView.m in Sources */,
 				EAC2D93E1D4B063B00E282A8 /* SDWebImageManager.m in Sources */,
@@ -4434,6 +4532,7 @@
 				EAC2D95A1D4B063B00E282A8 /* TSLocation.m in Sources */,
 				EAC2D8E81D4B063B00E282A8 /* NSSet+RACSequenceAdditions.m in Sources */,
 				EAC2D8801D4B063B00E282A8 /* FMDatabase.m in Sources */,
+				EA34D79E1E23333E00CD8BC5 /* ScanPictureView.m in Sources */,
 				EAC2D8491D4B063B00E282A8 /* DFBaseUploadDataService.m in Sources */,
 				EAC2D88B1D4B063B00E282A8 /* IQTextView.m in Sources */,
 				EAC2D8F91D4B063B00E282A8 /* RACDynamicSignal.m in Sources */,
@@ -4447,6 +4546,7 @@
 				EAC2D8FC1D4B063B00E282A8 /* RACEmptySignal.m in Sources */,
 				EAC2D90D1D4B063B00E282A8 /* RACSequence.m in Sources */,
 				EA8C89F61E22508C0093657B /* DOPDropDownMenu.m in Sources */,
+				EA9F24071E237F2F001E4DE9 /* HeServiceDetailVC.m in Sources */,
 				EAC2D9781D4B063B00E282A8 /* AES128Util.m in Sources */,
 				EAC2D8F11D4B063B00E282A8 /* RACBlockTrampoline.m in Sources */,
 				EAC2D8C91D4B063B00E282A8 /* SICellSelection.m in Sources */,
@@ -4462,6 +4562,7 @@
 				EAC2D9191D4B063B00E282A8 /* RACTargetQueueScheduler.m in Sources */,
 				EAC2D8EE1D4B063B00E282A8 /* RACArraySequence.m in Sources */,
 				EAC2D8481D4B063B00E282A8 /* DFBaseResponse.m in Sources */,
+				EA34D7921E23244D00CD8BC5 /* HeOrderCommitVC.m in Sources */,
 				EAC2D88E1D4B063B00E282A8 /* NSArray+Sort.m in Sources */,
 				EAC2D8F51D4B063B00E282A8 /* RACCompoundDisposableProvider.d in Sources */,
 				EA8C89731E21CBFC0093657B /* UIImage+TOWebViewControllerIcons.m in Sources */,
@@ -4593,6 +4694,7 @@
 				ADCC62261DFA85520065866C /* CustomNavigationController.m in Sources */,
 				EAC2D90F1D4B063B00E282A8 /* RACSignal+Operations.m in Sources */,
 				EAC2D9231D4B063B00E282A8 /* UIButton+RACCommandSupport.m in Sources */,
+				EA34D7A21E233F0300CD8BC5 /* UIView+Genie.m in Sources */,
 				EA9F72711E22797B00FED4A3 /* HeOrderDetailVC.m in Sources */,
 				EAC2D93A1D4B063B00E282A8 /* SDWebImageCompat.m in Sources */,
 				EAC2D8EF1D4B063B00E282A8 /* RACBacktrace.m in Sources */,
