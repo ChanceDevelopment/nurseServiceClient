@@ -67,6 +67,26 @@
     return self;
 }
 
+-(id)initWithURL:(NSString *)filePath title:(NSString *)title
+{
+    self = [super init];
+    if (self) {
+        UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
+        label.backgroundColor = [UIColor clearColor];
+        label.font = [UIFont boldSystemFontOfSize:20.0];
+        label.textColor = [UIColor whiteColor];
+        label.textAlignment = NSTextAlignmentCenter;
+        self.navigationItem.titleView = label;
+        label.text = title;
+        [label sizeToFit];
+        self.title = title;
+        
+        self.webURL =  [NSURL fileURLWithPath:filePath];
+    }
+    return self;
+}
+
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];

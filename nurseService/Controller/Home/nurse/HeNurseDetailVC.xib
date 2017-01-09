@@ -11,8 +11,16 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="HeNurseDetailVC">
             <connections>
+                <outlet property="commentButton" destination="Y5C-eZ-0XO" id="Hnh-32-pfR"/>
+                <outlet property="followButton" destination="A1J-R5-K75" id="pRx-eZ-O6I"/>
+                <outlet property="followNumButton" destination="zru-4a-wFP" id="aOr-sw-4Rb"/>
                 <outlet property="headerView" destination="Kr7-ip-6Mk" id="VXo-Wk-fzt"/>
+                <outlet property="hospitalLabel" destination="kAq-1M-cqQ" id="r3b-tQ-95g"/>
+                <outlet property="nameLabel" destination="DxU-WO-bqr" id="sdK-tk-cxU"/>
+                <outlet property="otherInfoView" destination="QOf-vK-rL2" id="OqF-RQ-Tgg"/>
+                <outlet property="serviceButton" destination="uRk-x9-jc0" id="zZp-gX-07V"/>
                 <outlet property="tableview" destination="jaK-fZ-RaQ" id="j3d-Pk-Fu3"/>
+                <outlet property="userImage" destination="ffo-bl-mU5" id="5Ye-zR-Iey"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>

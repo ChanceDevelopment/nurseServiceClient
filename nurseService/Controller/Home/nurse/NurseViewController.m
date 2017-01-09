@@ -76,7 +76,7 @@
     [super initView];
     [Tool setExtraCellLineHidden:tableview];
     tableview.backgroundView = nil;
-    tableview.backgroundColor = [UIColor colorWithWhite:237.0 / 255/0 alpha:1.0];
+    tableview.backgroundColor = [UIColor colorWithWhite:237.0 / 255.0 alpha:1.0];
     [self initSelectView];
     
     UIButton *searchButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 25, 25)];

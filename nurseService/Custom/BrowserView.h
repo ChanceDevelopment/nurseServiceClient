@@ -15,5 +15,6 @@
 
 -(id)initWithWebSite:(NSString*)string;
 -(id)initWithURL:(NSString *)filePath;
+-(id)initWithURL:(NSString *)filePath title:(NSString *)title;
 
 @end

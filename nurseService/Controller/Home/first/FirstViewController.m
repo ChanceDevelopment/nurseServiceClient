@@ -16,6 +16,7 @@
 #import "MJRefreshAutoNormalFooter.h"
 #import "MJRefreshNormalHeader.h"
 #import "ImageScale.h"
+#import "HeServiceDetailVC.h"
 
 @interface FirstViewController ()<LBBannerDelegate,UITableViewDelegate,UITableViewDataSource>
 {
@@ -282,8 +283,11 @@
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     NSInteger row = indexPath.row;
     NSInteger section = indexPath.section;
+    NSLog(@"section = %ld, row = %ld",section,row);
     
-    
+    HeServiceDetailVC *serviceDetailVC = [[HeServiceDetailVC alloc] init];
+    serviceDetailVC.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:serviceDetailVC animated:YES];
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
