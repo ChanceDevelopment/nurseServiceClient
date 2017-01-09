@@ -94,6 +94,7 @@
 		EA899E351E23EE650008AA01 /* icon_collection_full.png in Resources */ = {isa = PBXBuildFile; fileRef = EA899E341E23EE650008AA01 /* icon_collection_full.png */; };
 		EA899E371E23F3550008AA01 /* icon_question.png in Resources */ = {isa = PBXBuildFile; fileRef = EA899E361E23F3550008AA01 /* icon_question.png */; };
 		EA899E391E23F3920008AA01 /* icon_picc.png in Resources */ = {isa = PBXBuildFile; fileRef = EA899E381E23F3920008AA01 /* icon_picc.png */; };
+		EA899E3B1E23FB480008AA01 /* icon_favorites_gray_modify.png in Resources */ = {isa = PBXBuildFile; fileRef = EA899E3A1E23FB480008AA01 /* icon_favorites_gray_modify.png */; };
 		EA8C89431E21CAB30093657B /* BaiduMapAPI_Base.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA8C89371E21CAB30093657B /* BaiduMapAPI_Base.framework */; };
 		EA8C89441E21CAB30093657B /* BaiduMapAPI_Cloud.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA8C89381E21CAB30093657B /* BaiduMapAPI_Cloud.framework */; };
 		EA8C89451E21CAB30093657B /* BaiduMapAPI_Location.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA8C89391E21CAB30093657B /* BaiduMapAPI_Location.framework */; };
@@ -758,6 +759,7 @@
 		EA899E341E23EE650008AA01 /* icon_collection_full.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_collection_full.png; sourceTree = "<group>"; };
 		EA899E361E23F3550008AA01 /* icon_question.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_question.png; sourceTree = "<group>"; };
 		EA899E381E23F3920008AA01 /* icon_picc.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_picc.png; sourceTree = "<group>"; };
+		EA899E3A1E23FB480008AA01 /* icon_favorites_gray_modify.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_favorites_gray_modify.png; sourceTree = "<group>"; };
 		EA8C89371E21CAB30093657B /* BaiduMapAPI_Base.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = BaiduMapAPI_Base.framework; sourceTree = "<group>"; };
 		EA8C89381E21CAB30093657B /* BaiduMapAPI_Cloud.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = BaiduMapAPI_Cloud.framework; sourceTree = "<group>"; };
 		EA8C89391E21CAB30093657B /* BaiduMapAPI_Location.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = BaiduMapAPI_Location.framework; sourceTree = "<group>"; };
@@ -2245,6 +2247,7 @@
 		EA8C897F1E21D1E10093657B /* Custom */ = {
 			isa = PBXGroup;
 			children = (
+				EA899E3A1E23FB480008AA01 /* icon_favorites_gray_modify.png */,
 				EA899E381E23F3920008AA01 /* icon_picc.png */,
 				EA899E361E23F3550008AA01 /* icon_question.png */,
 				EA899E341E23EE650008AA01 /* icon_collection_full.png */,
@@ -4284,6 +4287,7 @@
 				EA8C899B1E21D78C0093657B /* icon_add_photo_violet.png in Resources */,
 				EA9F72721E22797B00FED4A3 /* HeOrderDetailVC.xib in Resources */,
 				EA899E2E1E23E2CB0008AA01 /* icon_star_normal.png in Resources */,
+				EA899E3B1E23FB480008AA01 /* icon_favorites_gray_modify.png in Resources */,
 				ADCC61DC1DFA504A0065866C /* main_mine_selector@2x.png in Resources */,
 				EAC2D86B1D4B063B00E282A8 /* down_dark.png in Resources */,
 				EA8C89DB1E21EEE30093657B /* icon_personal.png in Resources */,

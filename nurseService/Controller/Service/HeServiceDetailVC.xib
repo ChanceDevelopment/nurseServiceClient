@@ -64,7 +64,7 @@
                             <state key="normal" title="收藏" image="icon_favorites_gray.png">
                                 <color key="titleColor" red="0.59607843140000005" green="0.26274509800000001" blue="0.55294117649999996" alpha="1" colorSpace="calibratedRGB"/>
                             </state>
-                            <state key="selected" image="icon_collection_full.png"/>
+                            <state key="selected" image="icon_favorites_gray_modify.png"/>
                             <connections>
                                 <action selector="favButtonClick:" destination="-1" eventType="touchUpInside" id="VcC-Iw-Ytz"/>
                             </connections>
@@ -123,8 +123,8 @@
         </view>
     </objects>
     <resources>
-        <image name="icon_collection_full.png" width="50" height="50"/>
         <image name="icon_favorites_gray.png" width="36" height="36"/>
+        <image name="icon_favorites_gray_modify.png" width="36" height="36"/>
         <image name="icon_phone.png" width="56" height="49"/>
     </resources>
 </document>
