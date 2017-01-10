@@ -35,7 +35,7 @@
                                 <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </state>
                             <connections>
-                                <action selector="bookService:" destination="-1" eventType="touchUpInside" id="EiO-be-JN7"/>
+                                <action selector="bookService:" destination="-1" eventType="touchUpInside" id="Epr-ET-JzZ"/>
                             </connections>
                         </button>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GZZ-bS-bcM">
@@ -49,31 +49,14 @@
                                 <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </state>
                             <connections>
-                                <action selector="addToBookItem:" destination="-1" eventType="touchUpInside" id="Vzz-JY-oFP"/>
+                                <action selector="addToBookItem:" destination="-1" eventType="touchUpInside" id="GY6-FQ-bZ6"/>
                             </connections>
                         </button>
-                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="f3J-fX-2bA">
-                            <rect key="frame" x="58" y="0.0" width="50" height="50"/>
-                            <constraints>
-                                <constraint firstAttribute="width" constant="50" id="Ybl-UA-ua0"/>
-                                <constraint firstAttribute="height" constant="50" id="ylK-it-ecs"/>
-                            </constraints>
-                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                            <inset key="titleEdgeInsets" minX="-37" minY="26" maxX="0.0" maxY="0.0"/>
-                            <inset key="imageEdgeInsets" minX="12" minY="5" maxX="12" maxY="20"/>
-                            <state key="normal" title="收藏" image="icon_favorites_gray.png">
-                                <color key="titleColor" red="0.59607843140000005" green="0.26274509800000001" blue="0.55294117649999996" alpha="1" colorSpace="calibratedRGB"/>
-                            </state>
-                            <state key="selected" image="icon_favorites_gray_modify.png"/>
-                            <connections>
-                                <action selector="favButtonClick:" destination="-1" eventType="touchUpInside" id="VcC-Iw-Ytz"/>
-                            </connections>
-                        </button>
-                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Clg-t2-x4R">
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MIT-9q-1Jf">
                             <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
                             <constraints>
-                                <constraint firstAttribute="width" constant="50" id="yVI-TX-Aui"/>
-                                <constraint firstAttribute="height" constant="50" id="yuN-N6-fQC"/>
+                                <constraint firstAttribute="width" constant="50" id="Owb-ec-xUQ"/>
+                                <constraint firstAttribute="height" constant="50" id="TZL-6n-uCd"/>
                             </constraints>
                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
                             <inset key="titleEdgeInsets" minX="-56" minY="26" maxX="0.0" maxY="0.0"/>
@@ -82,7 +65,24 @@
                                 <color key="titleColor" red="0.59607843140000005" green="0.26274509800000001" blue="0.55294117649999996" alpha="1" colorSpace="calibratedRGB"/>
                             </state>
                             <connections>
-                                <action selector="phoneCall:" destination="-1" eventType="touchUpInside" id="8NJ-pf-TzH"/>
+                                <action selector="phoneCall:" destination="-1" eventType="touchUpInside" id="o64-Xh-llM"/>
+                            </connections>
+                        </button>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fWy-0v-Bhx">
+                            <rect key="frame" x="51" y="0.0" width="50" height="50"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="50" id="05N-je-nBh"/>
+                                <constraint firstAttribute="width" constant="50" id="Q72-tj-xHc"/>
+                            </constraints>
+                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                            <inset key="titleEdgeInsets" minX="-37" minY="26" maxX="0.0" maxY="0.0"/>
+                            <inset key="imageEdgeInsets" minX="12" minY="5" maxX="12" maxY="20"/>
+                            <state key="normal" title="收藏" image="icon_favorites_gray.png">
+                                <color key="titleColor" red="0.59607843140000005" green="0.26274509800000001" blue="0.55294117649999996" alpha="1" colorSpace="calibratedRGB"/>
+                            </state>
+                            <state key="selected" title="已收藏" image="icon_favorites_gray_modify.png"/>
+                            <connections>
+                                <action selector="favButtonClick:" destination="-1" eventType="touchUpInside" id="UKX-ce-Vii"/>
                             </connections>
                         </button>
                     </subviews>
@@ -92,11 +92,11 @@
                         <constraint firstItem="uQm-AE-ved" firstAttribute="leading" secondItem="GZZ-bS-bcM" secondAttribute="trailing" id="A6y-Ba-Hpn"/>
                         <constraint firstItem="GZZ-bS-bcM" firstAttribute="top" secondItem="6gz-oI-zox" secondAttribute="top" id="CUM-jH-T9I"/>
                         <constraint firstAttribute="height" constant="50" id="LC7-uq-xXX"/>
-                        <constraint firstItem="Clg-t2-x4R" firstAttribute="leading" secondItem="6gz-oI-zox" secondAttribute="leading" id="aDL-g3-dFD"/>
-                        <constraint firstItem="Clg-t2-x4R" firstAttribute="top" secondItem="6gz-oI-zox" secondAttribute="top" id="ceZ-pT-Ez7"/>
+                        <constraint firstItem="fWy-0v-Bhx" firstAttribute="leading" secondItem="MIT-9q-1Jf" secondAttribute="trailing" constant="1" id="brm-39-YbB"/>
                         <constraint firstAttribute="bottom" secondItem="GZZ-bS-bcM" secondAttribute="bottom" id="fPy-V0-eKb"/>
-                        <constraint firstItem="f3J-fX-2bA" firstAttribute="top" secondItem="6gz-oI-zox" secondAttribute="top" id="qx5-Cg-l6Z"/>
-                        <constraint firstItem="f3J-fX-2bA" firstAttribute="leading" secondItem="Clg-t2-x4R" secondAttribute="trailing" constant="8" id="sAu-mW-pMi"/>
+                        <constraint firstItem="fWy-0v-Bhx" firstAttribute="top" secondItem="6gz-oI-zox" secondAttribute="top" id="fge-Oz-zdP"/>
+                        <constraint firstItem="MIT-9q-1Jf" firstAttribute="leading" secondItem="6gz-oI-zox" secondAttribute="leading" id="kdS-7U-v8H"/>
+                        <constraint firstItem="MIT-9q-1Jf" firstAttribute="top" secondItem="6gz-oI-zox" secondAttribute="top" id="m0X-Ma-aLy"/>
                         <constraint firstItem="uQm-AE-ved" firstAttribute="top" secondItem="6gz-oI-zox" secondAttribute="top" id="udZ-ta-6dL"/>
                     </constraints>
                 </view>

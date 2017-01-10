@@ -6,11 +6,11 @@
 //  Copyright © 2017年 iMac. All rights reserved.
 //
 
-#import "HeCommentVC.h"
+#import "HeServiceCommentVC.h"
 #import "HeCommentCell.h"
 #import "DLNavigationTabBar.h"
 
-@interface HeCommentVC ()<UITableViewDataSource,UITableViewDelegate>
+@interface HeServiceCommentVC ()<UITableViewDataSource,UITableViewDelegate>
 {
     //@"全部 0",@"好评 1",@"一般 2",@"不满意 3"
     NSInteger currentCommentType;
@@ -21,7 +21,7 @@
 
 @end
 
-@implementation HeCommentVC
+@implementation HeServiceCommentVC
 @synthesize tableview;
 @synthesize filterBgView;
 
@@ -151,13 +151,13 @@
 }
 
 /*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
+ #pragma mark - Navigation
+ 
+ // In a storyboard-based application, you will often want to do a little preparation before navigation
+ - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+ // Get the new view controller using [segue destinationViewController].
+ // Pass the selected object to the new view controller.
+ }
+ */
 
 @end

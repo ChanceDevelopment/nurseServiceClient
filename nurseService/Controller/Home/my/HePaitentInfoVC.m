@@ -48,7 +48,7 @@
     // Do any additional setup after loading the view from its nib.
     [self initializaiton];
     [self initView];
-    [self getPaitentInfo];
+//    [self getPaitentInfo];
 }
 
 - (void)initializaiton

@@ -16,6 +16,7 @@
 #import "HeOrderDetailVC.h"
 #import "HeUserLocatiVC.h"
 #import "HeOrderCommitVC.h"
+#import "HeProtectedUserInfoVC.h"
 
 @interface OrderViewController ()<UITableViewDelegate,UITableViewDataSource>
 {

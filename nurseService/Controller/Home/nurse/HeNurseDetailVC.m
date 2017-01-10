@@ -17,8 +17,11 @@
 #import "HeCommentVC.h"
 #import "HeServiceDetailVC.h"
 #import "BrowserView.h"
+#import "HeServiceItemVC.h"
+#import "HeServiceTimeVC.h"
+#import "HeServiceCommentVC.h"
 
-@interface HeNurseDetailVC ()<UITableViewDelegate,UITableViewDataSource>
+@interface HeNurseDetailVC ()
 @property(strong,nonatomic)IBOutlet UIImageView *headerView;
 @property(strong,nonatomic)IBOutlet UITableView *tableview;
 @property(strong,nonatomic)NSMutableArray *dataSource;
@@ -32,6 +35,9 @@
 
 @property(strong,nonatomic)IBOutlet UIView *otherInfoView;
 @property(nonatomic,strong)DLNavigationTabBar *navigationTabBar;
+@property(strong,nonatomic)IBOutlet UIView *footerView;
+
+
 
 @end
 
@@ -95,6 +101,7 @@
     // Do any additional setup after loading the view from its nib.
     [self initializaiton];
     [self initView];
+    [self addFooterView];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -200,10 +207,10 @@
     addressLabel.font = [UIFont systemFontOfSize:15.0];
     [addressView addSubview:addressLabel];
     
-    [otherInfoView addSubview:self.navigationTabBar];
-    CGRect barFrame = _navigationTabBar.frame;
-    barFrame.origin.y = CGRectGetMaxY(addressView.frame);
-    _navigationTabBar.frame = barFrame;
+//    [otherInfoView addSubview:self.navigationTabBar];
+//    CGRect barFrame = _navigationTabBar.frame;
+//    barFrame.origin.y = CGRectGetMaxY(addressView.frame);
+//    _navigationTabBar.frame = barFrame;
     
     
     CGFloat lineX = 0;
@@ -227,110 +234,32 @@
     
 }
 
+- (void)addFooterView
+{
+    
+    HYPageView *pageView = [[HYPageView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, SCREENHEIGH) withTitles:@[@"服务项目",@"服务时间",@"评论"] withViewControllers:@[@"HeServiceItemVC",@"HeServiceTimeVC",@"HeServiceCommentVC"] withParameters:@[@"123",@"这是一片很寂寞的天"]];
+    pageView.isTranslucent = YES;
+    pageView.font = [UIFont systemFontOfSize:13.0];
+    pageView.topTabBottomLineColor = APPDEFAULTORANGE;
+    pageView.selectedColor = APPDEFAULTORANGE;
+    pageView.unselectedColor = [UIColor grayColor];
+    
+    [_footerView addSubview:pageView];
+    
+}
+
 - (IBAction)backButtonClick:(id)sender
 {
     [self.navigationController popViewControllerAnimated:YES];
 }
 
-- (IBAction)followButtonClick:(id)sender
+- (IBAction)followButtonClick:(UIButton *)sender
 {
-
-}
-
-- (void)bookServiceWithDict:(NSDictionary *)dict
-{
-    //总控制器，控制商品、详情、评论三个子控制器
-    HeBookServiceVC *serviceDetailVC = [[HeBookServiceVC alloc] init];
-    [self.navigationController setNavigationBarHidden:YES animated:YES];
-    [serviceDetailVC.view addSubview:[self getPageView]];
-    [self showViewController:serviceDetailVC sender:nil];
-}
-
-- (HYPageView *)getPageView {
-    
-    HYPageView *pageView = [[HYPageView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, SCREENHEIGH) withTitles:@[@"商品",@"详情",@"评论"] withViewControllers:@[@"HeServiceDetailVC",@"HeServiceInfoVC",@"HeCommentVC"] withParameters:@[@"123",@"这是一片很寂寞的天"]];
-    pageView.isTranslucent = NO;
-    pageView.topTabBottomLineColor = [UIColor whiteColor];
-    pageView.selectedColor = [UIColor whiteColor];
-    pageView.unselectedColor = [UIColor whiteColor];
-    UIButton *backImage = [[UIButton alloc] init];
-    [backImage setBackgroundImage:[UIImage imageNamed:@"navigationBar_back_icon"] forState:UIControlStateNormal];
-    [backImage addTarget:self action:@selector(backItemClick:) forControlEvents:UIControlEventTouchUpInside];
-    
-    backImage.frame = CGRectMake(0, 0, 25, 25);
-    
-//    UIButton *leftButton = [UIButton buttonWithType:UIButtonTypeSystem];
-//    [leftButton setImage:[UIImage imageNamed:@"navigationBar_back_icon"] forState:UIControlStateNormal];
-//    leftButton.frame = CGRectMake(0, 0, 50, 40);
-//    [leftButton setTintColor:[UIColor blackColor]];
-//    leftButton.transform = CGAffineTransformMakeScale(.7, .7);
-    pageView.leftButton = backImage;
-
-    return pageView;
-}
-
-- (void)backItemClick:(id)sender
-{
-    [self.navigationController popViewControllerAnimated:YES];
-}
-
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
-    return 5;
-}
-
--(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-{
-    return 1;
-}
-
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    NSInteger row = indexPath.row;
-    NSInteger section = indexPath.section;
-    CGSize cellsize = [tableView rectForRowAtIndexPath:indexPath].size;
-    static NSString *cellIndentifier = @"HeServiceTableCell";
-    HeServiceTableCell *cell  = [tableView cellForRowAtIndexPath:indexPath];
-    if (!cell) {
-        cell = [[HeServiceTableCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIndentifier cellSize:cellsize];
-        cell.selectionStyle = UITableViewCellSelectionStyleGray;
-        
-    }
-    NSDictionary *dict = nil;
-    __weak HeNurseDetailVC *weakSelf = self;
-    cell.booklBlock = ^{
-        [weakSelf bookServiceWithDict:dict];
-    };
-    
-    return cell;
-    
-}
-
-
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    
-    return 100;
+    NSLog(@"followButtonClick");
 }
 
 
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    NSInteger row = indexPath.row;
-    NSInteger section = indexPath.section;
-    
-    NSDictionary *dict = nil;
-    @try {
-        dict = dataSource[row];
-    } @catch (NSException *exception) {
-        
-    } @finally {
-        
-    }
-    
-}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

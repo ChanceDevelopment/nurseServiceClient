@@ -30,7 +30,7 @@
 
 + (NSString *)getDeviceUUid
 {
-//    return @"7c6e8381d8cdc0fa";
+    //    return @"7c6e8381d8cdc0fa";
     NSString *libraryfolderPath = [NSHomeDirectory() stringByAppendingString:@"/Library"];
     NSString *myPath = [libraryfolderPath stringByAppendingPathComponent:ALBUMNAME];
     NSFileManager *fm = [NSFileManager defaultManager];
@@ -182,6 +182,48 @@
     return setxattr(fileSysPath, attrName, &attrValue, sizeof(attrValue), 0, 0);
 }
 
+//删除<null>字段
++ (NSMutableDictionary *)deleteNullFromDic:(NSDictionary *)dic{
+    NSDictionary *userInfoDic = [NSDictionary dictionaryWithDictionary:dic];
+    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithCapacity:0];
+    for (NSString *key in [userInfoDic allKeys]) {
+        if ([[NSString stringWithFormat:@"%@",[userInfoDic valueForKey:key]] isEqualToString:@"<null>"]) {
+            NSLog(@"key:%@",key);
+            [dict setValue:@"" forKey:key];
+        }else{
+            [dict setValue:[NSString stringWithFormat:@"%@",[userInfoDic valueForKey:key]] forKey:key];
+        }
+    }
+    return dict;
+}
+
+
++ (NSString *)deleteErrorStringInString:(NSString *)inputString
+{
+    NSMutableString *mutablestring = [[NSMutableString alloc] initWithString:inputString];
+    BOOL haveError = YES;
+    //先记录mutablestring的长度，如果每次调用[mutablestring length]，会加长搜索时间
+    NSUInteger length = [mutablestring length] - 1;
+    NSRange searchRange = NSMakeRange(0, length);
+    
+    while (haveError && searchRange.length > 0 && searchRange.length + searchRange.location <= [mutablestring length]) {
+        NSRange range = [mutablestring rangeOfString:@"\n" options:NSCaseInsensitiveSearch range:searchRange]; //去除特殊字符
+        if (range.length != 0) {
+            range.location = range.location - 1;
+            range.length = 2;
+            length = length - range.length;
+            [mutablestring replaceCharactersInRange:range withString:@""];
+            searchRange.location = range.location;
+            searchRange.length = length - searchRange.location;
+        }
+        else{
+            haveError = NO;
+        }
+    }
+    NSString *outPutString = [[NSString alloc] initWithFormat:@"%@",mutablestring];
+    return outPutString;
+}
+
 + (NSData *)deleteErrorStringInData:(NSData *)inputData
 {
     NSString *temp = [[NSString alloc] initWithData:inputData encoding:NSUTF8StringEncoding];
@@ -192,9 +234,9 @@
     temp = [temp stringByReplacingOccurrencesOfString:@"\t" withString:@""];
     temp = [temp stringByReplacingOccurrencesOfString:@"&" withString:@""];
     temp = [temp stringByReplacingOccurrencesOfString:@"•	" withString:@""];
-    
+    temp = [temp stringByReplacingOccurrencesOfString:@"<null>" withString:@""];
     return [temp dataUsingEncoding:NSUTF8StringEncoding];
-//    return temp;
+    //    return temp;
 }
 
 
@@ -293,159 +335,159 @@
 }
 
 /*
-+ (void)initUserWithDict:(NSDictionary *)dict
-{
-    HeSysbsModel *sysModel = [HeSysbsModel getSysbsModel];
-    User *user = [[User alloc] init];
-    sysModel.user = user;
-    
-    NSString *username = [dict objectForKey:@"username"];
-    if ([username isMemberOfClass:[NSNull class]] || username == nil) {
-        username = @"";
-    }
-    user.username = username;
-    
-    NSString *nickname = [dict objectForKey:@"nickname"];
-    if ([nickname isMemberOfClass:[NSNull class]] || nickname == nil) {
-        nickname = @"";
-    }
-    user.nickname = nickname;
-    
-    NSString *industry = [dict objectForKey:@"industry"];
-    if ([industry isMemberOfClass:[NSNull class]] || industry == nil) {
-        industry = @"";
-    }
-    user.industry = industry;
-    
-    NSString *companyname = [dict objectForKey:@"companyname"];
-    if ([companyname isMemberOfClass:[NSNull class]] || companyname == nil) {
-        companyname = @"";
-    }
-    user.companyname = companyname;
-    
-    id sexStr = [dict objectForKey:@"sex"];
-    if ([sexStr isMemberOfClass:[NSNull class]] || sexStr == nil) {
-        sexStr = @"";
-    }
-    NSInteger sex = [sexStr integerValue];
-    user.sex = sex;
-    
-    NSString *profession = [dict objectForKey:@"profession"];
-    if ([profession isMemberOfClass:[NSNull class]] || profession == nil) {
-        profession = @"";
-    }
-    user.profession = profession;
-    
-    
-    id birthdayObj = [dict objectForKey:@"birthday"];
-    if ([birthdayObj isMemberOfClass:[NSNull class]] || birthdayObj == nil) {
-        NSTimeInterval  timeInterval = [[NSDate date] timeIntervalSince1970];
-        birthdayObj = [NSString stringWithFormat:@"%.0f000",timeInterval];
-    }
-    long long timestamp = [birthdayObj longLongValue];
-    NSString *birthday = [NSString stringWithFormat:@"%lld",timestamp];
-    if ([birthday length] > 3) {
-        //时间戳
-        birthday = [birthday substringToIndex:[birthday length] - 3];
-    }
-    birthday = [Tool convertTimespToString:[birthday longLongValue]];
-    if ([birthday isMemberOfClass:[NSNull class]] || birthday == nil) {
-        birthday = @"";
-    }
-    user.birthday = birthday;
-    
-    NSString *idcard = [dict objectForKey:@"idcard"];
-    if ([idcard isMemberOfClass:[NSNull class]] || idcard == nil) {
-        idcard = @"";
-    }
-    user.idcard = idcard;
-    
-    NSString *workaddress = [dict objectForKey:@"workaddress"];
-    if ([workaddress isMemberOfClass:[NSNull class]] || workaddress == nil) {
-        workaddress = @"";
-    }
-    user.workaddress = workaddress;
-    
-    NSString *headurl = [dict objectForKey:@"headurl"];
-    if ([headurl isMemberOfClass:[NSNull class]] || headurl == nil) {
-        headurl = @"";
-    }
-    user.headurl = headurl;
-    
-    NSString *userID = [dict objectForKey:@"id"];
-    if ([userID isMemberOfClass:[NSNull class]] || userID == nil) {
-        userID = @"";
-    }
-    user.userID = userID;
-    
-    NSString *constellation = [dict objectForKey:@"constellation"];
-    if ([constellation isMemberOfClass:[NSNull class]] || constellation == nil) {
-        constellation = @"";
-    }
-    user.constellation = constellation;
-    
-    NSString *currentaddress = [dict objectForKey:@"currentaddress"];
-    if ([currentaddress isMemberOfClass:[NSNull class]] || currentaddress == nil) {
-        currentaddress = @"";
-    }
-    user.currentaddress = currentaddress;
-    
-    NSString *homeaddress = [dict objectForKey:@"homeaddress"];
-    if ([homeaddress isMemberOfClass:[NSNull class]] || homeaddress == nil) {
-        homeaddress = @"";
-    }
-    user.homeaddress = homeaddress;
-    
-    NSString *loginid = [dict objectForKey:@"loginid"];
-    if ([loginid isMemberOfClass:[NSNull class]] || loginid == nil) {
-        loginid = @"";
-    }
-    user.loginid = loginid;
-    
-    NSString *mail = [dict objectForKey:@"mail"];
-    if ([mail isMemberOfClass:[NSNull class]] || mail == nil) {
-        mail = @"";
-    }
-    user.mail = mail;
-    
-    NSString *name = [dict objectForKey:@"name"];
-    if ([name isMemberOfClass:[NSNull class]] || name == nil) {
-        name = @"";
-    }
-    user.name = name;
-    
-    NSString *phoneid = [dict objectForKey:@"phoneid"];
-    if ([phoneid isMemberOfClass:[NSNull class]] || phoneid == nil) {
-        phoneid = @"";
-    }
-    user.phoneid = phoneid;
-    
-    NSString *signature = [dict objectForKey:@"signature"];
-    if ([signature isMemberOfClass:[NSNull class]] || signature == nil) {
-        signature = @"";
-    }
-    user.signature = signature;
-    
-    id stateStr = [dict objectForKey:@"state"];
-    if ([stateStr isMemberOfClass:[NSNull class]] || stateStr == nil) {
-        stateStr = @"";
-    }
-    NSInteger state = [stateStr integerValue];
-    user.state = state;
-    
-    NSString *phonenum = [dict objectForKey:@"phonenum"];
-    if ([phonenum isMemberOfClass:[NSNull class]] || phonenum == nil) {
-        phonenum = @"";
-    }
-    user.phonenum = phonenum;
-    
-    sysModel.user = user;
-    
-    [[HeFriendManager sharedInstance].userFriendInfoArray addObject:user];
-    [[HeFriendManager sharedInstance].userMap setObject:user forKey:user.username];
-}
-
-*/
+ + (void)initUserWithDict:(NSDictionary *)dict
+ {
+ HeSysbsModel *sysModel = [HeSysbsModel getSysbsModel];
+ User *user = [[User alloc] init];
+ sysModel.user = user;
+ 
+ NSString *username = [dict objectForKey:@"username"];
+ if ([username isMemberOfClass:[NSNull class]] || username == nil) {
+ username = @"";
+ }
+ user.username = username;
+ 
+ NSString *nickname = [dict objectForKey:@"nickname"];
+ if ([nickname isMemberOfClass:[NSNull class]] || nickname == nil) {
+ nickname = @"";
+ }
+ user.nickname = nickname;
+ 
+ NSString *industry = [dict objectForKey:@"industry"];
+ if ([industry isMemberOfClass:[NSNull class]] || industry == nil) {
+ industry = @"";
+ }
+ user.industry = industry;
+ 
+ NSString *companyname = [dict objectForKey:@"companyname"];
+ if ([companyname isMemberOfClass:[NSNull class]] || companyname == nil) {
+ companyname = @"";
+ }
+ user.companyname = companyname;
+ 
+ id sexStr = [dict objectForKey:@"sex"];
+ if ([sexStr isMemberOfClass:[NSNull class]] || sexStr == nil) {
+ sexStr = @"";
+ }
+ NSInteger sex = [sexStr integerValue];
+ user.sex = sex;
+ 
+ NSString *profession = [dict objectForKey:@"profession"];
+ if ([profession isMemberOfClass:[NSNull class]] || profession == nil) {
+ profession = @"";
+ }
+ user.profession = profession;
+ 
+ 
+ id birthdayObj = [dict objectForKey:@"birthday"];
+ if ([birthdayObj isMemberOfClass:[NSNull class]] || birthdayObj == nil) {
+ NSTimeInterval  timeInterval = [[NSDate date] timeIntervalSince1970];
+ birthdayObj = [NSString stringWithFormat:@"%.0f000",timeInterval];
+ }
+ long long timestamp = [birthdayObj longLongValue];
+ NSString *birthday = [NSString stringWithFormat:@"%lld",timestamp];
+ if ([birthday length] > 3) {
+ //时间戳
+ birthday = [birthday substringToIndex:[birthday length] - 3];
+ }
+ birthday = [Tool convertTimespToString:[birthday longLongValue]];
+ if ([birthday isMemberOfClass:[NSNull class]] || birthday == nil) {
+ birthday = @"";
+ }
+ user.birthday = birthday;
+ 
+ NSString *idcard = [dict objectForKey:@"idcard"];
+ if ([idcard isMemberOfClass:[NSNull class]] || idcard == nil) {
+ idcard = @"";
+ }
+ user.idcard = idcard;
+ 
+ NSString *workaddress = [dict objectForKey:@"workaddress"];
+ if ([workaddress isMemberOfClass:[NSNull class]] || workaddress == nil) {
+ workaddress = @"";
+ }
+ user.workaddress = workaddress;
+ 
+ NSString *headurl = [dict objectForKey:@"headurl"];
+ if ([headurl isMemberOfClass:[NSNull class]] || headurl == nil) {
+ headurl = @"";
+ }
+ user.headurl = headurl;
+ 
+ NSString *userID = [dict objectForKey:@"id"];
+ if ([userID isMemberOfClass:[NSNull class]] || userID == nil) {
+ userID = @"";
+ }
+ user.userID = userID;
+ 
+ NSString *constellation = [dict objectForKey:@"constellation"];
+ if ([constellation isMemberOfClass:[NSNull class]] || constellation == nil) {
+ constellation = @"";
+ }
+ user.constellation = constellation;
+ 
+ NSString *currentaddress = [dict objectForKey:@"currentaddress"];
+ if ([currentaddress isMemberOfClass:[NSNull class]] || currentaddress == nil) {
+ currentaddress = @"";
+ }
+ user.currentaddress = currentaddress;
+ 
+ NSString *homeaddress = [dict objectForKey:@"homeaddress"];
+ if ([homeaddress isMemberOfClass:[NSNull class]] || homeaddress == nil) {
+ homeaddress = @"";
+ }
+ user.homeaddress = homeaddress;
+ 
+ NSString *loginid = [dict objectForKey:@"loginid"];
+ if ([loginid isMemberOfClass:[NSNull class]] || loginid == nil) {
+ loginid = @"";
+ }
+ user.loginid = loginid;
+ 
+ NSString *mail = [dict objectForKey:@"mail"];
+ if ([mail isMemberOfClass:[NSNull class]] || mail == nil) {
+ mail = @"";
+ }
+ user.mail = mail;
+ 
+ NSString *name = [dict objectForKey:@"name"];
+ if ([name isMemberOfClass:[NSNull class]] || name == nil) {
+ name = @"";
+ }
+ user.name = name;
+ 
+ NSString *phoneid = [dict objectForKey:@"phoneid"];
+ if ([phoneid isMemberOfClass:[NSNull class]] || phoneid == nil) {
+ phoneid = @"";
+ }
+ user.phoneid = phoneid;
+ 
+ NSString *signature = [dict objectForKey:@"signature"];
+ if ([signature isMemberOfClass:[NSNull class]] || signature == nil) {
+ signature = @"";
+ }
+ user.signature = signature;
+ 
+ id stateStr = [dict objectForKey:@"state"];
+ if ([stateStr isMemberOfClass:[NSNull class]] || stateStr == nil) {
+ stateStr = @"";
+ }
+ NSInteger state = [stateStr integerValue];
+ user.state = state;
+ 
+ NSString *phonenum = [dict objectForKey:@"phonenum"];
+ if ([phonenum isMemberOfClass:[NSNull class]] || phonenum == nil) {
+ phonenum = @"";
+ }
+ user.phonenum = phonenum;
+ 
+ sysModel.user = user;
+ 
+ [[HeFriendManager sharedInstance].userFriendInfoArray addObject:user];
+ [[HeFriendManager sharedInstance].userMap setObject:user forKey:user.username];
+ }
+ 
+ */
 
 + (int)getUpValueWithValue:(int)value1 otherValue:(int)value2
 {
@@ -510,159 +552,209 @@
     return row;
 }
 
-
-/*
-+ (User *)getUserWithDict:(NSDictionary *)dict
-{
-    if (dict == nil) {
+//将十六进制的字符串转换成NSString则可使用如下方式:
++ (NSString *)convertHexStrToString:(NSString *)str {
+    if (!str || [str length] == 0) {
         return nil;
     }
-    User *user = [[User alloc] init];
     
-    NSString *username = [dict objectForKey:@"username"];
-    if ([username isMemberOfClass:[NSNull class]] || username == nil) {
-        username = @"";
+    NSMutableData *hexData = [[NSMutableData alloc] initWithCapacity:8];
+    NSRange range;
+    if ([str length] % 2 == 0) {
+        range = NSMakeRange(0, 2);
+    } else {
+        range = NSMakeRange(0, 1);
     }
-    user.username = username;
-    
-    NSString *nickname = [dict objectForKey:@"nickname"];
-    if ([nickname isMemberOfClass:[NSNull class]] || nickname == nil) {
-        nickname = @"";
+    for (NSInteger i = range.location; i < [str length]; i += 2) {
+        unsigned int anInt;
+        NSString *hexCharStr = [str substringWithRange:range];
+        NSScanner *scanner = [[NSScanner alloc] initWithString:hexCharStr];
+        
+        [scanner scanHexInt:&anInt];
+        NSData *entity = [[NSData alloc] initWithBytes:&anInt length:1];
+        [hexData appendData:entity];
+        
+        range.location += range.length;
+        range.length = 2;
     }
-    user.nickname = nickname;
-    
-    NSString *industry = [dict objectForKey:@"industry"];
-    if ([industry isMemberOfClass:[NSNull class]] || industry == nil) {
-        industry = @"";
-    }
-    user.industry = industry;
-    
-    NSString *companyname = [dict objectForKey:@"companyname"];
-    if ([companyname isMemberOfClass:[NSNull class]] || companyname == nil) {
-        companyname = @"";
-    }
-    user.companyname = companyname;
-    
-    id sexStr = [dict objectForKey:@"sex"];
-    if ([sexStr isMemberOfClass:[NSNull class]] || sexStr == nil) {
-        sexStr = @"";
-    }
-    NSInteger sex = [sexStr integerValue];
-    user.sex = sex;
-    
-    NSString *profession = [dict objectForKey:@"profession"];
-    if ([profession isMemberOfClass:[NSNull class]] || profession == nil) {
-        profession = @"";
-    }
-    user.profession = profession;
-    
-    
-    id birthdayObj = [dict objectForKey:@"birthday"];
-    if ([birthdayObj isMemberOfClass:[NSNull class]] || birthdayObj == nil) {
-        NSTimeInterval  timeInterval = [[NSDate date] timeIntervalSince1970];
-        birthdayObj = [NSString stringWithFormat:@"%.0f000",timeInterval];
-    }
-    long long timestamp = [birthdayObj longLongValue];
-    NSString *birthday = [NSString stringWithFormat:@"%lld",timestamp];
-    if ([birthday length] > 3) {
-        //时间戳
-        birthday = [birthday substringToIndex:[birthday length] - 3];
-    }
-    birthday = [Tool convertTimespToString:[birthday longLongValue]];
-    if ([birthday isMemberOfClass:[NSNull class]] || birthday == nil) {
-        birthday = @"";
-    }
-    user.birthday = birthday;
-    
-    NSString *idcard = [dict objectForKey:@"idcard"];
-    if ([idcard isMemberOfClass:[NSNull class]] || idcard == nil) {
-        idcard = @"";
-    }
-    user.idcard = idcard;
-    
-    NSString *workaddress = [dict objectForKey:@"workaddress"];
-    if ([workaddress isMemberOfClass:[NSNull class]] || workaddress == nil) {
-        workaddress = @"";
-    }
-    user.workaddress = workaddress;
-    
-    NSString *headurl = [dict objectForKey:@"headurl"];
-    if ([headurl isMemberOfClass:[NSNull class]] || headurl == nil) {
-        headurl = @"";
-    }
-    user.headurl = headurl;
-    
-    NSString *userID = [dict objectForKey:@"id"];
-    if ([userID isMemberOfClass:[NSNull class]] || userID == nil) {
-        userID = @"";
-    }
-    user.userID = userID;
-    
-    NSString *constellation = [dict objectForKey:@"constellation"];
-    if ([constellation isMemberOfClass:[NSNull class]] || constellation == nil) {
-        constellation = @"";
-    }
-    user.constellation = constellation;
-    
-    NSString *currentaddress = [dict objectForKey:@"currentaddress"];
-    if ([currentaddress isMemberOfClass:[NSNull class]] || currentaddress == nil) {
-        currentaddress = @"";
-    }
-    user.currentaddress = currentaddress;
-    
-    NSString *homeaddress = [dict objectForKey:@"homeaddress"];
-    if ([homeaddress isMemberOfClass:[NSNull class]] || homeaddress == nil) {
-        homeaddress = @"";
-    }
-    user.homeaddress = homeaddress;
-    
-    NSString *loginid = [dict objectForKey:@"loginid"];
-    if ([loginid isMemberOfClass:[NSNull class]] || loginid == nil) {
-        loginid = @"";
-    }
-    user.loginid = loginid;
-    
-    NSString *mail = [dict objectForKey:@"mail"];
-    if ([mail isMemberOfClass:[NSNull class]] || mail == nil) {
-        mail = @"";
-    }
-    user.mail = mail;
-    
-    NSString *name = [dict objectForKey:@"name"];
-    if ([name isMemberOfClass:[NSNull class]] || name == nil) {
-        name = @"";
-    }
-    user.name = name;
-    
-    NSString *phoneid = [dict objectForKey:@"phoneid"];
-    if ([phoneid isMemberOfClass:[NSNull class]] || phoneid == nil) {
-        phoneid = @"";
-    }
-    user.phoneid = phoneid;
-    
-    NSString *signature = [dict objectForKey:@"signature"];
-    if ([signature isMemberOfClass:[NSNull class]] || signature == nil) {
-        signature = @"";
-    }
-    user.signature = signature;
-    
-    id stateStr = [dict objectForKey:@"state"];
-    if ([stateStr isMemberOfClass:[NSNull class]] || stateStr == nil) {
-        stateStr = @"";
-    }
-    NSInteger state = [stateStr integerValue];
-    user.state = state;
-    
-    NSString *phonenum = [dict objectForKey:@"phonenum"];
-    if ([phonenum isMemberOfClass:[NSNull class]] || phonenum == nil) {
-        phonenum = @"";
-    }
-    user.phonenum = phonenum;
-    
-    return user;
+    NSString *string = [[NSString alloc]initWithData:hexData encoding:NSUTF8StringEncoding];
+    return string;
 }
-*/
+//将NSString转换成十六进制的字符串则可使用如下方式:
++ (NSString *)convertStringToHexStr:(NSString *)str {
+    if (!str || [str length] == 0) {
+        return @"";
+    }
+    NSData *data = [str dataUsingEncoding:NSUTF8StringEncoding];
+    
+    NSMutableString *string = [[NSMutableString alloc] initWithCapacity:[data length]];
+    
+    [data enumerateByteRangesUsingBlock:^(const void *bytes, NSRange byteRange, BOOL *stop) {
+        unsigned char *dataBytes = (unsigned char*)bytes;
+        for (NSInteger i = 0; i < byteRange.length; i++) {
+            NSString *hexStr = [NSString stringWithFormat:@"%x", (dataBytes[i]) & 0xff];
+            if ([hexStr length] == 2) {
+                [string appendString:hexStr];
+            } else {
+                [string appendFormat:@"0%@", hexStr];
+            }
+        }
+    }];
+    
+    return string;
+}
+/*
+ + (User *)getUserWithDict:(NSDictionary *)dict
+ {
+ if (dict == nil) {
+ return nil;
+ }
+ User *user = [[User alloc] init];
  
+ NSString *username = [dict objectForKey:@"username"];
+ if ([username isMemberOfClass:[NSNull class]] || username == nil) {
+ username = @"";
+ }
+ user.username = username;
+ 
+ NSString *nickname = [dict objectForKey:@"nickname"];
+ if ([nickname isMemberOfClass:[NSNull class]] || nickname == nil) {
+ nickname = @"";
+ }
+ user.nickname = nickname;
+ 
+ NSString *industry = [dict objectForKey:@"industry"];
+ if ([industry isMemberOfClass:[NSNull class]] || industry == nil) {
+ industry = @"";
+ }
+ user.industry = industry;
+ 
+ NSString *companyname = [dict objectForKey:@"companyname"];
+ if ([companyname isMemberOfClass:[NSNull class]] || companyname == nil) {
+ companyname = @"";
+ }
+ user.companyname = companyname;
+ 
+ id sexStr = [dict objectForKey:@"sex"];
+ if ([sexStr isMemberOfClass:[NSNull class]] || sexStr == nil) {
+ sexStr = @"";
+ }
+ NSInteger sex = [sexStr integerValue];
+ user.sex = sex;
+ 
+ NSString *profession = [dict objectForKey:@"profession"];
+ if ([profession isMemberOfClass:[NSNull class]] || profession == nil) {
+ profession = @"";
+ }
+ user.profession = profession;
+ 
+ 
+ id birthdayObj = [dict objectForKey:@"birthday"];
+ if ([birthdayObj isMemberOfClass:[NSNull class]] || birthdayObj == nil) {
+ NSTimeInterval  timeInterval = [[NSDate date] timeIntervalSince1970];
+ birthdayObj = [NSString stringWithFormat:@"%.0f000",timeInterval];
+ }
+ long long timestamp = [birthdayObj longLongValue];
+ NSString *birthday = [NSString stringWithFormat:@"%lld",timestamp];
+ if ([birthday length] > 3) {
+ //时间戳
+ birthday = [birthday substringToIndex:[birthday length] - 3];
+ }
+ birthday = [Tool convertTimespToString:[birthday longLongValue]];
+ if ([birthday isMemberOfClass:[NSNull class]] || birthday == nil) {
+ birthday = @"";
+ }
+ user.birthday = birthday;
+ 
+ NSString *idcard = [dict objectForKey:@"idcard"];
+ if ([idcard isMemberOfClass:[NSNull class]] || idcard == nil) {
+ idcard = @"";
+ }
+ user.idcard = idcard;
+ 
+ NSString *workaddress = [dict objectForKey:@"workaddress"];
+ if ([workaddress isMemberOfClass:[NSNull class]] || workaddress == nil) {
+ workaddress = @"";
+ }
+ user.workaddress = workaddress;
+ 
+ NSString *headurl = [dict objectForKey:@"headurl"];
+ if ([headurl isMemberOfClass:[NSNull class]] || headurl == nil) {
+ headurl = @"";
+ }
+ user.headurl = headurl;
+ 
+ NSString *userID = [dict objectForKey:@"id"];
+ if ([userID isMemberOfClass:[NSNull class]] || userID == nil) {
+ userID = @"";
+ }
+ user.userID = userID;
+ 
+ NSString *constellation = [dict objectForKey:@"constellation"];
+ if ([constellation isMemberOfClass:[NSNull class]] || constellation == nil) {
+ constellation = @"";
+ }
+ user.constellation = constellation;
+ 
+ NSString *currentaddress = [dict objectForKey:@"currentaddress"];
+ if ([currentaddress isMemberOfClass:[NSNull class]] || currentaddress == nil) {
+ currentaddress = @"";
+ }
+ user.currentaddress = currentaddress;
+ 
+ NSString *homeaddress = [dict objectForKey:@"homeaddress"];
+ if ([homeaddress isMemberOfClass:[NSNull class]] || homeaddress == nil) {
+ homeaddress = @"";
+ }
+ user.homeaddress = homeaddress;
+ 
+ NSString *loginid = [dict objectForKey:@"loginid"];
+ if ([loginid isMemberOfClass:[NSNull class]] || loginid == nil) {
+ loginid = @"";
+ }
+ user.loginid = loginid;
+ 
+ NSString *mail = [dict objectForKey:@"mail"];
+ if ([mail isMemberOfClass:[NSNull class]] || mail == nil) {
+ mail = @"";
+ }
+ user.mail = mail;
+ 
+ NSString *name = [dict objectForKey:@"name"];
+ if ([name isMemberOfClass:[NSNull class]] || name == nil) {
+ name = @"";
+ }
+ user.name = name;
+ 
+ NSString *phoneid = [dict objectForKey:@"phoneid"];
+ if ([phoneid isMemberOfClass:[NSNull class]] || phoneid == nil) {
+ phoneid = @"";
+ }
+ user.phoneid = phoneid;
+ 
+ NSString *signature = [dict objectForKey:@"signature"];
+ if ([signature isMemberOfClass:[NSNull class]] || signature == nil) {
+ signature = @"";
+ }
+ user.signature = signature;
+ 
+ id stateStr = [dict objectForKey:@"state"];
+ if ([stateStr isMemberOfClass:[NSNull class]] || stateStr == nil) {
+ stateStr = @"";
+ }
+ NSInteger state = [stateStr integerValue];
+ user.state = state;
+ 
+ NSString *phonenum = [dict objectForKey:@"phonenum"];
+ if ([phonenum isMemberOfClass:[NSNull class]] || phonenum == nil) {
+ phonenum = @"";
+ }
+ user.phonenum = phonenum;
+ 
+ return user;
+ }
+ */
+
 + (NSString *)getUserHeadImageURLWithiconAddress:(NSString *)iconAddress
 {
     NSString *imageURL = iconAddress;
@@ -1068,6 +1160,13 @@
     
     return  result;
     
+}
+
+
++ (void)callPhoneWithPhone:(NSString *)phone
+{
+    NSString *telUrl = [NSString stringWithFormat:@"tel://%@",phone];
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:telUrl]];
 }
 
 @end
