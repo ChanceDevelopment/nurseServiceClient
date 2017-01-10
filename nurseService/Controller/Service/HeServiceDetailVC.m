@@ -13,8 +13,30 @@
 #import "MLLabel+Size.h"
 #import "UWDatePickerView.h"
 #import "HeProtectedUserInfoVC.h"
+#import "DeleteImageProtocol.h"
+#import "MLLabel.h"
+#import "MLLabel+Size.h"
+#import "ScanPictureView.h"
+#import <AVFoundation/AVFoundation.h>
+#import <AssetsLibrary/AssetsLibrary.h>
+#import "TZImagePickerController.h"
+#import "UIView+Layout.h"
+#import <AssetsLibrary/AssetsLibrary.h>
+#import <Photos/Photos.h>
+#import "TZImageManager.h"
+#import "BrowserView.h"
+#import "DeleteImageProtocol.h"
+#import "UWDatePickerView.h"
 
-@interface HeServiceDetailVC ()<UITableViewDelegate,UITableViewDataSource,LBBannerDelegate,UIWebViewDelegate,UIAlertViewDelegate,UWDatePickerViewDelegate,SelectProtectUserInfoProtocol>
+#define MAXUPLOADIMAGE 8
+#define MAX_column  4
+#define MAX_row 3
+#define IMAGEWIDTH 70
+
+@interface HeServiceDetailVC ()<DeleteImageProtocol,UITableViewDelegate,UITableViewDataSource,LBBannerDelegate,UIWebViewDelegate,UIAlertViewDelegate,UWDatePickerViewDelegate,SelectProtectUserInfoProtocol,TZImagePickerControllerDelegate,UINavigationControllerDelegate,UIImagePickerControllerDelegate,UIAlertViewDelegate,UIActionSheetDelegate>
+{
+    BOOL currentSelectBanner;
+}
 
 @property(nonatomic,strong)DLNavigationTabBar *navigationTabBar;
 @property(strong,nonatomic)IBOutlet UITableView *tableview;
@@ -30,11 +52,24 @@
 //选择服务类型的背景图
 @property(strong,nonatomic)UIView *selectMenuBgView;
 
+@property(strong,nonatomic)UIView *bannerImageBG;
+@property(strong,nonatomic)NSMutableArray *bannerImageDataSource;
+@property(strong,nonatomic)UIButton *addPictureButton;
+
+@property(strong,nonatomic)NSMutableArray *selectedAssets;
+@property(strong,nonatomic)NSMutableArray *selectedPhotos;
+@property(strong,nonatomic)NSMutableArray *takePhotoArray;
+
+
 @end
 
 @implementation HeServiceDetailVC
 @synthesize tableview;
 @synthesize footerBGView;
+@synthesize bannerImageBG;
+@synthesize bannerImageDataSource;
+@synthesize addPictureButton;
+@synthesize takePhotoArray;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -119,7 +154,7 @@
         CGFloat selectMenuBgViewH = 350;
         
         _selectMenuBgView = [[UIView alloc] initWithFrame:CGRectMake(selectMenuBgViewX, selectMenuBgViewY, selectMenuBgViewW, selectMenuBgViewH)];
-        _selectMenuBgView.backgroundColor = [UIColor redColor];
+        _selectMenuBgView.backgroundColor = [UIColor whiteColor];
         
         CGFloat commitButtonX = 0;
         CGFloat commitButtonW = SCREENWIDTH;
@@ -129,7 +164,269 @@
         UIButton *commitButton = [[UIButton alloc] initWithFrame:CGRectMake(commitButtonX, commitButtonY, commitButtonW, commitButtonH)];
         [commitButton addTarget:self action:@selector(commitButtonClick:) forControlEvents:UIControlEventTouchUpInside];
         [commitButton setBackgroundImage:[Tool buttonImageFromColor:APPDEFAULTORANGE withImageSize:commitButton.frame.size] forState:UIControlStateNormal];
+        [commitButton setTitle:@"确定" forState:UIControlStateNormal];
+        [commitButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        [commitButton.titleLabel setFont:[UIFont systemFontOfSize:15.0]];
         [_selectMenuBgView addSubview:commitButton];
+        
+        CGFloat serviceImageX = 20;
+        CGFloat serviceImageY = -20;
+        CGFloat serviceImageH = 80;
+        CGFloat serviceImageW = 80;
+        
+        UIImageView *serviceImage = [[UIImageView alloc] initWithFrame:CGRectMake(serviceImageX, serviceImageY, serviceImageW, serviceImageH)];
+        serviceImage.layer.cornerRadius = 5.0;
+        serviceImage.layer.masksToBounds = YES;
+        serviceImage.contentMode = UIViewContentModeScaleAspectFill;
+        serviceImage.image = [UIImage imageNamed:@"index1"];
+        [_selectMenuBgView addSubview:serviceImage];
+        
+        UIButton *closeButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREENWIDTH - 40, 20, 25, 25)];
+        [closeButton setBackgroundImage:[UIImage imageNamed:@"icon_delete"] forState:UIControlStateNormal];
+        [closeButton addTarget:self action:@selector(closeButtonClick:) forControlEvents:UIControlEventTouchUpInside];
+        [_selectMenuBgView addSubview:closeButton];
+        
+        CGFloat priceLabelX = CGRectGetMaxX(serviceImage.frame) + 5;
+        CGFloat priceLabelY = 5;
+        CGFloat priceLabelW = 150;
+        CGFloat priceLabelH = 20;
+        
+        UILabel *priceLabel = [[UILabel alloc] initWithFrame:CGRectMake(priceLabelX, priceLabelY, priceLabelW, priceLabelH)];
+        priceLabel.backgroundColor = [UIColor clearColor];
+        priceLabel.font = [UIFont systemFontOfSize:18.0];
+        priceLabel.textColor = [UIColor redColor];
+        priceLabel.text = @"￥2.00";
+        priceLabel.backgroundColor = [UIColor clearColor];
+        [_selectMenuBgView addSubview:priceLabel];
+        
+        CGFloat titleLabelX = priceLabelX;
+        CGFloat titleLabelY = CGRectGetMaxY(priceLabel.frame);
+        CGFloat titleLabelW = SCREENWIDTH - titleLabelX - 10;
+        CGFloat titleLabelH = 30;
+        UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(titleLabelX, titleLabelY, titleLabelW, titleLabelH)];
+        titleLabel.backgroundColor = [UIColor clearColor];
+        titleLabel.font = [UIFont systemFontOfSize:18.0];
+        titleLabel.textColor = [UIColor blackColor];
+        titleLabel.text = @"新生儿护理";
+        titleLabel.backgroundColor = [UIColor clearColor];
+        [_selectMenuBgView addSubview:titleLabel];
+        
+        CGFloat lineX = 0;
+        CGFloat lineY = 70;
+        CGFloat lineW = SCREENWIDTH;
+        CGFloat lineH = lineH;
+        
+        UIView *line = [[UIView alloc] initWithFrame:CGRectMake(lineX, lineY, lineW, 1)];
+        line.backgroundColor = [UIColor colorWithWhite:237.0 / 255.0 alpha:1];
+        [_selectMenuBgView addSubview:line];
+        
+        UIView *contentView = [[UIView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(line.frame), SCREENWIDTH, selectMenuBgViewH - CGRectGetMaxY(line.frame) - 40)];
+        [_selectMenuBgView addSubview:contentView];
+        
+        UIScrollView *contentScrollView = [[UIScrollView alloc] initWithFrame:contentView.bounds];
+        contentScrollView.showsVerticalScrollIndicator = NO;
+        contentScrollView.showsHorizontalScrollIndicator = NO;
+        contentScrollView.delegate = nil;
+        contentScrollView.backgroundColor = [UIColor whiteColor];
+        [contentView addSubview:contentScrollView];
+ 
+        NSArray *serviceArray = @[@"套餐一",@"套餐二",@"套餐三"];
+        
+        CGFloat cellHeight = 35;
+        CGFloat serviceItemViewX = 0;
+        CGFloat serviceItemViewY = 0;
+        CGFloat serviceItemViewW = SCREENWIDTH;
+        CGFloat serviceItemViewH = cellHeight * [serviceArray count] + 30;
+        //套餐背景
+        UIView *serviceItemView = [[UIView alloc] initWithFrame:CGRectMake(serviceItemViewX, serviceItemViewY, serviceItemViewW, serviceItemViewH)];
+        [contentScrollView addSubview:serviceItemView];
+        CGFloat titleLabelX1 = 10;
+        CGFloat titleLabelY1 = 0;
+        CGFloat titleLabelW1 = SCREENWIDTH - titleLabelX - 10;
+        CGFloat titleLabelH1 = 30;
+        
+        UILabel *titleLabel1 = [[UILabel alloc] initWithFrame:CGRectMake(titleLabelX1, titleLabelY1, titleLabelW1, titleLabelH1)];
+        titleLabel1.backgroundColor = [UIColor clearColor];
+        titleLabel1.font = [UIFont systemFontOfSize:15.0];
+        titleLabel1.textColor = [UIColor blackColor];
+        titleLabel1.text = @"请选择项目详情";
+        titleLabel1.backgroundColor = [UIColor clearColor];
+        [serviceItemView addSubview:titleLabel1];
+        
+        //备注信息
+        CGFloat remarkViewX = 10;
+        CGFloat remarkViewY = CGRectGetMaxY(serviceItemView.frame);
+        CGFloat remarkViewW = SCREENWIDTH;
+        CGFloat remarkViewH = 80;
+        
+        UIView *remarkView = [[UIView alloc] initWithFrame:CGRectMake(remarkViewX, remarkViewY, remarkViewW, remarkViewH)];
+        [contentScrollView addSubview:remarkView];
+        
+        CGFloat titleLabelX2 = 0;
+        CGFloat titleLabelY2 = 0;
+        CGFloat titleLabelW2 = 100;
+        CGFloat titleLabelH2 = 30;
+        
+        UILabel *titleLabel2 = [[UILabel alloc] initWithFrame:CGRectMake(titleLabelX2, titleLabelY2, titleLabelW2, titleLabelH2)];
+        titleLabel2.backgroundColor = [UIColor clearColor];
+        titleLabel2.font = [UIFont systemFontOfSize:15.0];
+        titleLabel2.textColor = [UIColor blackColor];
+        titleLabel2.text = @"备注信息";
+        titleLabel2.backgroundColor = [UIColor clearColor];
+        [remarkView addSubview:titleLabel2];
+        
+        titleLabelX2 = CGRectGetMaxX(titleLabel2.frame);
+        titleLabelW2 = SCREENWIDTH - 20 - titleLabelX2;
+        UILabel *tipLabel2 = [[UILabel alloc] initWithFrame:CGRectMake(titleLabelX2, titleLabelY2, titleLabelW2, titleLabelH2)];
+        tipLabel2.backgroundColor = [UIColor clearColor];
+        tipLabel2.font = [UIFont systemFontOfSize:15.0];
+        tipLabel2.textColor = [UIColor grayColor];
+        tipLabel2.text = @"病史、禁忌、特殊说明";
+        tipLabel2.textAlignment = NSTextAlignmentRight;
+        tipLabel2.backgroundColor = [UIColor clearColor];
+        [remarkView addSubview:tipLabel2];
+        
+        CGFloat historyButtonX = 10;
+        CGFloat historyButtonY = CGRectGetMaxY(titleLabel2.frame) + 5;
+        CGFloat historyButtonW = 120;
+        CGFloat historyButtonH = 30;
+        UIButton *historyButton = [[UIButton alloc] initWithFrame:CGRectMake(historyButtonX, historyButtonY, historyButtonW, historyButtonH)];
+        [historyButton setTitle:@"家中有遗传病" forState:UIControlStateNormal];
+        historyButton.layer.masksToBounds = YES;
+        historyButton.layer.cornerRadius = 3.0;
+        [historyButton setTitleColor:[UIColor colorWithWhite:100.0 / 255.0 alpha:1.0] forState:UIControlStateNormal];
+        historyButton.layer.borderWidth = 1.0;
+        historyButton.layer.borderColor = [UIColor colorWithWhite:100.0 / 255.0 alpha:1.0].CGColor;
+        [historyButton setBackgroundImage:[UIImage imageNamed:@"icon_checkbox"] forState:UIControlStateSelected];
+        historyButton.titleLabel.font = [UIFont systemFontOfSize:13.0];
+        [historyButton addTarget:self action:@selector(historyButtonClick:) forControlEvents:UIControlEventTouchUpInside];
+        [remarkView addSubview:historyButton];
+        
+        
+        //图片资料
+        CGFloat pictureViewX = 5;
+        CGFloat pictureViewY = CGRectGetMaxY(remarkView.frame);
+        CGFloat pictureViewW = SCREENWIDTH - 2 * pictureViewX;
+        CGFloat pictureViewH = 100;
+        
+        bannerImageBG = [[UIView alloc] initWithFrame:CGRectMake(pictureViewX, pictureViewY, pictureViewW, pictureViewH)];
+        [contentScrollView addSubview:bannerImageBG];
+        
+        
+        
+        addPictureButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 35, IMAGEWIDTH, IMAGEWIDTH)];
+        [addPictureButton setBackgroundImage:[UIImage imageNamed:@"icon_add_photo"] forState:UIControlStateNormal];
+        addPictureButton.tag = 100;
+        [addPictureButton addTarget:self action:@selector(addButtonClick:) forControlEvents:UIControlEventTouchUpInside];
+        
+        bannerImageDataSource = [[NSMutableArray alloc] initWithCapacity:0];
+        [bannerImageBG setBackgroundColor:[UIColor whiteColor]];
+        [bannerImageBG addSubview:addPictureButton];
+        bannerImageBG.userInteractionEnabled = YES;
+        [contentScrollView addSubview:bannerImageBG];
+        
+        
+        [self updateImageBG];
+        
+        CGFloat titleLabelX3 = 10;
+        CGFloat titleLabelY3 = 0;
+        CGFloat titleLabelW3 = 80;
+        CGFloat titleLabelH3 = 30;
+        
+        UILabel *titleLabel3 = [[UILabel alloc] initWithFrame:CGRectMake(titleLabelX3, titleLabelY3, titleLabelW3, titleLabelH3)];
+        titleLabel3.backgroundColor = [UIColor clearColor];
+        titleLabel3.font = [UIFont systemFontOfSize:15.0];
+        titleLabel3.textColor = [UIColor blackColor];
+        titleLabel3.text = @"图片资料";
+        [bannerImageBG addSubview:titleLabel3];
+        
+        titleLabelX3 = CGRectGetMaxX(titleLabel3.frame);
+        titleLabelW3 = SCREENWIDTH - 10 - titleLabelX3;
+        UILabel *tipLabel3 = [[UILabel alloc] initWithFrame:CGRectMake(titleLabelX3, titleLabelY3, titleLabelW3, titleLabelH3)];
+        tipLabel3.backgroundColor = [UIColor clearColor];
+        tipLabel3.font = [UIFont systemFontOfSize:13.0];
+        tipLabel3.textColor = [UIColor grayColor];
+        tipLabel3.text = @"可上传医嘱、处方单、注射单、伤口照片";
+        tipLabel3.textAlignment = NSTextAlignmentRight;
+        tipLabel3.backgroundColor = [UIColor clearColor];
+        [bannerImageBG addSubview:tipLabel3];
+        
+        CGFloat contentHeight = CGRectGetMaxY(bannerImageBG.frame) + 10;
+        contentScrollView.contentSize = CGSizeMake(0, contentHeight);
+        
+        
+        lineY = CGRectGetMaxY(serviceItemView.frame);
+        line = [[UIView alloc] initWithFrame:CGRectMake(lineX, lineY, lineW, 1)];
+        line.backgroundColor = [UIColor colorWithWhite:237.0 / 255.0 alpha:1.0];
+        [contentScrollView addSubview:line];
+        
+        lineY = CGRectGetMaxY(remarkView.frame);
+        line = [[UIView alloc] initWithFrame:CGRectMake(lineX, lineY, lineW, 1)];
+        line.backgroundColor = [UIColor colorWithWhite:237.0 / 255.0 alpha:1.0];
+        [contentScrollView addSubview:line];
+        
+        CGFloat cellViewX = 0;
+        CGFloat cellViewY = CGRectGetMaxY(titleLabel1.frame);
+        CGFloat cellViewW = SCREENWIDTH;
+        CGFloat cellViewH = cellHeight;
+        
+        
+        for (NSInteger index = 0; index < [serviceArray count]; index++) {
+            
+            NSString *title = serviceArray[index];
+            UIView *cellView = [[UIView alloc] initWithFrame:CGRectMake(cellViewX, cellViewY, cellViewW, cellViewH)];
+            cellView.backgroundColor = [UIColor whiteColor];
+            [serviceItemView addSubview:cellView];
+            
+            CGFloat selectButtonX = 15;
+            CGFloat selectButtonW = 20;
+            CGFloat selectButtonH = 20;
+            CGFloat selectButtonY = (cellHeight - selectButtonH) / 2.0;
+            
+            UIButton *selectButton = [[UIButton alloc] initWithFrame:CGRectMake(selectButtonX, selectButtonY, selectButtonW, selectButtonH)];
+            [selectButton setBackgroundImage:[UIImage imageNamed:@"icon_circleclick"] forState:UIControlStateSelected];
+            [selectButton setBackgroundImage:[UIImage imageNamed:@"icon_unagree"] forState:UIControlStateNormal];
+            [cellView addSubview:selectButton];
+            
+            CGFloat titleLabelX = CGRectGetMaxX(selectButton.frame) + 5;
+            CGFloat titleLabelY = 0;
+            CGFloat titleLabelW = 200;
+            CGFloat titleLabelH = cellHeight;
+            
+            UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(titleLabelX, titleLabelY, titleLabelW, titleLabelH)];
+            titleLabel.font = [UIFont systemFontOfSize:15.0];
+            titleLabel.textColor = [UIColor blackColor];
+            titleLabel.text = title;
+            titleLabel.backgroundColor = [UIColor clearColor];
+            [cellView addSubview:titleLabel];
+            
+            CGFloat priceLabelW = 100;
+            CGFloat priceLabelY = 0;
+            CGFloat priceLabelH = cellHeight;
+            CGFloat priceLabelX = SCREENWIDTH - 10 - priceLabelW;
+            
+            UILabel *priceLabel = [[UILabel alloc] initWithFrame:CGRectMake(priceLabelX, priceLabelY, priceLabelW, priceLabelH)];
+            priceLabel.font = [UIFont systemFontOfSize:15.0];
+            priceLabel.textColor = [UIColor blackColor];
+            priceLabel.text = @"￥300.00";
+            priceLabel.textAlignment = NSTextAlignmentRight;
+            priceLabel.backgroundColor = [UIColor clearColor];
+            [cellView addSubview:priceLabel];
+            
+            if (index + 1 < [serviceArray count]) {
+                CGFloat lineX = 10;
+                CGFloat lineY = cellHeight - 1;
+                CGFloat lineW = SCREENWIDTH - 2 * lineX;
+                CGFloat lineH = 1;
+                
+                UIView *line = [[UIView alloc] initWithFrame:CGRectMake(lineX, lineY, lineW, lineH)];
+                line.backgroundColor = [UIColor colorWithWhite:237.0 / 255.0 alpha:1];
+                [cellView addSubview:line];
+            }
+            
+            cellViewY = cellViewY + cellHeight;
+        }
+    
     }
     return _selectMenuBgView;
 }
@@ -138,9 +435,6 @@
 - (void)initView
 {
     [super initView];
-    
-    
-    
     tableview.backgroundView = nil;
     tableview.backgroundColor = [UIColor colorWithWhite:237.0 / 255.0 alpha:1.0];
     tableview.separatorStyle = UITableViewCellSeparatorStyleNone;
@@ -283,6 +577,11 @@
     }
 }
 
+- (void)historyButtonClick:(UIButton *)button
+{
+    button.selected = !button.selected;
+}
+
 // 进入详情的动画
 - (void)goToDetailAnimation
 {
@@ -390,21 +689,19 @@
 //立即预约
 - (IBAction)bookService:(UIButton *)sender
 {
-    NSLog(@"bookService");
     [self.view addSubview:self.selectMenuBgView];
-    if (sender.selected) {
-        [self setInfoViewisDown:YES withView:_selectMenuBgView];
-    }
-    else{
-        [self setInfoViewisDown:NO withView:_selectMenuBgView];
-    }
-    sender.selected = !sender.selected;
+    [self setInfoViewisDown:NO withView:_selectMenuBgView];
     
 }
 
 - (void)commitButtonClick:(UIButton *)button
 {
     NSLog(@"commitButtonClick");
+}
+
+- (void)closeButtonClick:(UIButton *)sender
+{
+    [self setInfoViewisDown:YES withView:_selectMenuBgView];
 }
 
 - (void)setInfoViewisDown:(BOOL)isDown withView:(UIView *)infoView{
@@ -724,6 +1021,407 @@
     pickerView.type = type;
     [self.view addSubview:pickerView];
     
+}
+
+- (void)updateImageBG
+{
+    for (UIView *subview in bannerImageBG.subviews) {
+        [subview removeFromSuperview];
+    }
+    CGFloat buttonH = IMAGEWIDTH;
+    CGFloat buttonW = IMAGEWIDTH;
+    
+    CGFloat buttonHDis = (SCREENWIDTH - 20 - MAX_column * buttonW) / (MAX_column - 1);
+    CGFloat buttonVDis = 10;
+    
+    int row = [Tool getRowNumWithTotalNum:[bannerImageDataSource count]];
+    int column = [Tool getColumnNumWithTotalNum:[bannerImageDataSource count]];
+    
+    for (int i = 0; i < row; i++) {
+        if ((i + 1) * MAX_column <= [bannerImageDataSource count]) {
+            column = MAX_column;
+        }
+        else{
+            column = [bannerImageDataSource count] % MAX_column;
+        }
+        for (int j = 0; j < column; j++) {
+            
+            CGFloat buttonX = (buttonW + buttonHDis) * j;
+            CGFloat buttonY = (buttonH + buttonVDis) * i + 35;
+            
+            NSInteger picIndex = i * MAX_column + j;
+            AsynImageView *asynImage = [bannerImageDataSource objectAtIndex:picIndex];
+            asynImage.tag = picIndex;
+            asynImage.frame = CGRectMake(buttonX, buttonY, buttonW, buttonH);
+            asynImage.layer.borderColor = [UIColor clearColor].CGColor;
+            asynImage.layer.borderWidth = 0;
+            asynImage.layer.masksToBounds = YES;
+            asynImage.contentMode = UIViewContentModeScaleAspectFill;
+            asynImage.userInteractionEnabled = YES;
+            [bannerImageBG addSubview:asynImage];
+            
+            UITapGestureRecognizer *tapGes = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(scanImageTap:)];
+            tapGes.numberOfTapsRequired = 1;
+            tapGes.numberOfTouchesRequired = 1;
+            [asynImage addGestureRecognizer:tapGes];
+        }
+    }
+    if ([bannerImageDataSource count] < MAXUPLOADIMAGE) {
+        
+        NSInteger last_i = -1;
+        NSInteger last_j = -1;
+        row = [Tool getRowNumWithTotalNum:[bannerImageDataSource count] + 1];
+        for (int i = 0; i < row; i++) {
+            if ((i + 1) * MAX_column <= [bannerImageDataSource count] + 1) {
+                column = MAX_column;
+            }
+            else{
+                column = ([bannerImageDataSource count] + 1) % MAX_column;
+            }
+            last_i = i;
+            for (int j = 0; j < column; j++) {
+                last_j = j;
+            }
+        }
+        if (last_i == -1 || last_j == -1) {
+            addPictureButton.hidden = YES;
+        }
+        else{
+            addPictureButton.hidden = NO;
+        }
+        
+        CGFloat buttonX = (buttonW + buttonHDis) * last_j;
+        CGFloat buttonY = (buttonH + buttonVDis) * last_i + 35;
+        CGFloat buttonW = addPictureButton.frame.size.width;
+        CGFloat buttonH = addPictureButton.frame.size.height;
+        
+        addPictureButton.frame = CGRectMake(buttonX, buttonY, buttonW, buttonH);
+        
+        CGFloat distributeX = bannerImageBG.frame.origin.x;
+        CGFloat distributeY = bannerImageBG.frame.origin.y;
+        CGFloat distributeW = bannerImageBG.frame.size.width;
+        CGFloat distributeH = addPictureButton.frame.origin.y + addPictureButton.frame.size.height;
+        
+        bannerImageBG.frame = CGRectMake(distributeX, distributeY, distributeW, distributeH);
+        
+    }
+    else{
+        
+        CGFloat distributeX = bannerImageBG.frame.origin.x;
+        CGFloat distributeY = bannerImageBG.frame.origin.y;
+        CGFloat distributeW = bannerImageBG.frame.size.width;
+        CGFloat distributeH = (buttonH + buttonVDis) * (MAX_row - 1) + buttonH;
+        
+        bannerImageBG.frame = CGRectMake(distributeX, distributeY, distributeW, distributeH);
+        
+        addPictureButton.hidden = YES;
+    }
+    [bannerImageBG addSubview:addPictureButton];
+}
+
+- (void)scanImageTap:(UITapGestureRecognizer *)tap
+{
+    NSInteger selectIndex = tap.view.tag + 1;
+    NSMutableArray *array = [[NSMutableArray alloc] initWithCapacity:0];
+    
+    for (AsynImageView *asyImage in bannerImageDataSource) {
+        if (asyImage.highlightedImage == nil) {
+            [array addObject:asyImage];
+        }
+    }
+    
+    ScanPictureView *scanPictureView = [[ScanPictureView alloc] initWithArray:array selectButtonIndex:selectIndex];
+    scanPictureView.deleteDelegate = self;
+    UIBarButtonItem *backButton = [[UIBarButtonItem alloc] init];
+    [backButton setTintColor:[UIColor colorWithRed:65.0f/255.0f green:164.0f/255.0f blue:220.0f/255.0f alpha:1.0f]];
+    scanPictureView.navigationItem.backBarButtonItem = backButton;
+    scanPictureView.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:scanPictureView animated:YES];
+}
+
+//删除所选图片的代理方法
+-(void)deleteImageAtIndex:(int)index
+{
+    [bannerImageDataSource removeObjectAtIndex:index];
+    [self updateImageBG];
+}
+
+- (void)addButtonClick:(UIButton *)sender
+{
+    if ([bannerImageDataSource count] > MAXUPLOADIMAGE) {
+        [self showHint:[NSString stringWithFormat:@"上传图片最多不能超过%d张",MAXUPLOADIMAGE]];
+        return;
+    }
+    currentSelectBanner = YES;
+    
+    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"来自相册",@"来自拍照", nil];
+    sheet.tag = 1;
+    [sheet showInView:bannerImageBG];
+    
+}
+
+-(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (actionSheet.tag == 1) {
+        switch (buttonIndex) {
+            case 1:
+            {
+                if (ISIOS7) {
+                    NSString *mediaType = AVMediaTypeVideo;
+                    AVAuthorizationStatus  authorizationStatus = [AVCaptureDevice authorizationStatusForMediaType:mediaType];
+                    if (authorizationStatus == AVAuthorizationStatusRestricted|| authorizationStatus == AVAuthorizationStatusDenied) {
+                        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"温馨提示" message:@"此应用没有权限访问您的照片或摄像机，请在: 隐私设置 中启用访问" delegate:nil cancelButtonTitle:@"知道了" otherButtonTitles:nil, nil];
+                        [alert show];
+                    }else{
+                        [self pickerCamer];
+                    }
+                }
+                else{
+                    [self pickerCamer];
+                }
+                
+                
+                break;
+            }
+            case 0:
+            {
+                if (ISIOS7) {
+                    ALAuthorizationStatus author = [ALAssetsLibrary authorizationStatus];
+                    if (author == ALAuthorizationStatusRestricted || author ==ALAuthorizationStatusDenied){
+                        //无权限
+                        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"温馨提示" message:@"此应用没有权限访问您的照片或摄像机，请在: 隐私设置 中启用访问" delegate:nil cancelButtonTitle:@"知道了" otherButtonTitles:nil, nil];
+                        [alert show];
+                    }
+                    else{
+                        [self mutiplepickPhotoSelect];
+                    }
+                }
+                else{
+                    [self mutiplepickPhotoSelect];
+                }
+                break;
+            }
+            case 2:
+            {
+                break;
+            }
+            default:
+                break;
+        }
+    }
+}
+
+- (void)handleSelectPhoto
+{
+    for (AsynImageView *imageview in bannerImageDataSource) {
+        if (imageview.imageTag != -1) {
+            [bannerImageDataSource removeObject:imageview];
+        }
+    }
+    
+    for (UIImage *image in _selectedPhotos) {
+        AsynImageView *asyncImage = [[AsynImageView alloc] init];
+        [asyncImage setImage:image];
+        asyncImage.bigImageURL = nil;
+        [bannerImageDataSource addObject:asyncImage];
+        
+    }
+    [self updateImageBG];
+}
+
+#pragma mark -
+#pragma mark ImagePicker method
+//从相册中打开照片选择画面(图片库)：UIImagePickerControllerSourceTypePhotoLibrary
+//启动摄像头打开照片摄影画面(照相机)：UIImagePickerControllerSourceTypeCamera
+
+//按下相机触发事件
+-(void)pickerCamer
+{
+    //照相机类型
+    UIImagePickerControllerSourceType sourceType = UIImagePickerControllerSourceTypeCamera;
+    //判断属性值是否可用
+    if([UIImagePickerController isSourceTypeAvailable:sourceType]){
+        //UIImagePickerController是UINavigationController的子类
+        UIImagePickerController *imagePicker = [[UIImagePickerController alloc]init];
+        imagePicker.delegate = self;
+        imagePicker.videoQuality = UIImagePickerControllerQualityTypeLow;
+        //设置可以编辑
+        imagePicker.allowsEditing = YES;
+        if (!currentSelectBanner) {
+            imagePicker.allowsEditing = NO;
+        }
+        //设置类型为照相机
+        imagePicker.sourceType = sourceType;
+        //进入照相机画面
+        [self presentViewController:imagePicker animated:YES completion:nil];
+    }
+}
+
+
+- (UIImage *)imageFromImage:(UIImage *)image inRect:(CGRect)rect {
+    CGImageRef sourceImageRef = [image CGImage];
+    CGImageRef newImageRef = CGImageCreateWithImageInRect(sourceImageRef, rect);
+    UIImage *newImage = [UIImage imageWithCGImage:newImageRef];
+    return newImage;
+}
+
+
+- (void)mutiplepickPhotoSelect{
+    TZImagePickerController *imagePickerVc = [[TZImagePickerController alloc] initWithMaxImagesCount:MAXUPLOADIMAGE delegate:self];
+    imagePickerVc.selectedAssets = _selectedAssets; // optional, 可选的
+    
+    // You can get the photos by block, the same as by delegate.
+    // 你可以通过block或者代理，来得到用户选择的照片.
+    [imagePickerVc setDidFinishPickingPhotosHandle:^(NSArray<UIImage *> *photos, NSArray *assets, BOOL isSelectOriginalPhoto) {
+        
+    }];
+    [self presentViewController:imagePickerVc animated:YES completion:nil];
+}
+
+#pragma mark TZImagePickerControllerDelegate
+
+
+
+/// User finish picking photo，if assets are not empty, user picking original photo.
+/// 用户选择好了图片，如果assets非空，则用户选择了原图。
+- (void)imagePickerController:(TZImagePickerController *)picker didFinishPickingPhotos:(NSArray *)photos sourceAssets:(NSArray *)assets isSelectOriginalPhoto:(BOOL)isSelectOriginalPhoto {
+    
+    _selectedPhotos = [NSMutableArray arrayWithArray:photos];
+    _selectedAssets = [NSMutableArray arrayWithArray:assets];
+    [self dismissViewControllerAnimated:YES completion:^{
+        [self handleSelectPhoto];
+    }];
+}
+
+/// User finish picking video,
+/// 用户选择好了视频
+- (void)imagePickerController:(TZImagePickerController *)picker didFinishPickingVideo:(UIImage *)coverImage sourceAssets:(id)asset {
+    [_selectedPhotos addObjectsFromArray:@[coverImage]];
+    
+    [self dismissViewControllerAnimated:YES completion:^{
+        [self handleSelectPhoto];
+    }];
+    
+    /*
+     // open this code to send video / 打开这段代码发送视频
+     [[TZImageManager manager] getVideoOutputPathWithAsset:asset completion:^(NSString *outputPath) {
+     NSLog(@"视频导出到本地完成,沙盒路径为:%@",outputPath);
+     // Export completed, send video here, send by outputPath or NSData
+     // 导出完成，在这里写上传代码，通过路径或者通过NSData上传
+     
+     }];
+     */
+    
+}
+
+//当按下相册按钮时触发事件
+-(void)pickerPhotoLibrary
+{
+    //图片库类型
+    UIImagePickerControllerSourceType sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+    UIImagePickerController *photoAlbumPicker = [[UIImagePickerController alloc]init];
+    photoAlbumPicker.delegate = self;
+    photoAlbumPicker.videoQuality = UIImagePickerControllerQualityTypeMedium;
+    //设置可以编辑
+    photoAlbumPicker.allowsEditing = YES;
+    if (!currentSelectBanner) {
+        photoAlbumPicker.allowsEditing = NO;
+    }
+    //设置类型
+    photoAlbumPicker.sourceType = sourceType;
+    //进入图片库画面
+    [self presentViewController:photoAlbumPicker animated:YES completion:nil];
+}
+
+
+#pragma mark -
+#pragma mark imagePickerController method
+//当拍完照或者选取好照片之后所要执行的方法
+-(void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
+{
+    UIImage *image = [info objectForKey:UIImagePickerControllerEditedImage];
+    
+    if (currentSelectBanner) {
+        CGSize sizeImage = image.size;
+        float a = [self getSize:sizeImage];
+        if (a > 0) {
+            CGSize size = CGSizeMake(sizeImage.width / a, sizeImage.height / a);
+            image = [self scaleToSize:image size:size];
+        }
+        
+        CGSize imagesize = image.size;
+        CGFloat width = imagesize.width;
+        CGFloat hight = imagesize.height;
+        CGFloat sizewidth = width;
+        if (hight < width) {
+            sizewidth = hight;
+        }
+    }
+    else{
+        image = [self turnImageWithInfo:info];
+    }
+    
+    AsynImageView *asyncImage = [[AsynImageView alloc] init];
+    
+    UIImageJPEGRepresentation(image, 0.6);
+    [asyncImage setImage:image];
+    
+    asyncImage.bigImageURL = nil;
+    asyncImage.imageTag = -1; //表明是调用系统相机、相册的
+    [bannerImageDataSource addObject:asyncImage];
+    [self dismissViewControllerAnimated:YES completion:^{
+        [self updateImageBG];
+    }];
+}
+
+- (UIImage *)turnImageWithInfo:(NSDictionary<NSString *,id> *)info {
+    UIImage *image=[info objectForKey:UIImagePickerControllerOriginalImage];
+    //类型为 UIImagePickerControllerOriginalImage 时调整图片角度
+    NSString *type = [info objectForKey:UIImagePickerControllerMediaType];
+    if ([type isEqualToString:@"public.image"]) {
+        UIImageOrientation imageOrientation=image.imageOrientation;
+        if(imageOrientation!=UIImageOrientationUp) {
+            // 原始图片可以根据照相时的角度来显示，但 UIImage无法判定，于是出现获取的图片会向左转90度的现象。
+            UIGraphicsBeginImageContext(image.size);
+            [image drawInRect:CGRectMake(0, 0, image.size.width, image.size.height)];
+            image = UIGraphicsGetImageFromCurrentImageContext();
+            UIGraphicsEndImageContext();
+        }
+    }
+    return image;
+    
+}
+
+-(float)getSize:(CGSize)size
+{
+    float a = size.width / 480.0;
+    if (a > 1) {
+        return a;
+    }
+    else
+        return -1;
+    
+    
+}
+
+- (UIImage *)scaleToSize:(UIImage *)img size:(CGSize)size{
+    // 创建一个bitmap的context
+    // 并把它设置成为当前正在使用的context
+    UIGraphicsBeginImageContext(size);
+    // 绘制改变大小的图片
+    [img drawInRect:CGRectMake(0, 0, size.width, size.height)];
+    // 从当前context中创建一个改变大小后的图片
+    UIImage* scaledImage = UIGraphicsGetImageFromCurrentImageContext();
+    // 使当前的context出堆栈
+    UIGraphicsEndImageContext();
+    // 返回新的改变大小后的图片
+    return scaledImage;
+}
+//相应取消动作
+-(void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
+{
+    
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)didReceiveMemoryWarning {

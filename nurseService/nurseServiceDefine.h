@@ -134,7 +134,7 @@
 #define LOUDSPEAKER       @"loudSpeaker"       //扬声器
 
 typedef enum {
-    ENUM_SEX_Boy=1,//男
+    ENUM_SEX_Boy = 1,//男
     ENUM_SEX_Girl //女
 } ENUM_SEXType;
 

@@ -25,6 +25,7 @@
                     <constraints>
                         <constraint firstAttribute="height" constant="40" id="eZi-bo-jtd"/>
                     </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
                     <state key="normal" title="新增地址">
                         <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </state>

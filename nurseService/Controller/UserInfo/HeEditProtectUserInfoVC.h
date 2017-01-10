@@ -10,5 +10,6 @@
 
 
 @interface HeEditProtectUserInfoVC : HeBaseViewController
+@property(strong,nonatomic)NSDictionary *userInfoDict;
 
 @end
