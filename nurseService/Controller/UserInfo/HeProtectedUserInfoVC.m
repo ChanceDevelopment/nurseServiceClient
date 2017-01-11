@@ -31,9 +31,9 @@
         label.textColor = APPDEFAULTTITLECOLOR;
         label.textAlignment = NSTextAlignmentCenter;
         self.navigationItem.titleView = label;
-        label.text = @"被受保护人信息";
+        label.text = @"被受护人信息";
         [label sizeToFit];
-        self.title = @"被受保护人信息";
+        self.title = @"被受护人信息";
         
     }
     return self;

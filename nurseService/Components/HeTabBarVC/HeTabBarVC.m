@@ -217,7 +217,6 @@
         UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"定位服务未开启" message:@"请在系统设置中开启定位服务设置->隐私->定位服务" delegate:self cancelButtonTitle:@"我知道了" otherButtonTitles:nil, nil];
         [alertView show];
     }else{
-        [self showHudInView:self.view hint:@"定位中..."];
         [_locService startUserLocationService];
     }
 }

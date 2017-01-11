@@ -156,6 +156,7 @@
         // 进入刷新状态后会自动调用这个block,刷新
         [weakSelf.tableview.header performSelector:@selector(endRefreshing) withObject:nil afterDelay:1.0];
         pageNum = 0;
+        [weakSelf loadBannerImage];
         [weakSelf loadRecommendService];
     }];
     

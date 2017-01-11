@@ -9,6 +9,20 @@
 #import "MyViewController.h"
 #import "Tools.h"
 #import "HeBaseIconTitleTableCell.h"
+#import "HeUserPointVC.h"
+#import "HeUserCouponVC.h"
+#import "HeUserBalanceVC.h"
+#import "HeUserInfoVC.h"
+#import "HeProtectedUserInfoVC.h"
+#import "HeUserOrderVC.h"
+#import "HeUserFavouriteVC.h"
+#import "HeUserInviteVC.h"
+#import "HeAboutUsVC.h"
+#import "HeReportVC.h"
+#import "HePointMarketVC.h"
+#import "HeMessageVC.h"
+
+#define InviteLabelTag 100
 
 @interface MyViewController ()<UITableViewDataSource,UITableViewDelegate,UIAlertViewDelegate>
 {
@@ -16,12 +30,20 @@
     NSArray *tableItemArr;
     UIImageView *portrait;        //头像
     UILabel *userNameL;       //用户名
+    NSArray *viewControllerArray;
 }
 @property(strong,nonatomic)IBOutlet UITableView *myTableView;
+@property(strong,nonatomic)UILabel *balanceNumLabel;
+@property(strong,nonatomic)UILabel *couponNumLabel;
+@property(strong,nonatomic)UILabel *pointNumLabel;
+
 @end
 
 @implementation MyViewController
 @synthesize myTableView;
+@synthesize balanceNumLabel;
+@synthesize couponNumLabel;
+@synthesize pointNumLabel;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -67,6 +89,7 @@
     [super initializaiton];
     iconArr = @[@"icon_protected_person_gray",@"icon_report_gray",@"icon_order_center_gray",@"icon_integral_mall_gray",@"icon_favorites_gray",@"icon_myinvite_gray",@"icon_aboutus_gray",@"icon_advice_gray"];
     tableItemArr = @[@"被受护人信息",@"护理报告",@"订单中心",@"积分商城",@"收藏夹",@"我的邀请",@"关于我们",@"投诉建议"];
+    viewControllerArray = @[@"HeProtectedUserInfoVC",@"HeOrderReportVC",@"HeUserOrderVC",@"HePointMarketVC",@"HeUserFavouriteVC",@"HeUserInviteVC",@"HeAboutUsVC",@"HeReportVC"];
 
 }
 
@@ -83,24 +106,46 @@
     [self.view addSubview:myTableView];
 
     
-    CGFloat viewHeight = 200;
+    CGFloat viewHeight = 280;
     
     UIView *headerView = [[UIView alloc] init];
     headerView.frame = CGRectMake(0, 0, SCREENWIDTH, viewHeight);
     headerView.backgroundColor = APPDEFAULTORANGE;
+    
+    UIImageView *bgImageView = [[UIImageView alloc] initWithFrame:headerView.bounds];
+    bgImageView.image = [UIImage imageNamed:@"img_bg.png"];
+    [headerView addSubview:bgImageView];
+    
+    UIImage *messageImage = [UIImage imageNamed:@"icon_infromation"];
+    CGFloat messageButtonW = 25;
+    CGFloat messageButtonH = messageImage.size.height / messageImage.size.width * messageButtonW;
+    UIButton *messageButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREENWIDTH - messageButtonW - 20, 30, messageButtonW, messageButtonH)];
+    [messageButton setImage:messageImage forState:UIControlStateNormal];
+    [headerView addSubview:messageButton];
+    [messageButton addTarget:self action:@selector(messageButtonClick:) forControlEvents:UIControlEventTouchUpInside];
+    
+    UIImage *securityImage = [UIImage imageNamed:@"icon_eye_open_white"];
+    CGFloat securityButtonW = 25;
+    CGFloat securityButtonH = securityImage.size.height / securityImage.size.width * securityButtonW;
+    UIButton *securityButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREENWIDTH - securityButtonW - 20, CGRectGetMaxY(messageButton.frame) + 10, securityButtonW, securityButtonH)];
+    [securityButton setImage:securityImage forState:UIControlStateNormal];
+    [securityButton setImage:[UIImage imageNamed:@"icon_eye_close_white"] forState:UIControlStateSelected];
+    [headerView addSubview:securityButton];
+    [securityButton addTarget:self action:@selector(securityButtonClick:) forControlEvents:UIControlEventTouchUpInside];
 
     //头像
     CGFloat imageDia = 70;              //直径
-    CGFloat imageX = (SCREENWIDTH-imageDia)/2.0;
-    CGFloat imageY = 40;
+    CGFloat imageX = (SCREENWIDTH - imageDia) / 2.0 ;
+    CGFloat imageY = (viewHeight - imageDia) / 2.0 - 20;
     portrait = [[UIImageView alloc] initWithFrame:CGRectMake(imageX, imageY, imageDia, imageDia)];
     portrait.userInteractionEnabled = YES;
     portrait.image = [UIImage imageNamed:@"index1"];
     portrait.layer.borderWidth = 0.0;
+    portrait.contentMode = UIViewContentModeScaleAspectFill;
     portrait.layer.cornerRadius = imageDia / 2.0;
     portrait.layer.masksToBounds = YES;
     [headerView addSubview:portrait];
-    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(openCamera)];
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(scanUserInfo:)];
     [portrait addGestureRecognizer:tap];
 
     myTableView.tableHeaderView = headerView;
@@ -125,11 +170,11 @@
     //签到按钮
     CGFloat buttonW = 50;
     CGFloat buttonH = 20;
-    CGFloat buttonX = imageX+imageDia+30;
-    CGFloat buttonY = imageY+imageDia/2.0-10;
+    CGFloat buttonX = CGRectGetMaxX(portrait.frame) + 10;
+    CGFloat buttonY = CGRectGetMinY(portrait.frame) + ((CGRectGetHeight(portrait.frame) - buttonH) / 2.0);
     UIButton *signBtn = [[UIButton alloc] initWithFrame:CGRectMake(buttonX, buttonY, buttonW, buttonH)];
     signBtn.backgroundColor = [UIColor clearColor];
-    signBtn.titleLabel.font = [UIFont fontWithName:@"Helvetica-Bold" size:14.0];
+    signBtn.titleLabel.font = [UIFont fontWithName:@"Helvetica" size:14.0];
     signBtn.layer.cornerRadius = 4.0;//2.0是圆角的弧度，根据需求自己更改
     signBtn.layer.borderWidth = 1.0f;//设置边框颜色
     signBtn.layer.borderColor = [[UIColor whiteColor] CGColor];
@@ -137,10 +182,208 @@
     [signBtn addTarget:self action:@selector(toSignInView) forControlEvents:UIControlEventTouchUpInside];
     [headerView addSubview:signBtn];
     
+    CGFloat otherInfoLabelBGX = 0;
+    CGFloat otherInfoLabelBGH = 60;
+    CGFloat otherInfoLabelBGY = viewHeight - otherInfoLabelBGH;
+    CGFloat otherInfoLabelBGW = SCREENWIDTH;
+    UILabel *otherInfoLabelBG = [[UILabel alloc] initWithFrame:CGRectMake(otherInfoLabelBGX, otherInfoLabelBGY, otherInfoLabelBGW, otherInfoLabelBGH)];
+    otherInfoLabelBG.userInteractionEnabled = YES;
+    otherInfoLabelBG.backgroundColor = [UIColor clearColor];
+    [headerView addSubview:otherInfoLabelBG];
+    
+    CGFloat commonlabelX = 0;
+    CGFloat commonlabelW = SCREENWIDTH / 3.0;
+    CGFloat commonlabelH = otherInfoLabelBGH;
+    CGFloat commonlabelY = 0;
+    
+    UILabel *moneyLabel = [[UILabel alloc] initWithFrame:CGRectMake(commonlabelX, commonlabelY, commonlabelW, commonlabelH)];
+    moneyLabel.backgroundColor = [UIColor clearColor];
+    moneyLabel.userInteractionEnabled = YES;
+    [otherInfoLabelBG addSubview:moneyLabel];
+    
+    balanceNumLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, commonlabelW, otherInfoLabelBGH / 2.0)];
+    balanceNumLabel.backgroundColor = [UIColor clearColor];
+    balanceNumLabel.text = @"0.00元";
+    balanceNumLabel.font = [UIFont systemFontOfSize:17.0];
+    balanceNumLabel.textAlignment = NSTextAlignmentCenter;
+    balanceNumLabel.textColor = [UIColor colorWithRed:179.0 / 255.0 green:68.0 / 255.0 blue:65.0 / 255.0 alpha:1.0];
+    [moneyLabel addSubview:balanceNumLabel];
+    
+    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, otherInfoLabelBGH / 2.0, commonlabelW, otherInfoLabelBGH / 2.0)];
+    titleLabel.backgroundColor = [UIColor clearColor];
+    titleLabel.text = @"我的余额";
+    titleLabel.font = [UIFont systemFontOfSize:15.0];
+    titleLabel.textAlignment = NSTextAlignmentCenter;
+    titleLabel.textColor = [UIColor whiteColor];
+    [moneyLabel addSubview:titleLabel];
+    
+    UITapGestureRecognizer *moneyTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(scanUserBalance:)];
+    moneyTap.numberOfTapsRequired = 1;
+    moneyTap.numberOfTouchesRequired = 1;
+    [moneyLabel addGestureRecognizer:moneyTap];
+    
+    commonlabelX = CGRectGetMaxX(moneyLabel.frame);
+    UILabel *couponLabel = [[UILabel alloc] initWithFrame:CGRectMake(commonlabelX, commonlabelY, commonlabelW, commonlabelH)];
+    couponLabel.backgroundColor = [UIColor clearColor];
+    couponLabel.userInteractionEnabled = YES;
+    [otherInfoLabelBG addSubview:couponLabel];
+    
+    couponNumLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, commonlabelW, otherInfoLabelBGH / 2.0)];
+    couponNumLabel.backgroundColor = [UIColor clearColor];
+    couponNumLabel.text = @"1张";
+    couponNumLabel.font = [UIFont systemFontOfSize:17.0];
+    couponNumLabel.textAlignment = NSTextAlignmentCenter;
+    couponNumLabel.textColor = [UIColor colorWithRed:133.0 / 255.0 green:144.0 / 255.0 blue:205.0 / 255.0 alpha:1.0];
+    [couponLabel addSubview:couponNumLabel];
+    
+    titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, otherInfoLabelBGH / 2.0, commonlabelW, otherInfoLabelBGH / 2.0)];
+    titleLabel.backgroundColor = [UIColor clearColor];
+    titleLabel.text = @"优惠券";
+    titleLabel.font = [UIFont systemFontOfSize:15.0];
+    titleLabel.textAlignment = NSTextAlignmentCenter;
+    titleLabel.textColor = [UIColor whiteColor];
+    [couponLabel addSubview:titleLabel];
+    
+    UITapGestureRecognizer *couponTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(scanUserCoupon:)];
+    couponTap.numberOfTapsRequired = 1;
+    couponTap.numberOfTouchesRequired = 1;
+    [couponLabel addGestureRecognizer:couponTap];
+    
+    commonlabelX = CGRectGetMaxX(couponLabel.frame);
+    UILabel *pointLabel = [[UILabel alloc] initWithFrame:CGRectMake(commonlabelX, commonlabelY, commonlabelW, commonlabelH)];
+    pointLabel.backgroundColor = [UIColor clearColor];
+    pointLabel.userInteractionEnabled = YES;
+    [otherInfoLabelBG addSubview:pointLabel];
+    
+    pointNumLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, commonlabelW, otherInfoLabelBGH / 2.0)];
+    pointNumLabel.backgroundColor = [UIColor clearColor];
+    pointNumLabel.text = @"0分";
+    pointNumLabel.font = [UIFont systemFontOfSize:17.0];
+    pointNumLabel.textAlignment = NSTextAlignmentCenter;
+    pointNumLabel.textColor = [UIColor colorWithRed:69.0 / 255.0 green:139.0 / 255.0 blue:84.0 / 255.0 alpha:1.0];
+    [pointLabel addSubview:pointNumLabel];
+    
+    titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, otherInfoLabelBGH / 2.0, commonlabelW, otherInfoLabelBGH / 2.0)];
+    titleLabel.backgroundColor = [UIColor clearColor];
+    titleLabel.text = @"我的积分";
+    titleLabel.font = [UIFont systemFontOfSize:15.0];
+    titleLabel.textAlignment = NSTextAlignmentCenter;
+    titleLabel.textColor = [UIColor whiteColor];
+    [pointLabel addSubview:titleLabel];
+    
+    UITapGestureRecognizer *pointTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(scanUserPoint:)];
+    pointTap.numberOfTapsRequired = 1;
+    pointTap.numberOfTouchesRequired = 1;
+    [pointLabel addGestureRecognizer:pointTap];
+    
+    CGFloat footHeight = 100;
+    UIView *footerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, footHeight)];
+    myTableView.tableFooterView = footerView;
+    
+    UILabel *inviteLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, footHeight / 2.0)];
+    inviteLabel.font = [UIFont systemFontOfSize:18.0];
+    inviteLabel.tag = InviteLabelTag;
+    inviteLabel.backgroundColor = [UIColor clearColor];
+    inviteLabel.textColor = [UIColor blackColor];
+    inviteLabel.textAlignment = NSTextAlignmentCenter;
+    inviteLabel.text = @"邀请码: 2nTIeT";
+    [footerView addSubview:inviteLabel];
+    
+    UIButton *signOutButton = [[UIButton alloc] initWithFrame:CGRectMake(0, footHeight / 2.0, SCREENWIDTH, footHeight / 2.0)];
+    [signOutButton setBackgroundColor:APPDEFAULTORANGE];
+    [signOutButton setTitle:@"退出登录" forState:UIControlStateNormal];
+    signOutButton.titleLabel.font = [UIFont systemFontOfSize:17.0];
+    [signOutButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [signOutButton addTarget:self action:@selector(signOutButtonClick:) forControlEvents:UIControlEventTouchUpInside];
+    [footerView addSubview:signOutButton];
+}
+
+- (void)scanUserBalance:(UITapGestureRecognizer *)tap
+{
+    HeUserBalanceVC *userBalanceVC = [[HeUserBalanceVC alloc] init];
+    userBalanceVC.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:userBalanceVC animated:YES];
+}
+
+- (void)scanUserCoupon:(UITapGestureRecognizer *)tap
+{
+    HeUserCouponVC *userCouponVC = [[HeUserCouponVC alloc] init];
+    userCouponVC.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:userCouponVC animated:YES];
+}
+
+- (void)scanUserPoint:(UITapGestureRecognizer *)tap
+{
+    HeUserPointVC *userPointVC = [[HeUserPointVC alloc] init];
+    userPointVC.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:userPointVC animated:YES];
+}
+
+- (void)scanUserInfo:(UITapGestureRecognizer *)tap
+{
+    HeUserInfoVC *userInfoVC = [[HeUserInfoVC alloc] init];
+    userInfoVC.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:userInfoVC animated:YES];
+}
+
+- (void)messageButtonClick:(UIButton *)button
+{
+    HeMessageVC *messageVC = [[HeMessageVC alloc] init];
+    messageVC.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:messageVC animated:YES];
+}
+
+- (void)securityButtonClick:(UIButton *)button
+{
+    button.selected = !button.selected;
+    if (button.selected) {
+        balanceNumLabel.text = @"***元";
+        couponNumLabel.text = @"***张";
+        pointNumLabel.text = @"***分";
+    }
+    else{
+        balanceNumLabel.text = @"24.00元";
+        couponNumLabel.text = @"24张";
+        pointNumLabel.text = @"24分";
+    }
+}
+
+- (void)signOutButtonClick:(UIButton *)button
+{
+    if (ISIOS7) {
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"温馨提示" message:@"确定退出登录？" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
+        alertView.tag = 100;
+        [alertView show];
+        return;
+    }
+    __weak MyViewController *weakSelf = self;
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"温馨提示" message:@"确定退出登录？" preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil];
+    [alertController addAction:cancelAction];
+    
+    UIAlertAction *sureAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){
+        [weakSelf signAccount];
+    }];
+    [alertController addAction:sureAction];
+    [self presentViewController:alertController animated:YES completion:nil];
+    
+}
+
+- (void)signAccount
+{
+    NSLog(@"signAccount");
 }
 
 - (void)toSignInView{
     NSLog(@"toSignInView");
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (buttonIndex == 1 && alertView.tag == 100) {
+        [self signAccount];
+    }
 }
 
 #pragma mark UITableViewdDataSource UITableViewDelegate
@@ -185,8 +428,63 @@
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     NSInteger row = indexPath.row;
     NSInteger section = indexPath.section;
-    
     NSLog(@"row = %ld , section = %ld",row,section);
+    
+    NSString *viewControllerClass = nil;
+    @try {
+        viewControllerClass = viewControllerArray[row];
+    } @catch (NSException *exception) {
+        
+    } @finally {
+        
+    }
+    id myObj = [[NSClassFromString(viewControllerClass) alloc] init];
+    UIViewController *myVC = nil;
+    if ([myObj isKindOfClass:[UIViewController class]]) {
+        myVC = myObj;
+        myVC.hidesBottomBarWhenPushed = YES;
+    }
+    switch (row) {
+        case 0:
+        {
+            //被受护人信息
+            
+            break;
+        }
+        case 1:{
+            //护理报告
+            break;
+        }
+        case 2:{
+            //订单中心
+            break;
+        }
+        case 3:{
+            //积分商城
+            [self showHint:@"该功能尚未开通"];
+            break;
+        }
+        case 4:{
+            //收藏夹
+            break;
+        }
+        case 5:{
+            //我的邀请
+            break;
+        }
+        case 6:{
+            //关于我们
+            break;
+        }
+        case 7:{
+            //投诉建议
+            break;
+        }
+        
+        default:
+            break;
+    }
+    [self.navigationController pushViewController:myVC animated:YES];
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
