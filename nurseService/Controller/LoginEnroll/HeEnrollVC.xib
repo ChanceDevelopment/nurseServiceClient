@@ -14,9 +14,10 @@
                 <outlet property="accountField" destination="TlE-9I-nWg" id="ocl-aH-vxb"/>
                 <outlet property="agreeButton" destination="Eob-ai-uKt" id="92e-je-d6q"/>
                 <outlet property="codeField" destination="bT9-0f-bK0" id="Hht-OA-AbU"/>
-                <outlet property="finishButton" destination="pZO-6v-9So" id="PhQ-Ep-XLi"/>
+                <outlet property="finishButton" destination="YBC-hi-YYX" id="inN-oZ-POm"/>
                 <outlet property="getCodeButton" destination="fDH-83-S0f" id="DK8-hP-7eH"/>
                 <outlet property="inviteCodeField" destination="SjC-Cr-jB7" id="sDu-XB-RuY"/>
+                <outlet property="myScrollView" destination="OaX-tu-mU3" id="eUu-De-2U8"/>
                 <outlet property="nickField" destination="bQq-zK-LoZ" id="pPj-1L-xHS"/>
                 <outlet property="passwordField" destination="jnx-u6-TTy" id="9H2-AI-pF8"/>
                 <outlet property="securityButton" destination="dUS-mb-5MS" id="FuN-Dr-X2l"/>
@@ -115,7 +116,7 @@
                             </constraints>
                             <fontDescription key="fontDescription" type="system" pointSize="12"/>
                             <state key="normal" title="获取验证码">
-                                <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="titleColor" red="0.59607843140000005" green="0.26274509800000001" blue="0.55294117649999996" alpha="1" colorSpace="calibratedRGB"/>
                             </state>
                             <connections>
                                 <action selector="getCodeButtonClick:" destination="-1" eventType="touchUpInside" id="rAE-xX-aon"/>
@@ -196,19 +197,6 @@
                             <color key="textColor" red="0.74509803919999995" green="0.75686274509999996" blue="0.79215686269999996" alpha="1" colorSpace="calibratedRGB"/>
                             <nil key="highlightedColor"/>
                         </label>
-                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pZO-6v-9So">
-                            <rect key="frame" x="0.0" y="627" width="375" height="40"/>
-                            <color key="backgroundColor" red="0.59607843140000005" green="0.26274509800000001" blue="0.55294117649999996" alpha="1" colorSpace="calibratedRGB"/>
-                            <constraints>
-                                <constraint firstAttribute="height" constant="40" id="yR0-ma-nNi"/>
-                            </constraints>
-                            <state key="normal" title="完成">
-                                <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                            </state>
-                            <connections>
-                                <action selector="finishButtonClick:" destination="-1" eventType="touchUpInside" id="6LV-s4-lI5"/>
-                            </connections>
-                        </button>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dUS-mb-5MS">
                             <rect key="frame" x="325" y="134" width="30" height="25"/>
                             <constraints>
@@ -216,6 +204,7 @@
                                 <constraint firstAttribute="height" constant="25" id="dLI-Hf-7yE"/>
                             </constraints>
                             <state key="normal" title="Button" image="icon_closeeyes.png"/>
+                            <state key="selected" image="icon_openeyes.png"/>
                             <state key="highlighted" image="icon_openeyes.png"/>
                             <connections>
                                 <action selector="securityButtonClick:" destination="-1" eventType="touchUpInside" id="zLo-Aw-tJf"/>
@@ -229,7 +218,6 @@
                         <constraint firstItem="5yJ-eb-3jg" firstAttribute="top" secondItem="jnx-u6-TTy" secondAttribute="bottom" id="4Ay-hA-7Wy"/>
                         <constraint firstItem="V1R-G3-4n7" firstAttribute="top" secondItem="bQq-zK-LoZ" secondAttribute="bottom" id="4yD-Wl-VM8"/>
                         <constraint firstAttribute="trailing" secondItem="jnx-u6-TTy" secondAttribute="trailing" constant="90" id="5Tq-KB-W1U"/>
-                        <constraint firstAttribute="bottom" secondItem="pZO-6v-9So" secondAttribute="bottom" id="5hJ-Ni-xtN"/>
                         <constraint firstItem="SjC-Cr-jB7" firstAttribute="leading" secondItem="OaX-tu-mU3" secondAttribute="leading" constant="20" id="81l-tg-Hji"/>
                         <constraint firstItem="ffW-wF-e6t" firstAttribute="top" secondItem="TlE-9I-nWg" secondAttribute="bottom" id="8EZ-XT-Gu6"/>
                         <constraint firstItem="bQq-zK-LoZ" firstAttribute="top" secondItem="5yJ-eb-3jg" secondAttribute="bottom" id="9Pr-mh-9ak"/>
@@ -238,7 +226,6 @@
                         <constraint firstItem="jnx-u6-TTy" firstAttribute="leading" secondItem="OaX-tu-mU3" secondAttribute="leading" constant="20" id="CZT-w2-nEv"/>
                         <constraint firstItem="TlE-9I-nWg" firstAttribute="leading" secondItem="OaX-tu-mU3" secondAttribute="leading" constant="20" id="FjV-E3-Psw"/>
                         <constraint firstItem="oI3-Gg-kEQ" firstAttribute="leading" secondItem="Eob-ai-uKt" secondAttribute="trailing" id="I8x-TB-n3S"/>
-                        <constraint firstAttribute="trailing" secondItem="pZO-6v-9So" secondAttribute="trailing" id="JLZ-Ln-mif"/>
                         <constraint firstAttribute="trailing" secondItem="fDH-83-S0f" secondAttribute="trailing" constant="20" id="JPR-YC-9kN"/>
                         <constraint firstItem="5yJ-eb-3jg" firstAttribute="leading" secondItem="OaX-tu-mU3" secondAttribute="leading" constant="20" id="KV1-o8-F72"/>
                         <constraint firstAttribute="trailing" secondItem="5yJ-eb-3jg" secondAttribute="trailing" constant="20" id="LDa-EI-37C"/>
@@ -270,17 +257,33 @@
                         <constraint firstAttribute="trailing" secondItem="V1R-G3-4n7" secondAttribute="trailing" constant="20" id="siH-E5-H4C"/>
                         <constraint firstItem="d9W-Y3-Al7" firstAttribute="top" secondItem="Fjc-EG-cUf" secondAttribute="bottom" constant="8" id="uWY-Zn-zpC"/>
                         <constraint firstAttribute="trailing" secondItem="bQq-zK-LoZ" secondAttribute="trailing" constant="20" id="uuM-nx-Czy"/>
-                        <constraint firstItem="pZO-6v-9So" firstAttribute="leading" secondItem="OaX-tu-mU3" secondAttribute="leading" id="wcP-g1-fc0"/>
                         <constraint firstItem="mdQ-C6-sNP" firstAttribute="top" secondItem="Fjc-EG-cUf" secondAttribute="bottom" constant="8" id="xRH-dR-Vfm"/>
                     </constraints>
                 </scrollView>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YBC-hi-YYX">
+                    <rect key="frame" x="0.0" y="627" width="375" height="40"/>
+                    <color key="backgroundColor" red="0.59607843140000005" green="0.26274509800000001" blue="0.55294117649999996" alpha="1" colorSpace="calibratedRGB"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="40" id="8jf-sJ-mPI"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <state key="normal" title="完成">
+                        <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </state>
+                    <connections>
+                        <action selector="finishButtonClick:" destination="-1" eventType="touchUpInside" id="TJN-IY-cfR"/>
+                    </connections>
+                </button>
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
+                <constraint firstAttribute="trailing" secondItem="YBC-hi-YYX" secondAttribute="trailing" id="FUS-ya-xsT"/>
+                <constraint firstItem="YBC-hi-YYX" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="Wbz-Nd-p76"/>
                 <constraint firstItem="OaX-tu-mU3" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="dbv-qy-aEp"/>
                 <constraint firstAttribute="bottom" secondItem="OaX-tu-mU3" secondAttribute="bottom" id="gZN-iD-sjt"/>
                 <constraint firstAttribute="trailing" secondItem="OaX-tu-mU3" secondAttribute="trailing" id="m7M-mN-TKy"/>
                 <constraint firstItem="OaX-tu-mU3" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="pJl-iM-thK"/>
+                <constraint firstAttribute="bottom" secondItem="YBC-hi-YYX" secondAttribute="bottom" id="pym-GQ-iYf"/>
             </constraints>
             <point key="canvasLocation" x="24.5" y="33.5"/>
         </view>

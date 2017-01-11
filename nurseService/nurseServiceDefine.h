@@ -59,9 +59,15 @@
 //友盟iPad的key
 #define UMANALYSISKEY_HD @"587195a065b6d624cf001b68"
 
+//成功获取当前城市
+#define kGetCitySucceedNotification @"GetCitySucceedNotification"
+//上次定位的城市
+#define kPreLocationCityKey @"preLocationCityKey"
+
 //添加被受保护人信息成功通知
 #define kAddProtectedUserInfoNotification @"AddProtectedUserInfoNotification"
 
+#define kLoadLeftMenuNotification @"loadLeftMenuSucceed"
 //登录状态发生变化的通知
 #define KNOTIFICATION_LOGINCHANGE @"loginStateChange"
 
@@ -77,7 +83,10 @@
 //用户的ID userid
 #define USERIDKEY @"userIDKey"
 #define USERTOKENKEY @"userTokenKey"
+//用户的资料
+#define kUserDataKey @"userDataKey"
 #define USERACCOUNTKEY @"userAccountKey"
+//用户的登录账号
 #define USERPASSWORDKEY @"userPasswordKey"
 #define USERHAVELOGINKEY @"userHaveLogin"
 #define FRIENDLISTDOWNLOADSUCCEED @"friendDownloadSucceed"

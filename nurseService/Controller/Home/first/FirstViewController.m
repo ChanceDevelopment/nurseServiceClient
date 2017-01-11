@@ -17,17 +17,30 @@
 #import "MJRefreshNormalHeader.h"
 #import "ImageScale.h"
 #import "HeServiceDetailVC.h"
+#import "HeBookServiceVC.h"
+#import "HYPageView.h"
+
+#define LBBannerTag 100
+#define HeadTag  200
+
 
 @interface FirstViewController ()<LBBannerDelegate,UITableViewDelegate,UITableViewDataSource>
 {
     NSInteger addStatusBarHeight;
+    NSMutableArray *bannerDataSource;
+    NSInteger pageNum;
+    UIButton *locationButton;
 }
 @property(strong,nonatomic)IBOutlet UITableView *tableview;
+@property(strong,nonatomic)NSMutableArray *datSource;
+@property(strong,nonatomic)NSCache *imageCache;
 
 @end
 
 @implementation FirstViewController
 @synthesize tableview;
+@synthesize datSource;
+@synthesize imageCache;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -53,11 +66,19 @@
     // Do any additional setup after loading the view from its nib.
     [self initializaiton];
     [self initView];
+    //加载轮播
+    [self loadBannerImage];
+    //加载精品推荐
+    [self loadRecommendService];
 }
 
 - (void)initializaiton
 {
     [super initializaiton];
+    bannerDataSource = [[NSMutableArray alloc] initWithCapacity:0];
+    datSource = [[NSMutableArray alloc] initWithCapacity:0];
+    imageCache = [[NSCache alloc] init];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getCitySucceed:) name:kGetCitySucceedNotification object:nil];
 }
 
 - (void)initView
@@ -66,10 +87,6 @@
     
     tableview.separatorStyle = UITableViewCellSeparatorStyleNone;
     UIImage *menuIcon = [UIImage imageNamed:@"icon_list"];
-//    CGFloat menuButtonH = 25;
-//    CGFloat menuButtonW = menuIcon.size.width / menuIcon.size.height * menuButtonH;
-//    UIButton *menuButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, menuButtonW, menuButtonH)];
-//    [menuButton addTarget:self action:@selector(menuButtonClick:) forControlEvents:UIControlEventTouchUpInside];
     
     UIBarButtonItem *menuItem = [[UIBarButtonItem alloc] init];
     menuItem.image = menuIcon;
@@ -77,13 +94,17 @@
     menuItem.action = @selector(menuButtonClick:);
     self.navigationItem.leftBarButtonItem = menuItem;
     
+    NSString *citystring = [[NSUserDefaults standardUserDefaults] objectForKey:kPreLocationCityKey];
+    if (citystring == nil || [citystring isEqualToString:@""]) {
+        citystring = @"杭州市";
+    }
     CGFloat addressButtonH = 25;
     CGFloat addressButtonW = 80;
     UIButton *addressButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, addressButtonW, addressButtonH)];
     [addressButton addTarget:self action:@selector(addressButtonClick:) forControlEvents:UIControlEventTouchUpInside];
     addressButton.titleLabel.font = [UIFont systemFontOfSize:13.0];
     [addressButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    [addressButton setTitle:@"杭州市" forState:UIControlStateNormal];
+    [addressButton setTitle:citystring forState:UIControlStateNormal];
     UIImage *arrowImage = [UIImage imageNamed:@"icon_white_down"];
     [addressButton setImage:arrowImage forState:UIControlStateNormal];
     // 设置按钮图片偏移
@@ -91,11 +112,14 @@
     [addressButton setTitleEdgeInsets:UIEdgeInsetsMake(0.0,-addressButton.imageView.bounds.size.width, 0.0,addressButton.imageView.bounds.size.width)];
     [addressButton setImageEdgeInsets:UIEdgeInsetsMake(0.0, addressButton.titleLabel.bounds.size.width, 0.0, -addressButton.titleLabel.bounds.size.width)];
     
+    locationButton = addressButton;
+    
     UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] initWithCustomView:addressButton];
     self.navigationItem.rightBarButtonItem = rightItem;
     
     CGFloat headerHeight = 300;
     UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, headerHeight)];
+    headerView.tag = HeadTag;
     headerView.backgroundColor = [UIColor colorWithWhite:237.0 / 255.0 alpha:1.0];
     
     
@@ -103,6 +127,7 @@
     CGFloat bannerHeight = 180;
     NSArray * imageNames = @[@"index1", @"index2"];
     LBBanner * banner = [[LBBanner alloc] initWithImageNames:imageNames andFrame:CGRectMake(0, 0, SCREENWIDTH, bannerHeight)];
+    banner.tag = LBBannerTag;
     banner.delegate = self;
     
     [headerView addSubview:banner];
@@ -126,17 +151,31 @@
     
     self.tableview.tableHeaderView = headerView;
     
+    __weak FirstViewController *weakSelf = self;
     self.tableview.header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
         // 进入刷新状态后会自动调用这个block,刷新
-        [self.tableview.header performSelector:@selector(endRefreshing) withObject:nil afterDelay:1.0];
+        [weakSelf.tableview.header performSelector:@selector(endRefreshing) withObject:nil afterDelay:1.0];
+        pageNum = 0;
+        [weakSelf loadRecommendService];
     }];
     
     self.tableview.footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
         self.tableview.footer.automaticallyHidden = YES;
         self.tableview.footer.hidden = NO;
         // 进入刷新状态后会自动调用这个block，加载更多
-        [self performSelector:@selector(endRefreshing) withObject:nil afterDelay:1.0];
+        [weakSelf performSelector:@selector(endRefreshing) withObject:nil afterDelay:1.0];
+        pageNum++;
+        [weakSelf loadRecommendService];
+        
     }];
+}
+
+- (void)getCitySucceed:(NSNotification *)notification
+{
+    NSString *city = notification.object;
+    [locationButton setTitle:city forState:UIControlStateNormal];    // 设置按钮图片偏移
+    [locationButton setTitleEdgeInsets:UIEdgeInsetsMake(0.0,-locationButton.imageView.bounds.size.width, 0.0,locationButton.imageView.bounds.size.width)];
+    [locationButton setImageEdgeInsets:UIEdgeInsetsMake(0.0, locationButton.titleLabel.bounds.size.width, 0.0, -locationButton.titleLabel.bounds.size.width)];
 }
 
 - (void)endRefreshing
@@ -150,6 +189,71 @@
         [self performSelector:@selector(endRefreshing) withObject:nil afterDelay:1.0];
     }];
     NSLog(@"endRefreshing");
+}
+
+//加载轮播图
+- (void)loadBannerImage
+{
+    NSString *requestUrl = [NSString stringWithFormat:@"%@/khdManage/rollPicList.action",BASEURL];
+    NSDictionary * params  = @{@"1": @"1"};
+    [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
+        NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
+        if (pageNum == 0) {
+            [datSource removeAllObjects];
+        }
+        NSMutableDictionary *respondDict = [NSMutableDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
+        if ([[respondDict valueForKey:@"errorCode"] integerValue] == REQUESTCODE_SUCCEED){
+            NSArray *jsonArray = respondDict[@"json"];
+            NSMutableArray *imageUrlArray = [[NSMutableArray alloc] initWithCapacity:0];
+            
+            for (NSDictionary *dict in jsonArray) {
+                [bannerDataSource addObject:dict];
+                NSString *rollPicUrl = dict[@"rollPicUrl"];
+                if ([rollPicUrl isMemberOfClass:[NSNull class]] || rollPicUrl == nil) {
+                    rollPicUrl = @"";
+                }
+                rollPicUrl = [NSString stringWithFormat:@"%@/%@",HYTIMAGEURL,rollPicUrl];
+                [imageUrlArray addObject:rollPicUrl];
+                
+            }
+            CGFloat bannerHeight = 180;
+            LBBanner *banner1 = [tableview.tableHeaderView viewWithTag:LBBannerTag];
+            LBBanner *banner = [[LBBanner alloc] initWithImageURLArray:imageUrlArray andFrame:CGRectMake(0, 0, SCREENWIDTH, bannerHeight)];
+            banner.tag = LBBannerTag;
+            banner.delegate = self;
+            [tableview.tableHeaderView addSubview:banner];
+            [banner1 removeFromSuperview];
+            
+            
+        }
+    } failure:^(NSError* err){
+        
+    }];
+}
+
+//加载精品推荐
+- (void)loadRecommendService
+{
+    NSString *requestUrl = [NSString stringWithFormat:@"%@/khdManage/goodServiceRecommendList.action",BASEURL];
+    NSString *pageNumString = [NSString stringWithFormat:@"%ld",pageNum];
+    NSDictionary * params  = @{@"pageNum": pageNumString};
+    [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
+        NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
+        [bannerDataSource removeAllObjects];
+        NSMutableDictionary *respondDict = [NSMutableDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
+        if ([[respondDict valueForKey:@"errorCode"] integerValue] == REQUESTCODE_SUCCEED){
+            NSArray *jsonArray = respondDict[@"json"];
+            if ([jsonArray isMemberOfClass:[NSNull class]]) {
+                return;
+            }
+            for (id dict in jsonArray) {
+                [datSource addObject:dict];
+            }
+            [tableview reloadData];
+        }
+    } failure:^(NSError* err){
+        
+    }];
 }
 
 //添加按钮
@@ -207,6 +311,9 @@
 {
     if (button.tag == 0) {
         NSLog(@"护士上门");
+        //展示左边菜单
+        RESideMenu *resideMenuVC = (RESideMenu *)((AppDelegate *)[UIApplication sharedApplication].delegate).viewController;
+        [resideMenuVC presentLeftMenuViewController];
     }
     else{
         NSLog(@"私人定制");
@@ -232,6 +339,15 @@
 #pragma mark LBBannerDelegate
 - (void)banner:(LBBanner *)banner didClickViewWithIndex:(NSInteger)index {
     NSLog(@"didClickViewWithIndex:%ld", index);
+    NSDictionary *dict = nil;
+    @try {
+        dict = bannerDataSource[index];
+    } @catch (NSException *exception) {
+        
+    } @finally {
+        
+    }
+    [self bookServiceWithDict:dict];
 }
 
 - (void)banner:(LBBanner *)banner didChangeViewWithIndex:(NSInteger)index {
@@ -242,7 +358,7 @@
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 5;
+    return [datSource count];
 }
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -253,6 +369,7 @@
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NSInteger row = indexPath.row;
+    NSInteger section = indexPath.section;
     
     static NSString *cellIndentifier = @"HomePageTableCell";
     CGSize cellSize = [tableView rectForRowAtIndexPath:indexPath].size;
@@ -263,9 +380,29 @@
         cell = [[HomePageTableCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIndentifier cellSize:cellSize];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
+    @try {
+        dict = datSource[row];
+    } @catch (NSException *exception) {
+        
+    } @finally {
+        
+    }
+    NSString *goodServiceRecommendContentPic = dict[@"goodServiceRecommendContentPic"];
+    if ([goodServiceRecommendContentPic isMemberOfClass:[NSNull class]] || goodServiceRecommendContentPic == nil) {
+        goodServiceRecommendContentPic = @"";
+    }
+    goodServiceRecommendContentPic = [NSString stringWithFormat:@"%@/%@",HYTIMAGEURL,goodServiceRecommendContentPic];
+    NSString *imageKey = [NSString stringWithFormat:@"%@_%ld",goodServiceRecommendContentPic,row];
+    UIImageView *imageview = [imageCache objectForKey:imageKey];
+    if (!imageview) {
+        [cell.bgImage sd_setImageWithURL:[NSURL URLWithString:goodServiceRecommendContentPic] placeholderImage:[UIImage imageNamed:@"index2"]];
+        imageview = cell.bgImage;
+    }
+    cell.bgImage = imageview;
+    [cell addSubview:cell.bgImage];
+    
     
     return cell;
-    return nil;
 }
 
 
@@ -284,10 +421,47 @@
     NSInteger row = indexPath.row;
     NSInteger section = indexPath.section;
     NSLog(@"section = %ld, row = %ld",section,row);
+    NSDictionary *dict = nil;
+    @try {
+        dict = datSource[row];
+    } @catch (NSException *exception) {
+        
+    } @finally {
+        
+    }
+    NSLog(@"dict = %@",dict);
+    [self bookServiceWithDict:dict];
+}
+
+- (void)bookServiceWithDict:(NSDictionary *)dict
+{
+    //总控制器，控制商品、详情、评论三个子控制器
+    HeBookServiceVC *serviceDetailVC = [[HeBookServiceVC alloc] init];
+    [self.navigationController setNavigationBarHidden:YES animated:YES];
+    [serviceDetailVC.view addSubview:[self getPageView]];
+    [self showViewController:serviceDetailVC sender:nil];
+}
+
+- (HYPageView *)getPageView {
     
-    HeServiceDetailVC *serviceDetailVC = [[HeServiceDetailVC alloc] init];
-    serviceDetailVC.hidesBottomBarWhenPushed = YES;
-    [self.navigationController pushViewController:serviceDetailVC animated:YES];
+    HYPageView *pageView = [[HYPageView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, SCREENHEIGH) withTitles:@[@"商品",@"详情",@"评论"] withViewControllers:@[@"HeServiceDetailVC",@"HeServiceInfoVC",@"HeCommentVC"] withParameters:@[@"123",@"这是一片很寂寞的天"]];
+    pageView.isTranslucent = NO;
+    pageView.topTabBottomLineColor = [UIColor whiteColor];
+    pageView.selectedColor = [UIColor whiteColor];
+    pageView.unselectedColor = [UIColor whiteColor];
+    UIButton *backImage = [[UIButton alloc] init];
+    [backImage setBackgroundImage:[UIImage imageNamed:@"navigationBar_back_icon"] forState:UIControlStateNormal];
+    [backImage addTarget:self action:@selector(backItemClick:) forControlEvents:UIControlEventTouchUpInside];
+    
+    backImage.frame = CGRectMake(0, 0, 25, 25);
+    pageView.leftButton = backImage;
+    
+    return pageView;
+}
+
+- (void)backItemClick:(id)sender
+{
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
@@ -328,6 +502,10 @@
     return headerView;
 }
 
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kGetCitySucceedNotification object:nil];
+}
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.

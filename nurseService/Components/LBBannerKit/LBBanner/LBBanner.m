@@ -136,6 +136,9 @@
     dispatch_async(network_queue, ^{
         for (NSString * imageURL in imageURLArray) {
             UIImage * image = [self loadMyImageFromNetwork:imageURL];
+            if (image == nil) {
+                image = [UIImage imageNamed:@"index2"];
+            }
             [self.images addObject:image];
         }
         

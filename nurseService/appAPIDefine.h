@@ -9,15 +9,22 @@
 #ifndef appAPIDefine_h
 #define appAPIDefine_h
 
-#define FL_URL @"http://huayoutong.com/mobile/"
-#define BASEURL @"http://huayoutong.com/mobile/"
-#define WEBBASEURL @"http://huayoutong.com/mobilex/"
+#define FL_URL @"http://118.178.186.59:8080/nurseDoor/"
+#define BASEURL @"http://118.178.186.59:8080/nurseDoor/"
+#define WEBBASEURL @"http://118.178.186.59:8080/nurseDoor/"
 //华幼通图片服务器
-#define HYTIMAGEURL @"http://image.huayoutong.com/"
+#define HYTIMAGEURL @"http://118.178.186.59:8080/"
 //七牛图片服务器
 #define QNIMAGEURL @"http://7xr4f5.com2.z0.glb.qiniucdn.com/"
 //分享页面的地址
 #define SHAREPAGEWEBSITE @"http://huayoutong.com/mobilex/view/share"
+
+
+
+//------------------------------
+
+#define PIC_URL @"http://118.178.186.59:8080/"
+#define API_URL @"http://118.178.186.59:8080/nurseDoor/"
 
 //登录
 #define LOGINURL @"newapp_login"

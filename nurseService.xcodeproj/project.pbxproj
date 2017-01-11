@@ -97,6 +97,7 @@
 		EA34D7A91E236C1D00CD8BC5 /* UWDatePickerView.m in Sources */ = {isa = PBXBuildFile; fileRef = EA34D7A71E236C1D00CD8BC5 /* UWDatePickerView.m */; };
 		EA34D7AA1E236C1D00CD8BC5 /* UWDatePickerView.xib in Resources */ = {isa = PBXBuildFile; fileRef = EA34D7A81E236C1D00CD8BC5 /* UWDatePickerView.xib */; };
 		EA34D7AD1E236E7200CD8BC5 /* HeServiceTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = EA34D7AC1E236E7200CD8BC5 /* HeServiceTableCell.m */; };
+		EA83E5601E25DEBC005E2281 /* leftMenu.plist in Resources */ = {isa = PBXBuildFile; fileRef = EA83E55F1E25DEBC005E2281 /* leftMenu.plist */; };
 		EA899E181E23CB910008AA01 /* HYPageView.m in Sources */ = {isa = PBXBuildFile; fileRef = EA899E171E23CB910008AA01 /* HYPageView.m */; };
 		EA899E1C1E23CD330008AA01 /* HeBookServiceVC.m in Sources */ = {isa = PBXBuildFile; fileRef = EA899E1A1E23CD330008AA01 /* HeBookServiceVC.m */; };
 		EA899E1D1E23CD330008AA01 /* HeBookServiceVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = EA899E1B1E23CD330008AA01 /* HeBookServiceVC.xib */; };
@@ -787,6 +788,7 @@
 		EA34D7A81E236C1D00CD8BC5 /* UWDatePickerView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = UWDatePickerView.xib; sourceTree = "<group>"; };
 		EA34D7AB1E236E7200CD8BC5 /* HeServiceTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HeServiceTableCell.h; sourceTree = "<group>"; };
 		EA34D7AC1E236E7200CD8BC5 /* HeServiceTableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HeServiceTableCell.m; sourceTree = "<group>"; };
+		EA83E55F1E25DEBC005E2281 /* leftMenu.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = leftMenu.plist; sourceTree = "<group>"; };
 		EA899E161E23CB910008AA01 /* HYPageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HYPageView.h; sourceTree = "<group>"; };
 		EA899E171E23CB910008AA01 /* HYPageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HYPageView.m; sourceTree = "<group>"; };
 		EA899E191E23CD330008AA01 /* HeBookServiceVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HeBookServiceVC.h; sourceTree = "<group>"; };
@@ -2564,6 +2566,7 @@
 				EAC2D4291D4B031500E282A8 /* main.m */,
 				EAC2D99E1D4B06AC00E282A8 /* nurseService-Prefix.pch */,
 				EAC2D99F1D4B06CE00E282A8 /* nurseServiceDefine.h */,
+				EA83E55F1E25DEBC005E2281 /* leftMenu.plist */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -4429,6 +4432,7 @@
 				ADCC61DB1DFA504A0065866C /* main_home_unselector@2x.png in Resources */,
 				EAC2D8C71D4B063B00E282A8 /* arrow_down1@2x.png in Resources */,
 				EA8C89BB1E21E7640093657B /* MyViewController.xib in Resources */,
+				EA83E5601E25DEBC005E2281 /* leftMenu.plist in Resources */,
 				EA899E2F1E23E2CB0008AA01 /* icon_star_yellow.png in Resources */,
 				EAC2D9521D4B063B00E282A8 /* btn_020.press@2x.png in Resources */,
 				EA899E221E23D4D10008AA01 /* HeCommentVC.xib in Resources */,
@@ -5159,8 +5163,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.channce.nurseServiceClient;
 				PRODUCT_NAME = "安心护";
-				PROVISIONING_PROFILE = "e8961a7c-ebdb-4c81-bc75-f03868eace11";
-				PROVISIONING_PROFILE_SPECIFIER = "20161229_ nurseServiceClient_Release";
+				PROVISIONING_PROFILE = "bdce073c-6dce-4d6d-9279-410e8a1d07b3";
+				PROVISIONING_PROFILE_SPECIFIER = 20170111_nurseServiceClient_Release;
 			};
 			name = Release;
 		};

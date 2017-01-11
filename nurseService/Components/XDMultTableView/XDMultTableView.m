@@ -122,7 +122,13 @@ static const CGFloat CELLHEIGHT = 44.0f;
         NSString *titleImg = [self invoke_titleImageForHeaderInSection:section];
         UIImageView *titleImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, (height-imgeW)/2, imgeW, imgeW)];
         titleImageView.contentMode = UIViewContentModeScaleAspectFit;
-        titleImageView.image = [UIImage imageNamed:titleImg];
+        if ([titleImg hasPrefix:@"http"]) {
+            [titleImageView sd_setImageWithURL:[NSURL URLWithString:titleImg] placeholderImage:nil];
+        }
+        else{
+            titleImageView.image = [UIImage imageNamed:titleImg];
+        }
+        
         [view addSubview:titleImageView];
         
         NSString *title = [self invoke_titleForHeaderInSection:section];

@@ -13,10 +13,14 @@
 #import "OrderViewController.h"
 #import "MyViewController.h"
 
+
 @interface HeTabBarVC : RDVTabBarController<UIAlertViewDelegate>
+
+
 @property(strong,nonatomic)FirstViewController *homePageVC;
 @property(strong,nonatomic)NurseViewController *nurseVC;
 @property(strong,nonatomic)OrderViewController *orderVC;
 @property(strong,nonatomic)MyViewController *userVC;
+
 
 @end

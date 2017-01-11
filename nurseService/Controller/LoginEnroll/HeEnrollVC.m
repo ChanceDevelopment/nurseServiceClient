@@ -13,6 +13,7 @@
 
 @interface HeEnrollVC ()<UITextFieldDelegate,UINavigationControllerDelegate,UIImagePickerControllerDelegate,UIActionSheetDelegate>{
     NSString *encodedImageStr;
+    BOOL agreeProtocol;
 }
 @property(strong,nonatomic)IBOutlet UITextField *accountField;
 @property(strong,nonatomic)IBOutlet UITextField *codeField;
@@ -25,6 +26,7 @@
 @property(strong,nonatomic)IBOutlet UIButton *agreeButton;
 @property(strong,nonatomic)IBOutlet UIButton *finishButton;
 @property(strong,nonatomic)UIImage *userImage;
+@property(strong,nonatomic)IBOutlet UIScrollView *myScrollView;
 
 @end
 
@@ -40,6 +42,7 @@
 @synthesize agreeButton;
 @synthesize finishButton;
 @synthesize userImage;
+@synthesize myScrollView;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -69,6 +72,7 @@
 - (void)initializaiton
 {
     [super initializaiton];
+    agreeProtocol = NO;
 }
 
 - (void)initView
@@ -96,33 +100,39 @@
         [self showHint:@"请输入正确的手机号"];
         return;
     }
+    [sender startWithTime:60 title:@"获取验证码" countDownTitle:@"s" mainColor:[UIColor whiteColor] countColor:[UIColor whiteColor]];
     
-    [sender startWithTime:60 title:@"获取验证码" countDownTitle:@"s" mainColor:APPDEFAULTORANGE countColor:[UIColor lightGrayColor]];
-    //获取注册手机号的验证码
-    NSString *zone = @"86"; //区域号
-    NSString *phoneNumber = accountField.text;
-    [SMSSDK getVerificationCodeByMethod:SMSGetCodeMethodSMS phoneNumber:phoneNumber
-                                   zone:zone
-                       customIdentifier:nil
-                                 result:^(NSError *error)
-     {
-         [self hideHud];
-         if (!error)
-         {
-             [self showHint:@"验证码已发送，请注意查收!"];
-         }
-         else
-         {
-             NSString *errorString = [NSString stringWithFormat:@"错误描述：%@",[error.userInfo objectForKey:@"getVerificationCode"]];
-             [self showHint:errorString];
-         }
-     }];
+    NSString *requestUrl = [NSString stringWithFormat:@"%@/nurseAnduser/sendSmsCode.action",BASEURL];
+    NSDictionary * params  = @{@"Phone": userPhone};
+    [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
+        NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
+        
+        NSMutableDictionary *respondDict = [NSMutableDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
+        NSInteger errorCode = [[respondDict objectForKey:@"errorCode"] integerValue];
+        if (errorCode == REQUESTCODE_SUCCEED) {
+            [self showHint:@"验证码已发送"];
+        }
+        else{
+            [self hideHud];
+            NSString *data = [respondDict objectForKey:@"data"];
+            if ([data isMemberOfClass:[NSNull class]] || data == nil) {
+                data = @"登录失败!";
+            }
+            [self showHint:data];
+        }
+        
+        
+    } failure:^(NSError* err){
+        NSLog(@"err:%@",err);
+        [self.view makeToast:ERRORREQUESTTIP duration:2.0 position:@"center"];
+    }];
 }
 
 //同意协议按钮
 - (IBAction)agreeButtonClick:(UIButton *)sender
 {
     sender.selected = !sender.selected;
+    agreeProtocol = sender.selected;
 }
 
 //完成
@@ -141,7 +151,7 @@
         [self showHint:@"请输入正确的手机号"];
         return;
     }
-    if ((code == nil || [code isEqualToString:@""] || code.length != 6)) {
+    if ((code == nil || [code isEqualToString:@""])) {
         [self showHint:@"请输入验证码"];
         return;
     }
@@ -166,32 +176,50 @@
     if (userImage != nil) {
         headImageStr = encodedImageStr;
     }
-    
-    NSDictionary * params  = @{@"NurseName": userPhone,
-                               @"NursePwd" : password,
-                               @"NurseNick" : nick,
-                               @"NurseHeader" : headImageStr,
+    NSString *invitationcode = inviteCodeField.text;
+    if (invitationcode == nil) {
+        invitationcode = @"";
+    }
+    NSDictionary * params  = @{@"UserName": userPhone,
+                               @"UserPwd" : password,
+                               @"UserNick" : nick,
+                               @"UserHeader" : headImageStr,
+                               @"invitationcode" : invitationcode,
                                @"code" : code};
-    [AFHttpTool requestWihtMethod:RequestMethodTypePost url:REGISTERURL params:params success:^(AFHTTPRequestOperation* operation,id response){
+    NSString *requestUrl = [NSString stringWithFormat:@"%@/nurseAnduser/UserRegistered.action",BASEURL];
+    [self showHudInView:myScrollView hint:@"注册中..."];
+    [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
+        [self hideHud];
         NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
         NSLog(@"respondString:%@",respondString);
         NSMutableDictionary *respondDict = [NSMutableDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
         
-        [self.view makeToast:[NSString stringWithFormat:@"%@",[respondDict valueForKey:@"data"]] duration:1.2 position:@"center"];
+//        [self.view makeToast:[NSString stringWithFormat:@"%@",[respondDict valueForKey:@"data"]] duration:1.2 position:@"center"];
         if ([[[respondDict valueForKey:@"errorCode"] stringValue] isEqualToString:@"200"]) {
             NSLog(@"success");
-            [self.navigationController popViewControllerAnimated:YES];
-            
-        }else if ([[[respondDict valueForKey:@"errorCode"] stringValue] isEqualToString:@"400"]){
+            [self showHint:@"注册成功"];
+            [self performSelector:@selector(backPreView) withObject:nil afterDelay:0.5];
+        }else {
+            NSString *errorInfo = respondDict[@"data"];
+            if ([errorInfo isMemberOfClass:[NSNull class]]) {
+                errorInfo = ERRORREQUESTTIP;
+            }
+            [self showHint:errorInfo];
             NSLog(@"faile");
         }
 
         
     } failure:^(NSError* err){
         NSLog(@"err:%@",err);
+        [self hideHud];
         [self.view makeToast:ERRORREQUESTTIP duration:2.0 position:@"center"];
     }];
 
+}
+
+- (void)backPreView
+{
+    [self.navigationController popToRootViewControllerAnimated:YES];
 }
 
 //选择上传头像
@@ -212,7 +240,7 @@
 - (IBAction)securityButtonClick:(UIButton *)sender
 {
     sender.selected = !sender.selected;
-    passwordField.secureTextEntry = sender.selected;
+    passwordField.secureTextEntry = !sender.selected;
 }
 
 -(BOOL)textFieldShouldReturn:(UITextField *)textField
@@ -333,12 +361,14 @@
             data = UIImagePNGRepresentation(userImage);
         }
         
-        encodedImageStr = [data base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength];
-
+        NSData *base64Data = [GTMBase64 encodeData:data];
+        encodedImageStr = [[NSString alloc] initWithData:base64Data encoding:NSUTF8StringEncoding];
         
+//        encodedImageStr = [data base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength];
+
         [self dismissViewControllerAnimated:YES completion:^{
-            [uploadButton setBackgroundImage:userImage forState:UIControlStateNormal];
-            [uploadButton setBackgroundImage:userImage forState:UIControlStateHighlighted];
+            [uploadButton setImage:userImage forState:UIControlStateNormal];
+            [uploadButton setImage:userImage forState:UIControlStateHighlighted];
         }];
     }
 }

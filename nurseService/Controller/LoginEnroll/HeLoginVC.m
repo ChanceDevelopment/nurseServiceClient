@@ -79,9 +79,10 @@
         [self showHint:@"请输入正确的手机号码"];
         return;
     }
-    
-    NSDictionary * params  = @{@"NurseName": account,@"NursePwd" : password};
-    [AFHttpTool requestWihtMethod:RequestMethodTypePost url:LOGINURL params:params success:^(AFHTTPRequestOperation* operation,id response){
+    [self showHudInView:self.view hint:@"登录中..."];
+    NSString *requestUrl = [NSString stringWithFormat:@"%@/nurseAnduser/UserLogin.action",BASEURL];
+    NSDictionary * params  = @{@"UserName": account,@"UserPwd" : password};
+    [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
         NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
         
         NSMutableDictionary *respondDict = [NSMutableDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
@@ -101,15 +102,29 @@
                 }
             }
             NSLog(@"%@",nurseDic);
-            [[NSUserDefaults standardUserDefaults] setObject:nurseDic forKey:USERACCOUNTKEY];//本地存储
-            [[NSUserDefaults standardUserDefaults] setObject:[NSString stringWithFormat:@"%@",[userInfoDic valueForKey:@"nurseId"]] forKey:USERIDKEY];
-            [[NSUserDefaults standardUserDefaults] synchronize];//强制写入,保存数据
+            //用户的资料
+            NSString *userId = [userInfoDic valueForKey:@"nurseId"];
+            if ([userId isMemberOfClass:[NSNull class]] || userId == nil) {
+                userId = @"";
+            }
             
+            [[NSUserDefaults standardUserDefaults] setObject:account forKey:USERACCOUNTKEY];
+            [[NSUserDefaults standardUserDefaults] setObject:nurseDic forKey:kUserDataKey];
+            [[NSUserDefaults standardUserDefaults] setObject:userId forKey:USERIDKEY];
+            [[NSUserDefaults standardUserDefaults] setObject:password forKey:USERPASSWORDKEY];
+            
+            [[NSUserDefaults standardUserDefaults] synchronize];//强制写入,保存数据
             [[NSNotificationCenter defaultCenter] postNotificationName:KNOTIFICATION_LOGINCHANGE object:@YES];
-        }else if ([[[respondDict valueForKey:@"errorCode"] stringValue] isEqualToString:@"400"]){
+        }else{
+            NSString *errorInfo = [respondDict valueForKey:@"data"];
+            if ([errorInfo isMemberOfClass:[NSNull class]] || errorInfo == nil) {
+                errorInfo = ERRORREQUESTTIP;
+            }
+            [self showHint:errorInfo];
+            
             NSLog(@"faile");
         }
-        [self.view makeToast:[NSString stringWithFormat:@"%@",[respondDict valueForKey:@"data"]] duration:1.2 position:@"center"];
+        
         
         
     } failure:^(NSError* err){
