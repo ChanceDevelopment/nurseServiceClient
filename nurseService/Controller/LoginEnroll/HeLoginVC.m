@@ -64,6 +64,14 @@
 
 - (IBAction)loginButtonClick:(id)sender
 {
+    if ([accountField isFirstResponder]) {
+        [accountField resignFirstResponder];
+        
+    }
+    if ([passwordField isFirstResponder]) {
+        [passwordField resignFirstResponder];
+       
+    }
     
     NSString *account = [accountField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
     NSString *password = passwordField.text;
@@ -85,7 +93,7 @@
     [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
         NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
         
-        NSMutableDictionary *respondDict = [NSMutableDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
+        NSDictionary *respondDict = [NSDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
         if ([[[respondDict valueForKey:@"errorCode"] stringValue] isEqualToString:@"200"]) {
             NSLog(@"success");
 
@@ -103,7 +111,7 @@
             }
             NSLog(@"%@",nurseDic);
             //用户的资料
-            NSString *userId = [userInfoDic valueForKey:@"nurseId"];
+            NSString *userId = [userInfoDic valueForKey:@"userId"];
             if ([userId isMemberOfClass:[NSNull class]] || userId == nil) {
                 userId = @"";
             }

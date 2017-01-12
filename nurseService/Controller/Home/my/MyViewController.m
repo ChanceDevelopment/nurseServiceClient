@@ -23,6 +23,7 @@
 #import "HeMessageVC.h"
 
 #define InviteLabelTag 100
+#define SignButtonTag 200
 
 @interface MyViewController ()<UITableViewDataSource,UITableViewDelegate,UIAlertViewDelegate>
 {
@@ -36,6 +37,7 @@
 @property(strong,nonatomic)UILabel *balanceNumLabel;
 @property(strong,nonatomic)UILabel *couponNumLabel;
 @property(strong,nonatomic)UILabel *pointNumLabel;
+@property(strong,nonatomic)User *userInfoModel;
 
 @end
 
@@ -44,6 +46,7 @@
 @synthesize balanceNumLabel;
 @synthesize couponNumLabel;
 @synthesize pointNumLabel;
+@synthesize userInfoModel;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -68,6 +71,7 @@
     
     [self initialization];
     [self initView];
+    [self loadUserOtherInfo];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -90,6 +94,7 @@
     iconArr = @[@"icon_protected_person_gray",@"icon_report_gray",@"icon_order_center_gray",@"icon_integral_mall_gray",@"icon_favorites_gray",@"icon_myinvite_gray",@"icon_aboutus_gray",@"icon_advice_gray"];
     tableItemArr = @[@"被受护人信息",@"护理报告",@"订单中心",@"积分商城",@"收藏夹",@"我的邀请",@"关于我们",@"投诉建议"];
     viewControllerArray = @[@"HeProtectedUserInfoVC",@"HeOrderReportVC",@"HeUserOrderVC",@"HePointMarketVC",@"HeUserFavouriteVC",@"HeUserInviteVC",@"HeAboutUsVC",@"HeReportVC"];
+    userInfoModel = [HeSysbsModel getSysModel].user;
 
 }
 
@@ -148,6 +153,10 @@
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(scanUserInfo:)];
     [portrait addGestureRecognizer:tap];
 
+    NSString *userHeader = [NSString stringWithFormat:@"%@/%@",HYTIMAGEURL,userInfoModel.userHeader];
+    [portrait sd_setImageWithURL:[NSURL URLWithString:userHeader] placeholderImage:[UIImage imageNamed:@"index1"]];
+    
+    
     myTableView.tableHeaderView = headerView;
     
     
@@ -160,11 +169,13 @@
     userNameL = [[UILabel alloc] init];
     userNameL.textAlignment = NSTextAlignmentCenter;
     userNameL.backgroundColor = [UIColor clearColor];
-    userNameL.font = [UIFont fontWithName:@"Helvetica" size:20.0];
+    userNameL.font = [UIFont fontWithName:@"Helvetica" size:18.0];
     userNameL.textColor = [UIColor whiteColor];
     userNameL.frame = CGRectMake(labelX, labelY, labelW, labelH);
     [headerView addSubview:userNameL];
-    userNameL.text = @"Amy";
+    
+    NSString *nickName = userInfoModel.userNick;
+    userNameL.text = nickName;
     //积分
    
     //签到按钮
@@ -180,6 +191,7 @@
     signBtn.layer.borderColor = [[UIColor whiteColor] CGColor];
     [signBtn setTitle:@"签到" forState:UIControlStateNormal];
     [signBtn addTarget:self action:@selector(toSignInView) forControlEvents:UIControlEventTouchUpInside];
+    signBtn.hidden = YES;
     [headerView addSubview:signBtn];
     
     CGFloat otherInfoLabelBGX = 0;
@@ -201,13 +213,15 @@
     moneyLabel.userInteractionEnabled = YES;
     [otherInfoLabelBG addSubview:moneyLabel];
     
+    CGFloat balance = [userInfoModel.userBalance floatValue];
     balanceNumLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, commonlabelW, otherInfoLabelBGH / 2.0)];
     balanceNumLabel.backgroundColor = [UIColor clearColor];
-    balanceNumLabel.text = @"0.00元";
+    balanceNumLabel.text = [NSString stringWithFormat:@"%.2f元",balance];
     balanceNumLabel.font = [UIFont systemFontOfSize:17.0];
     balanceNumLabel.textAlignment = NSTextAlignmentCenter;
     balanceNumLabel.textColor = [UIColor colorWithRed:179.0 / 255.0 green:68.0 / 255.0 blue:65.0 / 255.0 alpha:1.0];
     [moneyLabel addSubview:balanceNumLabel];
+    
     
     UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, otherInfoLabelBGH / 2.0, commonlabelW, otherInfoLabelBGH / 2.0)];
     titleLabel.backgroundColor = [UIColor clearColor];
@@ -228,9 +242,10 @@
     couponLabel.userInteractionEnabled = YES;
     [otherInfoLabelBG addSubview:couponLabel];
     
+    NSInteger couponNum = [userInfoModel.couponCount integerValue];
     couponNumLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, commonlabelW, otherInfoLabelBGH / 2.0)];
     couponNumLabel.backgroundColor = [UIColor clearColor];
-    couponNumLabel.text = @"1张";
+    couponNumLabel.text = [NSString stringWithFormat:@"%ld张",couponNum];
     couponNumLabel.font = [UIFont systemFontOfSize:17.0];
     couponNumLabel.textAlignment = NSTextAlignmentCenter;
     couponNumLabel.textColor = [UIColor colorWithRed:133.0 / 255.0 green:144.0 / 255.0 blue:205.0 / 255.0 alpha:1.0];
@@ -255,9 +270,11 @@
     pointLabel.userInteractionEnabled = YES;
     [otherInfoLabelBG addSubview:pointLabel];
     
+    NSInteger point = [userInfoModel.userMark integerValue];
+    
     pointNumLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, commonlabelW, otherInfoLabelBGH / 2.0)];
     pointNumLabel.backgroundColor = [UIColor clearColor];
-    pointNumLabel.text = @"0分";
+    pointNumLabel.text = [NSString stringWithFormat:@"%ld分",point];
     pointNumLabel.font = [UIFont systemFontOfSize:17.0];
     pointNumLabel.textAlignment = NSTextAlignmentCenter;
     pointNumLabel.textColor = [UIColor colorWithRed:69.0 / 255.0 green:139.0 / 255.0 blue:84.0 / 255.0 alpha:1.0];
@@ -280,13 +297,15 @@
     UIView *footerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, footHeight)];
     myTableView.tableFooterView = footerView;
     
+    NSString *inviteCode = userInfoModel.userInvitationcode;
+    
     UILabel *inviteLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, footHeight / 2.0)];
     inviteLabel.font = [UIFont systemFontOfSize:18.0];
     inviteLabel.tag = InviteLabelTag;
     inviteLabel.backgroundColor = [UIColor clearColor];
     inviteLabel.textColor = [UIColor blackColor];
     inviteLabel.textAlignment = NSTextAlignmentCenter;
-    inviteLabel.text = @"邀请码: 2nTIeT";
+    inviteLabel.text = [NSString stringWithFormat:@"邀请码: %@",inviteCode];
     [footerView addSubview:inviteLabel];
     
     UIButton *signOutButton = [[UIButton alloc] initWithFrame:CGRectMake(0, footHeight / 2.0, SCREENWIDTH, footHeight / 2.0)];
@@ -298,9 +317,42 @@
     [footerView addSubview:signOutButton];
 }
 
+- (void)loadUserOtherInfo
+{
+    //判断用户是否已经签到
+    NSString *userId = [[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY];
+    UIButton *signButton = [myTableView.tableHeaderView viewWithTag:SignButtonTag];
+    NSString *requestUrl = [NSString stringWithFormat:@"%@/nurseAnduser/selectUserIsSignined.action",BASEURL];
+    NSDictionary *params = @{@"userId":userId};
+    
+    [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
+        signButton.hidden = NO;
+        NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
+        NSLog(@"respondString:%@",respondString);
+        NSDictionary *respondDict = [NSDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
+        NSString *sign = respondDict[@"json"];
+        if ([sign compare:@"no" options:NSCaseInsensitiveSearch] == NSOrderedSame) {
+            //还没签到
+            signButton.hidden = NO;
+        }
+        else{
+            [signButton setTitle:@"已签到" forState:UIControlStateNormal];
+            signButton.enabled = NO;
+        }
+        
+        
+    } failure:^(NSError* err){
+        NSLog(@"err:%@",err);
+        signButton.hidden = NO;
+    }];
+    
+}
+
+
 - (void)scanUserBalance:(UITapGestureRecognizer *)tap
 {
     HeUserBalanceVC *userBalanceVC = [[HeUserBalanceVC alloc] init];
+    userBalanceVC.userInfo = userInfoModel;
     userBalanceVC.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:userBalanceVC animated:YES];
 }
@@ -342,9 +394,13 @@
         pointNumLabel.text = @"***分";
     }
     else{
-        balanceNumLabel.text = @"24.00元";
-        couponNumLabel.text = @"24张";
-        pointNumLabel.text = @"24分";
+        CGFloat balance = [userInfoModel.userBalance floatValue];
+        NSInteger couponNum = [userInfoModel.couponCount integerValue];
+        NSInteger point = [userInfoModel.userMark integerValue];
+        
+        balanceNumLabel.text = [NSString stringWithFormat:@"%.2f元",balance];
+        couponNumLabel.text = [NSString stringWithFormat:@"%ld张",couponNum];
+        pointNumLabel.text = [NSString stringWithFormat:@"%ld分",point];
     }
 }
 
@@ -373,10 +429,48 @@
 - (void)signAccount
 {
     NSLog(@"signAccount");
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:USERACCOUNTKEY];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:kUserDataKey];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:kUserDetailDataKey];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:USERIDKEY];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:USERPASSWORDKEY];
+    //清空用户的资料
+    [HeSysbsModel getSysModel].user = nil;
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:KNOTIFICATION_LOGINCHANGE object:@NO];
 }
 
-- (void)toSignInView{
+- (void)toSignInView
+{
+    UIButton *signButton = [myTableView.tableHeaderView viewWithTag:SignButtonTag];
     NSLog(@"toSignInView");
+    NSString *userId = [[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY];
+    NSString *requestUrl = [NSString stringWithFormat:@"%@/nurseAnduser/userToSignin.action",BASEURL];
+    NSDictionary *params = @{@"userId":userId};
+    
+    [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
+        
+        NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
+        NSLog(@"respondString:%@",respondString);
+        NSDictionary *respondDict = [NSDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
+        NSInteger errorCode = [respondDict[@"errorCode"] integerValue];
+        if (errorCode == REQUESTCODE_SUCCEED) {
+            //签到成功
+            signButton.hidden = NO;
+            [signButton setTitle:@"已签到" forState:UIControlStateNormal];
+            signButton.enabled = NO;
+        }
+        else{
+            NSString *errorInfo = respondDict[@"data"];
+            if ([errorInfo isMemberOfClass:[NSNull class]] || errorInfo == nil) {
+                errorInfo = ERRORREQUESTTIP;
+            }
+            [self showHint:errorInfo];
+        }
+        
+    } failure:^(NSError* err){
+        NSLog(@"err:%@",err);
+    }];
 }
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex

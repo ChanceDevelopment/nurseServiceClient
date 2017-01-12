@@ -11,43 +11,38 @@
 
 @interface User : NSObject
 
-@property(strong,nonatomic)NSString *username; //用户名
-@property(strong,nonatomic)NSString *password;  //用户密码
-@property(strong,nonatomic)NSString *nickname; //昵称
-@property(strong,nonatomic)NSString *truename; //真实姓名
-@property(assign,nonatomic)BOOL isnewappuser; //判断是否单独的手机用户
-@property(assign,nonatomic)BOOL hasMultiUser;
-@property(strong,nonatomic)NSString *roles;  //用户充当的角色
-@property(strong,nonatomic)NSString *usertoken;  //用户的token，身份的唯一凭证
-@property(strong,nonatomic)NSString *headurl;  //用户的头像
-@property(strong,nonatomic)NSString *userID;  //用户的ID
-@property(strong,nonatomic)NSString *birthday;//生日
+@property(strong,nonatomic)NSString *couponCount; //用户名
+@property(strong,nonatomic)NSString *userAddress;  //用户密码
+@property(strong,nonatomic)NSString *userAge; //昵称
+@property(strong,nonatomic)NSString *userBalance; //真实姓名
+@property(strong,nonatomic)NSString *userCard; //判断是否单独的手机用户
+@property(strong,nonatomic)NSString *userCardpic;
+@property(strong,nonatomic)NSString *userCity;
+@property(strong,nonatomic)NSString *userCommunicate;  //用户充当的角色
+
+@property(strong,nonatomic)NSString *userCreatetime;  //用户的token，身份的唯一凭证
+@property(strong,nonatomic)NSString *userDistrict;  //用户的头像
+@property(strong,nonatomic)NSString *userEmail;  //用户的ID
+@property(strong,nonatomic)NSString *userHeader;//生日
 
 
-@property(strong,nonatomic)NSString *schoolName;//学校
-@property(strong,nonatomic)NSString *relation;//与小孩关系
-@property(strong,nonatomic)NSString *className;//班级
+@property(strong,nonatomic)NSString *userId;
+@property(strong,nonatomic)NSString *userIdenstate;
+@property(strong,nonatomic)NSString *userInvitationcode;
 
-/*************暂时不用****************/
-@property(strong,nonatomic)NSString *industry;
-@property(strong,nonatomic)NSString *companyname;
-@property(assign,nonatomic)NSInteger sex;
-@property(strong,nonatomic)NSString *profession;
+@property(strong,nonatomic)NSString *userMark;
+@property(strong,nonatomic)NSString *userName;
+@property(strong,nonatomic)NSString *userNick;
+@property(strong,nonatomic)NSString *userNote;
 
-@property(strong,nonatomic)NSString *idcard;
-@property(strong,nonatomic)NSString *workaddress;
-@property(strong,nonatomic)AsynImageView *userImage;
-@property(strong,nonatomic)NSString *constellation;
-@property(strong,nonatomic)NSString *currentaddress;
-@property(strong,nonatomic)NSString *homeaddress;
-@property(strong,nonatomic)NSString *loginid;
-@property(strong,nonatomic)NSString *mail;
-@property(strong,nonatomic)NSString *name;
-@property(strong,nonatomic)NSString *phoneid;
-@property(strong,nonatomic)NSString *signature;
-@property(assign,nonatomic)NSInteger state;
-@property(strong,nonatomic)NSString *phonenum;
-/*************暂时不用****************/
+@property(strong,nonatomic)NSString *userPhone;
+@property(strong,nonatomic)NSString *userPositionX;
+@property(strong,nonatomic)NSString *userPositionY;
+@property(strong,nonatomic)NSString *userProvince;
+@property(strong,nonatomic)NSString *userPwd;
+@property(strong,nonatomic)NSString *userSex;
+@property(strong,nonatomic)NSString *userTruename;
+@property(strong,nonatomic)NSString *userUsestate;
 
 - (User *)initUserWithDict:(NSDictionary *)dict;
 - (User *)initUserWithUser:(User *)user;

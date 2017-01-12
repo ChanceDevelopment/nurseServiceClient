@@ -9,5 +9,6 @@
 #import "HeBaseViewController.h"
 
 @interface HeUserBalanceVC : HeBaseViewController
+@property(strong,nonatomic)User *userInfo;
 
 @end

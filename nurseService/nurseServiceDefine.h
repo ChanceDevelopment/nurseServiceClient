@@ -85,6 +85,8 @@
 #define USERTOKENKEY @"userTokenKey"
 //用户的资料
 #define kUserDataKey @"userDataKey"
+//用户详情资料
+#define kUserDetailDataKey @"userDetailDataKey"
 #define USERACCOUNTKEY @"userAccountKey"
 //用户的登录账号
 #define USERPASSWORDKEY @"userPasswordKey"

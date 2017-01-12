@@ -186,6 +186,12 @@
 		EA8C89FE1E2267E50093657B /* HeNurseDetailVC.m in Sources */ = {isa = PBXBuildFile; fileRef = EA8C89FC1E2267E50093657B /* HeNurseDetailVC.m */; };
 		EA8C89FF1E2267E50093657B /* HeNurseDetailVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = EA8C89FD1E2267E50093657B /* HeNurseDetailVC.xib */; };
 		EA8C8A031E2269910093657B /* HeOrderTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = EA8C8A021E2269910093657B /* HeOrderTableViewCell.m */; };
+		EA9456681E2735A3001E969A /* icon_money_white.png in Resources */ = {isa = PBXBuildFile; fileRef = EA9456671E2735A3001E969A /* icon_money_white.png */; };
+		EA94566A1E2735B6001E969A /* icon_recharge.png in Resources */ = {isa = PBXBuildFile; fileRef = EA9456691E2735B6001E969A /* icon_recharge.png */; };
+		EA94566C1E2735C3001E969A /* icon_withdrawals.png in Resources */ = {isa = PBXBuildFile; fileRef = EA94566B1E2735C3001E969A /* icon_withdrawals.png */; };
+		EA94566E1E2735D5001E969A /* icon_set_paypwd.png in Resources */ = {isa = PBXBuildFile; fileRef = EA94566D1E2735D5001E969A /* icon_set_paypwd.png */; };
+		EA9456701E2735E3001E969A /* icon_financial_details.png in Resources */ = {isa = PBXBuildFile; fileRef = EA94566F1E2735E3001E969A /* icon_financial_details.png */; };
+		EA9456721E2735ED001E969A /* icon_bind_alipay.png in Resources */ = {isa = PBXBuildFile; fileRef = EA9456711E2735ED001E969A /* icon_bind_alipay.png */; };
 		EA9C6FDA1E2519E200096918 /* icon_checkbox.png in Resources */ = {isa = PBXBuildFile; fileRef = EA9C6FD91E2519E200096918 /* icon_checkbox.png */; };
 		EA9C6FDE1E2519FC00096918 /* icon_unagree.png in Resources */ = {isa = PBXBuildFile; fileRef = EA9C6FDB1E2519FC00096918 /* icon_unagree.png */; };
 		EA9C6FDF1E2519FC00096918 /* icon_uncircleclick.png in Resources */ = {isa = PBXBuildFile; fileRef = EA9C6FDC1E2519FC00096918 /* icon_uncircleclick.png */; };
@@ -937,6 +943,12 @@
 		EA8C89FD1E2267E50093657B /* HeNurseDetailVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HeNurseDetailVC.xib; sourceTree = "<group>"; };
 		EA8C8A011E2269910093657B /* HeOrderTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HeOrderTableViewCell.h; sourceTree = "<group>"; };
 		EA8C8A021E2269910093657B /* HeOrderTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HeOrderTableViewCell.m; sourceTree = "<group>"; };
+		EA9456671E2735A3001E969A /* icon_money_white.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_money_white.png; sourceTree = "<group>"; };
+		EA9456691E2735B6001E969A /* icon_recharge.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_recharge.png; sourceTree = "<group>"; };
+		EA94566B1E2735C3001E969A /* icon_withdrawals.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_withdrawals.png; sourceTree = "<group>"; };
+		EA94566D1E2735D5001E969A /* icon_set_paypwd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_set_paypwd.png; sourceTree = "<group>"; };
+		EA94566F1E2735E3001E969A /* icon_financial_details.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_financial_details.png; sourceTree = "<group>"; };
+		EA9456711E2735ED001E969A /* icon_bind_alipay.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_bind_alipay.png; sourceTree = "<group>"; };
 		EA9C6FD91E2519E200096918 /* icon_checkbox.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_checkbox.png; sourceTree = "<group>"; };
 		EA9C6FDB1E2519FC00096918 /* icon_unagree.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_unagree.png; sourceTree = "<group>"; };
 		EA9C6FDC1E2519FC00096918 /* icon_uncircleclick.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_uncircleclick.png; sourceTree = "<group>"; };
@@ -1906,6 +1918,7 @@
 		AD6C8ED81DF9C48D00C44A8A /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				EA9456661E27357C001E969A /* Balance */,
 				EA8C897F1E21D1E10093657B /* Custom */,
 				ADCC62371DFA9EB30065866C /* myIcon */,
 				ADCC61CF1DFA4EF70065866C /* icon_list */,
@@ -2577,6 +2590,19 @@
 				EA34D7AC1E236E7200CD8BC5 /* HeServiceTableCell.m */,
 			);
 			path = Order;
+			sourceTree = "<group>";
+		};
+		EA9456661E27357C001E969A /* Balance */ = {
+			isa = PBXGroup;
+			children = (
+				EA9456711E2735ED001E969A /* icon_bind_alipay.png */,
+				EA94566F1E2735E3001E969A /* icon_financial_details.png */,
+				EA94566D1E2735D5001E969A /* icon_set_paypwd.png */,
+				EA94566B1E2735C3001E969A /* icon_withdrawals.png */,
+				EA9456691E2735B6001E969A /* icon_recharge.png */,
+				EA9456671E2735A3001E969A /* icon_money_white.png */,
+			);
+			path = Balance;
 			sourceTree = "<group>";
 		};
 		EA9F24031E237F12001E4DE9 /* Service */ = {
@@ -4472,9 +4498,11 @@
 				EA8C89D91E21EEBF0093657B /* icon_nurse_door.png in Resources */,
 				EA9C6FDA1E2519E200096918 /* icon_checkbox.png in Resources */,
 				ADCC62041DFA69290065866C /* index_banner3@2x.jpg in Resources */,
+				EA94566C1E2735C3001E969A /* icon_withdrawals.png in Resources */,
 				EAC2D8871D4B063B00E282A8 /* IQActionSheetPickerView.xib in Resources */,
 				ADCC61D41DFA4EF70065866C /* icon_list@2x.png in Resources */,
 				EA8C899F1E21D78C0093657B /* icon_openeyes.png in Resources */,
+				EA9456701E2735E3001E969A /* icon_financial_details.png in Resources */,
 				EAC2D8761D4B063B00E282A8 /* blueArrow.png in Resources */,
 				EA34D79B1E232B8B00CD8BC5 /* icon_alipay.png in Resources */,
 				EA9F24081E237F2F001E4DE9 /* HeServiceDetailVC.xib in Resources */,
@@ -4600,9 +4628,11 @@
 				EAC2D8A21D4B063B00E282A8 /* LICENSE in Resources */,
 				EA34D7951E23270800CD8BC5 /* icon_agree.png in Resources */,
 				AD6C8F311DF9CFE200C44A8A /* icon_nursing_workers.png in Resources */,
+				EA9456681E2735A3001E969A /* icon_money_white.png in Resources */,
 				EAC2D8641D4B063B00E282A8 /* refresh@3x.png in Resources */,
 				EAC2D8B11D4B063B00E282A8 /* MJRefresh.bundle in Resources */,
 				EAC2D8631D4B063B00E282A8 /* refresh@2x.png in Resources */,
+				EA94566A1E2735B6001E969A /* icon_recharge.png in Resources */,
 				EACA0F111E2676D8009B4516 /* HeAboutUsVC.xib in Resources */,
 				EA0EC7DC1E24ABDD00E5440D /* HeProtectedUserInfoVC.xib in Resources */,
 				EAC2D8731D4B063B00E282A8 /* i2KEPCSingleComponentPickerView.xib in Resources */,
@@ -4616,6 +4646,7 @@
 				EA34D7931E23244D00CD8BC5 /* HeOrderCommitVC.xib in Resources */,
 				EA9C6FDF1E2519FC00096918 /* icon_uncircleclick.png in Resources */,
 				ADCC61D31DFA4EF70065866C /* icon_list.png in Resources */,
+				EA9456721E2735ED001E969A /* icon_bind_alipay.png in Resources */,
 				EACA0EF81E266FDD009B4516 /* HeUserInfoVC.xib in Resources */,
 				EA8C898E1E21D4B60093657B /* cancle.png in Resources */,
 				ADCC61E31DFA505B0065866C /* main_nurse_unselector@2x.png in Resources */,
@@ -4655,6 +4686,7 @@
 				EAC2D98C1D4B063B00E282A8 /* TencentOpenApi_IOS_Bundle.bundle in Resources */,
 				EAC2D9351D4B063B00E282A8 /* sharemore_pic@2x.png in Resources */,
 				EAC2D85D1D4B063B00E282A8 /* back-arrow@2x.png in Resources */,
+				EA94566E1E2735D5001E969A /* icon_set_paypwd.png in Resources */,
 				AD6C8F2F1DF9CFE200C44A8A /* icon_infusion.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

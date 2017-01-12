@@ -1,12 +1,18 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11134" systemVersion="15F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11762" systemVersion="16C67" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11106"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="HeUserBalanceVC">
             <connections>
+                <outlet property="balanceLabel" destination="4V9-5Y-cQO" id="SUK-0i-z8e"/>
+                <outlet property="tableview" destination="w2I-Fv-uFN" id="ALU-0Z-ytA"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -14,7 +20,80 @@
         <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
             <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="w2I-Fv-uFN">
+                    <rect key="frame" x="0.0" y="158" width="375" height="509"/>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <connections>
+                        <outlet property="dataSource" destination="-1" id="qHF-nI-6bd"/>
+                        <outlet property="delegate" destination="-1" id="xe4-DQ-tB7"/>
+                    </connections>
+                </tableView>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pta-i5-h6L">
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="150"/>
+                    <subviews>
+                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="NavBarIOS7.png" translatesAutoresizingMaskIntoConstraints="NO" id="9Ht-Fn-49R">
+                            <rect key="frame" x="0.0" y="0.0" width="375" height="150"/>
+                        </imageView>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0.00元" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4V9-5Y-cQO">
+                            <rect key="frame" x="0.0" y="35" width="375" height="40"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="40" id="uZx-UL-nEB"/>
+                            </constraints>
+                            <fontDescription key="fontDescription" type="system" pointSize="24"/>
+                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="我的余额" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5yj-Ec-sGD">
+                            <rect key="frame" x="0.0" y="90" width="375" height="25"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="25" id="roQ-bT-pSa"/>
+                            </constraints>
+                            <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icon_money_white.png" translatesAutoresizingMaskIntoConstraints="NO" id="2GC-Qk-37r">
+                            <rect key="frame" x="119" y="94" width="17" height="17"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="17" id="52p-Sl-C2L"/>
+                                <constraint firstAttribute="width" constant="17" id="G2z-wp-fkF"/>
+                            </constraints>
+                        </imageView>
+                    </subviews>
+                    <color key="backgroundColor" red="0.59607843140000005" green="0.26274509800000001" blue="0.55294117649999996" alpha="1" colorSpace="calibratedRGB"/>
+                    <constraints>
+                        <constraint firstItem="2GC-Qk-37r" firstAttribute="centerX" secondItem="5yj-Ec-sGD" secondAttribute="centerX" constant="-60" id="44O-0F-zaw"/>
+                        <constraint firstItem="4V9-5Y-cQO" firstAttribute="top" secondItem="pta-i5-h6L" secondAttribute="top" constant="35" id="5LG-qO-ZOd"/>
+                        <constraint firstItem="2GC-Qk-37r" firstAttribute="centerY" secondItem="5yj-Ec-sGD" secondAttribute="centerY" id="7Xn-Rj-l0s"/>
+                        <constraint firstItem="9Ht-Fn-49R" firstAttribute="top" secondItem="pta-i5-h6L" secondAttribute="top" id="8Lf-d1-4DU"/>
+                        <constraint firstAttribute="trailing" secondItem="5yj-Ec-sGD" secondAttribute="trailing" id="CdO-ix-1Ow"/>
+                        <constraint firstAttribute="height" constant="150" id="Wsi-aa-PE0"/>
+                        <constraint firstItem="5yj-Ec-sGD" firstAttribute="top" secondItem="4V9-5Y-cQO" secondAttribute="bottom" constant="15" id="cS3-sH-83a"/>
+                        <constraint firstAttribute="bottom" secondItem="9Ht-Fn-49R" secondAttribute="bottom" id="cgd-Ay-WeK"/>
+                        <constraint firstItem="9Ht-Fn-49R" firstAttribute="leading" secondItem="pta-i5-h6L" secondAttribute="leading" id="gJH-6j-CyL"/>
+                        <constraint firstItem="4V9-5Y-cQO" firstAttribute="leading" secondItem="pta-i5-h6L" secondAttribute="leading" id="gxN-Qx-Yvk"/>
+                        <constraint firstAttribute="trailing" secondItem="4V9-5Y-cQO" secondAttribute="trailing" id="oUe-Jx-ESd"/>
+                        <constraint firstAttribute="trailing" secondItem="9Ht-Fn-49R" secondAttribute="trailing" id="ot1-zw-dPl"/>
+                        <constraint firstItem="5yj-Ec-sGD" firstAttribute="leading" secondItem="pta-i5-h6L" secondAttribute="leading" id="v2R-BD-S0v"/>
+                    </constraints>
+                </view>
+            </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstAttribute="trailing" secondItem="w2I-Fv-uFN" secondAttribute="trailing" id="3Jb-3u-WPS"/>
+                <constraint firstAttribute="bottom" secondItem="w2I-Fv-uFN" secondAttribute="bottom" id="SPZ-i8-Q5X"/>
+                <constraint firstItem="pta-i5-h6L" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="Yzq-oM-ggH"/>
+                <constraint firstAttribute="trailing" secondItem="pta-i5-h6L" secondAttribute="trailing" id="a3x-cf-7jy"/>
+                <constraint firstItem="w2I-Fv-uFN" firstAttribute="top" secondItem="pta-i5-h6L" secondAttribute="bottom" constant="8" id="adZ-7c-5hF"/>
+                <constraint firstItem="pta-i5-h6L" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="na8-Qm-qzA"/>
+                <constraint firstItem="w2I-Fv-uFN" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="zyc-aP-1bx"/>
+            </constraints>
+            <point key="canvasLocation" x="32.5" y="122.5"/>
         </view>
     </objects>
+    <resources>
+        <image name="NavBarIOS7.png" width="640" height="88"/>
+        <image name="icon_money_white.png" width="28" height="28"/>
+    </resources>
 </document>

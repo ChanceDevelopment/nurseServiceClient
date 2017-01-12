@@ -39,7 +39,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
-    [self getUserInfo];
+    //获取用户资料
+    [self getUserInfoWithUserID:[[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY]];
     //获取左边侧栏的菜单
     [self loadLeftMenu];
     [self autoLogin];
@@ -89,7 +90,7 @@
     [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
         NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
         
-        NSMutableDictionary *respondDict = [NSMutableDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
+        NSDictionary *respondDict = [NSDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
         if ([[[respondDict valueForKey:@"errorCode"] stringValue] isEqualToString:@"200"]) {
             NSLog(@"success");
             
@@ -135,12 +136,43 @@
     [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
         NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
         
-        NSMutableDictionary *respondDict = [NSMutableDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
+        NSDictionary *respondDict = [NSDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
         if ([[respondDict valueForKey:@"errorCode"] integerValue] == REQUESTCODE_SUCCEED){
             
             NSArray *menuArray = [[NSArray alloc] initWithArray:[respondDict valueForKey:@"json"]];
             [HeSysbsModel getSysModel].menuArray = menuArray;
             [[NSNotificationCenter defaultCenter] postNotificationName:kLoadLeftMenuNotification object:menuArray];
+            
+        }
+    } failure:^(NSError* err){
+        
+    }];
+}
+
+- (void)udpateUserLocationWithLocation:(NSDictionary *)locationDict
+{
+    NSString *userid = [[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY];
+    if (!userid) {
+        userid = @"";
+    }
+    NSString *latitude = locationDict[@"latitude"];
+    if (!latitude) {
+        latitude = @"";
+    }
+    NSString *longitude = locationDict[@"longitude"];
+    if (!longitude) {
+        longitude = @"";
+    }
+    
+    NSString *requestUrl = [NSString stringWithFormat:@"%@/latitude/userlatiude.action",BASEURL];
+    NSDictionary * params  = @{@"userid":userid,@"latitude": latitude,@"longitude":longitude};
+    
+    [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
+        NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
+        
+        NSDictionary *respondDict = [NSDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
+        if ([[respondDict valueForKey:@"errorCode"] integerValue] == REQUESTCODE_SUCCEED){
+            NSLog(@"update Location Succeed!");
             
         }
     } failure:^(NSError* err){
@@ -154,10 +186,47 @@
 }
 
 //获取用户的信息
-- (void)getUserInfo
+- (void)getUserInfoWithUserID:(NSString *)userid
 {
-   
+    if (!userid) {
+        userid = @"";
+    }
     
+    NSString *requestUrl = [NSString stringWithFormat:@"%@/nurseAnduser/selectuserinfobyid.action",BASEURL];
+    NSDictionary * params  = @{@"userid":userid};
+    
+    [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
+        NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
+        
+        NSDictionary *respondDict = [NSDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
+        if ([[respondDict valueForKey:@"errorCode"] integerValue] == REQUESTCODE_SUCCEED){
+            NSDictionary *userDetailInfoDict = respondDict[@"json"];
+            if ([userDetailInfoDict isMemberOfClass:[NSNull class]]) {
+                return;
+            }
+            NSMutableDictionary *infoDict = [NSMutableDictionary dictionaryWithCapacity:0];
+            
+            for (NSString *key in [userDetailInfoDict allKeys]) {
+                id obj = [userDetailInfoDict objectForKey:key];
+                if ([obj isMemberOfClass:[NSNull class]] || obj == nil) {
+                    obj = @"";
+                }
+                [infoDict setObject:obj forKey:key];
+            }
+            
+            [[NSUserDefaults standardUserDefaults] setObject:infoDict forKey:kUserDetailDataKey];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+            
+            User *userModel = [[User alloc] init];
+            [userModel setValuesForKeysWithDictionary:infoDict];
+            NSLog(@"userModel = %@",userModel);
+            NSDictionary *dict = [[NSUserDefaults standardUserDefaults] objectForKey:kUserDetailDataKey];
+            [HeSysbsModel getSysModel].user = userModel;;
+            
+        }
+    } failure:^(NSError* err){
+        
+    }];
 }
 
 
@@ -231,6 +300,7 @@
     NSString *latitudeStr = [NSString stringWithFormat:@"%.6f",coordinate.latitude];
     NSString *longitudeStr = [NSString stringWithFormat:@"%.6f",coordinate.longitude];
     
+    [self udpateUserLocationWithLocation:@{@"latitude":latitudeStr,@"longitude":longitudeStr}];
     
     if (newLocation && ![userLocationDict objectForKey:@"latitude"]) {
         locationSucceedNum = locationSucceedNum + 1;
