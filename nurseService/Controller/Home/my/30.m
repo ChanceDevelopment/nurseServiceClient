@@ -130,9 +130,9 @@
     [messageButton addTarget:self action:@selector(messageButtonClick:) forControlEvents:UIControlEventTouchUpInside];
     
     UIImage *securityImage = [UIImage imageNamed:@"icon_eye_open_white"];
-    CGFloat securityButtonW = 25;
+    CGFloat securityButtonW = 30;
     CGFloat securityButtonH = securityImage.size.height / securityImage.size.width * securityButtonW;
-    UIButton *securityButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREENWIDTH - securityButtonW - 20, CGRectGetMaxY(messageButton.frame) + 10, securityButtonW, securityButtonH)];
+    UIButton *securityButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREENWIDTH - securityButtonW - 18, CGRectGetMaxY(messageButton.frame) + 10, securityButtonW, securityButtonH)];
     [securityButton setImage:securityImage forState:UIControlStateNormal];
     [securityButton setImage:[UIImage imageNamed:@"icon_eye_close_white"] forState:UIControlStateSelected];
     [headerView addSubview:securityButton];
@@ -144,7 +144,7 @@
     CGFloat imageY = (viewHeight - imageDia) / 2.0 - 20;
     portrait = [[UIImageView alloc] initWithFrame:CGRectMake(imageX, imageY, imageDia, imageDia)];
     portrait.userInteractionEnabled = YES;
-    portrait.image = [UIImage imageNamed:@"index1"];
+    portrait.image = [UIImage imageNamed:@"defalut_icon"];
     portrait.layer.borderWidth = 0.0;
     portrait.contentMode = UIViewContentModeScaleAspectFill;
     portrait.layer.cornerRadius = imageDia / 2.0;
@@ -186,12 +186,12 @@
     UIButton *signBtn = [[UIButton alloc] initWithFrame:CGRectMake(buttonX, buttonY, buttonW, buttonH)];
     signBtn.backgroundColor = [UIColor clearColor];
     signBtn.titleLabel.font = [UIFont fontWithName:@"Helvetica" size:14.0];
+    signBtn.tag = SignButtonTag;
     signBtn.layer.cornerRadius = 4.0;//2.0是圆角的弧度，根据需求自己更改
     signBtn.layer.borderWidth = 1.0f;//设置边框颜色
     signBtn.layer.borderColor = [[UIColor whiteColor] CGColor];
     [signBtn setTitle:@"签到" forState:UIControlStateNormal];
     [signBtn addTarget:self action:@selector(toSignInView) forControlEvents:UIControlEventTouchUpInside];
-    signBtn.hidden = YES;
     [headerView addSubview:signBtn];
     
     CGFloat otherInfoLabelBGX = 0;
@@ -337,6 +337,7 @@
         }
         else{
             [signButton setTitle:@"已签到" forState:UIControlStateNormal];
+            [signButton setTitle:@"已签到" forState:UIControlStateSelected];
             signButton.enabled = NO;
         }
         
@@ -458,9 +459,14 @@
             //签到成功
             signButton.hidden = NO;
             [signButton setTitle:@"已签到" forState:UIControlStateNormal];
+            [signButton setTitle:@"已签到" forState:UIControlStateSelected];
             signButton.enabled = NO;
+            [self showHint:@"签到成功"];
         }
         else{
+            [signButton setTitle:@"已签到" forState:UIControlStateNormal];
+            [signButton setTitle:@"已签到" forState:UIControlStateSelected];
+            signButton.enabled = NO;
             NSString *errorInfo = respondDict[@"data"];
             if ([errorInfo isMemberOfClass:[NSNull class]] || errorInfo == nil) {
                 errorInfo = ERRORREQUESTTIP;

@@ -175,6 +175,12 @@
         UIImageView *imageview = [[UIImageView alloc] initWithFrame:CGRectMake(imageX, imageY, imageW, imageH)];
         imageview.tag = imageTag;
         imageTag++;
+        imageview.layer.cornerRadius = imageW / 2.0;
+        imageview.layer.masksToBounds = YES;
+        imageview.layer.borderWidth = 0;
+        imageview.layer.borderColor = [UIColor clearColor].CGColor;
+        imageview.contentMode = UIViewContentModeScaleAspectFill;
+        
         [imageview sd_setImageWithURL:[NSURL URLWithString:imageurl] placeholderImage:[UIImage imageNamed:@"defalut_icon"]];
         [nurseBG addSubview:imageview];
         

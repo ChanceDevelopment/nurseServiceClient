@@ -48,6 +48,12 @@
         CGFloat userImageW = userImageH;
         userImage = [[UIImageView alloc] initWithFrame:CGRectMake(userImageX, userImageY, userImageW, userImageH)];
         userImage.image = [UIImage imageNamed:@"defalut_icon"];
+        userImage.layer.cornerRadius = userImage.frame.size.width / 2.0;
+        userImage.layer.masksToBounds = YES;
+        userImage.layer.borderWidth = 0;
+        userImage.layer.borderColor = [UIColor clearColor].CGColor;
+        userImage.contentMode = UIViewContentModeScaleAspectFill;
+        
         [self addSubview:userImage];
         
         UIFont *textFont = [UIFont fontWithName:@"Helvetica" size:13.0];

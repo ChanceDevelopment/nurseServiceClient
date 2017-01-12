@@ -127,6 +127,12 @@
     [super initView];
     [self initOtherInfoView];
     
+    userImage.layer.cornerRadius = userImage.frame.size.width / 2.0;
+    userImage.layer.masksToBounds = YES;
+    userImage.layer.borderWidth = 0;
+    userImage.layer.borderColor = [UIColor clearColor].CGColor;
+    userImage.contentMode = UIViewContentModeScaleAspectFill;
+    
     followButton.layer.cornerRadius = 5.0;
     followButton.layer.borderWidth = 1.0;
     followButton.layer.masksToBounds = YES;
