@@ -67,6 +67,9 @@
 //添加被受保护人信息成功通知
 #define kAddProtectedUserInfoNotification @"AddProtectedUserInfoNotification"
 
+#define kLoadHospitalDataNotification @"loadHospitalDataSucceed"
+#define kLoadMajorDataNotification @"loadMajorDataSucceed"
+
 #define kLoadLeftMenuNotification @"loadLeftMenuSucceed"
 //登录状态发生变化的通知
 #define KNOTIFICATION_LOGINCHANGE @"loginStateChange"

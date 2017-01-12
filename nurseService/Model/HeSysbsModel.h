@@ -16,6 +16,8 @@
 @property(strong,nonatomic)NSArray *albumArray;//当前用户相册的可操作权限
 
 @property(strong,nonatomic)NSArray *menuArray;
+@property(strong,nonatomic)NSArray *hospitalArray;
+@property(strong,nonatomic)NSArray *majorArray;
 @property(strong,nonatomic)NSDictionary *userLocationDict;
 @property(strong,nonatomic)NSString *userCity;
 @property(strong,nonatomic)BMKReverseGeoCodeResult *addressResult;

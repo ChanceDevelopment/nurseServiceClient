@@ -48,6 +48,10 @@
     [self initLocationService];
     //获取用户的地理位置
     [self getLocation];
+    //获取医院分类数据
+    [self getHospitalData];
+    //获取专业分类数据
+    [self getMajorData];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -183,6 +187,48 @@
 - (void)clearInfo
 {
     
+}
+
+//获取医院分类数据
+- (void)getHospitalData
+{
+    NSString *requestUrl = [NSString stringWithFormat:@"%@/nurseAnduser/selecthospitalandmajor.action",BASEURL];
+    NSDictionary * params  = @{@"1": @"1"};
+    [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
+        NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
+        
+        NSDictionary *respondDict = [NSDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
+        if ([[respondDict valueForKey:@"errorCode"] integerValue] == REQUESTCODE_SUCCEED){
+            
+            NSArray *menuArray = [[NSArray alloc] initWithArray:[respondDict valueForKey:@"json"]];
+            [HeSysbsModel getSysModel].hospitalArray = [[NSArray alloc] initWithArray:menuArray];
+            [[NSNotificationCenter defaultCenter] postNotificationName:kLoadHospitalDataNotification object:menuArray];
+            
+        }
+    } failure:^(NSError* err){
+        
+    }];
+}
+
+//获取专业分类数据
+- (void)getMajorData
+{
+    NSString *requestUrl = [NSString stringWithFormat:@"%@/nurseAnduser/SelectMajorAndHospital.action",BASEURL];
+    NSDictionary * params  = @{@"1": @"1"};
+    [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
+        NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
+        
+        NSDictionary *respondDict = [NSDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
+        if ([[respondDict valueForKey:@"errorCode"] integerValue] == REQUESTCODE_SUCCEED){
+            
+            NSArray *menuArray = [[NSArray alloc] initWithArray:[respondDict valueForKey:@"json"]];
+            [HeSysbsModel getSysModel].majorArray = [[NSArray alloc] initWithArray:menuArray];
+            [[NSNotificationCenter defaultCenter] postNotificationName:kLoadMajorDataNotification object:menuArray];
+            
+        }
+    } failure:^(NSError* err){
+        
+    }];
 }
 
 //获取用户的信息
