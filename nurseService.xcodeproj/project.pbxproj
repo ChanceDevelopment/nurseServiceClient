@@ -190,6 +190,7 @@
 		EA94566E1E2735D5001E969A /* icon_set_paypwd.png in Resources */ = {isa = PBXBuildFile; fileRef = EA94566D1E2735D5001E969A /* icon_set_paypwd.png */; };
 		EA9456701E2735E3001E969A /* icon_financial_details.png in Resources */ = {isa = PBXBuildFile; fileRef = EA94566F1E2735E3001E969A /* icon_financial_details.png */; };
 		EA9456721E2735ED001E969A /* icon_bind_alipay.png in Resources */ = {isa = PBXBuildFile; fileRef = EA9456711E2735ED001E969A /* icon_bind_alipay.png */; };
+		EA9945EC1E27BF6300D23249 /* categoryData.plist in Resources */ = {isa = PBXBuildFile; fileRef = EA9945EB1E27BF6300D23249 /* categoryData.plist */; };
 		EA9C6FDA1E2519E200096918 /* icon_checkbox.png in Resources */ = {isa = PBXBuildFile; fileRef = EA9C6FD91E2519E200096918 /* icon_checkbox.png */; };
 		EA9C6FDE1E2519FC00096918 /* icon_unagree.png in Resources */ = {isa = PBXBuildFile; fileRef = EA9C6FDB1E2519FC00096918 /* icon_unagree.png */; };
 		EA9C6FDF1E2519FC00096918 /* icon_uncircleclick.png in Resources */ = {isa = PBXBuildFile; fileRef = EA9C6FDC1E2519FC00096918 /* icon_uncircleclick.png */; };
@@ -945,6 +946,7 @@
 		EA94566D1E2735D5001E969A /* icon_set_paypwd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_set_paypwd.png; sourceTree = "<group>"; };
 		EA94566F1E2735E3001E969A /* icon_financial_details.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_financial_details.png; sourceTree = "<group>"; };
 		EA9456711E2735ED001E969A /* icon_bind_alipay.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_bind_alipay.png; sourceTree = "<group>"; };
+		EA9945EB1E27BF6300D23249 /* categoryData.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = categoryData.plist; sourceTree = "<group>"; };
 		EA9C6FD91E2519E200096918 /* icon_checkbox.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_checkbox.png; sourceTree = "<group>"; };
 		EA9C6FDB1E2519FC00096918 /* icon_unagree.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_unagree.png; sourceTree = "<group>"; };
 		EA9C6FDC1E2519FC00096918 /* icon_uncircleclick.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_uncircleclick.png; sourceTree = "<group>"; };
@@ -2686,6 +2688,7 @@
 				EAC2D99E1D4B06AC00E282A8 /* nurseService-Prefix.pch */,
 				EAC2D99F1D4B06CE00E282A8 /* nurseServiceDefine.h */,
 				EA83E55F1E25DEBC005E2281 /* leftMenu.plist */,
+				EA9945EB1E27BF6300D23249 /* categoryData.plist */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -4671,6 +4674,7 @@
 				EA8C89521E21CB210093657B /* HeLoginVC.xib in Resources */,
 				EAC2D9501D4B063B00E282A8 /* bg_023@2x.png in Resources */,
 				EA8C89B31E21E5930093657B /* FirstViewController.xib in Resources */,
+				EA9945EC1E27BF6300D23249 /* categoryData.plist in Resources */,
 				EA8C89CD1E21EE540093657B /* icon_order_center_gray.png in Resources */,
 				EAC2D99A1D4B063C00E282A8 /* loading_anim1.png in Resources */,
 				EAC2D8661D4B063B00E282A8 /* success@3x.png in Resources */,

@@ -59,6 +59,7 @@
 //友盟iPad的key
 #define UMANALYSISKEY_HD @"587195a065b6d624cf001b68"
 
+
 //成功获取当前城市
 #define kGetCitySucceedNotification @"GetCitySucceedNotification"
 //上次定位的城市
@@ -66,7 +67,7 @@
 
 //添加被受保护人信息成功通知
 #define kAddProtectedUserInfoNotification @"AddProtectedUserInfoNotification"
-
+//获取分类数据成功
 #define kLoadHospitalDataNotification @"loadHospitalDataSucceed"
 #define kLoadMajorDataNotification @"loadMajorDataSucceed"
 
