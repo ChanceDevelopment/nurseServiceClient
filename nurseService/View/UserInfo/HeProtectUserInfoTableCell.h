@@ -11,5 +11,8 @@
 @interface HeProtectUserInfoTableCell : HeBaseTableViewCell
 @property(strong,nonatomic)UILabel *baseInfoLabel;
 @property(strong,nonatomic)UILabel *addressLabel;
-
+@property(strong,nonatomic)UILabel *defaultLabel;
+@property(strong,nonatomic)UIButton *selectBt;
+@property (nonatomic,strong) void(^editBlock)();
+@property (nonatomic,strong) void(^deleteBlock)();
 @end

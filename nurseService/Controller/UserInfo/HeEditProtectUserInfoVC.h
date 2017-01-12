@@ -9,7 +9,10 @@
 #import "HeBaseViewController.h"
 
 
-@interface HeEditProtectUserInfoVC : HeBaseViewController
-@property(strong,nonatomic)NSDictionary *userInfoDict;
+@interface HeEditProtectUserInfoVC : HeBaseViewController{
+
+}
+@property(strong,nonatomic)NSMutableDictionary *userInfoDict;
+@property(assign,nonatomic)BOOL isEdit;
 
 @end

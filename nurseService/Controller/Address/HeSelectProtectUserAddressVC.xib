@@ -11,6 +11,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="HeSelectProtectUserAddressVC">
             <connections>
+                <outlet property="tableView" destination="Wu1-oY-jfZ" id="tTH-Ur-TL7"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -23,7 +24,7 @@
                     <rect key="frame" x="0.0" y="627" width="375" height="40"/>
                     <color key="backgroundColor" red="0.59607843140000005" green="0.26274509800000001" blue="0.55294117649999996" alpha="1" colorSpace="calibratedRGB"/>
                     <constraints>
-                        <constraint firstAttribute="height" constant="40" id="eZi-bo-jtd"/>
+                        <constraint firstAttribute="height" constant="40" id="of7-S6-jXx"/>
                     </constraints>
                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                     <state key="normal" title="新增地址">
@@ -33,12 +34,24 @@
                         <action selector="addUserAddress:" destination="-1" eventType="touchUpInside" id="rJs-k5-4wX"/>
                     </connections>
                 </button>
+                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="Wu1-oY-jfZ">
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="627"/>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <connections>
+                        <outlet property="dataSource" destination="-1" id="bGy-8h-EeR"/>
+                        <outlet property="delegate" destination="-1" id="tzW-ZB-6mk"/>
+                    </connections>
+                </tableView>
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
-                <constraint firstAttribute="bottom" secondItem="l4U-t8-z5G" secondAttribute="bottom" id="WSc-vk-T7u"/>
-                <constraint firstItem="l4U-t8-z5G" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="cJp-sy-Lie"/>
-                <constraint firstAttribute="trailing" secondItem="l4U-t8-z5G" secondAttribute="trailing" id="zcS-fA-6gu"/>
+                <constraint firstAttribute="trailing" secondItem="Wu1-oY-jfZ" secondAttribute="trailing" id="Lbi-Vl-6zQ"/>
+                <constraint firstItem="Wu1-oY-jfZ" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="UqP-bZ-0Cp"/>
+                <constraint firstAttribute="bottom" secondItem="l4U-t8-z5G" secondAttribute="bottom" id="f4D-Zd-a8s"/>
+                <constraint firstItem="l4U-t8-z5G" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="fbR-Gm-KWd"/>
+                <constraint firstAttribute="trailing" secondItem="l4U-t8-z5G" secondAttribute="trailing" id="njG-U7-Hl9"/>
+                <constraint firstItem="Wu1-oY-jfZ" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="qq4-3L-nVy"/>
+                <constraint firstItem="l4U-t8-z5G" firstAttribute="top" secondItem="Wu1-oY-jfZ" secondAttribute="bottom" id="vvW-ia-Bdu"/>
             </constraints>
             <point key="canvasLocation" x="32.5" y="100.5"/>
         </view>

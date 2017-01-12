@@ -1841,6 +1841,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EAC2D4691D4B04A200E282A8 /* MapKit.framework in Frameworks */,
+				EAC2D4611D4B03CD00E282A8 /* CoreLocation.framework in Frameworks */,
 				EA8C897E1E21CF410093657B /* UserNotifications.framework in Frameworks */,
 				EAC2D4951D4B05CD00E282A8 /* Contacts.framework in Frameworks */,
 				EAC2D4931D4B05C600E282A8 /* SystemConfiguration.framework in Frameworks */,
@@ -1884,12 +1886,10 @@
 				EAC2D46D1D4B04BE00E282A8 /* MessageUI.framework in Frameworks */,
 				EA8C895C1E21CB8F0093657B /* SMS_SDK.framework in Frameworks */,
 				EAC2D46B1D4B04AF00E282A8 /* AddressBook.framework in Frameworks */,
-				EAC2D4691D4B04A200E282A8 /* MapKit.framework in Frameworks */,
 				EAC2D4671D4B049C00E282A8 /* Accounts.framework in Frameworks */,
 				EAC2D4651D4B049300E282A8 /* CoreData.framework in Frameworks */,
 				EAC2D98D1D4B063B00E282A8 /* libWeiboSDK.a in Frameworks */,
 				EAC2D4631D4B048800E282A8 /* CoreText.framework in Frameworks */,
-				EAC2D4611D4B03CD00E282A8 /* CoreLocation.framework in Frameworks */,
 				EA8C89431E21CAB30093657B /* BaiduMapAPI_Base.framework in Frameworks */,
 				EAC2D45F1D4B03C400E282A8 /* Social.framework in Frameworks */,
 				EAC2D45D1D4B03BD00E282A8 /* CoreGraphics.framework in Frameworks */,

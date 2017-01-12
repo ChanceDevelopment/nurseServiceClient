@@ -7,10 +7,19 @@
 //
 
 #import "HeProtectUserInfoTableCell.h"
+@interface HeProtectUserInfoTableCell()
+{
+    CGRect editeRect;
+    CGRect deleteRect;
+}
+@end
 
 @implementation HeProtectUserInfoTableCell
 @synthesize baseInfoLabel;
 @synthesize addressLabel;
+@synthesize defaultLabel;
+@synthesize selectBt;
+
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier cellSize:(CGSize)cellsize
 {
@@ -36,7 +45,6 @@
         baseInfoLabel.backgroundColor = [UIColor clearColor];
         baseInfoLabel.font = font;
         baseInfoLabel.textColor = [UIColor blackColor];
-        baseInfoLabel.text = @"小明  男  15768580734";
         [bgView addSubview:baseInfoLabel];
         
         labelY = CGRectGetMaxY(baseInfoLabel.frame)-5;
@@ -44,7 +52,7 @@
         addressLabel.backgroundColor = [UIColor clearColor];
         addressLabel.font = font;
         addressLabel.textColor = [UIColor blackColor];
-        addressLabel.text = @"中山西区长乐新村";
+        
         [bgView addSubview:addressLabel];
         
         labelY = CGRectGetMaxY(addressLabel.frame);
@@ -54,7 +62,7 @@
         
         labelY = CGRectGetMaxY(line1.frame);
         labelH = bgView_H - labelY;
-        UIButton *selectBt = [[UIButton alloc] initWithFrame:CGRectMake(10, labelY+(labelH-25)/2.0, 25, 25)];
+        selectBt = [[UIButton alloc] initWithFrame:CGRectMake(10, labelY+(labelH-25)/2.0, 25, 25)];
         [bgView addSubview:selectBt];
         selectBt.backgroundColor = [UIColor clearColor];
         [selectBt setImage:[UIImage imageNamed:@"unselect_box"] forState:UIControlStateNormal];
@@ -62,11 +70,11 @@
         [selectBt addTarget:self action:@selector(selectedAction:) forControlEvents:UIControlEventTouchUpInside];
     
         labelX = CGRectGetMaxX(selectBt.frame);
-        UILabel *defaultLabel = [[UILabel alloc] initWithFrame:CGRectMake(labelX, labelY, 80, labelH)];
+        defaultLabel = [[UILabel alloc] initWithFrame:CGRectMake(labelX, labelY, 80, labelH)];
         [bgView addSubview:defaultLabel];
         defaultLabel.backgroundColor = [UIColor clearColor];
         defaultLabel.userInteractionEnabled = YES;
-        defaultLabel.text = @"默认信息";
+        
         [defaultLabel setFont:font];
         [defaultLabel setTextColor:[UIColor blackColor]];
         
@@ -86,6 +94,8 @@
         [editLabel setFont:font];
         [editLabel setTextColor:[UIColor blackColor]];
         
+        editeRect   = CGRectMake(bgView_W - 180, labelY, 75, labelH);
+        
         labelX = bgView_W - 95;
         UIImageView *deleteImageView = [[UIImageView alloc] initWithFrame:CGRectMake( labelX, labelY+(labelH-25)/2.0, 25, 25)];
         deleteImageView.backgroundColor = [UIColor clearColor];
@@ -102,8 +112,7 @@
         [deleteLabel setFont:font];
         [deleteLabel setTextColor:[UIColor blackColor]];
         
-        
-        
+        deleteRect  = CGRectMake(bgView_W - 95, labelY, 75, labelH);
         
     }
     return self;
@@ -113,4 +122,14 @@
     sender.selected = !sender.selected;
 }
 
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event{
+    CGPoint point = [[touches anyObject] locationInView:self];
+    if (CGRectContainsPoint(editeRect, point)) {
+        if (self.editBlock)
+            self.editBlock();
+    }else if (CGRectContainsPoint(deleteRect, point)){
+        if (self.deleteBlock)
+            self.deleteBlock();
+    }
+}
 @end

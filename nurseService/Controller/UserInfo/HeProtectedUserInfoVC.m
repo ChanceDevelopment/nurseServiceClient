@@ -9,6 +9,8 @@
 #import "HeProtectedUserInfoVC.h"
 #import "HeProtectUserInfoTableCell.h"
 #import "HeEditProtectUserInfoVC.h"
+#import "AFHttpTool.h"
+#import "HeEditProtectUserInfoVC.h"
 
 @interface HeProtectedUserInfoVC ()
 @property(strong,nonatomic)IBOutlet UITableView *tableview;
@@ -44,6 +46,7 @@
     // Do any additional setup after loading the view from its nib.
     [self initializaiton];
     [self initView];
+    [self getDataSource];
 }
 
 - (void)initializaiton
@@ -66,6 +69,7 @@
 - (void)addUserInfo:(NSNotification *)notification
 {
     NSLog(@"addUserInfo");
+    [self getDataSource];
 }
 
 - (IBAction)addProtectUserInfo:(id)sender
@@ -84,7 +88,7 @@
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return 5;
+    return dataSource.count;
 }
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -94,16 +98,45 @@
     
     static NSString *cellIndentifier = @"HeProtectUserInfoTableCell";
     CGSize cellSize = [tableView rectForRowAtIndexPath:indexPath].size;
+    
     NSDictionary *dict = nil;
+    @try {
+        dict = dataSource[row];
+    } @catch (NSException *exception) {
+        
+    } @finally {
+        
+    }
     HeProtectUserInfoTableCell *cell  = [tableView cellForRowAtIndexPath:indexPath];
     if (!cell) {
         cell = [[HeProtectUserInfoTableCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIndentifier cellSize:cellSize];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
+    NSString *name = [dict valueForKey:@"protectedPersonName"];
+    NSString *sex = [[dict valueForKey:@"protectedPersonName"] isEqualToString:@"1"] ? @"男" : @"女";
+    NSString *phone = [dict valueForKey:@"protectedPersonPhone"];
+    BOOL isDefault = [[dict valueForKey:@"protectedDefault"] isEqualToString:@"1"] ? YES : NO;
     
+    cell.baseInfoLabel.text = [NSString stringWithFormat:@"%@  %@  %@",name,sex,phone];
+    cell.addressLabel.text = [dict valueForKey:@"protectedAddress"];
+    cell.defaultLabel.text = isDefault ? @"默认信息" : @"设为默认";
+    cell.selectBt.selected = isDefault ? YES : NO;
+    
+    cell.deleteBlock = ^(){
+        NSLog(@"deleteBlock");
+        [self deletProtectedUserInfoWithId:[dict valueForKey:@"protectedPersonId"]];
+    };
+    cell.editBlock = ^(){
+        NSLog(@"edit");
+        HeEditProtectUserInfoVC *heEditProtectUserInfoVC = [[HeEditProtectUserInfoVC alloc] init];
+        heEditProtectUserInfoVC.hidesBottomBarWhenPushed = YES;
+        heEditProtectUserInfoVC.userInfoDict = dict;
+        [self.navigationController pushViewController:heEditProtectUserInfoVC animated:YES];
+        
+    };
+
     return  cell;
 }
-
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -129,6 +162,62 @@
     }
     [_selectDelegate selectUserInfoWithDict:dict];
     [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (void)getDataSource{
+    NSString *userid = [[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY];
+
+    NSString *requestUrl = [NSString stringWithFormat:@"%@/protected/selectprotectedbyuserid.action",BASEURL];
+    NSDictionary * params  = @{@"userid": userid};
+    [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
+        NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
+        
+        NSDictionary *respondDict = [NSDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
+        if ([[[respondDict valueForKey:@"errorCode"] stringValue] isEqualToString:@"200"]) {
+            NSLog(@"success");
+            NSArray *tempArr = [NSArray arrayWithArray:[respondDict valueForKey:@"json"]];
+            if (dataSource.count > 0) {
+                [dataSource addObjectsFromArray:tempArr];
+                [tableview reloadData];
+            }
+        }else{
+            NSString *errorInfo = [respondDict valueForKey:@"data"];
+            if ([errorInfo isMemberOfClass:[NSNull class]] || errorInfo == nil) {
+                errorInfo = ERRORREQUESTTIP;
+            }
+            [self showHint:errorInfo];
+            NSLog(@"faile");
+        }
+    } failure:^(NSError* err){
+        NSLog(@"err:%@",err);
+        [self.view makeToast:ERRORREQUESTTIP duration:2.0 position:@"center"];
+    }];
+}
+
+- (void)deletProtectedUserInfoWithId:(NSString *)userId{
+    NSString *requestUrl = [NSString stringWithFormat:@"%@/address/deladdressbyid.action",BASEURL];
+
+    NSDictionary * params  = @{@"addressid": userId};
+    [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
+        NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
+        
+        NSDictionary *respondDict = [NSDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
+        if ([[[respondDict valueForKey:@"errorCode"] stringValue] isEqualToString:@"200"]) {
+            NSLog(@"success");
+            [self showHint:[respondDict valueForKey:@"data"]];
+            [self getDataSource];
+        }else{
+            NSString *errorInfo = [respondDict valueForKey:@"data"];
+            if ([errorInfo isMemberOfClass:[NSNull class]] || errorInfo == nil) {
+                errorInfo = ERRORREQUESTTIP;
+            }
+            [self showHint:errorInfo];
+            NSLog(@"faile");
+        }
+    } failure:^(NSError* err){
+        NSLog(@"err:%@",err);
+        [self.view makeToast:ERRORREQUESTTIP duration:2.0 position:@"center"];
+    }];
 }
 
 

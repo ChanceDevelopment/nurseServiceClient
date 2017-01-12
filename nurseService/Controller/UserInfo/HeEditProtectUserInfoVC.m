@@ -17,6 +17,7 @@
 {
     //用户性别 男 1 女 2
     ENUM_SEXType userSex;
+    NSMutableDictionary *postUserInfo;
 }
 @property(strong,nonatomic)IBOutlet UITableView *tableview;
 @property(strong,nonatomic)NSArray *dataSource;
@@ -27,6 +28,7 @@
 @synthesize tableview;
 @synthesize dataSource;
 @synthesize userInfoDict;
+@synthesize isEdit;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -60,8 +62,8 @@
     [Tool setExtraCellLineHidden:tableview];
     tableview.backgroundView = nil;
     tableview.backgroundColor = APPDEFAULTTABLEBACKGROUNDCOLOR;
-    
-    dataSource = @[@"姓名",@"性别",@"身份证号",@"年龄",@"联系电话",@"关系",@"地址",@"病史备注"];
+    postUserInfo = [[NSMutableDictionary alloc] initWithCapacity:0];
+    dataSource = @[@"姓名",@"性别",@"身份证号",@"年龄",@"监护人",@"联系电话",@"关系",@"地址",@"病史备注"];
     
     
 }
@@ -90,8 +92,11 @@
 
 - (IBAction)saveProtectUserInfo:(id)sender
 {
-    [[NSNotificationCenter defaultCenter] postNotificationName:kAddProtectedUserInfoNotification object:nil];
-    [self.navigationController popViewControllerAnimated:YES];
+    if (isEdit) {
+        [self editProtectedUserInfo];
+    }else{
+        [self addProtectedUserInfo];
+    }
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
@@ -100,6 +105,47 @@
         [textField resignFirstResponder];
     }
     return YES;
+}
+- (void)textFieldDidEndEditing:(UITextField *)textField{
+    NSLog(@"textField.text:%@",textField.text);
+    NSString *temp = textField.text;
+    if (isEdit) {
+        switch (textField.tag) {
+            case 100:
+                [userInfoDict setObject:temp forKey:@"protectedPersonName"];
+                break;
+            case 101:
+                [userInfoDict setObject:temp forKey:@"protectedPersonSex"];
+                break;
+            case 102:
+                [userInfoDict setObject:temp forKey:@"protectedPersonCard"];
+                break;
+            case 103:
+                [userInfoDict setObject:temp forKey:@"protectedPersonAge"];
+                break;
+            case 104:
+                [userInfoDict setObject:temp forKey:@"personGuardian"];
+                break;
+            case 105:
+                [userInfoDict setObject:temp forKey:@"protectedPersonPhone"];
+                break;
+            case 106:
+                [userInfoDict setObject:temp forKey:@"protectedPersonNexus"];
+                break;
+            case 107:
+                [userInfoDict setObject:temp forKey:@"protectedAddress"];
+                break;
+            case 108:
+                [userInfoDict setObject:temp forKey:@"protectedPersonNote"];
+                break;
+            default:
+                break;
+        }
+        
+    }else{
+        NSString *infoKey = [NSString stringWithFormat:@"key%ld",textField.tag];
+        [postUserInfo setObject:temp forKey:infoKey];
+    }
 }
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -157,6 +203,7 @@
     contentField.delegate = self;
     contentField.font = textFont;
     contentField.textAlignment = NSTextAlignmentRight;
+    contentField.tag = row + 100;
     
     NSString *placeholder = @"";
     UIFont *contentFont = [UIFont systemFontOfSize:16.0];
@@ -165,6 +212,10 @@
         {
             //姓名
             placeholder = @"受保护人姓名";
+            if (isEdit) {
+                contentField.text  = [userInfoDict objectForKey:@"protectedPersonName"];
+            }
+            
             break;
         }
         case 1:
@@ -188,28 +239,48 @@
             }
             
             contentField.hidden = YES;
-            
+            if (isEdit) {
+                contentField.text  = [[userInfoDict objectForKey:@"protectedPersonSex"] isEqualToString:@"1"] ? @"男" : @"女";
+            }
             break;
         }
         case 2:
         {
             //身份证号
             placeholder = @"请输入身份证号";
+            if (isEdit) {
+                contentField.text  = [userInfoDict objectForKey:@"protectedPersonCard"];
+            }
             break;
         }
         case 3:
         {
             //年龄
             placeholder = @"请输入年龄";
+            if (isEdit) {
+                contentField.text  = [userInfoDict objectForKey:@"protectedPersonAge"];
+            }
             break;
         }
         case 4:
         {
-            //联系电话
-            placeholder = @"请输入联系电话";
+            //年龄
+            placeholder = @"请输监护人";
+            if (isEdit) {
+                contentField.text  = [userInfoDict objectForKey:@"personGuardian"];
+            }
             break;
         }
         case 5:
+        {
+            //联系电话
+            placeholder = @"请输入联系电话";
+            if (isEdit) {
+                contentField.text  = [userInfoDict objectForKey:@"protectedPersonPhone"];
+            }
+            break;
+        }
+        case 6:
         {
             //关系
             CGFloat contentLabelX = 90;
@@ -225,9 +296,12 @@
             [cell addSubview:contentLabel];
             
             contentField.hidden = YES;
+            if (isEdit) {
+                contentField.text  = [userInfoDict objectForKey:@"protectedPersonNexus"];
+            }
             break;
         }
-        case 6:
+        case 7:
         {
             //地址
             CGFloat contentLabelX = 90;
@@ -239,13 +313,15 @@
             contentLabel.textAlignment = NSTextAlignmentRight;
             contentLabel.textColor = [UIColor blackColor];
             contentLabel.font = contentFont;
-            contentLabel.text = @"广东省中山市西区";
             [cell addSubview:contentLabel];
             
             contentField.hidden = YES;
+            if (isEdit) {
+                contentField.text  = [userInfoDict objectForKey:@"protectedAddress"];
+            }
             break;
         }
-        case 7:
+        case 8:
         {
             //病史备注
             placeholder = @"请输入备注信息";
@@ -254,6 +330,9 @@
             contentField.frame = CGRectMake(contentFieldX, contentFieldY, contentFieldW, contentFieldH);
             contentField.textAlignment = NSTextAlignmentLeft;
             
+            if (isEdit) {
+                contentField.text  = [userInfoDict objectForKey:@"protectedPersonNote"];
+            }
             break;
         }
             
@@ -262,6 +341,7 @@
     }
     contentField.placeholder = placeholder;
     [cell addSubview:contentField];
+    
     
     return cell;
 }
@@ -305,13 +385,13 @@
             [actionsheet showInView:cell];
             break;
         }
-        case 5:
+        case 6:
         {
             //选择关系
             [self selectRelation:cell];
             break;
         }
-        case 6:{
+        case 7:{
             //选择地址
             HeSelectProtectUserAddressVC *selectAddressVC = [[HeSelectProtectUserAddressVC alloc] init];
             selectAddressVC.hidesBottomBarWhenPushed = YES;
@@ -333,6 +413,116 @@
     }
 }
 
+//编辑
+- (void)editProtectedUserInfo{
+
+    
+    NSString *requestUrl = [NSString stringWithFormat:@"%@/protected/updateprotectedbyid.action",BASEURL];
+    NSString *userid = [[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY];
+    NSString *sex = @"";
+    if ([[userInfoDict valueForKey:@"protectedPersonSex"] isEqualToString:@"男"] || [[userInfoDict valueForKey:@"protectedPersonSex"] isEqualToString:@"1"]) {
+        sex = @"1";
+    }else{
+        sex = @"2";
+    }
+
+    NSDictionary * params  = @{@"userId": userid,
+                               @"personId": [userInfoDict objectForKey:@"protectedPersonId"],
+                               @"personName": [userInfoDict objectForKey:@"protectedPersonName"],
+                               @"personSex": sex,
+                               @"personCard": [userInfoDict objectForKey:@"protectedPersonCard"],
+                               @"personAge": [userInfoDict objectForKey:@"protectedPersonAge"],
+                               @"personGuardian": [userInfoDict objectForKey:@"personGuardian"],
+                               @"personPhone": [userInfoDict objectForKey:@"protectedPersonPhone"],
+                               @"personnexus": [userInfoDict objectForKey:@"protectedPersonNexus"],
+                               @"addressId": [userInfoDict objectForKey:@"protectedAddressId"],  //关联受护地址id
+                               @"personNote": [userInfoDict objectForKey:@"protectedPersonNote"],
+                               @"address": [userInfoDict objectForKey:@"protectedAddress"],
+                               @"isdefault": [userInfoDict objectForKey:@"protectedDefault"],
+                               @"longitude ": [[[HeSysbsModel getSysModel] userLocationDict] objectForKey:@"longitude"],
+                               @"latitude": [[[HeSysbsModel getSysModel] userLocationDict] objectForKey:@"latitude"]};
+    [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
+        NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
+        
+        NSDictionary *respondDict = [NSDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
+        if ([[[respondDict objectForKey:@"errorCode"] stringValue] isEqualToString:@"200"]) {
+            NSLog(@"success");
+            
+            [self.view makeToast:ERRORREQUESTTIP duration:1.5 position:@"center"];
+            
+            [self performSelector:@selector(backToRootView) withObject:nil afterDelay:1.5];
+        }else{
+            NSString *errorInfo = [respondDict valueForKey:@"data"];
+            if ([errorInfo isMemberOfClass:[NSNull class]] || errorInfo == nil) {
+                errorInfo = ERRORREQUESTTIP;
+            }
+            [self showHint:errorInfo];
+            NSLog(@"faile");
+        }
+    } failure:^(NSError* err){
+        NSLog(@"err:%@",err);
+        [self.view makeToast:ERRORREQUESTTIP duration:2.0 position:@"center"];
+    }];
+}
+
+//添加
+- (void)addProtectedUserInfo{
+    NSString *requestUrl = [NSString stringWithFormat:@"%@/protected/addprotected.action",BASEURL];
+    NSString *userid = [[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY];
+    NSString *name = [NSString stringWithFormat:@"%@",[postUserInfo objectForKey:@"key100"]];
+    NSString *sex = [[postUserInfo objectForKey:@"key101"] isEqualToString:@"男"] ? @"1" : @"2";
+    NSString *card = [NSString stringWithFormat:@"%@",[postUserInfo objectForKey:@"key102"]];
+    NSString *age = [NSString stringWithFormat:@"%@",[postUserInfo objectForKey:@"key103"]];
+    NSString *phone = [NSString stringWithFormat:@"%@",[postUserInfo objectForKey:@"key105"]];
+    NSString *dian = [NSString stringWithFormat:@"%@",[postUserInfo objectForKey:@"key104"]];
+    NSString *nexus = [NSString stringWithFormat:@"%@",[postUserInfo objectForKey:@"key106"]];
+    NSString *address = [NSString stringWithFormat:@"%@",[postUserInfo objectForKey:@"key107"]];
+    NSString *note = [NSString stringWithFormat:@"%@",[postUserInfo objectForKey:@"key108"]];
+    NSString *longitude = [NSString stringWithFormat:@"%@",[[[HeSysbsModel getSysModel] userLocationDict] objectForKey:@"longitude"]];
+    NSString *latitude = [NSString stringWithFormat:@"%@",[[[HeSysbsModel getSysModel] userLocationDict] objectForKey:@"latitude"]];
+    
+    NSDictionary * params  = @{@"personName": name,
+                               @"personSex": sex,
+                               @"personCard": card,
+                               @"personAge": age,
+                               @"personGuardian": dian,
+                               @"personPhone": phone,
+                               @"personnexus": nexus,
+                               @"address": address,
+                               @"personNote": note,
+                               @"addressId": @"",
+                               @"isdefault": @"0",
+                               @"userId": userid,
+                               @"longitude ": longitude,
+                               @"latitude": latitude};
+    [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
+        NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
+        
+        NSDictionary *respondDict = [NSDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
+        if ([[[respondDict valueForKey:@"errorCode"] stringValue] isEqualToString:@"200"]) {
+            NSLog(@"success");
+
+            [self.view makeToast:ERRORREQUESTTIP duration:1.5 position:@"center"];
+
+            [self performSelector:@selector(backToRootView) withObject:nil afterDelay:1.5];
+        }else{
+            NSString *errorInfo = [respondDict valueForKey:@"data"];
+            if ([errorInfo isMemberOfClass:[NSNull class]] || errorInfo == nil) {
+                errorInfo = ERRORREQUESTTIP;
+            }
+            [self showHint:errorInfo];
+            NSLog(@"faile");
+        }
+    } failure:^(NSError* err){
+        NSLog(@"err:%@",err);
+        [self.view makeToast:ERRORREQUESTTIP duration:2.0 position:@"center"];
+    }];
+}
+
+- (void)backToRootView{
+    [[NSNotificationCenter defaultCenter] postNotificationName:kAddProtectedUserInfoNotification object:nil];
+    [self.navigationController popViewControllerAnimated:YES];
+}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
