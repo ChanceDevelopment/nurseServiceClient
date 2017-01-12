@@ -110,7 +110,7 @@
     NSInteger section = indexPath.section;
     NSInteger row = indexPath.row;
     
-    return 70;
+    return 100;
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
