@@ -21,6 +21,14 @@
 @interface OrderViewController ()<UITableViewDelegate,UITableViewDataSource>
 {
     NSInteger currentOrderType;
+    //预约框
+    NSMutableArray *noBookOrderArray;
+    //已预约
+    NSMutableArray *hadBookOrderArray;
+    //进行中
+    NSMutableArray *nowOrderArray;
+    //已完成
+    NSMutableArray *finishOrderArray;
 }
 @property(nonatomic,strong)DLNavigationTabBar *navigationTabBar;
 @property(strong,nonatomic)IBOutlet UITableView *tableview;
@@ -72,6 +80,10 @@
     [super viewDidLoad];
     [self initializaiton];
     [self initView];
+    [self loadOrderDataWithOrderState:0];
+    [self loadOrderDataWithOrderState:1];
+    [self loadOrderDataWithOrderState:2];
+    [self loadOrderDataWithOrderState:3];
 }
 
 - (void)initializaiton
@@ -79,6 +91,14 @@
     [super initializaiton];
     dataSource = [[NSMutableArray alloc] initWithCapacity:0];
     currentOrderType = 0;
+    noBookOrderArray = [[NSMutableArray alloc] initWithCapacity:0];
+    hadBookOrderArray = [[NSMutableArray alloc] initWithCapacity:0];
+    nowOrderArray = [[NSMutableArray alloc] initWithCapacity:0];
+    finishOrderArray = [[NSMutableArray alloc] initWithCapacity:0];
+    [dataSource addObject:noBookOrderArray];
+    [dataSource addObject:hadBookOrderArray];
+    [dataSource addObject:nowOrderArray];
+    [dataSource addObject:finishOrderArray];
 }
 
 - (void)initView
@@ -99,6 +119,38 @@
     NSLog(@"index = %ld",index);
     currentOrderType = index;
     [tableview reloadData];
+}
+
+- (void)loadOrderDataWithOrderState:(NSInteger)orderState
+{
+    NSString *requestUrl = [NSString stringWithFormat:@"%@r/orderSend/OrderSendDescription.action",BASEURL];
+    NSString *userId = [[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY];
+    NSString *orderStateStr = [NSString stringWithFormat:@"%ld",orderState];
+    NSDictionary * params  = @{@"userId":userId,@"orderState":orderStateStr};
+    [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
+        NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
+        NSDictionary *respondDict = [NSDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
+        if ([[respondDict valueForKey:@"errorCode"] integerValue] == REQUESTCODE_SUCCEED){
+            NSArray *jsonArray = [respondDict valueForKey:@"json"];
+            if ([jsonArray isMemberOfClass:[NSNull class]] || jsonArray == nil || [jsonArray count] == 0) {
+                
+                return;
+            }
+            NSMutableArray *orderArray = dataSource[orderState];
+            orderArray = [[NSMutableArray alloc] initWithArray:jsonArray];
+            
+            [tableview reloadData];
+        }
+        else{
+            NSString *data = respondDict[@"data"];
+            if ([data isMemberOfClass:[NSNull class]] || data == nil) {
+                data = ERRORREQUESTTIP;
+            }
+            [self showHint:data];
+        }
+    } failure:^(NSError* err){
+        
+    }];
 }
 
 - (void)showPaitentInfoWith:(NSDictionary *)paitentInfoDict
@@ -179,17 +231,26 @@
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return 5;
+    NSArray *orderArray = dataSource[currentOrderType];
+    return [orderArray count];
 }
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSInteger row = indexPath.row;
-    NSInteger section = indexPath.section;
-    
     static NSString *cellIndentifier = @"HeOrderTableViewCell";
     CGSize cellSize = [tableView rectForRowAtIndexPath:indexPath].size;
+    NSInteger row = indexPath.row;
+    NSInteger section = indexPath.section;
+    NSArray *orderArray = dataSource[currentOrderType];
+    
     NSDictionary *dict = nil;
+    @try {
+        dict = orderArray[section];
+    } @catch (NSException *exception) {
+        
+    } @finally {
+        
+    }
     switch (currentOrderType) {
         case 0:
         {
@@ -223,7 +284,43 @@
                 NSLog(@"showUserInfoBlock");
                 [weakSelf showPaitentInfoWith:dict];
             };
+            NSString *serviceName = dict[@"serviceName"];
+            if ([serviceName isMemberOfClass:[NSNull class]] || serviceName == nil) {
+                serviceName = @"";
+            }
+            cell.serviceContentL.text = serviceName;
             
+            id zoneCreatetimeObj = [dict objectForKey:@"orderSendBegintime"];
+            if ([zoneCreatetimeObj isMemberOfClass:[NSNull class]] || zoneCreatetimeObj == nil) {
+                NSTimeInterval  timeInterval = [[NSDate date] timeIntervalSince1970];
+                zoneCreatetimeObj = [NSString stringWithFormat:@"%.0f000",timeInterval];
+            }
+            long long timestamp = [zoneCreatetimeObj longLongValue];
+            NSString *zoneCreatetime = [NSString stringWithFormat:@"%lld",timestamp];
+            if ([zoneCreatetime length] > 3) {
+                //时间戳
+                zoneCreatetime = [zoneCreatetime substringToIndex:[zoneCreatetime length] - 3];
+            }
+            
+            NSString *time = [Tool convertTimespToString:[zoneCreatetime longLongValue] dateFormate:@"MM-dd HH:mm"];
+            cell.stopTimeL.text = time;
+
+            NSString *addresStr = dict[@"orderSendAddree"];
+            if ([addresStr isMemberOfClass:[NSNull class]]) {
+                addresStr = @"";
+            }
+            NSArray *addressArray = [addresStr componentsSeparatedByString:@","];
+            NSString *addressDetail = nil;
+            @try {
+                addressDetail = addressArray[2];
+            } @catch (NSException *exception) {
+                
+            } @finally {
+                
+            }
+            cell.addressL.text = addressDetail;
+            
+            NSString *username = dict[@"orderSendUsername"];
             return cell;
             break;
         }
@@ -387,16 +484,17 @@
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     NSInteger row = indexPath.row;
     NSInteger section = indexPath.section;
+    NSArray *orderArray = dataSource[currentOrderType];
     
     NSDictionary *dict = nil;
     @try {
-        dict = dataSource[row];
+        dict = orderArray[section];
     } @catch (NSException *exception) {
         
     } @finally {
         
     }
-    
+    NSLog(@"order = %@",dict);
 }
 
 - (void)didReceiveMemoryWarning {

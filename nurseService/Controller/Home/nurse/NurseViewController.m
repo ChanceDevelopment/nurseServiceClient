@@ -14,6 +14,8 @@
 #import "HeSearchInfoVC.h"
 #import "MJRefreshAutoNormalFooter.h"
 #import "MJRefreshNormalHeader.h"
+#import "MLLabel+Size.h"
+#import "MLLabel.h"
 
 @interface NurseViewController ()<UITableViewDelegate,UITableViewDataSource,DOPDropDownMenuDataSource,DOPDropDownMenuDelegate>
 {
@@ -28,6 +30,8 @@
 @property (nonatomic, strong) NSArray *movices;
 @property (nonatomic, strong) NSArray *hostels;
 @property (nonatomic, strong) NSArray *areas;
+
+@property(strong,nonatomic)NSCache *imageCache;
 
 @property (nonatomic, strong) NSArray *sorts;
 @property (nonatomic, weak) DOPDropDownMenu *menu;
@@ -91,6 +95,7 @@
     [super initializaiton];
     //初始化分类数据
     [self initCategoryData];
+    _imageCache = [[NSCache alloc] init];
     chooseArray = [[NSMutableArray alloc] initWithCapacity:0];
     dataSource = [[NSMutableArray alloc] initWithCapacity:0];
     
@@ -318,9 +323,21 @@
         NSDictionary *respondDict = [NSDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
         if ([[respondDict valueForKey:@"errorCode"] integerValue] == REQUESTCODE_SUCCEED){
             NSArray *jsonArray = [respondDict valueForKey:@"json"];
+            if ([jsonArray isMemberOfClass:[NSNull class]] || jsonArray == nil || [jsonArray count] == 0) {
+                if (pageNum > 0) {
+                    //因为无法加载更多，所以回复到原来的页数
+                    pageNum--;
+                }
+                return;
+            }
+            if (pageNum == 0) {
+                //如果刷新，先清除数据
+                [dataSource removeAllObjects];
+            }
             for (NSDictionary *dict in jsonArray) {
                 [dataSource addObject:dict];
             }
+            
             [tableview reloadData];
         }
         else{
@@ -478,7 +495,7 @@
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 5;
+    return [dataSource count];
 }
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -489,17 +506,68 @@
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NSInteger row = indexPath.row;
+    NSInteger section = indexPath.section;
     
     static NSString *cellIndentifier = @"HeNurseTableViewCell";
     CGSize cellSize = [tableView rectForRowAtIndexPath:indexPath].size;
     NSDictionary *dict = nil;
-    
+    @try {
+        dict = dataSource[row];
+    } @catch (NSException *exception) {
+        
+    } @finally {
+        
+    }
     HeNurseTableViewCell *cell  = [tableView cellForRowAtIndexPath:indexPath];
     if (!cell) {
         cell = [[HeNurseTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIndentifier cellSize:cellSize];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     }
+    NSString *nurseHeader = dict[@"nurseHeader"];
+    if ([nurseHeader isMemberOfClass:[NSNull class]] || nurseHeader == nil) {
+        nurseHeader = @"";
+    }
+    nurseHeader = [NSString stringWithFormat:@"%@/%@",HYTIMAGEURL,nurseHeader];
+    NSString *nurseHeaderKey = [NSString stringWithFormat:@"%ld%ld_%@",section,row,nurseHeader];
+    UIImageView *imageview = [_imageCache objectForKey:nurseHeaderKey];
+    if (!imageview) {
+        [cell.userImage sd_setImageWithURL:[NSURL URLWithString:nurseHeader] placeholderImage:[UIImage imageNamed:@"index2"]];
+        imageview = cell.userImage;
+    }
+    cell.userImage = imageview;
+    [cell insertSubview:cell.userImage atIndex:0];
+    
+    NSString *nurseNick = dict[@"nurseNick"];
+    if ([nurseNick isMemberOfClass:[NSNull class]] || nurseNick == nil) {
+        nurseNick = @"";
+    }
+    cell.nameLabel.text = nurseNick;
+    
+    NSString *nurseWorkUnit = dict[@"nurseWorkUnit"];
+    if ([nurseWorkUnit isMemberOfClass:[NSNull class]] || nurseWorkUnit == nil) {
+        nurseWorkUnit = @"";
+    }
+    cell.hospitalLabel.text = nurseWorkUnit;
+    
+    NSString *nurseNote = dict[@"nurseNote"];
+    if ([nurseNote isMemberOfClass:[NSNull class]] || nurseNote == nil) {
+        nurseNote = @"";
+    }
+    cell.addresssLabel.text = nurseNote;
+    
+    CGFloat distance = [dict[@"distance"] floatValue] / 1000.0;
+    NSString *distanceStr = [NSString stringWithFormat:@"%.2fkm",distance];
+    CGSize distanceSize = [MLLabel getViewSizeByString:distanceStr maxWidth:cell.addresssLabel.frame.size.width font:cell.distanceLabel.font lineHeight:1.2f lines:0];
+    
+    CGRect distanceFrame = cell.distanceLabel.frame;
+    
+    
+    distanceFrame.size.width = distanceSize.width + 30;
+    CGFloat distanceLabelX = SCREENWIDTH - distanceFrame.size.width - 10;
+    distanceFrame.origin.x = distanceLabelX;
+    cell.distanceLabel.frame = distanceFrame;
+    cell.distanceLabel.text = distanceStr;
     
     return cell;
 }

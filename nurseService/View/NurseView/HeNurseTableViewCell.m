@@ -59,10 +59,11 @@
         UIFont *textFont = [UIFont fontWithName:@"Helvetica" size:13.0];
         CGFloat nameLabelX = CGRectGetMaxX(userImage.frame) + 5;
         CGFloat nameLabelY = userImageY;
-        CGFloat nameLabelW = 40;
+        CGFloat nameLabelW = 80;
         CGFloat nameLabelH = userImageH / 3.0;
         
         nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(nameLabelX, nameLabelY, nameLabelW, nameLabelH)];
+        nameLabel.numberOfLines = 2;
         nameLabel.backgroundColor = [UIColor clearColor];
         nameLabel.textColor = [UIColor blackColor];
         nameLabel.font = textFont;
@@ -107,8 +108,8 @@
         tipLabel.text = @"国家卫委认证 已实名认证";
         [self addSubview:tipLabel];
         
-        CGFloat addresssLabelY = CGRectGetMaxY(tipLabel.frame);
-        CGFloat addresssLabelW = 80;
+        CGFloat addresssLabelY = CGRectGetMaxY(tipLabel.frame) + 5;
+        CGFloat addresssLabelW = (SCREENWIDTH - nameLabelX - 10) / 2.0;
         CGFloat addresssLabelH = userImageH / 3.0;
         CGFloat addresssLabelX = nameLabelX;
         addresssLabel = [[UILabel alloc] initWithFrame:CGRectMake(addresssLabelX, addresssLabelY, addresssLabelW, addresssLabelH)];
@@ -119,7 +120,7 @@
         [self addSubview:addresssLabel];
         
         
-        CGFloat distanceLabelY = CGRectGetMaxY(tipLabel.frame);
+        CGFloat distanceLabelY = CGRectGetMaxY(tipLabel.frame) + 5;
         CGFloat distanceLabelW = 90;
         CGFloat distanceLabelH = userImageH / 3.0;
         CGFloat distanceLabelX = SCREENWIDTH - distanceLabelW - 10;
@@ -134,7 +135,7 @@
         
         CGFloat locationIconW = 20;
         CGFloat locationIconH = 20;
-        CGFloat locationIconX = 10;
+        CGFloat locationIconX = 5;
         CGFloat locationIconY = (distanceLabelH - locationIconH) / 2.0;
         
         UIImageView *locationIcon = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"icon_address"]];
@@ -144,6 +145,7 @@
     }
     return self;
 }
+
 
 - (void)selectButtonClick:(UIButton *)button
 {

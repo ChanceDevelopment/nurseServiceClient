@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		AD6C8EED1DF9C7C100C44A8A /* HomeTabbarController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD6C8EDE1DF9C7C100C44A8A /* HomeTabbarController.m */; };
 		AD6C8EEE1DF9C7C100C44A8A /* LeftViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD6C8EE41DF9C7C100C44A8A /* LeftViewController.m */; };
-		AD6C8EFE1DF9C90700C44A8A /* 30.m in Sources */ = {isa = PBXBuildFile; fileRef = AD6C8EFD1DF9C90700C44A8A /* 30.m */; };
+		AD6C8EFE1DF9C90700C44A8A /* MyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD6C8EFD1DF9C90700C44A8A /* MyViewController.m */; };
 		AD6C8F011DF9C92B00C44A8A /* NurseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD6C8F001DF9C92B00C44A8A /* NurseViewController.m */; };
 		AD6C8F041DF9C93E00C44A8A /* OrderViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD6C8F031DF9C93E00C44A8A /* OrderViewController.m */; };
 		AD6C8F2B1DF9CFE200C44A8A /* icon_care.png in Resources */ = {isa = PBXBuildFile; fileRef = AD6C8F231DF9CFE200C44A8A /* icon_care.png */; };
@@ -700,7 +700,7 @@
 		AD6C8EE31DF9C7C100C44A8A /* LeftViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LeftViewController.h; sourceTree = "<group>"; };
 		AD6C8EE41DF9C7C100C44A8A /* LeftViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LeftViewController.m; sourceTree = "<group>"; };
 		AD6C8EFC1DF9C90700C44A8A /* MyViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyViewController.h; sourceTree = "<group>"; };
-		AD6C8EFD1DF9C90700C44A8A /* 30.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = 30.m; sourceTree = "<group>"; };
+		AD6C8EFD1DF9C90700C44A8A /* MyViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyViewController.m; sourceTree = "<group>"; };
 		AD6C8EFF1DF9C92B00C44A8A /* NurseViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NurseViewController.h; sourceTree = "<group>"; };
 		AD6C8F001DF9C92B00C44A8A /* NurseViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NurseViewController.m; sourceTree = "<group>"; };
 		AD6C8F021DF9C93E00C44A8A /* OrderViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OrderViewController.h; sourceTree = "<group>"; };
@@ -1960,7 +1960,7 @@
 				EA9F726A1E22794E00FED4A3 /* HePaitentInfoVC.m */,
 				EA9F726B1E22794E00FED4A3 /* HePaitentInfoVC.xib */,
 				AD6C8EFC1DF9C90700C44A8A /* MyViewController.h */,
-				AD6C8EFD1DF9C90700C44A8A /* 30.m */,
+				AD6C8EFD1DF9C90700C44A8A /* MyViewController.m */,
 				EA8C89BA1E21E7640093657B /* MyViewController.xib */,
 				EACA0EF41E266FDD009B4516 /* HeUserInfoVC.h */,
 				EACA0EF51E266FDD009B4516 /* HeUserInfoVC.m */,
@@ -4985,7 +4985,7 @@
 				EAC2D8991D4B063B00E282A8 /* UIViewController+HUD.m in Sources */,
 				EAC2D8571D4B063B00E282A8 /* RRDevice.m in Sources */,
 				EAC2D9151D4B063B00E282A8 /* RACSubject.m in Sources */,
-				AD6C8EFE1DF9C90700C44A8A /* 30.m in Sources */,
+				AD6C8EFE1DF9C90700C44A8A /* MyViewController.m in Sources */,
 				EAC2D8A51D4B063B00E282A8 /* MJRefreshComponent.m in Sources */,
 				EAC2D96A1D4B063B00E282A8 /* UIResponder+Router.m in Sources */,
 				EAC2D8471D4B063B00E282A8 /* DFBaseDataService.m in Sources */,

@@ -32,14 +32,14 @@
     UIButton *locationButton;
 }
 @property(strong,nonatomic)IBOutlet UITableView *tableview;
-@property(strong,nonatomic)NSMutableArray *datSource;
+@property(strong,nonatomic)NSMutableArray *dataSource;
 @property(strong,nonatomic)NSCache *imageCache;
 
 @end
 
 @implementation FirstViewController
 @synthesize tableview;
-@synthesize datSource;
+@synthesize dataSource;
 @synthesize imageCache;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -76,7 +76,7 @@
 {
     [super initializaiton];
     bannerDataSource = [[NSMutableArray alloc] initWithCapacity:0];
-    datSource = [[NSMutableArray alloc] initWithCapacity:0];
+    dataSource = [[NSMutableArray alloc] initWithCapacity:0];
     imageCache = [[NSCache alloc] init];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getCitySucceed:) name:kGetCitySucceedNotification object:nil];
 }
@@ -200,7 +200,7 @@
     [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
         NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
         if (pageNum == 0) {
-            [datSource removeAllObjects];
+            [dataSource removeAllObjects];
         }
         NSMutableDictionary *respondDict = [NSMutableDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
         if ([[respondDict valueForKey:@"errorCode"] integerValue] == REQUESTCODE_SUCCEED){
@@ -240,15 +240,22 @@
     NSDictionary * params  = @{@"pageNum": pageNumString};
     [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
         NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
-        [bannerDataSource removeAllObjects];
         NSDictionary *respondDict = [NSDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
         if ([[respondDict valueForKey:@"errorCode"] integerValue] == REQUESTCODE_SUCCEED){
             NSArray *jsonArray = respondDict[@"json"];
-            if ([jsonArray isMemberOfClass:[NSNull class]]) {
+            if ([jsonArray isMemberOfClass:[NSNull class]] || jsonArray == nil || [jsonArray count] == 0) {
+                if (pageNum > 0) {
+                    //因为无法加载更多，所以回复到原来的页数
+                    pageNum--;
+                }
                 return;
             }
+            if (pageNum == 0) {
+                //如果刷新，先清除数据
+                [dataSource removeAllObjects];
+            }
             for (id dict in jsonArray) {
-                [datSource addObject:dict];
+                [dataSource addObject:dict];
             }
             [tableview reloadData];
         }
@@ -359,7 +366,7 @@
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return [datSource count];
+    return [dataSource count];
 }
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -382,7 +389,7 @@
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
     @try {
-        dict = datSource[row];
+        dict = dataSource[row];
     } @catch (NSException *exception) {
         
     } @finally {
@@ -424,7 +431,7 @@
     NSLog(@"section = %ld, row = %ld",section,row);
     NSDictionary *dict = nil;
     @try {
-        dict = datSource[row];
+        dict = dataSource[row];
     } @catch (NSException *exception) {
         
     } @finally {
