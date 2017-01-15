@@ -211,7 +211,7 @@
         
         CGFloat nurseInfoLY = nurseTipY;
         CGFloat nurseInfoLW = 130;
-        CGFloat nurseInfoLX = bgView_W - nurseTipW - 30;
+        CGFloat nurseInfoLX = bgView_W - nurseInfoLW - 30;
         CGFloat nurseInfoLH = nurseTipH;
         
         nurseInfoL = [[UILabel alloc] initWithFrame:CGRectMake(nurseInfoLX, nurseInfoLY, nurseInfoLW, nurseInfoLH)];

@@ -123,7 +123,7 @@
 
 - (void)loadOrderDataWithOrderState:(NSInteger)orderState
 {
-    NSString *requestUrl = [NSString stringWithFormat:@"%@r/orderSend/OrderSendDescription.action",BASEURL];
+    NSString *requestUrl = [NSString stringWithFormat:@"%@/orderSend/OrderSendDescription.action",BASEURL];
     NSString *userId = [[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY];
     NSString *orderStateStr = [NSString stringWithFormat:@"%ld",orderState];
     NSDictionary * params  = @{@"userId":userId,@"orderState":orderStateStr};
@@ -137,9 +137,11 @@
                 return;
             }
             NSMutableArray *orderArray = dataSource[orderState];
-            orderArray = [[NSMutableArray alloc] initWithArray:jsonArray];
+            [orderArray addObjectsFromArray:jsonArray];
+            if (orderState == currentOrderType) {
+                [tableview reloadData];
+            }
             
-            [tableview reloadData];
         }
         else{
             NSString *data = respondDict[@"data"];
@@ -149,7 +151,7 @@
             [self showHint:data];
         }
     } failure:^(NSError* err){
-        
+        NSLog(@"errorInfo = %@",err);
     }];
 }
 
@@ -284,9 +286,17 @@
                 NSLog(@"showUserInfoBlock");
                 [weakSelf showPaitentInfoWith:dict];
             };
-            NSString *serviceName = dict[@"serviceName"];
+            NSString *serviceName = dict[@"orderSendServicecontent"];
             if ([serviceName isMemberOfClass:[NSNull class]] || serviceName == nil) {
                 serviceName = @"";
+            }
+            NSArray *serviceArray = [serviceName componentsSeparatedByString:@":"];
+            @try {
+                serviceName = serviceArray[0];
+            } @catch (NSException *exception) {
+                
+            } @finally {
+                
             }
             cell.serviceContentL.text = serviceName;
             
@@ -321,6 +331,38 @@
             cell.addressL.text = addressDetail;
             
             NSString *username = dict[@"orderSendUsername"];
+            NSArray *userArray = [username componentsSeparatedByString:@","];
+            NSString *nickname = nil;
+            @try {
+                nickname = userArray[1];
+            } @catch (NSException *exception) {
+                
+            } @finally {
+                
+            }
+            id orderSendSex = dict[@"orderSendSex"];
+            NSString *sexStr = @"女";
+            if ([orderSendSex isMemberOfClass:[NSNull class]]) {
+                orderSendSex = @"";
+            }
+            if ([orderSendSex integerValue] == ENUM_SEX_Boy) {
+                sexStr = @"男";
+            }
+            
+            id orderSendAge = dict[@"orderSendAge"];
+            if ([orderSendAge isMemberOfClass:[NSNull class]]) {
+                orderSendAge = @"";
+            }
+            NSString *ageStr = [NSString stringWithFormat:@"%@",orderSendAge];
+            
+            cell.userInfoL.text = [NSString stringWithFormat:@"%@  %@  %@",nickname,sexStr,ageStr];
+            
+            id orderSendTotalmoney = dict[@"orderSendTotalmoney"];
+            if ([orderSendTotalmoney isMemberOfClass:[NSNull class]] || orderSendTotalmoney == nil) {
+                orderSendTotalmoney = @"";
+            }
+            cell.orderMoney.text = [NSString stringWithFormat:@"￥%@",orderSendTotalmoney];
+            
             return cell;
             break;
         }
@@ -351,6 +393,83 @@
                 NSLog(@"showUserInfoBlock");
                 [weakSelf showPaitentInfoWith:dict];
             };
+            
+            NSString *serviceName = dict[@"orderSendServicecontent"];
+            if ([serviceName isMemberOfClass:[NSNull class]] || serviceName == nil) {
+                serviceName = @"";
+            }
+            NSArray *serviceArray = [serviceName componentsSeparatedByString:@":"];
+            @try {
+                serviceName = serviceArray[0];
+            } @catch (NSException *exception) {
+                
+            } @finally {
+                
+            }
+            cell.serviceContentL.text = serviceName;
+            
+            id zoneCreatetimeObj = [dict objectForKey:@"orderSendBegintime"];
+            if ([zoneCreatetimeObj isMemberOfClass:[NSNull class]] || zoneCreatetimeObj == nil) {
+                NSTimeInterval  timeInterval = [[NSDate date] timeIntervalSince1970];
+                zoneCreatetimeObj = [NSString stringWithFormat:@"%.0f000",timeInterval];
+            }
+            long long timestamp = [zoneCreatetimeObj longLongValue];
+            NSString *zoneCreatetime = [NSString stringWithFormat:@"%lld",timestamp];
+            if ([zoneCreatetime length] > 3) {
+                //时间戳
+                zoneCreatetime = [zoneCreatetime substringToIndex:[zoneCreatetime length] - 3];
+            }
+            
+            NSString *time = [Tool convertTimespToString:[zoneCreatetime longLongValue] dateFormate:@"MM-dd HH:mm"];
+            cell.stopTimeL.text = time;
+            
+            NSString *addresStr = dict[@"orderSendAddree"];
+            if ([addresStr isMemberOfClass:[NSNull class]]) {
+                addresStr = @"";
+            }
+            NSArray *addressArray = [addresStr componentsSeparatedByString:@","];
+            NSString *addressDetail = nil;
+            @try {
+                addressDetail = addressArray[2];
+            } @catch (NSException *exception) {
+                
+            } @finally {
+                
+            }
+            cell.addressL.text = addressDetail;
+            
+            NSString *username = dict[@"orderSendUsername"];
+            NSArray *userArray = [username componentsSeparatedByString:@","];
+            NSString *nickname = nil;
+            @try {
+                nickname = userArray[1];
+            } @catch (NSException *exception) {
+                
+            } @finally {
+                
+            }
+            id orderSendSex = dict[@"orderSendSex"];
+            NSString *sexStr = @"女";
+            if ([orderSendSex isMemberOfClass:[NSNull class]]) {
+                orderSendSex = @"";
+            }
+            if ([orderSendSex integerValue] == ENUM_SEX_Boy) {
+                sexStr = @"男";
+            }
+            
+            id orderSendAge = dict[@"orderSendAge"];
+            if ([orderSendAge isMemberOfClass:[NSNull class]]) {
+                orderSendAge = @"";
+            }
+            NSString *ageStr = [NSString stringWithFormat:@"%@",orderSendAge];
+            
+            cell.userInfoL.text = [NSString stringWithFormat:@"%@  %@  %@",nickname,sexStr,ageStr];
+            
+            id orderSendTotalmoney = dict[@"orderSendTotalmoney"];
+            if ([orderSendTotalmoney isMemberOfClass:[NSNull class]] || orderSendTotalmoney == nil) {
+                orderSendTotalmoney = @"";
+            }
+            cell.orderMoney.text = [NSString stringWithFormat:@"￥%@",orderSendTotalmoney];
             
             return cell;
             break;
@@ -387,6 +506,101 @@
                 [weakSelf showPaitentInfoWith:dict];
             };
             
+            NSString *serviceName = dict[@"orderSendServicecontent"];
+            if ([serviceName isMemberOfClass:[NSNull class]] || serviceName == nil) {
+                serviceName = @"";
+            }
+            NSArray *serviceArray = [serviceName componentsSeparatedByString:@":"];
+            @try {
+                serviceName = serviceArray[0];
+            } @catch (NSException *exception) {
+                
+            } @finally {
+                
+            }
+            cell.serviceContentL.text = serviceName;
+            
+            id zoneCreatetimeObj = [dict objectForKey:@"orderSendBegintime"];
+            if ([zoneCreatetimeObj isMemberOfClass:[NSNull class]] || zoneCreatetimeObj == nil) {
+                NSTimeInterval  timeInterval = [[NSDate date] timeIntervalSince1970];
+                zoneCreatetimeObj = [NSString stringWithFormat:@"%.0f000",timeInterval];
+            }
+            long long timestamp = [zoneCreatetimeObj longLongValue];
+            NSString *zoneCreatetime = [NSString stringWithFormat:@"%lld",timestamp];
+            if ([zoneCreatetime length] > 3) {
+                //时间戳
+                zoneCreatetime = [zoneCreatetime substringToIndex:[zoneCreatetime length] - 3];
+            }
+            
+            NSString *time = [Tool convertTimespToString:[zoneCreatetime longLongValue] dateFormate:@"MM-dd HH:mm"];
+            cell.stopTimeL.text = time;
+            
+            NSString *addresStr = dict[@"orderSendAddree"];
+            if ([addresStr isMemberOfClass:[NSNull class]]) {
+                addresStr = @"";
+            }
+            NSArray *addressArray = [addresStr componentsSeparatedByString:@","];
+            NSString *addressDetail = nil;
+            @try {
+                addressDetail = addressArray[2];
+            } @catch (NSException *exception) {
+                
+            } @finally {
+                
+            }
+            cell.addressL.text = addressDetail;
+            
+            NSString *username = dict[@"orderSendUsername"];
+            NSArray *userArray = [username componentsSeparatedByString:@","];
+            NSString *nickname = nil;
+            @try {
+                nickname = userArray[1];
+            } @catch (NSException *exception) {
+                
+            } @finally {
+                
+            }
+            id orderSendSex = dict[@"orderSendSex"];
+            NSString *sexStr = @"女";
+            if ([orderSendSex isMemberOfClass:[NSNull class]]) {
+                orderSendSex = @"";
+            }
+            if ([orderSendSex integerValue] == ENUM_SEX_Boy) {
+                sexStr = @"男";
+            }
+            
+            id orderSendAge = dict[@"orderSendAge"];
+            if ([orderSendAge isMemberOfClass:[NSNull class]]) {
+                orderSendAge = @"";
+            }
+            NSString *ageStr = [NSString stringWithFormat:@"%@",orderSendAge];
+            
+            cell.userInfoL.text = [NSString stringWithFormat:@"%@  %@  %@",nickname,sexStr,ageStr];
+            
+            id orderSendTotalmoney = dict[@"orderSendTotalmoney"];
+            if ([orderSendTotalmoney isMemberOfClass:[NSNull class]] || orderSendTotalmoney == nil) {
+                orderSendTotalmoney = @"";
+            }
+            cell.orderMoney.text = [NSString stringWithFormat:@"￥%@",orderSendTotalmoney];
+            
+            NSString *nurseNick = dict[@"nurseNick"];
+            if ([nurseNick isMemberOfClass:[NSNull class]] || nurseNick == nil) {
+                nurseNick = @"小明";
+            }
+            id nurseSex = dict[@"nurseSex"];
+            if ([nurseSex isMemberOfClass:[NSNull class]] || nurseSex == nil) {
+                nurseSex = @"";
+            }
+            NSString *nurseStr = @"女";
+            if ([nurseSex integerValue] == ENUM_SEX_Boy) {
+                nurseStr = @"男";
+            }
+            
+            id nurseAge = dict[@"nurseAge"];
+            if ([nurseAge isMemberOfClass:[NSNull class]] || nurseAge == nil) {
+                nurseAge = @"24";
+            }
+            cell.nurseInfoL.text = [NSString stringWithFormat:@"%@  %@  %@",nurseNick,nurseStr,nurseAge];
             return cell;
             break;
         }
@@ -422,6 +636,102 @@
                 NSLog(@"showUserInfoBlock");
                 [weakSelf showPaitentInfoWith:dict];
             };
+            
+            NSString *serviceName = dict[@"orderSendServicecontent"];
+            if ([serviceName isMemberOfClass:[NSNull class]] || serviceName == nil) {
+                serviceName = @"";
+            }
+            NSArray *serviceArray = [serviceName componentsSeparatedByString:@":"];
+            @try {
+                serviceName = serviceArray[0];
+            } @catch (NSException *exception) {
+                
+            } @finally {
+                
+            }
+            cell.serviceContentL.text = serviceName;
+            
+            id zoneCreatetimeObj = [dict objectForKey:@"orderSendBegintime"];
+            if ([zoneCreatetimeObj isMemberOfClass:[NSNull class]] || zoneCreatetimeObj == nil) {
+                NSTimeInterval  timeInterval = [[NSDate date] timeIntervalSince1970];
+                zoneCreatetimeObj = [NSString stringWithFormat:@"%.0f000",timeInterval];
+            }
+            long long timestamp = [zoneCreatetimeObj longLongValue];
+            NSString *zoneCreatetime = [NSString stringWithFormat:@"%lld",timestamp];
+            if ([zoneCreatetime length] > 3) {
+                //时间戳
+                zoneCreatetime = [zoneCreatetime substringToIndex:[zoneCreatetime length] - 3];
+            }
+            
+            NSString *time = [Tool convertTimespToString:[zoneCreatetime longLongValue] dateFormate:@"MM-dd HH:mm"];
+            cell.stopTimeL.text = time;
+            
+            NSString *addresStr = dict[@"orderSendAddree"];
+            if ([addresStr isMemberOfClass:[NSNull class]]) {
+                addresStr = @"";
+            }
+            NSArray *addressArray = [addresStr componentsSeparatedByString:@","];
+            NSString *addressDetail = nil;
+            @try {
+                addressDetail = addressArray[2];
+            } @catch (NSException *exception) {
+                
+            } @finally {
+                
+            }
+            cell.addressL.text = addressDetail;
+            
+            NSString *username = dict[@"orderSendUsername"];
+            NSArray *userArray = [username componentsSeparatedByString:@","];
+            NSString *nickname = nil;
+            @try {
+                nickname = userArray[1];
+            } @catch (NSException *exception) {
+                
+            } @finally {
+                
+            }
+            id orderSendSex = dict[@"orderSendSex"];
+            NSString *sexStr = @"女";
+            if ([orderSendSex isMemberOfClass:[NSNull class]]) {
+                orderSendSex = @"";
+            }
+            if ([orderSendSex integerValue] == ENUM_SEX_Boy) {
+                sexStr = @"男";
+            }
+            
+            id orderSendAge = dict[@"orderSendAge"];
+            if ([orderSendAge isMemberOfClass:[NSNull class]]) {
+                orderSendAge = @"";
+            }
+            NSString *ageStr = [NSString stringWithFormat:@"%@",orderSendAge];
+            
+            cell.userInfoL.text = [NSString stringWithFormat:@"%@  %@  %@",nickname,sexStr,ageStr];
+            
+            id orderSendTotalmoney = dict[@"orderSendTotalmoney"];
+            if ([orderSendTotalmoney isMemberOfClass:[NSNull class]] || orderSendTotalmoney == nil) {
+                orderSendTotalmoney = @"";
+            }
+            cell.orderMoney.text = [NSString stringWithFormat:@"￥%@",orderSendTotalmoney];
+            
+            NSString *nurseNick = dict[@"nurseNick"];
+            if ([nurseNick isMemberOfClass:[NSNull class]] || nurseNick == nil) {
+                nurseNick = @"小明";
+            }
+            id nurseSex = dict[@"nurseSex"];
+            if ([nurseSex isMemberOfClass:[NSNull class]] || nurseSex == nil) {
+                nurseSex = @"";
+            }
+            NSString *nurseStr = @"女";
+            if ([nurseSex integerValue] == ENUM_SEX_Boy) {
+                nurseStr = @"男";
+            }
+            
+            id nurseAge = dict[@"nurseAge"];
+            if ([nurseAge isMemberOfClass:[NSNull class]] || nurseAge == nil) {
+                nurseAge = @"24";
+            }
+            cell.nurseInfoL.text = [NSString stringWithFormat:@"%@  %@  %@",nurseNick,nurseStr,nurseAge];
             
             return cell;
             break;

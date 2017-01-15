@@ -532,7 +532,7 @@
     NSString *nurseHeaderKey = [NSString stringWithFormat:@"%ld%ld_%@",section,row,nurseHeader];
     UIImageView *imageview = [_imageCache objectForKey:nurseHeaderKey];
     if (!imageview) {
-        [cell.userImage sd_setImageWithURL:[NSURL URLWithString:nurseHeader] placeholderImage:[UIImage imageNamed:@"index2"]];
+        [cell.userImage sd_setImageWithURL:[NSURL URLWithString:nurseHeader] placeholderImage:[UIImage imageNamed:@"defalut_icon"]];
         imageview = cell.userImage;
     }
     cell.userImage = imageview;
