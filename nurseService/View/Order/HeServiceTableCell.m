@@ -50,7 +50,7 @@
         
         CGFloat peopleLabelX = nameLabelX;
         CGFloat peopleLabelY = CGRectGetMaxY(serviceTitleLabel.frame);
-        CGFloat peopleLabelW = 100;
+        CGFloat peopleLabelW = SCREENWIDTH - peopleLabelX - 70;
         CGFloat peopleLabelH = userImageH / 3.0;
         
         peopleLabel = [[UILabel alloc] initWithFrame:CGRectMake(peopleLabelX, peopleLabelY, peopleLabelW, peopleLabelH)];

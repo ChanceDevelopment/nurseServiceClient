@@ -28,8 +28,7 @@
         CGFloat buttonBGViewY = (cellsize.height - buttonBGViewH) / 2.0;
         UIView *buttonBGView = [[UIView alloc] initWithFrame:CGRectMake(buttonBGViewX, buttonBGViewY, buttonBGViewW, buttonBGViewH)];
         buttonBGView.backgroundColor = [UIColor whiteColor];
-        [self addSubview:buttonBGView];
-        buttonBGView.hidden = YES;
+//        [self addSubview:buttonBGView];
         
         CGFloat selectButtonX = 10;
         CGFloat selectButtonW = 25;
@@ -41,28 +40,30 @@
         [selectButton setBackgroundImage:[UIImage imageNamed:@"select_box"] forState:UIControlStateSelected];
         [selectButton addTarget:self action:@selector(selectButtonClick:) forControlEvents:UIControlEventTouchUpInside];
         [buttonBGView addSubview:selectButton];
+        selectButton.hidden = YES;
         
         CGFloat userImageX = 10;
         CGFloat userImageY = 15;
         CGFloat userImageH = cellsize.height - 2 * userImageY;
         CGFloat userImageW = userImageH;
         userImage = [[UIImageView alloc] initWithFrame:CGRectMake(userImageX, userImageY, userImageW, userImageH)];
-        userImage.layer.cornerRadius = userImageW / 2.0;
+        userImage.image = [UIImage imageNamed:@"defalut_icon"];
+        userImage.layer.cornerRadius = userImage.frame.size.width / 2.0;
         userImage.layer.masksToBounds = YES;
         userImage.layer.borderWidth = 0;
         userImage.layer.borderColor = [UIColor clearColor].CGColor;
         userImage.contentMode = UIViewContentModeScaleAspectFill;
         
-        userImage.image = [UIImage imageNamed:@"defalut_icon"];
         [self addSubview:userImage];
         
         UIFont *textFont = [UIFont fontWithName:@"Helvetica" size:13.0];
         CGFloat nameLabelX = CGRectGetMaxX(userImage.frame) + 5;
         CGFloat nameLabelY = userImageY;
-        CGFloat nameLabelW = 40;
-        CGFloat nameLabelH = userImageH / 2.0;
+        CGFloat nameLabelW = 80;
+        CGFloat nameLabelH = userImageH / 3.0;
         
         nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(nameLabelX, nameLabelY, nameLabelW, nameLabelH)];
+        nameLabel.numberOfLines = 2;
         nameLabel.backgroundColor = [UIColor clearColor];
         nameLabel.textColor = [UIColor blackColor];
         nameLabel.font = textFont;
@@ -72,7 +73,7 @@
         CGFloat professionLabelX = CGRectGetMaxX(nameLabel.frame) + 5;
         CGFloat professionLabelY = userImageY;
         CGFloat professionLabelW = 40;
-        CGFloat professionLabelH = userImageH / 2.0;
+        CGFloat professionLabelH = userImageH / 3.0;
         
         professionLabel = [[UILabel alloc] initWithFrame:CGRectMake(professionLabelX, professionLabelY, professionLabelW, professionLabelH)];
         professionLabel.backgroundColor = [UIColor clearColor];
@@ -107,8 +108,8 @@
         tipLabel.text = @"国家卫委认证 已实名认证";
         [self addSubview:tipLabel];
         
-        CGFloat addresssLabelY = CGRectGetMaxY(tipLabel.frame);
-        CGFloat addresssLabelW = 80;
+        CGFloat addresssLabelY = CGRectGetMaxY(tipLabel.frame) + 5;
+        CGFloat addresssLabelW = (SCREENWIDTH - nameLabelX - 10) / 2.0;
         CGFloat addresssLabelH = userImageH / 3.0;
         CGFloat addresssLabelX = nameLabelX;
         addresssLabel = [[UILabel alloc] initWithFrame:CGRectMake(addresssLabelX, addresssLabelY, addresssLabelW, addresssLabelH)];
@@ -117,9 +118,9 @@
         addresssLabel.font = textFont;
         addresssLabel.text = @"古巴";
         [self addSubview:addresssLabel];
-        addresssLabel.hidden = YES;
         
-        CGFloat distanceLabelY = CGRectGetMaxY(tipLabel.frame);
+        
+        CGFloat distanceLabelY = CGRectGetMaxY(tipLabel.frame) + 5;
         CGFloat distanceLabelW = 90;
         CGFloat distanceLabelH = userImageH / 3.0;
         CGFloat distanceLabelX = SCREENWIDTH - distanceLabelW - 10;
@@ -135,7 +136,7 @@
         
         CGFloat locationIconW = 20;
         CGFloat locationIconH = 20;
-        CGFloat locationIconX = 10;
+        CGFloat locationIconX = 5;
         CGFloat locationIconY = (distanceLabelH - locationIconH) / 2.0;
         
         UIImageView *locationIcon = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"icon_address"]];

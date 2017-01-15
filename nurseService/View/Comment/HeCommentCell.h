@@ -14,5 +14,6 @@
 @property(strong,nonatomic)UILabel *commentContentLabel;
 @property(strong,nonatomic)UILabel *timeLabel;
 @property(strong,nonatomic)UIView *commentRankView;
+@property(assign,nonatomic)NSInteger commentRank;
 
 @end

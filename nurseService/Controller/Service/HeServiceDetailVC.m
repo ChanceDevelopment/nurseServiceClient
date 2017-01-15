@@ -27,6 +27,7 @@
 #import "BrowserView.h"
 #import "DeleteImageProtocol.h"
 #import "UWDatePickerView.h"
+#import "HeOrderCommitVC.h"
 
 #define MAXUPLOADIMAGE 8
 #define MAX_column  4
@@ -36,6 +37,9 @@
 @interface HeServiceDetailVC ()<DeleteImageProtocol,UITableViewDelegate,UITableViewDataSource,LBBannerDelegate,UIWebViewDelegate,UIAlertViewDelegate,UWDatePickerViewDelegate,SelectProtectUserInfoProtocol,TZImagePickerControllerDelegate,UINavigationControllerDelegate,UIImagePickerControllerDelegate,UIAlertViewDelegate,UIActionSheetDelegate>
 {
     BOOL currentSelectBanner;
+    BOOL isBook;// YES:加入预约框 No:立即预约
+    BOOL isHaveSomeProblem; //家中是否有遗传病
+    CGFloat currentTotalMoney;
 }
 
 @property(nonatomic,strong)DLNavigationTabBar *navigationTabBar;
@@ -60,6 +64,14 @@
 @property(strong,nonatomic)NSMutableArray *selectedPhotos;
 @property(strong,nonatomic)NSMutableArray *takePhotoArray;
 
+@property(strong,nonatomic)id parameter;
+@property(strong,nonatomic)NSDictionary *serviceInfoDict;
+@property(strong,nonatomic)NSDictionary *serviceDetailInfoDict;
+
+@property(strong,nonatomic)IBOutlet UIButton *collectButton;
+//套餐
+@property(strong,nonatomic)NSArray *subServiceArray;
+@property(strong,nonatomic)NSMutableArray *subSelectArray;
 
 @end
 
@@ -70,6 +82,15 @@
 @synthesize bannerImageDataSource;
 @synthesize addPictureButton;
 @synthesize takePhotoArray;
+
+@synthesize parameter;
+@synthesize serviceInfoDict;
+@synthesize serviceDetailInfoDict;
+
+@synthesize collectButton;
+
+@synthesize subServiceArray;
+@synthesize subSelectArray;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -116,16 +137,18 @@
 #pragma mark - PrivateMethod
 - (void)navigationDidSelectedControllerIndex:(NSInteger)index {
     NSLog(@"index = %ld",index);
+    NSString *contentId = serviceDetailInfoDict[@"contentId"];
+    
     NSString *webViewUrl = @"http://www.hao123.com/?tn=29065018_265_hao_pg";
     switch (index) {
         case 0:
-            webViewUrl = @"https://www.baidu.com/?tn=SE_hldp07601_n9xgcmbe";
+            webViewUrl = [NSString stringWithFormat:@"http://118.178.186.59:8080/nurseDoor/nurseAnduser/contentPackaAge.action?contentId=%@",contentId];
             break;
         case 1:
-            webViewUrl = @"http://118.178.186.59:8080/nurseDoor/nurseAnduser/contentDetails.action?contentId=2a64345c6f4e48358d198f7d01cf0b97";
+            webViewUrl = [NSString stringWithFormat:@"http://118.178.186.59:8080/nurseDoor/nurseAnduser/contentForPeopleInfo.action?contentId=%@",contentId];
             break;
         case 2:
-            webViewUrl = @"http://www.hao123.com/?tn=29065018_265_hao_pg";
+            webViewUrl = [NSString stringWithFormat:@"http://118.178.186.59:8080/nurseDoor/nurseAnduser/contentLook.action?contentId=%@",contentId];
             break;
         default:
             break;
@@ -138,11 +161,43 @@
     // Do any additional setup after loading the view from its nib.
     [self initializaiton];
     [self initView];
+    [self loadServiceDetail];
+    [self loadServiceArray];
+}
+
+- (void)loadServiceArray
+{
+    NSString *contentId = serviceInfoDict[@"contentId"];
+    if (contentId == nil) {
+        contentId = serviceInfoDict[@"manageNursingContentId"];
+    }
+    NSDictionary *param = @{@"contentId":contentId};
+    NSString *requestUrl = [NSString stringWithFormat:@"%@/goods/selectgoodsbycoentid.action",BASEURL];
+    [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:param success:^(AFHTTPRequestOperation* operation,id response){
+        NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
+        NSDictionary *respondDict = [NSDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
+        if ([[respondDict valueForKey:@"errorCode"] integerValue] == REQUESTCODE_SUCCEED){
+            NSArray *jsonArray = [respondDict objectForKey:@"json"];
+            if ([jsonArray isMemberOfClass:[NSNull class]]) {
+                return;
+            }
+            subServiceArray = [[NSArray alloc] initWithArray:jsonArray];
+            
+        }
+        else{
+            
+        }
+    } failure:^(NSError* err){
+        NSLog(@"errorInfo = %@",err);
+    }];
 }
 
 - (void)initializaiton
 {
     [super initializaiton];
+    serviceInfoDict = [parameter objectForKey:@"service"];
+    currentTotalMoney = 0;
+    subSelectArray = [[NSMutableArray alloc] initWithCapacity:0];
 }
 
 - (UIView *)selectMenuBgView
@@ -174,11 +229,17 @@
         CGFloat serviceImageH = 80;
         CGFloat serviceImageW = 80;
         
+        NSString *imgurls = [serviceDetailInfoDict objectForKey:@"imgurls"];
+        NSArray *imgurlsArray = [imgurls componentsSeparatedByString:@","];
+        NSString *imageUrl = imgurlsArray[0];
+        imageUrl = [NSString stringWithFormat:@"%@/%@",HYTIMAGEURL,imageUrl];
+        
         UIImageView *serviceImage = [[UIImageView alloc] initWithFrame:CGRectMake(serviceImageX, serviceImageY, serviceImageW, serviceImageH)];
         serviceImage.layer.cornerRadius = 5.0;
         serviceImage.layer.masksToBounds = YES;
         serviceImage.contentMode = UIViewContentModeScaleAspectFill;
-        serviceImage.image = [UIImage imageNamed:@"index1"];
+        serviceImage.image = [UIImage imageNamed:@"index2"];
+        [serviceImage sd_setImageWithURL:[NSURL URLWithString:imageUrl] placeholderImage:[UIImage imageNamed:@"index2"]];
         [_selectMenuBgView addSubview:serviceImage];
         
         UIButton *closeButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREENWIDTH - 40, 20, 25, 25)];
@@ -195,7 +256,12 @@
         priceLabel.backgroundColor = [UIColor clearColor];
         priceLabel.font = [UIFont systemFontOfSize:18.0];
         priceLabel.textColor = [UIColor redColor];
-        priceLabel.text = @"￥2.00";
+        priceLabel.tag = 1000;
+        id serviceMoney = serviceDetailInfoDict[@"serviceMoney"];
+        if ([serviceMoney isMemberOfClass:[NSNull class]]) {
+            serviceMoney = @"";
+        }
+        priceLabel.text = [NSString stringWithFormat:@"￥%.2f",currentTotalMoney];
         priceLabel.backgroundColor = [UIColor clearColor];
         [_selectMenuBgView addSubview:priceLabel];
         
@@ -207,7 +273,12 @@
         titleLabel.backgroundColor = [UIColor clearColor];
         titleLabel.font = [UIFont systemFontOfSize:18.0];
         titleLabel.textColor = [UIColor blackColor];
-        titleLabel.text = @"新生儿护理";
+        
+        NSString *serviceName = serviceDetailInfoDict[@"serviceName"];
+        if ([serviceName isMemberOfClass:[NSNull class]]) {
+            serviceName = @"";
+        }
+        titleLabel.text = serviceName;
         titleLabel.backgroundColor = [UIColor clearColor];
         [_selectMenuBgView addSubview:titleLabel];
         
@@ -230,13 +301,13 @@
         contentScrollView.backgroundColor = [UIColor whiteColor];
         [contentView addSubview:contentScrollView];
  
-        NSArray *serviceArray = @[@"套餐一",@"套餐二",@"套餐三"];
+//        NSMutableArray *serviceArray = [NSMutableArray alloc];
         
         CGFloat cellHeight = 35;
         CGFloat serviceItemViewX = 0;
         CGFloat serviceItemViewY = 0;
         CGFloat serviceItemViewW = SCREENWIDTH;
-        CGFloat serviceItemViewH = cellHeight * [serviceArray count] + 30;
+        CGFloat serviceItemViewH = cellHeight * [subServiceArray count] + 30;
         //套餐背景
         UIView *serviceItemView = [[UIView alloc] initWithFrame:CGRectMake(serviceItemViewX, serviceItemViewY, serviceItemViewW, serviceItemViewH)];
         [contentScrollView addSubview:serviceItemView];
@@ -291,7 +362,7 @@
         CGFloat historyButtonW = 120;
         CGFloat historyButtonH = 30;
         UIButton *historyButton = [[UIButton alloc] initWithFrame:CGRectMake(historyButtonX, historyButtonY, historyButtonW, historyButtonH)];
-        [historyButton setTitle:@"家中有遗传病" forState:UIControlStateNormal];
+        [historyButton setTitle:@"家中有小孩" forState:UIControlStateNormal];
         historyButton.layer.masksToBounds = YES;
         historyButton.layer.cornerRadius = 3.0;
         [historyButton setTitleColor:[UIColor colorWithWhite:100.0 / 255.0 alpha:1.0] forState:UIControlStateNormal];
@@ -371,24 +442,31 @@
         CGFloat cellViewH = cellHeight;
         
         
-        for (NSInteger index = 0; index < [serviceArray count]; index++) {
+        for (NSInteger index = 0; index < [subServiceArray count]; index++) {
             
-            NSString *title = serviceArray[index];
+            NSDictionary *dict = subServiceArray[index];
+            NSString *goodsName = dict[@"goodsName"];
+            if ([dict isMemberOfClass:[NSNull class]]) {
+                goodsName = @"";
+            }
+            NSString *title = goodsName;
             UIView *cellView = [[UIView alloc] initWithFrame:CGRectMake(cellViewX, cellViewY, cellViewW, cellViewH)];
             cellView.backgroundColor = [UIColor whiteColor];
             [serviceItemView addSubview:cellView];
             
-            CGFloat selectButtonX = 15;
+            CGFloat selectButtonX = 10;
             CGFloat selectButtonW = 20;
             CGFloat selectButtonH = 20;
             CGFloat selectButtonY = (cellHeight - selectButtonH) / 2.0;
             
             UIButton *selectButton = [[UIButton alloc] initWithFrame:CGRectMake(selectButtonX, selectButtonY, selectButtonW, selectButtonH)];
-            [selectButton setBackgroundImage:[UIImage imageNamed:@"icon_circleclick"] forState:UIControlStateSelected];
+            selectButton.tag = index;
+            [selectButton setBackgroundImage:[UIImage imageNamed:@"icon_agree"] forState:UIControlStateSelected];
             [selectButton setBackgroundImage:[UIImage imageNamed:@"icon_unagree"] forState:UIControlStateNormal];
+            [selectButton addTarget:self action:@selector(selectButtonClick:) forControlEvents:UIControlEventTouchUpInside];
             [cellView addSubview:selectButton];
             
-            CGFloat titleLabelX = CGRectGetMaxX(selectButton.frame) + 5;
+            CGFloat titleLabelX = CGRectGetMaxX(selectButton.frame) + 10;
             CGFloat titleLabelY = 0;
             CGFloat titleLabelW = 200;
             CGFloat titleLabelH = cellHeight;
@@ -408,12 +486,17 @@
             UILabel *priceLabel = [[UILabel alloc] initWithFrame:CGRectMake(priceLabelX, priceLabelY, priceLabelW, priceLabelH)];
             priceLabel.font = [UIFont systemFontOfSize:15.0];
             priceLabel.textColor = [UIColor blackColor];
-            priceLabel.text = @"￥300.00";
+            
+            id goodsMoney = dict[@"goodsMoney"];
+            if ([goodsMoney isMemberOfClass:[NSNull class]]) {
+                goodsMoney = @"";
+            }
+            priceLabel.text = [NSString stringWithFormat:@"￥%@",goodsMoney];
             priceLabel.textAlignment = NSTextAlignmentRight;
             priceLabel.backgroundColor = [UIColor clearColor];
             [cellView addSubview:priceLabel];
             
-            if (index + 1 < [serviceArray count]) {
+            if (index + 1 < [subServiceArray count]) {
                 CGFloat lineX = 10;
                 CGFloat lineY = cellHeight - 1;
                 CGFloat lineW = SCREENWIDTH - 2 * lineX;
@@ -453,6 +536,7 @@
     tabFootLab.textAlignment = NSTextAlignmentCenter;
     [tipView addSubview:tabFootLab];
     
+    
     CGFloat lineH = 1;
     CGFloat lineW = CGRectGetMinX(tabFootLab.frame) - 10;
     CGFloat lineY = (tabFootLabH - lineH) / 2.0;
@@ -478,11 +562,119 @@
     CGFloat bannerHeight = 180;
     NSArray * imageNames = @[@"index1", @"index2"];
     LBBanner * banner = [[LBBanner alloc] initWithImageNames:imageNames andFrame:CGRectMake(0, 0, SCREENWIDTH, bannerHeight)];
+    banner.tag = 100;
     banner.delegate = self;
     
     [headerView addSubview:banner];
     
     [self loadContentView];
+}
+
+- (void)selectButtonClick:(UIButton *)button
+{
+    button.selected = !button.selected;
+    if (button.selected) {
+        NSDictionary *dict = subServiceArray[button.tag];
+        id goodsMoney = dict[@"goodsMoney"];
+        CGFloat goodsmoney = [goodsMoney floatValue];
+        currentTotalMoney = currentTotalMoney + goodsmoney;
+        
+        [subSelectArray addObject:dict];
+        
+        
+    }
+    else{
+        NSDictionary *dict = subServiceArray[button.tag];
+        id goodsMoney = dict[@"goodsMoney"];
+        CGFloat goodsmoney = [goodsMoney floatValue];
+        currentTotalMoney = currentTotalMoney - goodsmoney;
+        
+        NSString *goodsId = dict[@"goodsId"];
+        for (NSDictionary *selectDict in subSelectArray) {
+            NSString *selecygoodsId = selectDict[@"goodsId"];
+            if ([goodsId isEqualToString:selecygoodsId]) {
+                [subSelectArray removeObject:selectDict];
+                break;
+            }
+        }
+    }
+    UILabel *label = [_selectMenuBgView viewWithTag:1000];
+    label.text = [NSString stringWithFormat:@"¥%.2f",currentTotalMoney];
+    
+    
+    
+}
+
+- (void)loadServiceDetail
+{
+    NSString *requestUrl = [NSString stringWithFormat:@"%@/service/selectservicebycontentid.action",BASEURL];
+    NSString *userid = [[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY];
+    NSString *nurseid = @"";
+    NSString *contentId = serviceInfoDict[@"manageNursingContentId"];
+    if (!contentId) {
+        contentId = @"";
+    }
+    NSDictionary * params  = @{@"nurseid":nurseid,@"userid":userid,@"contentId":contentId};
+    [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
+        NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
+        NSDictionary *respondDict = [NSDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
+        if ([[respondDict valueForKey:@"errorCode"] integerValue] == REQUESTCODE_SUCCEED){
+            id jsonObj = respondDict[@"json"];
+            if ([jsonObj isMemberOfClass:[NSNull class]] || jsonObj == nil) {
+                return;
+            }
+            serviceDetailInfoDict = [[NSDictionary alloc] initWithDictionary:jsonObj];
+            serviceInfoDict = [[NSDictionary alloc] initWithDictionary:jsonObj];
+            
+            NSString *imgurls = serviceDetailInfoDict[@"imgurls"];
+            if ([imgurls isMemberOfClass:[NSNull class]]) {
+                imgurls = nil;
+            }
+            NSArray *imageArray = [imgurls componentsSeparatedByString:@","];
+            NSMutableArray *imageUrlArray = [[NSMutableArray alloc] initWithCapacity:0];
+            
+            for (NSString *tempRollPicUrl in imageArray) {
+                NSString *rollPicUrl = tempRollPicUrl;
+                if ([rollPicUrl isMemberOfClass:[NSNull class]] || rollPicUrl == nil) {
+                    rollPicUrl = @"";
+                }
+                rollPicUrl = [NSString stringWithFormat:@"%@/%@",HYTIMAGEURL,rollPicUrl];
+                [imageUrlArray addObject:rollPicUrl];
+                
+            }
+            CGFloat bannerHeight = 180;
+            LBBanner *banner1 = [tableview.tableHeaderView viewWithTag:100];
+            LBBanner *banner = [[LBBanner alloc] initWithImageURLArray:imageUrlArray andFrame:CGRectMake(0, 0, SCREENWIDTH, bannerHeight)];
+            banner.tag = 100;
+            banner.delegate = self;
+            [tableview.tableHeaderView addSubview:banner];
+            [banner1 removeFromSuperview];
+            
+            id isfollow = serviceInfoDict[@"iscollect"];
+            if ([isfollow isMemberOfClass:[NSNull class]]) {
+                isfollow = @"";
+            }
+            if ([isfollow boolValue]) {
+                collectButton.enabled = NO;
+                collectButton.selected = YES;
+            }
+            else{
+                collectButton.enabled = YES;
+                collectButton.selected = NO;
+            }
+            
+            [tableview reloadData];
+        }
+        else{
+            NSString *data = respondDict[@"data"];
+            if ([data isMemberOfClass:[NSNull class]] || data == nil) {
+                data = ERRORREQUESTTIP;
+            }
+            [self showHint:data];
+        }
+    } failure:^(NSError* err){
+        
+    }];
 }
 
 - (void)loadContentView
@@ -530,7 +722,12 @@
         _webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, webviewY, SCREENWIDTH, height)];
         _webView.delegate = self;
         _webView.scrollView.delegate = self;
-        [_webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:@"https://www.baidu.com"]]];
+        
+        NSString *contentId = serviceInfoDict[@"contentId"];
+        if (contentId == nil) {
+            contentId = serviceInfoDict[@"manageNursingContentId"];
+        }
+        [_webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://118.178.186.59:8080/nurseDoor/nurseAnduser/contentPackaAge.action?contentId=%@",contentId]]]];
     }
     
     return _webView;
@@ -580,6 +777,7 @@
 - (void)historyButtonClick:(UIButton *)button
 {
     button.selected = !button.selected;
+    isHaveSomeProblem = button.selected;
 }
 
 // 进入详情的动画
@@ -678,18 +876,72 @@
 
 - (IBAction)favButtonClick:(UIButton *)sender
 {
-    sender.selected = !sender.selected;
-    NSLog(@"favButtonClick");
+    id isfollow = serviceDetailInfoDict[@"iscollect"];
+    if ([isfollow isMemberOfClass:[NSNull class]]) {
+        isfollow = @"";
+    }
+    if ([isfollow boolValue]) {
+        return;
+    }
+    NSString *requestUrl = [NSString stringWithFormat:@"%@/service/selectservicebycontentid.action",BASEURL];
+    NSString *userId = [[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY];
+    //role 关注人的角色（0用户，1护士）
+    NSString *role = @"0";
+    NSString *befollowId = serviceDetailInfoDict[@"nurseId"];
+    if ([befollowId isMemberOfClass:[NSNull class]] || befollowId == nil) {
+        befollowId = @"";
+    }
+    NSDictionary * params  = @{@"followId":userId,@"befollowId":befollowId,@"role":role};
+    [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
+        NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
+        NSDictionary *respondDict = [NSDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
+        if ([[respondDict valueForKey:@"errorCode"] integerValue] == REQUESTCODE_SUCCEED){
+            
+            NSMutableDictionary *dict = [[NSMutableDictionary alloc] initWithDictionary:serviceDetailInfoDict];
+            [dict setObject:@YES forKey:@"iscollect"];
+            serviceDetailInfoDict = [[NSDictionary alloc] initWithDictionary:dict];
+            serviceInfoDict = [[NSDictionary alloc] initWithDictionary:dict];
+            
+            id isfollow = serviceInfoDict[@"iscollect"];
+            if ([isfollow isMemberOfClass:[NSNull class]]) {
+                isfollow = @"";
+            }
+            if ([isfollow boolValue]) {
+                sender.enabled = NO;
+                sender.selected = YES;
+            }
+            else{
+                sender.enabled = YES;
+                sender.selected = NO;
+            }
+            [self showHint:@"收藏成功"];
+        }
+        else{
+            NSString *data = respondDict[@"data"];
+            if ([data isMemberOfClass:[NSNull class]] || data == nil) {
+                data = ERRORREQUESTTIP;
+            }
+            [self showHint:data];
+        }
+    } failure:^(NSError* err){
+        NSLog(@"errorInfo = %@",err);
+    }];
 }
 //加入预约框
 - (IBAction)addToBookItem:(id)sender
 {
     NSLog(@"addToBookItem");
+    isBook = YES;
+    [self.view addSubview:self.selectMenuBgView];
+    _selectMenuBgView.hidden = NO;
+    [self setInfoViewisDown:NO withView:_selectMenuBgView];
 }
 //立即预约
 - (IBAction)bookService:(UIButton *)sender
 {
+    isBook = NO;
     [self.view addSubview:self.selectMenuBgView];
+    _selectMenuBgView.hidden = NO;
     [self setInfoViewisDown:NO withView:_selectMenuBgView];
     
 }
@@ -697,10 +949,109 @@
 - (void)commitButtonClick:(UIButton *)button
 {
     NSLog(@"commitButtonClick");
+    _selectMenuBgView.hidden = YES;
+    [self setInfoViewisDown:YES withView:_selectMenuBgView];
+    
+    if (self.tmpDateString == nil || [self.tmpDateString isEqualToString:@""]) {
+        [self showHint:@"请选择服务时间"];
+        return;
+    }
+    NSDictionary *nurseDict = parameter[@"nurse"];
+    
+    NSString *userId = [[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY];
+    NSString *specifyNurseId = nurseDict[@"nurseId"];
+    NSMutableString *goodId = [[NSMutableString alloc] initWithCapacity:0];
+    NSInteger index = 0;
+    for (NSDictionary *dict in subSelectArray) {
+        NSString *tempgoodsId = dict[@"goodsId"];
+        if (index == 0) {
+            [goodId appendString:tempgoodsId];
+        }
+        else {
+            [goodId appendFormat:@",%@",tempgoodsId];
+        }
+        index++;
+    }
+    NSString *personId = serviceDetailInfoDict[@"protectedPersonId"];
+    
+    
+    NSMutableString *orderSendUserpic = [[NSMutableString alloc] initWithCapacity:0];
+    
+    //赛区宣传图
+    for (NSInteger index = 0; index < self.bannerImageDataSource.count; index++) {
+        AsynImageView *imageview = self.bannerImageDataSource[index];
+        
+        UIImage *imageData = imageview.image;
+        NSData *data = UIImageJPEGRepresentation(imageData,0.1);
+        NSData *base64Data = [GTMBase64 encodeData:data];
+        NSString *base64String = [[NSString alloc] initWithData:base64Data encoding:NSUTF8StringEncoding];
+        if (index == 0) {
+            [orderSendUserpic appendString:base64String];
+        }
+        else {
+            [orderSendUserpic appendFormat:@",%@",base64String];
+        }
+    }
+    
+    NSString *orderSendNote	= @"家中有小孩";
+    NSString *orderSendCoupon = @"";
+    NSString *orderSendTrafficmoney	= @"30.00";
+    NSString *orderSendSavemoney = @"0";
+    NSString *orderSendIspayment = @"0";
+    NSString *orderSendIssafe = @"1";
+    long long timeSp = [Tool convertStringToTimesp:self.tmpDateString dateFormate:@"yyyy-MM-dd HH:mm"];
+    NSString *orderSendBegintime = [NSString stringWithFormat:@"%lld",timeSp];
+    if (orderSendBegintime.length < 13) {
+        NSInteger length = 13 - orderSendBegintime.length;
+        for (NSInteger index = 0; index < length; index++) {
+            orderSendBegintime = [NSString stringWithFormat:@"%@0",orderSendBegintime];
+        }
+    }
+    
+    NSString *orderSendStoptime = @"";
+    NSDictionary *paramsDict = @{@"userId":userId,@"specifyNurseId":specifyNurseId,@"goodId":goodId,@"personId":personId,@"orderSendUserpic":orderSendUserpic,@"orderSendNote":orderSendNote,@"orderSendCoupon":orderSendCoupon,@"orderSendTrafficmoney":orderSendTrafficmoney,@"orderSendSavemoney":orderSendSavemoney,@"orderSendIspayment":orderSendIspayment,@"orderSendIssafe":orderSendIssafe,@"orderSendBegintime":orderSendBegintime,@"orderSendStoptime":orderSendStoptime};
+    
+    NSString *requestUrl = [NSString stringWithFormat:@"%@/orderSend/orderSend.action",BASEURL];
+    [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:paramsDict success:^(AFHTTPRequestOperation* operation,id response){
+        [self hideHud];
+        NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
+        NSDictionary *respondDict = [respondString objectFromJSONString];
+        NSInteger errorCode = [[respondDict objectForKey:@"errorCode"] integerValue];
+        if (errorCode == REQUESTCODE_SUCCEED) {
+            NSString *data = [respondDict objectForKey:@"data"];
+            if ([data isMemberOfClass:[NSNull class]] || data == nil) {
+                data = @"成功加入!";
+            }
+            NSString *orderId = [respondDict objectForKey:@"json"];
+            if (!isBook) {
+                HeOrderCommitVC *commitVC = [[HeOrderCommitVC alloc] init];
+                commitVC.orderId = orderId;
+                commitVC.hidesBottomBarWhenPushed = YES;
+                [self.navigationController pushViewController:commitVC animated:YES];
+                return;
+            }
+            [self showHint:data];
+            [self.navigationController popViewControllerAnimated:YES];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"updateOrder" object:nil];
+        }
+        else{
+            NSString *data = [respondDict objectForKey:@"data"];
+            if ([data isMemberOfClass:[NSNull class]] || data == nil) {
+                data = ERRORREQUESTTIP;
+            }
+            [self showHint:data];
+        }
+        
+        
+    } failure:^(NSError *error){
+        [self hideHud];
+        [self showHint:ERRORREQUESTTIP];
+    }];
 }
 
 - (void)closeButtonClick:(UIButton *)sender
 {
+    _selectMenuBgView.hidden = YES;
     [self setInfoViewisDown:YES withView:_selectMenuBgView];
 }
 
@@ -796,7 +1147,11 @@
             
             UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(titleLabelX, titleLabelY, titleLabelW, titleLabelH)];
             titleLabel.font = [UIFont systemFontOfSize:18.0];
-            titleLabel.text = @"新生儿护理";
+            NSString *serviceName = serviceDetailInfoDict[@"serviceName"];
+            if ([serviceName isMemberOfClass:[NSNull class]] || serviceName == nil) {
+                serviceName = @"";
+            }
+            titleLabel.text = serviceName;
             [cell addSubview:titleLabel];
             
             
@@ -809,7 +1164,9 @@
             endLabel.font = [UIFont systemFontOfSize:15.0];
             endLabel.textColor = [UIColor redColor];
             endLabel.textAlignment = NSTextAlignmentRight;
-            endLabel.text = @"￥300.00起";
+            id serviceMoney = serviceDetailInfoDict[@"serviceMoney"];
+            
+            endLabel.text = [NSString stringWithFormat:@"￥%@起",serviceMoney];
             [cell addSubview:endLabel];
             
             break;
@@ -861,7 +1218,17 @@
                     UILabel *nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(titleLabelX, titleLabelY, titleLabelW, titleLabelH)];
                     nameLabel.textAlignment = NSTextAlignmentRight;
                     nameLabel.font = [UIFont systemFontOfSize:15.0];
-                    nameLabel.text = @"小明 男 15768580734";
+                    
+                    NSString *protectedPersonName = serviceDetailInfoDict[@"protectedPersonName"];
+                    
+                    id protectedPersonSex = serviceDetailInfoDict[@"protectedPersonSex"];
+                    NSString *sexStr = @"女";
+                    if ([protectedPersonSex integerValue] == ENUM_SEX_Boy) {
+                        sexStr = @"男";
+                    }
+                    id protectedPersonAge = serviceDetailInfoDict[@"protectedPersonAge"];
+                    nameLabel.text = [NSString stringWithFormat:@"%@  %@  %@",protectedPersonName,sexStr,protectedPersonAge];
+                    
                     nameLabel.textColor = [UIColor  grayColor];
                     [cell addSubview:nameLabel];
                     
@@ -872,7 +1239,12 @@
                     addressLabel.textAlignment = NSTextAlignmentRight;
                     addressLabel.font = [UIFont systemFontOfSize:15.0];
                     addressLabel.textColor = [UIColor  grayColor];
-                    addressLabel.text = @"中国广东省中山市西区";
+                    
+                    NSString *protectedAddress = serviceDetailInfoDict[@"protectedAddress"];
+                    if ([protectedAddress isMemberOfClass:[NSNull class]]) {
+                        protectedAddress = @"";
+                    }
+                    addressLabel.text = protectedAddress;
                     [cell addSubview:addressLabel];
                     
                     break;
@@ -897,7 +1269,12 @@
                     UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(titleLabelX, titleLabelY, titleLabelW, titleLabelH)];
                     titleLabel.textColor = [UIColor grayColor];
                     titleLabel.font = [UIFont systemFontOfSize:13.0];
-                    titleLabel.text = @"中国人寿为您保驾护航";
+                    
+                    NSString *saveInfo = serviceDetailInfoDict[@"saveInfo"];
+                    if ([saveInfo isMemberOfClass:[NSNull class]] || saveInfo == nil) {
+                        saveInfo = @"";
+                    }
+                    titleLabel.text = saveInfo;
                     [cell addSubview:titleLabel];
                     
                     UIImageView *icon = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"icon_question"]];

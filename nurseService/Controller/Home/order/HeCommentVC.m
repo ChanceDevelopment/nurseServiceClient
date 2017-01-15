@@ -9,21 +9,34 @@
 #import "HeCommentVC.h"
 #import "HeCommentCell.h"
 #import "DLNavigationTabBar.h"
+#import "MLLabel.h"
+#import "MLLabel+Size.h"
+#import "MJRefreshAutoNormalFooter.h"
+#import "MJRefreshNormalHeader.h"
 
 @interface HeCommentVC ()<UITableViewDataSource,UITableViewDelegate>
 {
     //@"全部 0",@"好评 1",@"一般 2",@"不满意 3"
     NSInteger currentCommentType;
+    NSInteger pageNum;
 }
 @property(strong,nonatomic)IBOutlet UITableView *tableview;
 @property(strong,nonatomic)IBOutlet UIView *filterBgView;
 @property(nonatomic,strong)DLNavigationTabBar *navigationTabBar;
+@property(strong,nonatomic)id parameter;
+@property(strong,nonatomic)NSDictionary *serviceInfoDict;
+@property(strong,nonatomic)NSCache *imageCache;
+@property(strong,nonatomic)NSMutableArray *dataSource;
 
 @end
 
 @implementation HeCommentVC
 @synthesize tableview;
 @synthesize filterBgView;
+@synthesize parameter;
+@synthesize serviceInfoDict;
+@synthesize imageCache;
+@synthesize dataSource;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -73,35 +86,128 @@
 - (void)navigationDidSelectedControllerIndex:(NSInteger)index {
     NSLog(@"index = %ld",index);
     currentCommentType = index;
-    [tableview reloadData];
+    //初始化分页
+    pageNum = -1;
+    NSString *nurseid = serviceInfoDict[@"nurseId"];
+    if ([nurseid isMemberOfClass:[NSNull class]] || nurseid == nil) {
+        nurseid = @"";
+    }
+    [self loadCommentDataWihtNurseId:nurseid];
 }
+
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     [self initializaiton];
     [self initView];
+    NSLog(@"parameter = %@",parameter);
+    NSString *nurseid = serviceInfoDict[@"nurseId"];
+    if ([nurseid isMemberOfClass:[NSNull class]] || nurseid == nil) {
+        nurseid = @"";
+    }
+    [self loadCommentDataWihtNurseId:nurseid];
 }
 
 - (void)initializaiton
 {
     [super initializaiton];
+    dataSource = [[NSMutableArray alloc] initWithCapacity:0];
+    serviceInfoDict = parameter;
 }
 
 - (void)initView
 {
     [super initView];
-    [filterBgView addSubview:self.navigationTabBar];
-    
+    [self.view addSubview:self.navigationTabBar];
+    [Tool setExtraCellLineHidden:tableview];
     tableview.backgroundView = nil;
     tableview.backgroundColor = [UIColor colorWithWhite:237.0 / 255.0 alpha:1.0];
-    [Tool setExtraCellLineHidden:tableview];
+    
     tableview.separatorStyle = UITableViewCellSeparatorStyleNone;
+    
+    __weak HeCommentVC *weakSelf = self;
+    self.tableview.header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
+        // 进入刷新状态后会自动调用这个block,刷新
+        [weakSelf.tableview.header performSelector:@selector(endRefreshing) withObject:nil afterDelay:1.0];
+        
+        
+    }];
+    
+    self.tableview.footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
+        self.tableview.footer.automaticallyHidden = YES;
+        self.tableview.footer.hidden = NO;
+        // 进入刷新状态后会自动调用这个block，加载更多
+        [weakSelf performSelector:@selector(endRefreshing) withObject:nil afterDelay:1.0];
+        
+        
+    }];
+}
+
+- (void)endRefreshing
+{
+    [self.tableview.footer endRefreshing];
+    self.tableview.footer.hidden = YES;
+    self.tableview.footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
+        self.tableview.footer.automaticallyHidden = YES;
+        self.tableview.footer.hidden = NO;
+        // 进入刷新状态后会自动调用这个block，加载更多
+        [self performSelector:@selector(endRefreshing) withObject:nil afterDelay:1.0];
+    }];
+    NSLog(@"endRefreshing");
+}
+
+//服务评价
+- (void)loadCommentDataWihtNurseId:(NSString *)nurseId
+{
+    NSString *requestUrl = [NSString stringWithFormat:@"%@/content/selectEvaluateByContentId.action",BASEURL];
+    NSString *type = [NSString stringWithFormat:@"%ld",currentCommentType];
+    NSString *pageNumStr = [NSString stringWithFormat:@"%ld",pageNum];
+    
+    NSString *contentId = serviceInfoDict[@"manageNursingContentId"];
+    if ([contentId isMemberOfClass:[NSNull class]] || contentId == nil) {
+        contentId = @"";
+    }
+    NSDictionary * params  = @{@"contentId":contentId,@"type":type,@"pageNum":pageNumStr};
+    [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
+        NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
+        NSDictionary *respondDict = [NSDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
+        if ([[respondDict valueForKey:@"errorCode"] integerValue] == REQUESTCODE_SUCCEED){
+            id jsonObj = respondDict[@"json"];
+            if ([jsonObj isMemberOfClass:[NSNull class]] || jsonObj == nil) {
+                if ([jsonObj count] == 0 && pageNum != -1) {
+                    pageNum--;
+                }
+                return;
+            }
+            if (pageNum == -1) {
+                [dataSource removeAllObjects];
+            }
+            else{
+                if ([jsonObj count] == 0) {
+                    pageNum--;
+                }
+            }
+            
+            [dataSource addObjectsFromArray:jsonObj];
+            
+            [tableview reloadData];
+        }
+        else{
+            NSString *data = respondDict[@"data"];
+            if ([data isMemberOfClass:[NSNull class]] || data == nil) {
+                data = ERRORREQUESTTIP;
+            }
+            [self showHint:data];
+        }
+    } failure:^(NSError* err){
+        
+    }];
 }
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 5;
+    return [dataSource count];
 }
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -121,7 +227,62 @@
         
     }
     NSDictionary *dict = nil;
+    @try {
+        dict = dataSource[row];
+    } @catch (NSException *exception) {
+        
+    } @finally {
+        
+    }
     
+    
+    NSString *contentImgurl = dict[@"userHeader"];
+    if ([contentImgurl isMemberOfClass:[NSNull class]] || contentImgurl == nil) {
+        contentImgurl = @"";
+    }
+    contentImgurl = [NSString stringWithFormat:@"%@/%@",HYTIMAGEURL,contentImgurl];
+    NSString *imageKey = [NSString stringWithFormat:@"%ld_%@",row,contentImgurl];
+    UIImageView *imageview = [imageCache objectForKey:imageKey];
+    if (!imageview) {
+        [cell.userImage sd_setImageWithURL:[NSURL URLWithString:contentImgurl] placeholderImage:[UIImage imageNamed:@"defalut_icon"]];
+        imageview = cell.userImage;
+        [imageCache setObject:imageview forKey:imageKey];
+    }
+    cell.userImage = imageview;
+    [cell addSubview:cell.userImage];
+    
+    NSString *userNike = dict[@"userNike"];
+    if ([userNike isMemberOfClass:[NSNull class]] || userNike == nil) {
+        userNike = @"";
+    }
+    cell.phoneLabel.text = userNike;
+    
+    NSString *commentContent = dict[@"evaluateContent"];
+    if ([commentContent isMemberOfClass:[NSNull class]] || commentContent == nil) {
+        commentContent = @"";
+    }
+    cell.commentContentLabel.text = commentContent;
+    
+    id evaluateMark = dict[@"evaluateMark"];
+    if ([evaluateMark isMemberOfClass:[NSNull class]]) {
+        evaluateMark = @"";
+    }
+    cell.commentRank = [evaluateMark integerValue];
+    
+    id zoneCreatetimeObj = [dict objectForKey:@"evaluateCreatetime"];
+    if ([zoneCreatetimeObj isMemberOfClass:[NSNull class]] || zoneCreatetimeObj == nil) {
+        NSTimeInterval  timeInterval = [[NSDate date] timeIntervalSince1970];
+        zoneCreatetimeObj = [NSString stringWithFormat:@"%.0f000",timeInterval];
+    }
+    long long timestamp = [zoneCreatetimeObj longLongValue];
+    NSString *zoneCreatetime = [NSString stringWithFormat:@"%lld",timestamp];
+    if ([zoneCreatetime length] > 3) {
+        //时间戳
+        zoneCreatetime = [zoneCreatetime substringToIndex:[zoneCreatetime length] - 3];
+    }
+    
+    NSString *time = [Tool convertTimespToString:[zoneCreatetime longLongValue] dateFormate:@"yyyy/MM/dd HH:mm"];
+    cell.timeLabel.text = time;
     
     return cell;
     
@@ -130,7 +291,6 @@
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    
     return 100;
 }
 

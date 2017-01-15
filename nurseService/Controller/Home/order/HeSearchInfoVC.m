@@ -27,19 +27,18 @@
 
 @interface HeSearchInfoVC ()<UISearchBarDelegate>
 {
-    NSInteger limit;
-    NSInteger offset;
+    NSString  *keyWord;
+    NSInteger pageNum;
 }
-@property(strong,nonatomic)IBOutlet UITableView *infoTable;
+@property(strong,nonatomic)IBOutlet UITableView *tableview;
 @property(strong,nonatomic)UISearchBar *searchBar;
 @property(strong,nonatomic)NSMutableArray *dataSource;
 @property(strong,nonatomic)NSMutableArray *headerArray;
 @property(strong,nonatomic)NSCache *imageCache;
-
 @end
 
 @implementation HeSearchInfoVC
-@synthesize infoTable;
+@synthesize tableview;
 @synthesize dataSource;
 @synthesize headerArray;
 @synthesize imageCache;
@@ -77,9 +76,6 @@
     dataSource = [[NSMutableArray alloc] initWithCapacity:0];
     imageCache = [[NSCache alloc] init];
     headerArray = [[NSMutableArray alloc] initWithCapacity:0];
-    
-    limit = LOADRECORDNUM;
-    offset = [dataSource count];
 
     dataSource = [[NSMutableArray alloc] initWithCapacity:0];
 
@@ -89,8 +85,8 @@
 {
     [super initView];
 
-    [Tool setExtraCellLineHidden:infoTable];
-    infoTable.separatorStyle = UITableViewCellSeparatorStyleNone;
+    [Tool setExtraCellLineHidden:tableview];
+    tableview.separatorStyle = UITableViewCellSeparatorStyleNone;
     
     
     CGFloat searchX = 30;
@@ -102,28 +98,31 @@
     searchBar.delegate = self;
     searchBar.barStyle = UIBarStyleDefault;
     searchBar.placeholder = @"搜索护士";
-    self.navigationItem.titleView = searchBar;self.infoTable.header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
+    self.navigationItem.titleView = searchBar;self.tableview.header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
         // 进入刷新状态后会自动调用这个block,刷新
-        [self.infoTable.header performSelector:@selector(endRefreshing) withObject:nil afterDelay:1.0];
+        [self.tableview.header performSelector:@selector(endRefreshing) withObject:nil afterDelay:1.0];
     }];
     
-    self.infoTable.footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
-        self.infoTable.footer.automaticallyHidden = YES;
-        self.infoTable.footer.hidden = NO;
+    self.tableview.footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
+        self.tableview.footer.automaticallyHidden = YES;
+        self.tableview.footer.hidden = NO;
         // 进入刷新状态后会自动调用这个block，加载更多
         [self performSelector:@selector(endRefreshing) withObject:nil afterDelay:1.0];
+        pageNum = 0;
     }];
 }
 
 - (void)endRefreshing
 {
-    [self.infoTable.footer endRefreshing];
-    self.infoTable.footer.hidden = YES;
-    self.infoTable.footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
-        self.infoTable.footer.automaticallyHidden = YES;
-        self.infoTable.footer.hidden = NO;
+    [self.tableview.footer endRefreshing];
+    self.tableview.footer.hidden = YES;
+    self.tableview.footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
+        self.tableview.footer.automaticallyHidden = YES;
+        self.tableview.footer.hidden = NO;
         // 进入刷新状态后会自动调用这个block，加载更多
         [self performSelector:@selector(endRefreshing) withObject:nil afterDelay:1.0];
+        pageNum++;
+        [self loadNurseData];
     }];
     NSLog(@"endRefreshing");
 }
@@ -132,6 +131,45 @@
 - (void)updateInfo:(NSNotification *)notificaition
 {
     
+}
+
+- (void)loadNurseData
+{
+    NSString *requestUrl = [NSString stringWithFormat:@"%@/nurseAnduser/searchNurse.action",BASEURL];
+    NSString *pageNumStr = [NSString stringWithFormat:@"%ld",pageNum];
+    NSDictionary * params  = @{@"keyWord":keyWord,@"pageNum":pageNumStr};
+    [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
+        NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
+        NSDictionary *respondDict = [NSDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
+        if ([[respondDict valueForKey:@"errorCode"] integerValue] == REQUESTCODE_SUCCEED){
+            NSArray *jsonArray = [respondDict valueForKey:@"json"];
+            if ([jsonArray isMemberOfClass:[NSNull class]] || jsonArray == nil || [jsonArray count] == 0) {
+                if (pageNum > 0) {
+                    //因为无法加载更多，所以回复到原来的页数
+                    pageNum--;
+                }
+                return;
+            }
+            if (pageNum == 0) {
+                //如果刷新，先清除数据
+                [dataSource removeAllObjects];
+            }
+            for (NSDictionary *dict in jsonArray) {
+                [dataSource addObject:dict];
+            }
+            
+            [tableview reloadData];
+        }
+        else{
+            NSString *data = respondDict[@"data"];
+            if ([data isMemberOfClass:[NSNull class]] || data == nil) {
+                data = ERRORREQUESTTIP;
+            }
+            [self showHint:data];
+        }
+    } failure:^(NSError* err){
+        
+    }];
 }
 
 - (void)loadInfoDataWithKey:(NSString *)searchKey
@@ -164,9 +202,9 @@
         [self showHint:@"请输入搜索关键字"];
         return;
     }
-    limit = 20;
-    offset = 0;
-    
+    pageNum = 0;
+    keyWord = searchKey;
+    [self loadNurseData];
     NSLog(@"searchKey = %@",searchKey);
     
 }
@@ -174,7 +212,7 @@
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 5;
+    return [dataSource count];
 }
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -188,6 +226,15 @@
     NSInteger section = indexPath.section;
     CGSize cellsize = [tableView rectForRowAtIndexPath:indexPath].size;
     static NSString *cellIndentifier = @"HeInfoTableViewCell";
+    NSDictionary *dict = nil;
+    @try {
+        dict = dataSource[row];
+    } @catch (NSException *exception) {
+        
+    } @finally {
+        
+    }
+    
     HeSearchNurseTableCell *cell  = [tableView cellForRowAtIndexPath:indexPath];
     if (!cell) {
         cell = [[HeSearchNurseTableCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIndentifier cellSize:cellsize];
@@ -195,7 +242,50 @@
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         
     }
-    NSDictionary *dict = nil;
+    NSString *nurseHeader = dict[@"nurseHeader"];
+    if ([nurseHeader isMemberOfClass:[NSNull class]] || nurseHeader == nil) {
+        nurseHeader = @"";
+    }
+    nurseHeader = [NSString stringWithFormat:@"%@/%@",HYTIMAGEURL,nurseHeader];
+    NSString *nurseHeaderKey = [NSString stringWithFormat:@"%ld%ld_%@",section,row,nurseHeader];
+    UIImageView *imageview = [imageCache objectForKey:nurseHeaderKey];
+    if (!imageview) {
+        [cell.userImage sd_setImageWithURL:[NSURL URLWithString:nurseHeader] placeholderImage:[UIImage imageNamed:@"defalut_icon"]];
+        imageview = cell.userImage;
+    }
+    cell.userImage = imageview;
+    [cell insertSubview:cell.userImage atIndex:0];
+    
+    NSString *nurseNick = dict[@"nurseNick"];
+    if ([nurseNick isMemberOfClass:[NSNull class]] || nurseNick == nil) {
+        nurseNick = @"";
+    }
+    cell.nameLabel.text = nurseNick;
+    
+    NSString *nurseWorkUnit = dict[@"nurseWorkUnit"];
+    if ([nurseWorkUnit isMemberOfClass:[NSNull class]] || nurseWorkUnit == nil) {
+        nurseWorkUnit = @"";
+    }
+    cell.hospitalLabel.text = nurseWorkUnit;
+    
+    NSString *nurseNote = dict[@"nurseNote"];
+    if ([nurseNote isMemberOfClass:[NSNull class]] || nurseNote == nil) {
+        nurseNote = @"";
+    }
+    cell.addresssLabel.text = nurseNote;
+    
+    CGFloat distance = [dict[@"distance"] floatValue] / 1000.0;
+    NSString *distanceStr = [NSString stringWithFormat:@"%.2fkm",distance];
+    CGSize distanceSize = [MLLabel getViewSizeByString:distanceStr maxWidth:cell.addresssLabel.frame.size.width font:cell.distanceLabel.font lineHeight:1.2f lines:0];
+    
+    CGRect distanceFrame = cell.distanceLabel.frame;
+    
+    
+    distanceFrame.size.width = distanceSize.width + 30;
+    CGFloat distanceLabelX = SCREENWIDTH - distanceFrame.size.width - 10;
+    distanceFrame.origin.x = distanceLabelX;
+    cell.distanceLabel.frame = distanceFrame;
+    cell.distanceLabel.text = distanceStr;
     
     
     return cell;

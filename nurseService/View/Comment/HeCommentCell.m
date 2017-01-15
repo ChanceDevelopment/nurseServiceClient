@@ -14,6 +14,7 @@
 @synthesize commentContentLabel;
 @synthesize timeLabel;
 @synthesize commentRankView;
+@synthesize commentRank;
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier cellSize:(CGSize)cellsize
 {
@@ -61,14 +62,15 @@
         
         CGFloat timeLabelH = 30;
         CGFloat timeLabelY = cellsize.height - timeLabelH;
-        CGFloat timeLabelW = 80;
-        CGFloat timeLabelX = SCREENWIDTH - timeLabelW - 20;
+        CGFloat timeLabelW = 150;
+        CGFloat timeLabelX = SCREENWIDTH - timeLabelW - 10;
         
         timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(timeLabelX, timeLabelY, timeLabelW, timeLabelH)];
         timeLabel.backgroundColor = [UIColor clearColor];
         timeLabel.textColor = [UIColor grayColor];
         timeLabel.textAlignment = NSTextAlignmentRight;
         timeLabel.font = textFont;
+        timeLabel.font = [UIFont systemFontOfSize:13.0];
         timeLabel.numberOfLines = 1;
         timeLabel.text = @"2017/01/09";
         [self addSubview:timeLabel];
@@ -77,15 +79,24 @@
         CGFloat commentRankViewH = 20;
         CGFloat commentRankViewY = userImageY;
         CGFloat commentRankViewW = 120;
-        CGFloat commentRankViewX = SCREENWIDTH - commentRankViewW - 20;
+        CGFloat commentRankViewX = SCREENWIDTH - commentRankViewW - 10;
         
         commentRankView = [[UIView alloc] initWithFrame:CGRectMake(commentRankViewX, commentRankViewY, commentRankViewW, commentRankViewH)];
         [self addSubview:commentRankView];
-        [self commentWithRank:4];
+        
     }
     return self;
 }
 
+- (void)setCommentRank:(NSInteger)_commentRank
+{
+    commentRank = _commentRank;
+    NSArray *subArray = commentRankView.subviews;
+    for (UIView *subView in subArray) {
+        [subView removeFromSuperview];
+    }
+    [self commentWithRank:commentRank];
+}
 - (void)commentWithRank:(NSInteger)rank
 {
     //rank评论等级，最高五星rank = 5

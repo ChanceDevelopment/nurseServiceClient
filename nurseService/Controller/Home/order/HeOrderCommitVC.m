@@ -34,6 +34,7 @@
 @interface HeOrderCommitVC ()<DeleteImageProtocol,UITableViewDataSource,UITableViewDelegate,UIActionSheetDelegate,UINavigationControllerDelegate,UIImagePickerControllerDelegate,UIAlertViewDelegate,TZImagePickerControllerDelegate,UWDatePickerViewDelegate>
 {
     BOOL currentSelectBanner;
+    NSInteger payType; //支付方式 0：在线 1：支付宝
 }
 @property(strong,nonatomic)IBOutlet UITableView *tableview;
 @property(strong,nonatomic)UIView *bannerImageBG;
@@ -51,6 +52,10 @@
 @property(strong,nonatomic)IBOutlet UIView *payBGView;
 @property(strong,nonatomic)NSString *tmpDateString;
 
+@property(strong,nonatomic)NSDictionary *orderDetailDict;
+@property(strong,nonatomic)UIView *dismissView;
+@property(strong,nonatomic)UIScrollView *myScrollView;
+
 @end
 
 @implementation HeOrderCommitVC
@@ -65,6 +70,9 @@
 @synthesize takePhotoArray;
 @synthesize payBGView;
 @synthesize tmpDateString;
+@synthesize orderDetailDict;
+@synthesize dismissView;
+@synthesize myScrollView;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -87,8 +95,21 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
-    [self initializaiton];
-    [self initView];
+    
+    dismissView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, [UIScreen mainScreen].bounds.size.height)];
+    dismissView.backgroundColor = [UIColor blackColor];
+    dismissView.hidden = YES;
+    dismissView.alpha = 0.7;
+    [self.view addSubview:dismissView];
+    UITapGestureRecognizer *tapGes = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissViewGes:)];
+    tapGes.numberOfTapsRequired = 1;
+    tapGes.numberOfTouchesRequired = 1;
+    [dismissView addGestureRecognizer:tapGes];
+    
+    tableview.backgroundView = nil;
+    tableview.backgroundColor = [UIColor colorWithWhite:237.0 / 255.0 alpha:1.0];
+    [Tool setExtraCellLineHidden:tableview];
+    [self loadOrderDetail];
 }
 
 - (void)initializaiton
@@ -96,7 +117,7 @@
     [super initializaiton];
     dataSource = @[@"服务时间",@"受护人",@"产妇护理套餐",@"套餐列表",@"备注信息",@"图片资料",@"优惠券",@"交通费",@"总额",@"支付方式",@"      中国人寿保险"];
     payMethodDataSource = @[@"支付宝支付",@"在线支付"];
-    payIconDataSource = @[@"icon_alipay",@"icon_online"];
+    payIconDataSource = @[@"icon_online",@"icon_alipay"];
     bannerImageDataSource = [[NSMutableArray alloc] initWithCapacity:0];
     
     if (!_selectedPhotos) {
@@ -139,7 +160,8 @@
     
     UILabel *payLabel = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(moneyTipLabel.frame) + 2.0, 0,CGRectGetWidth(moneyLabel.frame) - (CGRectGetMaxX(moneyTipLabel.frame) + 2.0), payButtonH)];
     payLabel.textAlignment = NSTextAlignmentLeft;
-    payLabel.text = @"￥335";
+    id orderSendTotalmoney = orderDetailDict[@"orderSendTotalmoney"];
+    payLabel.text = [NSString stringWithFormat:@"￥%@",orderSendTotalmoney];
     payLabel.font = [UIFont systemFontOfSize:18.0];
     payLabel.textColor = [UIColor redColor];
     payLabel.backgroundColor = [UIColor clearColor];
@@ -199,18 +221,20 @@
     addPictureButton.tag = 100;
     [addPictureButton addTarget:self action:@selector(addButtonClick:) forControlEvents:UIControlEventTouchUpInside];
     
-    bannerImageDataSource = [[NSMutableArray alloc] initWithCapacity:0];
-    int row = [Tool getRowNumWithTotalNum:[bannerImageDataSource count]];
-    int column = [Tool getColumnNumWithTotalNum:[bannerImageDataSource count]];
-    CGFloat bannerX = 5;
-    CGFloat bannerY = 5;
-    CGFloat bannerW = SCREENWIDTH - 2 * bannerX;
-    CGFloat bannerH = IMAGEWIDTH;
-    bannerImageBG = [[UIView alloc] initWithFrame:CGRectMake(bannerX, bannerY, bannerW, bannerH)];
-    [bannerImageBG setBackgroundColor:[UIColor whiteColor]];
-    [bannerImageBG addSubview:addPictureButton];
-    bannerImageBG.userInteractionEnabled = YES;
-    [self updateImageBG];
+//    bannerImageDataSource = [[NSMutableArray alloc] initWithCapacity:0];
+//    int row = [Tool getRowNumWithTotalNum:[bannerImageDataSource count]];
+//    int column = [Tool getColumnNumWithTotalNum:[bannerImageDataSource count]];
+//    CGFloat bannerX = 5;
+//    CGFloat bannerY = 5;
+//    CGFloat bannerW = SCREENWIDTH - 2 * bannerX;
+//    CGFloat bannerH = IMAGEWIDTH;
+//    bannerImageBG = [[UIView alloc] initWithFrame:CGRectMake(bannerX, bannerY, bannerW, bannerH)];
+//    [bannerImageBG setBackgroundColor:[UIColor whiteColor]];
+//    [bannerImageBG addSubview:addPictureButton];
+//    bannerImageBG.userInteractionEnabled = YES;
+//    addPictureButton.hidden = YES;
+    myScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 35, SCREENWIDTH, 110)];
+    
     
     serviceBG = [[UIView alloc] initWithFrame:CGRectMake(10, 0, SCREENWIDTH - 20, 0)];
     
@@ -220,7 +244,73 @@
 - (void)payButtonClick:(UIButton *)sender
 {
     NSLog(@"payButtonClick");
+    [self inputPayPassword];
 }
+
+- (void)loadOrderDetail
+{
+    NSString *userId = [[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY];
+    NSString *orderSendId = [NSString stringWithFormat:@"%@",_orderId];
+    NSString *latitude = [[HeSysbsModel getSysModel].userLocationDict objectForKey:@"latitude"];
+    NSString *longitude = [[HeSysbsModel getSysModel].userLocationDict objectForKey:@"longitude"];
+    if (!latitude) {
+        longitude = @"";
+    }
+    if (!longitude) {
+        longitude = @"";
+    }
+    NSDictionary * params  = @{@"userId":userId,@"orderSendId":orderSendId,@"latitude":latitude,@"longitude":longitude};
+    NSString *requestUrl = [NSString stringWithFormat:@"%@/orderSend/OrderSendDescriptionById.action",BASEURL];
+    [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
+        NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
+        NSDictionary *respondDict = [NSDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
+        if ([[respondDict valueForKey:@"errorCode"] integerValue] == REQUESTCODE_SUCCEED){
+            
+            orderDetailDict = [[NSDictionary alloc] initWithDictionary:respondDict[@"json"]];
+            
+            id zoneCreatetimeObj = [orderDetailDict objectForKey:@"orderSendBegintime"];
+            if ([zoneCreatetimeObj isMemberOfClass:[NSNull class]] || zoneCreatetimeObj == nil) {
+                NSTimeInterval  timeInterval = [[NSDate date] timeIntervalSince1970];
+                zoneCreatetimeObj = [NSString stringWithFormat:@"%.0f000",timeInterval];
+            }
+            long long timestamp = [zoneCreatetimeObj longLongValue];
+            NSString *zoneCreatetime = [NSString stringWithFormat:@"%lld",timestamp];
+            if ([zoneCreatetime length] > 3) {
+                //时间戳
+                zoneCreatetime = [zoneCreatetime substringToIndex:[zoneCreatetime length] - 3];
+            }
+            
+            NSString *time = [Tool convertTimespToString:[zoneCreatetime longLongValue] dateFormate:@"yyyy/MM/dd HH:mm"];
+            self.tmpDateString = time;
+            
+            [self initializaiton];
+            [self initView];
+            
+            bannerImageDataSource = [[NSMutableArray alloc] initWithCapacity:0];
+            NSString *orderSendUserpic = orderDetailDict[@"orderSendUserpic"];
+            if ([orderSendUserpic isMemberOfClass:[NSNull class]] || orderSendUserpic == nil) {
+                orderSendUserpic = nil;
+            }
+            NSArray *orderSendUserpicArray = [orderSendUserpic componentsSeparatedByString:@","];
+            for (NSString *url in orderSendUserpicArray) {
+                NSString *myurl = [NSString stringWithFormat:@"%@/%@",HYTIMAGEURL,url];
+                [bannerImageDataSource addObject:myurl];
+            }
+            [self updateImageBG];
+            [tableview reloadData];
+        }
+        else{
+            NSString *data = respondDict[@"data"];
+            if ([data isMemberOfClass:[NSNull class]] || data == nil) {
+                data = ERRORREQUESTTIP;
+            }
+            [self showHint:data];
+        }
+    } failure:^(NSError* err){
+        NSLog(@"errorInfo = %@",err);
+    }];
+}
+
 
 - (void)addButtonClick:(UIButton *)sender
 {
@@ -290,109 +380,45 @@
 
 - (void)updateImageBG
 {
-    for (UIView *subview in bannerImageBG.subviews) {
-        [subview removeFromSuperview];
+    CGFloat imageX = 5;
+    CGFloat imageY = 5;
+    CGFloat imageH = 100;
+    CGFloat imageW = 100;
+    for (NSInteger index = 0; index < [bannerImageDataSource count]; index++) {
+        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(imageX, imageY, imageW, imageH)];
+        [imageView sd_setImageWithURL:[NSURL URLWithString:bannerImageDataSource[index]] placeholderImage:[UIImage imageNamed:@"index2"]];
+        imageView.layer.cornerRadius = 5.0;
+        imageView.tag = index + 10000;
+        imageView.contentMode = UIViewContentModeScaleAspectFill;
+        imageView.layer.masksToBounds = YES;
+        [myScrollView addSubview:imageView];
+        imageX = imageX + imageW + 5;
+        
+        imageView.userInteractionEnabled = YES;
+        UITapGestureRecognizer *tapGes = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(scanImageTap:)];
+        tapGes.numberOfTapsRequired = 1;
+        tapGes.numberOfTouchesRequired = 1;
+        [imageView addGestureRecognizer:tapGes];
+        
     }
-    CGFloat buttonH = IMAGEWIDTH;
-    CGFloat buttonW = IMAGEWIDTH;
-    
-    CGFloat buttonHDis = (SCREENWIDTH - 20 - MAX_column * buttonW) / (MAX_column - 1);
-    CGFloat buttonVDis = 10;
-    
-    int row = [Tool getRowNumWithTotalNum:[bannerImageDataSource count]];
-    int column = [Tool getColumnNumWithTotalNum:[bannerImageDataSource count]];
-    
-    CGFloat distributeX = bannerImageBG.frame.origin.x;
-    CGFloat distributeY = bannerImageBG.frame.origin.y;
-    CGFloat distributeW = bannerImageBG.frame.size.width;
-    CGFloat distributeH = 0;
-    
-    for (int i = 0; i < row; i++) {
-        if ((i + 1) * MAX_column <= [bannerImageDataSource count]) {
-            column = MAX_column;
-        }
-        else{
-            column = [bannerImageDataSource count] % MAX_column;
-        }
-        for (int j = 0; j < column; j++) {
-            
-            CGFloat buttonX = (buttonW + buttonHDis) * j;
-            CGFloat buttonY = (buttonH + buttonVDis) * i;
-            
-            NSInteger picIndex = i * MAX_column + j;
-            AsynImageView *asynImage = [bannerImageDataSource objectAtIndex:picIndex];
-            asynImage.tag = picIndex;
-            asynImage.frame = CGRectMake(buttonX, buttonY, buttonW, buttonH);
-            asynImage.layer.borderColor = [UIColor clearColor].CGColor;
-            asynImage.layer.borderWidth = 0;
-            asynImage.layer.masksToBounds = YES;
-            asynImage.contentMode = UIViewContentModeScaleAspectFill;
-            asynImage.userInteractionEnabled = YES;
-            [bannerImageBG addSubview:asynImage];
-            
-            UITapGestureRecognizer *tapGes = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(scanImageTap:)];
-            tapGes.numberOfTapsRequired = 1;
-            tapGes.numberOfTouchesRequired = 1;
-            [asynImage addGestureRecognizer:tapGes];
-        }
-    }
-    if ([bannerImageDataSource count] < MAXUPLOADIMAGE) {
-        
-        NSInteger last_i = -1;
-        NSInteger last_j = -1;
-        row = [Tool getRowNumWithTotalNum:[bannerImageDataSource count] + 1];
-        for (int i = 0; i < row; i++) {
-            if ((i + 1) * MAX_column <= [bannerImageDataSource count] + 1) {
-                column = MAX_column;
-            }
-            else{
-                column = ([bannerImageDataSource count] + 1) % MAX_column;
-            }
-            last_i = i;
-            for (int j = 0; j < column; j++) {
-                last_j = j;
-            }
-        }
-        if (last_i == -1 || last_j == -1) {
-            addPictureButton.hidden = YES;
-        }
-        else{
-            addPictureButton.hidden = NO;
-        }
-        
-        CGFloat buttonX = (buttonW + buttonHDis) * last_j;
-        CGFloat buttonY = (buttonH + buttonVDis) * last_i;
-        CGFloat buttonW = addPictureButton.frame.size.width;
-        CGFloat buttonH = addPictureButton.frame.size.height;
-        
-        addPictureButton.frame = CGRectMake(buttonX, buttonY, buttonW, buttonH);
-        
-        CGFloat distributeX = bannerImageBG.frame.origin.x;
-        CGFloat distributeY = bannerImageBG.frame.origin.y;
-        CGFloat distributeW = bannerImageBG.frame.size.width;
-        CGFloat distributeH = addPictureButton.frame.origin.y + addPictureButton.frame.size.height;
-        
-        bannerImageBG.frame = CGRectMake(distributeX, distributeY, distributeW, distributeH);
-        
+    myScrollView.contentSize = CGSizeMake(imageX, 0);
+    if ([bannerImageDataSource count] > 0) {
+        [tableview reloadData];
+        myScrollView.hidden = NO;
+//        UIView *myfooterView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, myScrollView.frame.size.height)];
+//        myfooterView.backgroundColor = [UIColor whiteColor];
+//        [myfooterView addSubview:myScrollView];
+//        
+//        tableview.tableFooterView = myfooterView;
     }
     else{
-        
-        CGFloat distributeX = bannerImageBG.frame.origin.x;
-        CGFloat distributeY = bannerImageBG.frame.origin.y;
-        CGFloat distributeW = bannerImageBG.frame.size.width;
-        CGFloat distributeH = (buttonH + buttonVDis) * (MAX_row - 1) + buttonH;
-        
-        bannerImageBG.frame = CGRectMake(distributeX, distributeY, distributeW, distributeH);
-        
-        addPictureButton.hidden = YES;
+        myScrollView.hidden = YES;
     }
-    [bannerImageBG addSubview:addPictureButton];
-    
-    [tableview reloadData];
 }
 
 - (void)scanImageTap:(UITapGestureRecognizer *)tap
 {
+    return;
     NSInteger selectIndex = tap.view.tag + 1;
     NSMutableArray *array = [[NSMutableArray alloc] initWithCapacity:0];
     
@@ -420,7 +446,14 @@
 
 - (void)addServiceLabel
 {
-    NSArray *serviceArray = @[@"产妇护理套餐",@"产妇护理套餐产妇护理套餐1产妇护理套餐2",@"产妇护理套餐",@"产妇护理套餐"];
+    NSString *orderSendServicecontent = orderDetailDict[@"orderSendServicecontent"];
+    if ([orderSendServicecontent isMemberOfClass:[NSNull class]]) {
+        orderSendServicecontent = @"";
+    }
+    NSArray *orderSendServicecontentArray = [orderSendServicecontent componentsSeparatedByString:@":"];
+    orderSendServicecontent = orderSendServicecontentArray[1];
+
+    NSArray *serviceArray = [orderSendServicecontent componentsSeparatedByString:@","];
     CGFloat endLabelY = 10;
     CGFloat endLabelW = 10;
     CGFloat endLabelH = 30;
@@ -539,10 +572,28 @@
             CGFloat endLabelH = cellSize.height / 2.0;
             CGFloat endLabelX = SCREENWIDTH - endLabelW - 30;
             
+            NSString *orderSendUsername = orderDetailDict[@"orderSendUsername"];
+            NSArray *orderSendUsernameArray = [orderSendUsername componentsSeparatedByString:@","];
+            orderSendUsername = orderSendUsernameArray[1];
+            
+            NSString *orderSendAddree = orderDetailDict[@"orderSendAddree"];
+            NSArray *orderSendAddreeArray = [orderSendAddree componentsSeparatedByString:@","];
+            orderSendAddree = orderSendAddreeArray[2];
+            
+            id orderSendSex = orderDetailDict[@"orderSendSex"];
+            if ([orderSendSex isMemberOfClass:[NSNull class]]) {
+                orderSendSex = @"";
+            }
+            NSString *orderSendSexStr = @"女";
+            if ([orderSendSex integerValue] == ENUM_SEX_Boy) {
+                orderSendSexStr = @"男";
+            }
+            id orderSendAge = orderDetailDict[@"orderSendAge"];
+            
             UILabel *endLabel = [[UILabel alloc] initWithFrame:CGRectMake(endLabelX, endLabelY, endLabelW, endLabelH)];
             endLabel.textAlignment = NSTextAlignmentRight;
             endLabel.font = [UIFont systemFontOfSize:13.0];
-            endLabel.text = @"小明 男 22岁";
+            endLabel.text = [NSString stringWithFormat:@"%@  %@  %@岁",orderSendUsername,orderSendSexStr,orderSendAge];
             endLabel.textColor = [UIColor grayColor];
             [cell addSubview:endLabel];
             
@@ -552,7 +603,7 @@
             UILabel *endLabel1 = [[UILabel alloc] initWithFrame:CGRectMake(endLabelX, endLabelY, endLabelW, endLabelH)];
             endLabel1.textAlignment = NSTextAlignmentRight;
             endLabel1.font = [UIFont systemFontOfSize:13.0];
-            endLabel1.text = @"中国广东中山西区长乐新村";
+            endLabel1.text = orderSendAddree;
             endLabel1.textColor = [UIColor grayColor];
             [cell addSubview:endLabel1];
             
@@ -560,14 +611,25 @@
         }
         case 2:
         {
+            
             CGFloat endLabelY = 0;
             CGFloat endLabelW = 150;
             CGFloat endLabelH = cellSize.height;
             CGFloat endLabelX = SCREENWIDTH - endLabelW - 30;
             
+            NSString *orderSendServicecontent = orderDetailDict[@"orderSendServicecontent"];
+            NSArray *orderSendServicecontentArray = [orderSendServicecontent componentsSeparatedByString:@":"];
+            orderSendServicecontent = orderSendServicecontentArray[0];
+            cell.textLabel.text = orderSendServicecontent;
+            
             UILabel *endLabel = [[UILabel alloc] initWithFrame:CGRectMake(endLabelX, endLabelY, endLabelW, endLabelH)];
             endLabel.font = [UIFont systemFontOfSize:17.0];
-            endLabel.text = @"￥300";
+            id orderSendCostmoney = orderDetailDict[@"orderSendCostmoney"];
+            if ([orderSendCostmoney isMemberOfClass:[NSNull class]]) {
+                orderSendCostmoney = @"";
+            }
+            endLabel.text = [NSString stringWithFormat:@"￥%@",orderSendCostmoney];
+            
             endLabel.textAlignment = NSTextAlignmentRight;
             endLabel.textColor = [UIColor orangeColor];
             [cell addSubview:endLabel];
@@ -587,7 +649,7 @@
             //图片资料
             cell.textLabel.text = nil;
             
-            UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 5, 100, 20)];
+            UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 10, 100, 20)];
             titleLabel.font = [UIFont systemFontOfSize:14.0];
             titleLabel.text = @"图片资料";
             [cell addSubview:titleLabel];
@@ -595,12 +657,30 @@
             CGRect bannerFrame = bannerImageBG.frame;
             bannerFrame.origin.y = CGRectGetMaxY(titleLabel.frame) + 5;
             bannerImageBG.frame = bannerFrame;
-            [cell addSubview:bannerImageBG];
+            [cell addSubview:myScrollView];
+            if ([bannerImageDataSource count] == 0) {
+                CGFloat endLabelY = 0;
+                CGFloat endLabelW = 150;
+                CGFloat endLabelH = cellSize.height;
+                CGFloat endLabelX = SCREENWIDTH - endLabelW - 30;
+                UILabel *endLabel = [[UILabel alloc] initWithFrame:CGRectMake(endLabelX, endLabelY, endLabelW, endLabelH)];
+                endLabel.font = [UIFont systemFontOfSize:17.0];
+                id orderSendCostmoney = orderDetailDict[@"orderSendCostmoney"];
+                if ([orderSendCostmoney isMemberOfClass:[NSNull class]]) {
+                    orderSendCostmoney = @"";
+                }
+                endLabel.text = @"暂无图片资料";
+                
+                endLabel.textAlignment = NSTextAlignmentRight;
+                endLabel.textColor = [UIColor orangeColor];
+                [cell addSubview:endLabel];
+            }
             
             break;
         }
         case 6:{
             //优惠券
+            id orderSendCoupon = orderDetailDict[@"orderSendCoupon"];
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
             
             CGFloat endLabelY = 0;
@@ -626,7 +706,8 @@
             
             UILabel *endLabel = [[UILabel alloc] initWithFrame:CGRectMake(endLabelX, endLabelY, endLabelW, endLabelH)];
             endLabel.font = [UIFont systemFontOfSize:15.0];
-            endLabel.text = @"￥30.0";
+            id orderSendTrafficmoney = orderDetailDict[@"orderSendTrafficmoney"];
+            endLabel.text = [NSString stringWithFormat:@"￥%@",orderSendTrafficmoney];
             endLabel.textAlignment = NSTextAlignmentRight;
             endLabel.textColor = [UIColor orangeColor];
             [cell addSubview:endLabel];
@@ -641,7 +722,8 @@
             
             UILabel *endLabel = [[UILabel alloc] initWithFrame:CGRectMake(endLabelX, endLabelY, endLabelW, endLabelH)];
             endLabel.font = [UIFont systemFontOfSize:15.0];
-            endLabel.text = @"￥335";
+            id orderSendTotalmoney = orderDetailDict[@"orderSendTotalmoney"];
+            endLabel.text = [NSString stringWithFormat:@"￥%@",orderSendTotalmoney];
             endLabel.textAlignment = NSTextAlignmentRight;
             endLabel.textColor = [UIColor orangeColor];
             [cell addSubview:endLabel];
@@ -667,6 +749,17 @@
                 titleLabel.font = [UIFont systemFontOfSize:14.0];
                 titleLabel.text = title;
                 [cell addSubview:titleLabel];
+                
+                if (row - 1 == payType) {
+                    CGFloat selectImageW = 25;
+                    CGFloat selectImageH = 25;
+                    CGFloat selectImageX = SCREENWIDTH - selectImageW - 10;
+                    CGFloat selectImageY = (cellSize.height - selectImageH) / 2.0;
+                    UIImageView *selectImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"choose_item_right"]];
+                    selectImage.frame = CGRectMake(selectImageX, selectImageY, selectImageW, selectImageH);
+                    [cell addSubview:selectImage];
+                    
+                }
             }
             break;
         }
@@ -699,7 +792,9 @@
             
             UILabel *endLabel = [[UILabel alloc] initWithFrame:CGRectMake(endLabelX, endLabelY, endLabelW, endLabelH)];
             endLabel.font = [UIFont systemFontOfSize:15.0];
-            endLabel.text = @"￥335";
+            
+            id orderSendSavemoney = orderDetailDict[@"orderSendSavemoney"];
+            endLabel.text = [NSString stringWithFormat:@"￥%@",orderSendSavemoney];
             endLabel.textAlignment = NSTextAlignmentRight;
             endLabel.textColor = [UIColor grayColor];
             [cell addSubview:endLabel];
@@ -726,7 +821,10 @@
         }
         case 5:
         {
-            return bannerImageBG.frame.size.height + 35;
+            if ([bannerImageDataSource count] == 0) {
+                return 40;
+            }
+            return myScrollView.frame.size.height + 35;
             break;
         }
         default:
@@ -759,6 +857,14 @@
         }
         case 1:{
             //受保护人
+        }
+        case 9:{
+            //支付方式
+            if (row == 0) {
+                return;
+            }
+            payType = row - 1;
+            [tableView reloadData];
         }
         default:
             break;
@@ -1026,6 +1132,214 @@
 {
     
     [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)dismissViewGes:(UITapGestureRecognizer *)ges
+{
+    
+    UIView *mydismissView = ges.view;
+    mydismissView.hidden = YES;
+    
+    UIView *alertview = [self.view viewWithTag:ALERTTAG];
+    
+    [alertview removeFromSuperview];
+}
+
+- (void)inputPayPassword
+{
+    [self.view addSubview:dismissView];
+    dismissView.hidden = NO;
+    
+    CGFloat viewX = 10;
+    CGFloat viewY = 100;
+    CGFloat viewW = SCREENWIDTH - 2 * viewX;
+    CGFloat viewH = 150;
+    UIView *shareAlert = [[UIView alloc] init];
+    shareAlert.frame = CGRectMake(viewX, viewY, viewW, viewH);
+    shareAlert.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"NavBarIOS7"]];
+    shareAlert.layer.cornerRadius = 5.0;
+    shareAlert.layer.borderWidth = 0;
+    shareAlert.layer.masksToBounds = YES;
+    shareAlert.tag = ALERTTAG;
+    shareAlert.layer.borderColor = [UIColor clearColor].CGColor;
+    shareAlert.userInteractionEnabled = YES;
+    
+    CGFloat labelH = 40;
+    CGFloat labelY = 0;
+    
+    UIFont *shareFont = [UIFont systemFontOfSize:15.0];
+    
+    UILabel *messageTitleLabel = [[UILabel alloc] init];
+    messageTitleLabel.font = shareFont;
+    messageTitleLabel.textColor = [UIColor whiteColor];
+    messageTitleLabel.textAlignment = NSTextAlignmentCenter;
+    messageTitleLabel.backgroundColor = APPDEFAULTORANGE;
+    messageTitleLabel.text = @"支付密码";
+    messageTitleLabel.frame = CGRectMake(0, 0, viewW, labelH);
+    [shareAlert addSubview:messageTitleLabel];
+    
+    UIImageView *logoImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"login_logoImage"]];
+    logoImage.frame = CGRectMake(20, 5, 30, 30);
+    [shareAlert addSubview:logoImage];
+    
+    
+    labelY = labelY + labelH + 10;
+    UITextField *textview = [[UITextField alloc] init];
+    textview.tag = 10;
+    textview.secureTextEntry = YES;
+    textview.backgroundColor = [UIColor whiteColor];
+    textview.placeholder = @"请输入6位数的密码";
+    textview.font = shareFont;
+    textview.delegate = self;
+    textview.frame = CGRectMake(10, labelY, shareAlert.frame.size.width - 20, labelH);
+    textview.layer.borderWidth = 1.0;
+    textview.layer.cornerRadius = 5.0;
+    textview.layer.masksToBounds = YES;
+    textview.layer.borderColor = [UIColor colorWithWhite:0xcc / 255.0 alpha:1.0].CGColor;
+    [shareAlert addSubview:textview];
+    
+    CGFloat buttonDis = 10;
+    CGFloat buttonW = (viewW - 3 * buttonDis) / 2.0;
+    CGFloat buttonH = 40;
+    CGFloat buttonY = labelY = labelY + labelH + 10;
+    CGFloat buttonX = 10;
+    
+    UIButton *shareButton = [[UIButton alloc] initWithFrame:CGRectMake(buttonX, buttonY, buttonW, buttonH)];
+    [shareButton setTitle:@"确定" forState:UIControlStateNormal];
+    [shareButton addTarget:self action:@selector(alertbuttonClick:) forControlEvents:UIControlEventTouchUpInside];
+    shareButton.tag = 1;
+    [shareButton.titleLabel setFont:shareFont];
+    [shareButton setBackgroundColor:APPDEFAULTORANGE];
+    [shareButton setBackgroundImage:[Tool buttonImageFromColor:APPDEFAULTORANGE withImageSize:shareButton.frame.size] forState:UIControlStateHighlighted];
+    [shareButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [shareAlert addSubview:shareButton];
+    
+    UIButton *cancelButton = [[UIButton alloc] initWithFrame:CGRectMake(buttonX + buttonDis + buttonW, buttonY, buttonW, buttonH)];
+    [cancelButton setTitle:@"取消" forState:UIControlStateNormal];
+    [cancelButton addTarget:self action:@selector(alertbuttonClick:) forControlEvents:UIControlEventTouchUpInside];
+    cancelButton.tag = 0;
+    [cancelButton.titleLabel setFont:shareFont];
+    [cancelButton setBackgroundColor:APPDEFAULTORANGE];
+    [cancelButton setBackgroundImage:[Tool buttonImageFromColor:APPDEFAULTORANGE withImageSize:shareButton.frame.size] forState:UIControlStateHighlighted];
+    [cancelButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [shareAlert addSubview:cancelButton];
+    
+    CAKeyframeAnimation *popAnimation = [CAKeyframeAnimation animationWithKeyPath:@"transform"];
+    popAnimation.duration = 0.4;
+    popAnimation.values = @[[NSValue valueWithCATransform3D:CATransform3DMakeScale(0.01f, 0.01f, 1.0f)],
+                            [NSValue valueWithCATransform3D:CATransform3DMakeScale(1.1f, 1.1f, 1.0f)],
+                            [NSValue valueWithCATransform3D:CATransform3DMakeScale(0.9f, 0.9f, 1.0f)],
+                            [NSValue valueWithCATransform3D:CATransform3DIdentity]];
+    popAnimation.keyTimes = @[@0.2f, @0.5f, @0.75f, @1.0f];
+    popAnimation.timingFunctions = @[[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut],
+                                     [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut],
+                                     [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
+    [shareAlert.layer addAnimation:popAnimation forKey:nil];
+    [self.view addSubview:shareAlert];
+}
+
+- (void)alertbuttonClick:(UIButton *)button
+{
+    UIView *mydismissView = dismissView;
+    mydismissView.hidden = YES;
+    
+    UIView *alertview = [self.view viewWithTag:ALERTTAG];
+    
+    UIView *subview = [alertview viewWithTag:10];
+    if (button.tag == 0) {
+        [alertview removeFromSuperview];
+        return;
+    }
+    UITextField *textview = nil;
+    if ([subview isMemberOfClass:[UITextField class]]) {
+        textview = (UITextField *)subview;
+    }
+    NSString *password = textview.text;
+    [alertview removeFromSuperview];
+    if (password == nil || [password isEqualToString:@""]) {
+        
+        [self showHint:@"请输入6位数的密码"];
+        return;
+    }
+    [self verifyPassword:password];
+}
+
+
+//验证密码
+- (void)verifyPassword:(NSString *)password
+{
+    [self showHudInView:self.tableview hint:@"验证密码中..."];
+    NSString *userId = [[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY];
+    NSString * requestRecommendDataPath = [NSString stringWithFormat:@"%@/nurseAnduser/UserPasswordVerification.action",BASEURL];
+    NSDictionary *param = @{@"userId":userId,@"passWord":password};
+    [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestRecommendDataPath params:param success:^(AFHTTPRequestOperation* operation,id response){
+        [self hideHud];
+        NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
+        NSDictionary *respondDict = [respondString objectFromJSONString];
+        NSInteger errorCode = [[respondDict objectForKey:@"errorCode"] integerValue];
+        if (errorCode == REQUESTCODE_SUCCEED) {
+            //验证密码成功，发布
+            [self showHudInView:self.tableview hint:@"支付中..."];
+            [self performSelector:@selector(creatOrder) withObject:nil afterDelay:0.3];
+        }
+        else{
+            NSString *data = [respondDict objectForKey:@"data"];
+            if ([data isMemberOfClass:[NSNull class]] || data == nil) {
+                data = ERRORREQUESTTIP;
+            }
+            [self showHint:data];
+        }
+        
+        
+    } failure:^(NSError *error){
+        [self hideHud];
+        [self showHint:ERRORREQUESTTIP];
+    }];
+}
+
+- (void)creatOrder
+{
+    if (payType == 1) {
+        [self showHint:@"暂不支持支付宝支付"];
+        return;
+    }
+    NSString *userId = [[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY];
+    NSString * requestRecommendDataPath = [NSString stringWithFormat:@"%@/orderSend/UpdateIsPayState.action",BASEURL];
+    id finalyMoney = orderDetailDict[@"orderSendTotalmoney"];
+    if ([finalyMoney isMemberOfClass:[NSNull class]] || finalyMoney == nil) {
+        finalyMoney = @"";
+    }
+    NSString *userCouponId = @"";
+    NSDictionary *param = @{@"userId":userId,@"orderSendId":_orderId,@"finalyMoney":finalyMoney,@"userCouponId":userCouponId};
+    [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestRecommendDataPath params:param success:^(AFHTTPRequestOperation* operation,id response){
+        [self hideHud];
+        NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
+        NSDictionary *respondDict = [respondString objectFromJSONString];
+        NSInteger errorCode = [[respondDict objectForKey:@"errorCode"] integerValue];
+        if (errorCode == REQUESTCODE_SUCCEED) {
+            //验证密码成功，发布
+            [self showHint:@"支付成功"];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"updateOrder" object:nil];
+            [self performSelector:@selector(backToLastView) withObject:nil afterDelay:0.8];
+        }
+        else{
+            NSString *data = [respondDict objectForKey:@"data"];
+            if ([data isMemberOfClass:[NSNull class]] || data == nil) {
+                data = ERRORREQUESTTIP;
+            }
+            [self showHint:data];
+        }
+        
+        
+    } failure:^(NSError *error){
+        [self hideHud];
+        [self showHint:ERRORREQUESTTIP];
+    }];
+}
+
+- (void)backToLastView
+{
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (void)didReceiveMemoryWarning {

@@ -18,16 +18,26 @@
 #import "HeServiceItemVC.h"
 #import "HeServiceTimeVC.h"
 #import "HeCommentVC.h"
+#import "MLLabel.h"
+#import "MLLabel+Size.h"
+#import "MJRefreshAutoNormalFooter.h"
+#import "MJRefreshNormalHeader.h"
 
 @interface HeServiceItemVC ()<UITableViewDelegate,UITableViewDataSource>
 @property(strong,nonatomic)NSMutableArray *dataSource;
 @property(strong,nonatomic)IBOutlet UITableView *tableview;
+@property(strong,nonatomic)id parameter;
+@property(strong,nonatomic)NSDictionary *nurseInfoDict;
+@property(strong,nonatomic)NSCache *imageCache;
 
 @end
 
 @implementation HeServiceItemVC
 @synthesize dataSource;
 @synthesize tableview;
+@synthesize parameter;
+@synthesize nurseInfoDict;
+@synthesize imageCache;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -53,17 +63,89 @@
     // Do any additional setup after loading the view from its nib.
     [self initializaiton];
     [self initView];
+    NSLog(@"parameter = %@",parameter);
+    NSString *nurseid = nurseInfoDict[@"nurseId"];
+    if ([nurseid isMemberOfClass:[NSNull class]] || nurseid == nil) {
+        nurseid = @"";
+    }
+    [self loadNurserServiceWithNurserID:nurseid];
 }
 
 - (void)initializaiton
 {
     [super initializaiton];
     dataSource = [[NSMutableArray alloc] initWithCapacity:0];
+    nurseInfoDict = parameter;
 }
 
 - (void)initView
 {
     [super initView];
+    [Tool setExtraCellLineHidden:tableview];
+    tableview.backgroundView = nil;
+    tableview.backgroundColor = [UIColor colorWithWhite:237.0 / 255.0 alpha:1.0];
+    
+    tableview.separatorStyle = UITableViewCellSeparatorStyleNone;
+    
+    __weak HeServiceItemVC *weakSelf = self;
+    self.tableview.header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
+        // 进入刷新状态后会自动调用这个block,刷新
+        [weakSelf.tableview.header performSelector:@selector(endRefreshing) withObject:nil afterDelay:1.0];
+    
+        
+    }];
+    
+    self.tableview.footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
+        self.tableview.footer.automaticallyHidden = YES;
+        self.tableview.footer.hidden = NO;
+        // 进入刷新状态后会自动调用这个block，加载更多
+        [weakSelf performSelector:@selector(endRefreshing) withObject:nil afterDelay:1.0];
+    
+        
+    }];
+}
+
+- (void)endRefreshing
+{
+    [self.tableview.footer endRefreshing];
+    self.tableview.footer.hidden = YES;
+    self.tableview.footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
+        self.tableview.footer.automaticallyHidden = YES;
+        self.tableview.footer.hidden = NO;
+        // 进入刷新状态后会自动调用这个block，加载更多
+        [self performSelector:@selector(endRefreshing) withObject:nil afterDelay:1.0];
+    }];
+    NSLog(@"endRefreshing");
+}
+
+//加载护士的服务项目
+- (void)loadNurserServiceWithNurserID:(NSString *)nurseId
+{
+    NSString *requestUrl = [NSString stringWithFormat:@"%@/nurseAnduser/selectContentBynurseId.action",BASEURL];
+    NSDictionary * params  = @{@"nurseid":nurseId};
+    [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
+        NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
+        NSDictionary *respondDict = [NSDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
+        if ([[respondDict valueForKey:@"errorCode"] integerValue] == REQUESTCODE_SUCCEED){
+            id jsonObj = respondDict[@"json"];
+            if ([jsonObj isMemberOfClass:[NSNull class]] || jsonObj == nil) {
+                return;
+            }
+            [dataSource removeAllObjects];
+            dataSource = [[NSMutableArray alloc] initWithArray:jsonObj];
+            
+            [tableview reloadData];
+        }
+        else{
+            NSString *data = respondDict[@"data"];
+            if ([data isMemberOfClass:[NSNull class]] || data == nil) {
+                data = ERRORREQUESTTIP;
+            }
+            [self showHint:data];
+        }
+    } failure:^(NSError* err){
+        
+    }];
 }
 
 - (void)bookServiceWithDict:(NSDictionary *)dict
@@ -71,13 +153,14 @@
     //总控制器，控制商品、详情、评论三个子控制器
     HeBookServiceVC *serviceDetailVC = [[HeBookServiceVC alloc] init];
     [self.navigationController setNavigationBarHidden:YES animated:YES];
-    [serviceDetailVC.view addSubview:[self getPageView]];
+    [serviceDetailVC.view addSubview:[self getPageViewWithParam:dict]];
     [self showViewController:serviceDetailVC sender:nil];
 }
 
-- (HYPageView *)getPageView {
-    
-    HYPageView *pageView = [[HYPageView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, SCREENHEIGH) withTitles:@[@"商品",@"详情",@"评论"] withViewControllers:@[@"HeServiceDetailVC",@"HeServiceInfoVC",@"HeCommentVC"] withParameters:@[@"123",@"这是一片很寂寞的天"]];
+- (HYPageView *)getPageViewWithParam:(NSDictionary *)dict
+{
+    NSDictionary *paramDict = @{@"service":dict,@"nurse":nurseInfoDict};
+    HYPageView *pageView = [[HYPageView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, SCREENHEIGH) withTitles:@[@"商品",@"详情",@"评论"] withViewControllers:@[@"HeServiceDetailVC",@"HeServiceInfoVC",@"HeCommentVC"] withParameters:@[paramDict,dict,dict]];
     pageView.isTranslucent = NO;
     pageView.topTabBottomLineColor = [UIColor whiteColor];
     pageView.selectedColor = [UIColor whiteColor];
@@ -88,11 +171,6 @@
     
     backImage.frame = CGRectMake(0, 0, 25, 25);
     
-    //    UIButton *leftButton = [UIButton buttonWithType:UIButtonTypeSystem];
-    //    [leftButton setImage:[UIImage imageNamed:@"navigationBar_back_icon"] forState:UIControlStateNormal];
-    //    leftButton.frame = CGRectMake(0, 0, 50, 40);
-    //    [leftButton setTintColor:[UIColor blackColor]];
-    //    leftButton.transform = CGAffineTransformMakeScale(.7, .7);
     pageView.leftButton = backImage;
     
     return pageView;
@@ -105,7 +183,7 @@
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 5;
+    return [dataSource count];
 }
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -126,10 +204,59 @@
         
     }
     NSDictionary *dict = nil;
+    @try {
+        dict = dataSource[row];
+    } @catch (NSException *exception) {
+        
+    } @finally {
+        
+    }
     __weak HeServiceItemVC *weakSelf = self;
     cell.booklBlock = ^{
         [weakSelf bookServiceWithDict:dict];
     };
+    
+    NSString *contentImgurl = dict[@"contentImgurl"];
+    if ([contentImgurl isMemberOfClass:[NSNull class]] || contentImgurl == nil) {
+        contentImgurl = @"";
+    }
+    contentImgurl = [NSString stringWithFormat:@"%@/%@",HYTIMAGEURL,contentImgurl];
+    NSString *imageKey = [NSString stringWithFormat:@"%ld_%@",row,contentImgurl];
+    UIImageView *imageview = [imageCache objectForKey:imageKey];
+    if (!imageview) {
+        [cell.userImage sd_setImageWithURL:[NSURL URLWithString:contentImgurl] placeholderImage:[UIImage imageNamed:@"index2"]];
+        imageview = cell.userImage;
+        [imageCache setObject:imageview forKey:imageKey];
+    }
+    cell.userImage = imageview;
+    [cell addSubview:cell.userImage];
+    
+    NSString *manageNursingContentName = dict[@"manageNursingContentName"];
+    if ([manageNursingContentName isMemberOfClass:[NSNull class]] || manageNursingContentName == nil) {
+        manageNursingContentName = @"";
+    }
+    cell.serviceTitleLabel.text = manageNursingContentName;
+    
+    NSString *manageNursingContentContent = dict[@"manageNursingContentContent"];
+    if ([manageNursingContentContent isMemberOfClass:[NSNull class]] || manageNursingContentContent == nil) {
+        manageNursingContentContent = @"";
+    }
+    cell.peopleLabel.text = manageNursingContentContent;
+    
+    id contentRequired = dict[@"contentRequired"];
+    if ([contentRequired isMemberOfClass:[NSNull class]]) {
+        contentRequired = @"";
+    }
+    
+    cell.numberLabel.text = [NSString stringWithFormat:@"已服务:  %ld次",[contentRequired integerValue]];
+    
+    id minMoney = dict[@"minMoney"];
+    if ([minMoney isMemberOfClass:[NSNull class]]) {
+        minMoney = @"";
+    }
+    cell.priceLabel.text = [NSString stringWithFormat:@"￥%.2f",[minMoney floatValue]];
+         
+         
     
     return cell;
     

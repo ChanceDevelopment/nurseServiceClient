@@ -99,6 +99,8 @@
     [dataSource addObject:hadBookOrderArray];
     [dataSource addObject:nowOrderArray];
     [dataSource addObject:finishOrderArray];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateOrder:) name:@"updateOrder" object:nil];
 }
 
 - (void)initView
@@ -113,6 +115,10 @@
     
 }
 
+- (void)updateOrder:(NSNotification *)notification
+{
+    [self loadOrderDataWithOrderState:0];
+}
 
 #pragma mark - PrivateMethod
 - (void)navigationDidSelectedControllerIndex:(NSInteger)index {
@@ -812,6 +818,10 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"updateOrder" object:nil];
+}
 /*
 #pragma mark - Navigation
 

@@ -22,6 +22,9 @@
 #import "HeServiceCommentVC.h"
 
 @interface HeNurseDetailVC ()
+{
+    
+}
 @property(strong,nonatomic)IBOutlet UIImageView *headerView;
 @property(strong,nonatomic)IBOutlet UITableView *tableview;
 @property(strong,nonatomic)NSMutableArray *dataSource;
@@ -37,6 +40,7 @@
 @property(nonatomic,strong)DLNavigationTabBar *navigationTabBar;
 @property(strong,nonatomic)IBOutlet UIView *footerView;
 
+@property(strong,nonatomic)NSDictionary *nurseDetailInfo;
 
 
 @end
@@ -54,6 +58,7 @@
 @synthesize hospitalLabel;
 @synthesize userImage;
 @synthesize otherInfoView;
+@synthesize nurseDetailInfo;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -77,7 +82,7 @@
 -(DLNavigationTabBar *)navigationTabBar
 {
     if (!_navigationTabBar) {
-        self.navigationTabBar = [[DLNavigationTabBar alloc] initWithTitles:@[@"服务项目",@"服务时间",@"用户评价"]];
+        self.navigationTabBar = [[DLNavigationTabBar alloc] initWithTitles:@[@"服务项目",@"用户评价"]];
         self.navigationTabBar.backgroundColor = [UIColor colorWithWhite:237.0 / 255.0 alpha:1.0];
         self.navigationTabBar.frame = CGRectMake(0, 0, SCREENWIDTH, 40);
         self.navigationTabBar.sliderBackgroundColor = APPDEFAULTORANGE;
@@ -102,6 +107,12 @@
     [self initializaiton];
     [self initView];
     [self addFooterView];
+    //加载该护士的详细信息
+    NSString *nurseId = nurseDictInfo[@"nurseId"];
+    if ([nurseId isMemberOfClass:[NSNull class]] || nurseId == nil) {
+        nurseId = @"";
+    }
+    [self loadNurserDetailInfo:nurseId];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -127,11 +138,71 @@
     [super initView];
     [self initOtherInfoView];
     
+//    commentButton.layer.cornerRadius = 2.0;
+//    commentButton.layer.borderWidth = 0.5;
+//    commentButton.layer.masksToBounds = YES;
+//    commentButton.layer.borderColor = APPDEFAULTORANGE.CGColor;
+//    
+//    serviceButton.layer.cornerRadius = 2.0;
+//    serviceButton.layer.borderWidth = 0.5;
+//    serviceButton.layer.masksToBounds = YES;
+//    serviceButton.layer.borderColor = APPDEFAULTORANGE.CGColor;
+//    
+//    followNumButton.layer.cornerRadius = 2.0;
+//    followNumButton.layer.borderWidth = 0.5;
+//    followNumButton.layer.masksToBounds = YES;
+//    followNumButton.layer.borderColor = APPDEFAULTORANGE.CGColor;
+    
+    id isfollow = nurseDictInfo[@"isfollow"];
+    if ([isfollow isMemberOfClass:[NSNull class]]) {
+        isfollow = @"";
+    }
+    if ([isfollow boolValue]) {
+        followButton.enabled = NO;
+        [followButton setTitle:@"已关注" forState:UIControlStateNormal];
+    }
+    else{
+        followButton.enabled = YES;
+        [followButton setTitle:@"关注" forState:UIControlStateNormal];
+    }
+    
+    NSString *nurseHeader = nurseDictInfo[@"nurseHeader"];
+    if ([nurseHeader isMemberOfClass:[NSNull class]] || nurseHeader == nil) {
+        nurseHeader = @"";
+    }
+    nurseHeader = [NSString stringWithFormat:@"%@/%@",HYTIMAGEURL,nurseHeader];
     userImage.layer.cornerRadius = userImage.frame.size.width / 2.0;
     userImage.layer.masksToBounds = YES;
     userImage.layer.borderWidth = 0;
     userImage.layer.borderColor = [UIColor clearColor].CGColor;
     userImage.contentMode = UIViewContentModeScaleAspectFill;
+    [userImage sd_setImageWithURL:[NSURL URLWithString:nurseHeader] placeholderImage:[UIImage imageNamed:@"defalut_icon"]];
+    
+    NSString *nurseWorkUnit = nurseDictInfo[@"nurseWorkUnit"];
+    if ([nurseWorkUnit isMemberOfClass:[NSNull class]] || nurseWorkUnit == nil) {
+        nurseWorkUnit = @"";
+    }
+    self.hospitalLabel.text = nurseWorkUnit;
+    
+    NSString *nurseNick = nurseDictInfo[@"nurseNick"];
+    if ([nurseNick isMemberOfClass:[NSNull class]] || nurseNick == nil) {
+        nurseNick = @"";
+    }
+    
+    id nurseSex = nurseDictInfo[@"nurseSex"];
+    if ([nurseSex isMemberOfClass:[NSNull class]]) {
+        nurseSex = @"";
+    }
+    NSString *nurseSexStr = @"女";
+    if ([nurseSex integerValue] == ENUM_SEX_Boy) {
+        nurseSexStr = @"男";
+    }
+    NSString *nurseJob = nurseDictInfo[@"nurseJob"];
+    if ([nurseJob isMemberOfClass:[NSNull class]] || nurseJob == nil) {
+        nurseJob = @"";
+    }
+    nameLabel.text = [NSString stringWithFormat:@"%@  %@  %@",nurseNick,nurseSexStr,nurseJob];
+    
     
     followButton.layer.cornerRadius = 5.0;
     followButton.layer.borderWidth = 1.0;
@@ -194,6 +265,13 @@
     advantangeLabel.font = [UIFont systemFontOfSize:15.0];
     [otherInfoView addSubview:advantangeLabel];
     
+    //优势
+    NSString *nurseNote = nurseDictInfo[@"nurseNote"];
+    if ([nurseNote isMemberOfClass:[NSNull class]] || nurseNote == nil) {
+        nurseNote = @"";
+    }
+    advantangeLabel.text = [NSString stringWithFormat:@"优势:  %@",nurseNote];
+    
     UIView *addressView = [[UIView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(advantangeLabel.frame), SCREENWIDTH, cellHeight)];
     [otherInfoView addSubview:addressView];
     
@@ -208,16 +286,21 @@
     
     UILabel *addressLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, SCREENWIDTH - 30, cellHeight)];
     addressLabel.textAlignment = NSTextAlignmentRight;
-    addressLabel.text = @"距离我的所在位置约7.2km";
+    
+    id distanceObj = nurseDictInfo[@"distance"];
+    CGFloat distance = [distanceObj floatValue];
+    NSString *distanceStr = nil;
+    if (distance > 1000) {
+        distanceStr = [NSString stringWithFormat:@"%.2fkm",distance / 1000.0];
+    }
+    else{
+        distanceStr = [NSString stringWithFormat:@"%.2fm",distance];
+    }
+    addressLabel.text = [NSString stringWithFormat:@"距离我的所在位置约%@",distanceStr];
     addressLabel.textColor = [UIColor blackColor];
     addressLabel.font = [UIFont systemFontOfSize:15.0];
     [addressView addSubview:addressLabel];
-    
-//    [otherInfoView addSubview:self.navigationTabBar];
-//    CGRect barFrame = _navigationTabBar.frame;
-//    barFrame.origin.y = CGRectGetMaxY(addressView.frame);
-//    _navigationTabBar.frame = barFrame;
-    
+
     
     CGFloat lineX = 0;
     CGFloat lineW = SCREENWIDTH;
@@ -243,7 +326,7 @@
 - (void)addFooterView
 {
     
-    HYPageView *pageView = [[HYPageView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, SCREENHEIGH) withTitles:@[@"服务项目",@"服务时间",@"评论"] withViewControllers:@[@"HeServiceItemVC",@"HeServiceTimeVC",@"HeServiceCommentVC"] withParameters:@[@"123",@"这是一片很寂寞的天"]];
+    HYPageView *pageView = [[HYPageView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, SCREENHEIGH) withTitles:@[@"服务项目",@"用户评论"] withViewControllers:@[@"HeServiceItemVC",@"HeServiceCommentVC"] withParameters:@[nurseDictInfo,nurseDictInfo]];
     pageView.isTranslucent = YES;
     pageView.font = [UIFont systemFontOfSize:13.0];
     pageView.topTabBottomLineColor = APPDEFAULTORANGE;
@@ -262,7 +345,137 @@
 - (IBAction)followButtonClick:(UIButton *)sender
 {
     NSLog(@"followButtonClick");
+    id isfollow = nurseDictInfo[@"isfollow"];
+    if ([isfollow isMemberOfClass:[NSNull class]]) {
+        isfollow = @"";
+    }
+    if ([isfollow boolValue]) {
+        return;
+    }
+    NSString *requestUrl = [NSString stringWithFormat:@"%@/follow/addfollow.action",BASEURL];
+    NSString *userId = [[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY];
+    //role 关注人的角色（0用户，1护士）
+    NSString *role = @"0";
+    NSString *befollowId = nurseDictInfo[@"nurseId"];
+    if ([befollowId isMemberOfClass:[NSNull class]] || befollowId == nil) {
+        befollowId = @"";
+    }
+    NSDictionary * params  = @{@"followId":userId,@"befollowId":befollowId,@"role":role};
+    [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
+        NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
+        NSDictionary *respondDict = [NSDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
+        if ([[respondDict valueForKey:@"errorCode"] integerValue] == REQUESTCODE_SUCCEED){
+            
+            NSMutableDictionary *dict = [[NSMutableDictionary alloc] initWithDictionary:nurseDictInfo];
+            [dict setObject:@YES forKey:@"isfollow"];
+            nurseDictInfo = [[NSDictionary alloc] initWithDictionary:dict];
+            nurseDetailInfo = [[NSDictionary alloc] initWithDictionary:dict];
+            
+            id isfollow = nurseDictInfo[@"isfollow"];
+            if ([isfollow isMemberOfClass:[NSNull class]]) {
+                isfollow = @"";
+            }
+            if ([isfollow boolValue]) {
+                followButton.enabled = NO;
+                [followButton setTitle:@"已关注" forState:UIControlStateNormal];
+            }
+            else{
+                followButton.enabled = YES;
+                [followButton setTitle:@"关注" forState:UIControlStateNormal];
+            }
+            [self showHint:@"关注成功"];
+        }
+        else{
+            NSString *data = respondDict[@"data"];
+            if ([data isMemberOfClass:[NSNull class]] || data == nil) {
+                data = ERRORREQUESTTIP;
+            }
+            [self showHint:data];
+        }
+    } failure:^(NSError* err){
+        NSLog(@"errorInfo = %@",err);
+    }];
 }
+
+//加载该护士的详细信息
+- (void)loadNurserDetailInfo:(NSString *)nurseId
+{
+    NSString *requestUrl = [NSString stringWithFormat:@"%@/nurseAnduser/selectfornursebyid.action",BASEURL];
+    NSString *userId = [[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY];
+    NSString *latitude = [[HeSysbsModel getSysModel].userLocationDict objectForKey:@"longitude"];
+    if (!latitude) {
+        latitude = @"";
+    }
+    NSString *longitude = [[HeSysbsModel getSysModel].userLocationDict objectForKey:@"latitude"];
+    if (!longitude) {
+        longitude = @"";
+    }
+    NSDictionary * params  = @{@"userId":userId,@"nurseid":nurseId,@"latitude":latitude,@"longitude":longitude};
+    [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
+        NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
+        NSDictionary *respondDict = [NSDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
+        if ([[respondDict valueForKey:@"errorCode"] integerValue] == REQUESTCODE_SUCCEED){
+            id jsonObj = respondDict[@"json"];
+            if ([jsonObj isMemberOfClass:[NSNull class]] || jsonObj == nil) {
+                jsonObj = nurseDictInfo;
+            }
+            nurseDictInfo = [[NSDictionary alloc] initWithDictionary:jsonObj];
+            nurseDetailInfo = [[NSDictionary alloc] initWithDictionary:jsonObj];
+            
+            NSString *nurseWorkUnit = nurseDictInfo[@"nurseWorkUnit"];
+            if ([nurseWorkUnit isMemberOfClass:[NSNull class]] || nurseWorkUnit == nil) {
+                nurseWorkUnit = @"";
+            }
+            self.hospitalLabel.text = nurseWorkUnit;
+            
+            //好评
+            id approvalRating = nurseDictInfo[@"approvalRating"];
+            if ([approvalRating isMemberOfClass:[NSNull class]] || approvalRating == nil) {
+                approvalRating = @"";
+            }
+            NSString *commentStr = [NSString stringWithFormat:@"好评率: %ld",[approvalRating integerValue]];
+            [commentButton setTitle:commentStr forState:UIControlStateNormal];
+            
+            id nursedNumber = nurseDictInfo[@"nursedNumber"];
+            if ([nursedNumber isMemberOfClass:[NSNull class]] || nursedNumber == nil) {
+                nursedNumber = @"";
+            }
+            NSString *serviceStr = [NSString stringWithFormat:@"服务数: %ld次",[nursedNumber integerValue]];
+            [serviceButton setTitle:serviceStr forState:UIControlStateNormal];
+            
+            id attentionNumber = nurseDictInfo[@"attentionNumber"];
+            if ([attentionNumber isMemberOfClass:[NSNull class]] || attentionNumber == nil) {
+                attentionNumber = @"";
+            }
+            NSString *followStr = [NSString stringWithFormat:@"关注数: %ld人",[attentionNumber integerValue]];
+            [followNumButton setTitle:followStr forState:UIControlStateNormal];
+            
+            id isfollow = nurseDictInfo[@"isfollow"];
+            if ([isfollow isMemberOfClass:[NSNull class]]) {
+                isfollow = @"";
+            }
+            if ([isfollow boolValue]) {
+                followButton.enabled = NO;
+                [followButton setTitle:@"已关注" forState:UIControlStateNormal];
+            }
+            else{
+                followButton.enabled = YES;
+                [followButton setTitle:@"关注" forState:UIControlStateNormal];
+            }
+            
+        }
+        else{
+            NSString *data = respondDict[@"data"];
+            if ([data isMemberOfClass:[NSNull class]] || data == nil) {
+                data = ERRORREQUESTTIP;
+            }
+            [self showHint:data];
+        }
+    } failure:^(NSError* err){
+        
+    }];
+}
+
 
 
 

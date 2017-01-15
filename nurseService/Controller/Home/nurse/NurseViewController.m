@@ -133,7 +133,7 @@
     
     UIBarButtonItem *scanItem = [[UIBarButtonItem alloc] initWithCustomView:scanButton];
     
-    self.navigationItem.rightBarButtonItems = @[scanItem,searchItem];
+    self.navigationItem.rightBarButtonItems = @[searchItem];
     
     __weak NurseViewController *weakSelf = self;
     self.tableview.header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{

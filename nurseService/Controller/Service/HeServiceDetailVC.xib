@@ -11,6 +11,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="HeServiceDetailVC">
             <connections>
+                <outlet property="collectButton" destination="fWy-0v-Bhx" id="um7-w8-UDb"/>
                 <outlet property="footerBGView" destination="6gz-oI-zox" id="vDh-M8-GRJ"/>
                 <outlet property="tableview" destination="9EF-3g-LRQ" id="bhV-EP-U30"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>

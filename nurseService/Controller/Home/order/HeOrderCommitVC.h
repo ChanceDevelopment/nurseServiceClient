@@ -9,5 +9,6 @@
 #import "HeBaseViewController.h"
 
 @interface HeOrderCommitVC : HeBaseViewController
+@property(strong,nonatomic)NSString *orderId;
 
 @end

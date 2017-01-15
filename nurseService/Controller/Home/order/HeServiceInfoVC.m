@@ -14,6 +14,9 @@
 @property(strong,nonatomic)NSString *website;
 @property(strong,nonatomic)NSURL *webURL;
 
+@property(strong,nonatomic)id parameter;
+@property(strong,nonatomic)NSDictionary *serviceInfoDict;
+
 @end
 
 @implementation HeServiceInfoVC
@@ -21,6 +24,9 @@
 @synthesize webView;
 @synthesize indicatorView;
 @synthesize webURL;
+
+@synthesize parameter;
+@synthesize serviceInfoDict;
 
 - (void)viewDidLoad
 {
@@ -42,6 +48,7 @@
 - (void)initializaiton
 {
     [super initializaiton];
+    serviceInfoDict = parameter;
 }
 
 - (void)initView
@@ -55,7 +62,13 @@
     
     webView.frame = self.view.bounds;
     webView.delegate = self;
-    webURL = [NSURL URLWithString:@"http://118.178.186.59:8080/nurseDoor/nurseAnduser/contentDetails.action?contentId=2a64345c6f4e48358d198f7d01cf0b97"];
+//    http://118.178.186.59:8080/nurseDoor/nurseAnduser/contentDetails.action?contentId=2a64345c6f4e48358d198f7d01cf0b97
+    NSString *contentId = serviceInfoDict[@"manageNursingContentId"];
+    if ([contentId isMemberOfClass:[NSNull class]] || contentId == nil) {
+        contentId = serviceInfoDict[@"contentId"];
+    }
+    NSString *detailStr = [NSString stringWithFormat:@"http://118.178.186.59:8080/nurseDoor/nurseAnduser/contentDetails.action?contentId=%@",contentId];
+    webURL = [NSURL URLWithString:detailStr];
     NSURLRequest *request = [[NSURLRequest alloc] initWithURL:webURL];
     [webView loadRequest:request];
 }

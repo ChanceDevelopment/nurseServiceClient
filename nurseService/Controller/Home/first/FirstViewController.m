@@ -85,6 +85,10 @@
 {
     [super initView];
     
+    [Tool setExtraCellLineHidden:tableview];
+    tableview.backgroundView = nil;
+    tableview.backgroundColor = [UIColor colorWithWhite:237.0 / 255.0 alpha:1.0];
+    
     tableview.separatorStyle = UITableViewCellSeparatorStyleNone;
     UIImage *menuIcon = [UIImage imageNamed:@"icon_list"];
     
@@ -171,14 +175,6 @@
     }];
 }
 
-- (void)getCitySucceed:(NSNotification *)notification
-{
-    NSString *city = notification.object;
-    [locationButton setTitle:city forState:UIControlStateNormal];    // 设置按钮图片偏移
-    [locationButton setTitleEdgeInsets:UIEdgeInsetsMake(0.0,-locationButton.imageView.bounds.size.width, 0.0,locationButton.imageView.bounds.size.width)];
-    [locationButton setImageEdgeInsets:UIEdgeInsetsMake(0.0, locationButton.titleLabel.bounds.size.width, 0.0, -locationButton.titleLabel.bounds.size.width)];
-}
-
 - (void)endRefreshing
 {
     [self.tableview.footer endRefreshing];
@@ -190,6 +186,14 @@
         [self performSelector:@selector(endRefreshing) withObject:nil afterDelay:1.0];
     }];
     NSLog(@"endRefreshing");
+}
+
+- (void)getCitySucceed:(NSNotification *)notification
+{
+    NSString *city = notification.object;
+    [locationButton setTitle:city forState:UIControlStateNormal];    // 设置按钮图片偏移
+    [locationButton setTitleEdgeInsets:UIEdgeInsetsMake(0.0,-locationButton.imageView.bounds.size.width, 0.0,locationButton.imageView.bounds.size.width)];
+    [locationButton setImageEdgeInsets:UIEdgeInsetsMake(0.0, locationButton.titleLabel.bounds.size.width, 0.0, -locationButton.titleLabel.bounds.size.width)];
 }
 
 //加载轮播图
