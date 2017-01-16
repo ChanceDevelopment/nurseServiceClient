@@ -63,7 +63,7 @@
         CGFloat payStatusLabelY = 0;
         CGFloat payStatusLabelW = 100;
         CGFloat payStatusLabelH = serviceContentLH;
-        CGFloat payStatusLabelX = orderViewW - payStatusLabelW - 30;
+        CGFloat payStatusLabelX = orderViewW - payStatusLabelW - 25;
         
         payStatusLabel = [[UILabel alloc] initWithFrame:CGRectMake(payStatusLabelX, payStatusLabelY, payStatusLabelW, payStatusLabelH)];
         payStatusLabel.text = @"待付款";
@@ -160,7 +160,7 @@
         
         CGFloat userTipX = 10;
         CGFloat userTipY = CGRectGetMaxY(line1.frame);
-        CGFloat userTipW = 150;
+        CGFloat userTipW = 80;
         CGFloat userTipH = 40;
         
         UILabel *userTip = [[UILabel alloc] initWithFrame:CGRectMake(userTipX, userTipY, userTipW, userTipH)];
@@ -172,8 +172,9 @@
         
         
         CGFloat userInfoLY = userTipY;
-        CGFloat userInfoLW = 130;
-        CGFloat userInfoLX = bgView_W - userInfoLW - 30;
+        CGFloat userInfoLX = 10;
+        CGFloat userInfoLW = bgView_W - userInfoLX - 25;
+        
         CGFloat userInfoLH = userTipH;
         
         userInfoL = [[UILabel alloc] initWithFrame:CGRectMake(userInfoLX, userInfoLY, userInfoLW, userInfoLH)];

@@ -98,7 +98,8 @@
     searchBar.delegate = self;
     searchBar.barStyle = UIBarStyleDefault;
     searchBar.placeholder = @"搜索护士";
-    self.navigationItem.titleView = searchBar;self.tableview.header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
+    self.navigationItem.titleView = searchBar;
+    self.tableview.header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
         // 进入刷新状态后会自动调用这个block,刷新
         [self.tableview.header performSelector:@selector(endRefreshing) withObject:nil afterDelay:1.0];
     }];

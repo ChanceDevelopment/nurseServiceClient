@@ -22,6 +22,8 @@
 @property (nonatomic,strong)void(^contactNurseBlock)();
 @property (nonatomic,strong)void(^locationBlock)();
 @property (nonatomic,strong)void(^showUserInfoBlock)();
+@property (nonatomic,strong)void(^showNurseInfoBlock)();
+
 
 @property(strong,nonatomic)NSDictionary *orderInfoDict;
 

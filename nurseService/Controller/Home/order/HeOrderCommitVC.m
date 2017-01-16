@@ -469,6 +469,10 @@
         NSString *title = serviceArray[index];
         CGSize size = [MLLabel getViewSizeByString:title maxWidth:SCREENWIDTH - 20 font:textFont lineHeight:1.2f lines:0];
         endLabelW = size.width;
+        if (endLabelW + 10 < CGRectGetWidth(serviceBG.frame)) {
+            endLabelW = endLabelW + 10;
+            size.width = size.width + 10;
+        }
         if ((size.width + endLabelX) > CGRectGetWidth(serviceBG.frame)) {
             endLabelX = 0;
             endLabelY = endLabelY + endLabelVDistance + endLabelH;
@@ -664,7 +668,7 @@
                 CGFloat endLabelH = cellSize.height;
                 CGFloat endLabelX = SCREENWIDTH - endLabelW - 30;
                 UILabel *endLabel = [[UILabel alloc] initWithFrame:CGRectMake(endLabelX, endLabelY, endLabelW, endLabelH)];
-                endLabel.font = [UIFont systemFontOfSize:17.0];
+                endLabel.font = [UIFont systemFontOfSize:15.0];
                 id orderSendCostmoney = orderDetailDict[@"orderSendCostmoney"];
                 if ([orderSendCostmoney isMemberOfClass:[NSNull class]]) {
                     orderSendCostmoney = @"";
@@ -816,7 +820,7 @@
     NSInteger row = indexPath.row;
     switch (section) {
         case 3:{
-            return serviceBG.frame.size.height + 25;
+            return serviceBG.frame.size.height + 15;
             break;
         }
         case 5:

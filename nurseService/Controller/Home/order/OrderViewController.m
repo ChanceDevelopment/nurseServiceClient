@@ -17,8 +17,12 @@
 #import "HeUserLocatiVC.h"
 #import "HeOrderCommitVC.h"
 #import "HeProtectedUserInfoVC.h"
+#import "HeNurseDetailVC.h"
+#import "HeCommentNurseVC.h"
+#import "MJRefreshAutoNormalFooter.h"
+#import "MJRefreshNormalHeader.h"
 
-@interface OrderViewController ()<UITableViewDelegate,UITableViewDataSource>
+@interface OrderViewController ()<UITableViewDelegate,UITableViewDataSource,UIAlertViewDelegate>
 {
     NSInteger currentOrderType;
     //预约框
@@ -33,6 +37,7 @@
 @property(nonatomic,strong)DLNavigationTabBar *navigationTabBar;
 @property(strong,nonatomic)IBOutlet UITableView *tableview;
 @property(strong,nonatomic)NSMutableArray *dataSource;
+@property(strong,nonatomic)NSDictionary *currentHandleOrderInfo;
 
 @end
 
@@ -111,20 +116,50 @@
     tableview.backgroundView = nil;
     tableview.separatorStyle = UITableViewCellSeparatorStyleNone;
     tableview.backgroundColor = [UIColor colorWithWhite:237.0 / 255.0 alpha:1.0];
+    self.tableview.header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
+        // 进入刷新状态后会自动调用这个block,刷新
+        [self.tableview.header performSelector:@selector(endRefreshing) withObject:nil afterDelay:1.0];
+        
+    }];
     
-    
+//    self.tableview.footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
+//        self.tableview.footer.automaticallyHidden = YES;
+//        self.tableview.footer.hidden = NO;
+//        // 进入刷新状态后会自动调用这个block，加载更多
+//        [self performSelector:@selector(endRefreshing) withObject:nil afterDelay:1.0];
+//        
+//    }];
+}
+
+- (void)endRefreshing
+{
+    [self.tableview.footer endRefreshing];
+    self.tableview.footer.hidden = YES;
+    self.tableview.footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
+        self.tableview.footer.automaticallyHidden = YES;
+        self.tableview.footer.hidden = NO;
+        // 进入刷新状态后会自动调用这个block，加载更多
+        [self performSelector:@selector(endRefreshing) withObject:nil afterDelay:1.0];
+        [self loadOrderDataWithOrderState:currentOrderType];
+    }];
+    NSLog(@"endRefreshing");
 }
 
 - (void)updateOrder:(NSNotification *)notification
 {
+    //更新所有订单的状态
     [self loadOrderDataWithOrderState:0];
+    [self loadOrderDataWithOrderState:1];
+    [self loadOrderDataWithOrderState:2];
+    [self loadOrderDataWithOrderState:3];
 }
 
 #pragma mark - PrivateMethod
 - (void)navigationDidSelectedControllerIndex:(NSInteger)index {
     NSLog(@"index = %ld",index);
     currentOrderType = index;
-    [tableview reloadData];
+    [self loadOrderDataWithOrderState:currentOrderType];
+//    [tableview reloadData];
 }
 
 - (void)loadOrderDataWithOrderState:(NSInteger)orderState
@@ -139,10 +174,10 @@
         if ([[respondDict valueForKey:@"errorCode"] integerValue] == REQUESTCODE_SUCCEED){
             NSArray *jsonArray = [respondDict valueForKey:@"json"];
             if ([jsonArray isMemberOfClass:[NSNull class]] || jsonArray == nil || [jsonArray count] == 0) {
-                
-                return;
+                jsonArray = [NSArray array];
             }
             NSMutableArray *orderArray = dataSource[orderState];
+            [orderArray removeAllObjects];
             [orderArray addObjectsFromArray:jsonArray];
             if (orderState == currentOrderType) {
                 [tableview reloadData];
@@ -161,25 +196,59 @@
     }];
 }
 
-- (void)showPaitentInfoWith:(NSDictionary *)paitentInfoDict
+- (void)showPaitentInfoWith:(NSDictionary *)dict
 {
+    NSString *orderSendUsername = dict[@"orderSendUsername"];
+    NSArray *orderSendUsernameArray = [orderSendUsername componentsSeparatedByString:@","];
+    @try {
+        orderSendUsername = orderSendUsernameArray[0];
+    } @catch (NSException *exception) {
+        orderSendUsername = @"";
+    } @finally {
+        
+    }
+    NSString *personId = orderSendUsername;
+    NSDictionary *paitentInfoDict = @{@"personId":personId};
     HePaitentInfoVC *paitentInfoVC = [[HePaitentInfoVC alloc] init];
     paitentInfoVC.userInfoDict = [[NSDictionary alloc] initWithDictionary:paitentInfoDict];
     paitentInfoVC.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:paitentInfoVC animated:YES];
 }
 
+- (void)showNurseDetailWithOrder:(NSDictionary *)orderDict
+{
+    NSString *nurseId = orderDict[@"nurseId"];
+    if ([nurseId isMemberOfClass:[NSNull class]] || nurseId == nil) {
+        nurseId = @"";
+    }
+    NSDictionary *infoDict = @{@"nurseId":nurseId};
+    HeNurseDetailVC *nurseDetailVC = [[HeNurseDetailVC alloc] init];
+    nurseDetailVC.nurseDictInfo = [[NSDictionary alloc] initWithDictionary:infoDict];
+    nurseDetailVC.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:nurseDetailVC animated:YES];
+}
+
 - (void)showOrderDetailWithOrder:(NSDictionary *)orderDict
 {
     if (currentOrderType == 0) {
         //预约框，跳订单确认界面
+        NSString *orderSendId = orderDict[@"orderSendId"];
+        if ([orderSendId isMemberOfClass:[NSNull class]]) {
+            orderSendId = @"";
+        }
         HeOrderCommitVC *orderCommitVC = [[HeOrderCommitVC alloc] init];
+        orderCommitVC.orderId = orderSendId;
         orderCommitVC.hidesBottomBarWhenPushed = YES;
         [self.navigationController pushViewController:orderCommitVC animated:YES];
         return;
     }
     else{
+        NSString *orderSendId = orderDict[@"orderSendId"];
+        if ([orderSendId isMemberOfClass:[NSNull class]]) {
+            orderSendId = @"";
+        }
         HeOrderDetailVC *orderDetailVC = [[HeOrderDetailVC alloc] init];
+        orderDetailVC.orderId = orderSendId;
         orderDetailVC.hidesBottomBarWhenPushed = YES;
         [self.navigationController pushViewController:orderDetailVC animated:YES];
     }
@@ -197,37 +266,277 @@
 //删除服务
 - (void)deleteServiceWithDict:(NSDictionary *)orderInfo
 {
-    NSLog(@"deleteService");
+    _currentHandleOrderInfo = orderInfo;
+    if (ISIOS7) {
+        
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"删除服务" message:@"确定删除这笔订单吗？" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确认", nil];
+        alertView.tag = 100;
+        [alertView show];
+        return;
+    }
+    else{
+        __weak OrderViewController *weakSelf = self;
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"删除服务" message:@"确定删除这笔订单吗？"  preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action){
+            _currentHandleOrderInfo = nil;
+        }];
+        UIAlertAction *sureAction = [UIAlertAction actionWithTitle:@"确认" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){
+            [weakSelf requestDeleteOrder:orderInfo];
+        }];
+        [alertController addAction:cancelAction];
+        [alertController addAction:sureAction];
+        [self presentViewController:alertController animated:YES completion:nil];
+        return;
+    }
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (alertView.tag == 100 && buttonIndex == 1) {
+        //删除订单
+        [self requestDeleteOrder:_currentHandleOrderInfo];
+    }
+    else if (alertView.tag == 200 && buttonIndex == 1){
+        //取消订单
+        [self requestCancelOrder:_currentHandleOrderInfo];
+    }
+    else if (buttonIndex == 0){
+        _currentHandleOrderInfo = nil;
+    }
+    
+}
+
+- (void)requestDeleteOrder:(NSDictionary *)orderInfo
+{
+    NSLog(@"cancelService");
+    NSString *orderSendId = orderInfo[@"orderSendId"];
+    if ([orderSendId isMemberOfClass:[NSNull class]] || orderSendId == nil) {
+        orderSendId = @"";
+    }
+    NSDictionary * params  = @{@"orderSendId":orderSendId};
+    [self showHudInView:tableview hint:@"删除中..."];
+    NSString *requestUrl = [NSString stringWithFormat:@"%@/orderSend/delOrderSend.action",BASEURL];
+    [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
+        [self hideHud];
+        NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
+        NSDictionary *respondDict = [NSDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
+        if ([[respondDict valueForKey:@"errorCode"] integerValue] == REQUESTCODE_SUCCEED){
+            
+            [self showHint:@"成功删除服务"];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"updateOrder" object:nil];
+            
+        }
+        else{
+            NSString *data = respondDict[@"data"];
+            if ([data isMemberOfClass:[NSNull class]] || data == nil) {
+                data = ERRORREQUESTTIP;
+            }
+            [self showHint:data];
+        }
+    } failure:^(NSError* err){
+        [self hideHud];
+        NSLog(@"errorInfo = %@",err);
+        [self showHint:ERRORREQUESTTIP];
+    }];
+}
+
+- (void)requestCancelOrder:(NSDictionary *)orderInfo
+{
+    NSLog(@"cancelService");
+    NSString *orderSendId = orderInfo[@"orderSendId"];
+    if ([orderSendId isMemberOfClass:[NSNull class]] || orderSendId == nil) {
+        orderSendId = @"";
+    }
+    NSString *userId = [[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY];
+    if (!userId) {
+        userId = @"";
+    }
+    //0用户 1护士
+    NSString *identity = @"0";
+    [self showHudInView:tableview hint:@"取消中..."];
+    NSDictionary * params  = @{@"orderSendId":orderSendId,@"userId":userId,@"identity":identity};
+    NSString *requestUrl = [NSString stringWithFormat:@"%@/orderSend/cancelOrder.action",BASEURL];
+    [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
+        [self hideHud];
+        NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
+        NSDictionary *respondDict = [NSDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
+        if ([[respondDict valueForKey:@"errorCode"] integerValue] == REQUESTCODE_SUCCEED){
+            
+            [self showHint:@"成功取消服务"];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"updateOrder" object:nil];
+            
+        }
+        else{
+            NSString *data = respondDict[@"data"];
+            if ([data isMemberOfClass:[NSNull class]] || data == nil) {
+                data = ERRORREQUESTTIP;
+            }
+            [self showHint:data];
+        }
+    } failure:^(NSError* err){
+        [self hideHud];
+        [self showHint:ERRORREQUESTTIP];
+        NSLog(@"errorInfo = %@",err);
+    }];
 }
 
 //立即付款
 - (void)payMoneyWithDict:(NSDictionary *)orderInfo
 {
-    NSLog(@"payMoney");
+    //预约框，跳订单确认界面
+    NSString *orderSendId = orderInfo[@"orderSendId"];
+    if ([orderSendId isMemberOfClass:[NSNull class]]) {
+        orderSendId = @"";
+    }
+    HeOrderCommitVC *orderCommitVC = [[HeOrderCommitVC alloc] init];
+    orderCommitVC.orderId = orderSendId;
+    orderCommitVC.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:orderCommitVC animated:YES];
 }
+
 //已预约，进行中
 //取消服务
 - (void)cancelServiceWithDict:(NSDictionary *)orderInfo
 {
-    NSLog(@"cancelService");
+    _currentHandleOrderInfo = orderInfo;
+    if (ISIOS7) {
+        
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"请求取消" message:@"若取消这笔订单，您支付的费用将于一周内全额退还至您的余额中，确定要取消这笔订单吗？" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确认", nil];
+        alertView.tag = 200;
+        [alertView show];
+        return;
+    }
+    else{
+        __weak OrderViewController *weakSelf = self;
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"请求取消" message:@"若取消这笔订单，您支付的费用将于一周内全额退还至您的余额中，确定要取消这笔订单吗？"  preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action){
+            _currentHandleOrderInfo = nil;
+        }];
+        UIAlertAction *sureAction = [UIAlertAction actionWithTitle:@"确认" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){
+            [weakSelf requestCancelOrder:orderInfo];
+        }];
+        [alertController addAction:cancelAction];
+        [alertController addAction:sureAction];
+        [self presentViewController:alertController animated:YES completion:nil];
+        return;
+    }
+    
+//    NSLog(@"cancelService");
+//    NSDictionary * params  = nil;
+//    NSString *requestUrl = [NSString stringWithFormat:@"%@",BASEURL];
+//    [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
+//        NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
+//        NSDictionary *respondDict = [NSDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
+//        if ([[respondDict valueForKey:@"errorCode"] integerValue] == REQUESTCODE_SUCCEED){
+//            
+//            
+//        }
+//        else{
+//            NSString *data = respondDict[@"data"];
+//            if ([data isMemberOfClass:[NSNull class]] || data == nil) {
+//                data = ERRORREQUESTTIP;
+//            }
+//            [self showHint:data];
+//        }
+//    } failure:^(NSError* err){
+//        NSLog(@"errorInfo = %@",err);
+//    }];
 }
 
 //进行中
 - (void)contactNurseWithDict:(NSDictionary *)orderInfo
 {
     NSLog(@"contactNurse");
+    NSString *nursePhone = orderInfo[@"nursePhone"];
+    if ([nursePhone isMemberOfClass:[NSNull class]] || nursePhone == nil) {
+        [self showHint:@"暂无护士的联系方式"];
+    }
+    NSString *phoneStr = [NSString stringWithFormat:@"tel://%@",nursePhone];
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:phoneStr]];
+//    NSDictionary * params  = nil;
+//    NSString *requestUrl = [NSString stringWithFormat:@"%@",BASEURL];
+//    [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
+//        NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
+//        NSDictionary *respondDict = [NSDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
+//        if ([[respondDict valueForKey:@"errorCode"] integerValue] == REQUESTCODE_SUCCEED){
+//            
+//            
+//        }
+//        else{
+//            NSString *data = respondDict[@"data"];
+//            if ([data isMemberOfClass:[NSNull class]] || data == nil) {
+//                data = ERRORREQUESTTIP;
+//            }
+//            [self showHint:data];
+//        }
+//    } failure:^(NSError* err){
+//        NSLog(@"errorInfo = %@",err);
+//    }];
 }
 
 //已完成
 //再来一单
 - (void)reCreateOrderWithDict:(NSDictionary *)orderInfo
 {
-    NSLog(@"reCreateOrder");
+    return;
+    NSString *nurseId = orderInfo[@"nurseId"];
+    if ([nurseId isMemberOfClass:[NSNull class]] || nurseId == nil) {
+        nurseId = @"";
+    }
+    NSDictionary *infoDict = @{@"nurseId":nurseId};
+    HeNurseDetailVC *nurseDetailVC = [[HeNurseDetailVC alloc] init];
+    nurseDetailVC.nurseDictInfo = [[NSDictionary alloc] initWithDictionary:infoDict];
+    nurseDetailVC.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:nurseDetailVC animated:YES];
+    
+//    NSLog(@"reCreateOrder");
+//    NSDictionary * params  = nil;
+//    NSString *requestUrl = [NSString stringWithFormat:@"%@",BASEURL];
+//    [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
+//        NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
+//        NSDictionary *respondDict = [NSDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
+//        if ([[respondDict valueForKey:@"errorCode"] integerValue] == REQUESTCODE_SUCCEED){
+//            
+//            
+//        }
+//        else{
+//            NSString *data = respondDict[@"data"];
+//            if ([data isMemberOfClass:[NSNull class]] || data == nil) {
+//                data = ERRORREQUESTTIP;
+//            }
+//            [self showHint:data];
+//        }
+//    } failure:^(NSError* err){
+//        NSLog(@"errorInfo = %@",err);
+//    }];
 }
 //前往评价
 - (void)commentOrderWithDict:(NSDictionary *)orderInfo
 {
     NSLog(@"commentOrder");
+    HeCommentNurseVC *commentNurseVC = [[HeCommentNurseVC alloc] init];
+    commentNurseVC.nurseDict = [[NSDictionary alloc] initWithDictionary:orderInfo];
+    commentNurseVC.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:commentNurseVC animated:YES];
+//    NSDictionary * params  = nil;
+//    NSString *requestUrl = [NSString stringWithFormat:@"%@",BASEURL];
+//    [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
+//        NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
+//        NSDictionary *respondDict = [NSDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
+//        if ([[respondDict valueForKey:@"errorCode"] integerValue] == REQUESTCODE_SUCCEED){
+//            
+//            
+//        }
+//        else{
+//            NSString *data = respondDict[@"data"];
+//            if ([data isMemberOfClass:[NSNull class]] || data == nil) {
+//                data = ERRORREQUESTTIP;
+//            }
+//            [self showHint:data];
+//        }
+//    } failure:^(NSError* err){
+//        NSLog(@"errorInfo = %@",err);
+//    }];
 }
 
 #pragma mark - TableView Delegate
@@ -273,7 +582,7 @@
             
             cell.showOrderDetailBlock = ^(){
                 NSLog(@"showOrderDetail");
-                [weakSelf showOrderDetailWithOrder:nil];
+                [weakSelf showOrderDetailWithOrder:dict];
             };
             cell.cancleOrderBlock = ^(){
                 NSLog(@"删除服务");
@@ -285,7 +594,22 @@
             };
             cell.locationBlock = ^(){
                 NSLog(@"locationBlock");
-                NSDictionary *userLocationDic = @{@"zoneLocationY":@"23",@"zoneLocationX":@"113"};
+                NSString *orderSendAddree = dict[@"orderSendAddree"];
+                if ([orderSendAddree isMemberOfClass:[NSNull class]]) {
+                    orderSendAddree = @"";
+                }
+                NSArray *orderSendAddreeArray = [orderSendAddree componentsSeparatedByString:@","];
+                NSString *zoneLocationY = nil;
+                NSString *zoneLocationX = nil;
+                @try {
+                    zoneLocationX= orderSendAddreeArray[0];
+                    zoneLocationY = orderSendAddreeArray[1];
+                } @catch (NSException *exception) {
+                    
+                } @finally {
+                    
+                }
+                NSDictionary *userLocationDic = @{@"zoneLocationY":zoneLocationY,@"zoneLocationX":zoneLocationX};
                 [weakSelf goLocationWithLocation:userLocationDic];
             };
             cell.showUserInfoBlock = ^(){
@@ -384,7 +708,7 @@
             
             cell.showOrderDetailBlock = ^(){
                 NSLog(@"showOrderDetail");
-                [weakSelf showOrderDetailWithOrder:nil];
+                [weakSelf showOrderDetailWithOrder:dict];
             };
             cell.cancleServiceBlock = ^(){
                 NSLog(@"取消服务");
@@ -392,7 +716,22 @@
             };
             cell.locationBlock = ^(){
                 NSLog(@"locationBlock");
-                NSDictionary *userLocationDic = @{@"zoneLocationY":@"23",@"zoneLocationX":@"113"};
+                NSString *orderSendAddree = dict[@"orderSendAddree"];
+                if ([orderSendAddree isMemberOfClass:[NSNull class]]) {
+                    orderSendAddree = @"";
+                }
+                NSArray *orderSendAddreeArray = [orderSendAddree componentsSeparatedByString:@","];
+                NSString *zoneLocationY = nil;
+                NSString *zoneLocationX = nil;
+                @try {
+                    zoneLocationX= orderSendAddreeArray[0];
+                    zoneLocationY = orderSendAddreeArray[1];
+                } @catch (NSException *exception) {
+                    
+                } @finally {
+                    
+                }
+                NSDictionary *userLocationDic = @{@"zoneLocationY":zoneLocationY,@"zoneLocationX":zoneLocationX};
                 [weakSelf goLocationWithLocation:userLocationDic];
             };
             cell.showUserInfoBlock = ^(){
@@ -492,19 +831,39 @@
             
             cell.showOrderDetailBlock = ^(){
                 NSLog(@"showOrderDetail");
-                [weakSelf showOrderDetailWithOrder:nil];
+                [weakSelf showOrderDetailWithOrder:dict];
+            };
+            cell.showNurseInfoBlock = ^(){
+                NSLog(@"showOrderDetail");
+                [weakSelf showNurseDetailWithOrder:dict];
             };
             cell.cancleServiceBlock = ^(){
                 NSLog(@"取消服务");
                 [weakSelf cancelServiceWithDict:dict];
             };
+            
             cell.contactNurseBlock = ^(){
                 NSLog(@"联系护士");
                 [weakSelf contactNurseWithDict:dict];
             };
             cell.locationBlock = ^(){
                 NSLog(@"locationBlock");
-                NSDictionary *userLocationDic = @{@"zoneLocationY":@"23",@"zoneLocationX":@"113"};
+                NSString *orderSendAddree = dict[@"orderSendAddree"];
+                if ([orderSendAddree isMemberOfClass:[NSNull class]]) {
+                    orderSendAddree = @"";
+                }
+                NSArray *orderSendAddreeArray = [orderSendAddree componentsSeparatedByString:@","];
+                NSString *zoneLocationY = nil;
+                NSString *zoneLocationX = nil;
+                @try {
+                    zoneLocationX= orderSendAddreeArray[0];
+                    zoneLocationY = orderSendAddreeArray[1];
+                } @catch (NSException *exception) {
+                    
+                } @finally {
+                    
+                }
+                NSDictionary *userLocationDic = @{@"zoneLocationY":zoneLocationY,@"zoneLocationX":zoneLocationX};
                 [weakSelf goLocationWithLocation:userLocationDic];
             };
             cell.showUserInfoBlock = ^(){
@@ -623,7 +982,11 @@
             
             cell.showOrderDetailBlock = ^(){
                 NSLog(@"showOrderDetail");
-                [weakSelf showOrderDetailWithOrder:nil];
+                [weakSelf showOrderDetailWithOrder:dict];
+            };
+            cell.showNurseInfoBlock = ^(){
+                NSLog(@"showOrderDetail");
+                [weakSelf showNurseDetailWithOrder:dict];
             };
             cell.reCreateOrderBlock = ^(){
                 NSLog(@"再来一单");
@@ -635,7 +998,22 @@
             };
             cell.locationBlock = ^(){
                 NSLog(@"locationBlock");
-                NSDictionary *userLocationDic = @{@"zoneLocationY":@"23",@"zoneLocationX":@"113"};
+                NSString *orderSendAddree = dict[@"orderSendAddree"];
+                if ([orderSendAddree isMemberOfClass:[NSNull class]]) {
+                    orderSendAddree = @"";
+                }
+                NSArray *orderSendAddreeArray = [orderSendAddree componentsSeparatedByString:@","];
+                NSString *zoneLocationY = nil;
+                NSString *zoneLocationX = nil;
+                @try {
+                    zoneLocationX= orderSendAddreeArray[0];
+                    zoneLocationY = orderSendAddreeArray[1];
+                } @catch (NSException *exception) {
+                    
+                } @finally {
+                    
+                }
+                NSDictionary *userLocationDic = @{@"zoneLocationY":zoneLocationY,@"zoneLocationX":zoneLocationX};
                 [weakSelf goLocationWithLocation:userLocationDic];
             };
             cell.showUserInfoBlock = ^(){
@@ -739,6 +1117,14 @@
             }
             cell.nurseInfoL.text = [NSString stringWithFormat:@"%@  %@  %@",nurseNick,nurseStr,nurseAge];
             
+            id isEvaluate = dict[@"isEvaluate"];
+            if ([isEvaluate isMemberOfClass:[NSNull class]]) {
+                isEvaluate = @"";
+            }
+            if ([isEvaluate boolValue]) {
+                cell.commentNurseBlock = nil;
+                [cell setRightLabelWithText:@"已评价"];
+            }
             return cell;
             break;
         }
@@ -790,7 +1176,7 @@
     NSInteger row = indexPath.row;
     
     if (currentOrderType == 2 || currentOrderType == 3) {
-        return 230;
+        return 240;
     }
     return 200;
 }

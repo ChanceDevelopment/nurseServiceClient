@@ -35,10 +35,20 @@
         [bgView.layer setMasksToBounds:YES];
         bgView.layer.cornerRadius = 4.0;
         
+        CGFloat orderViewX = 10;
+        CGFloat orderViewY = 0;
+        CGFloat orderViewW = bgView_W - 2 * orderViewX;
+        CGFloat orderViewH = 54;
+        
+        UIView *orderView = [[UIView alloc] initWithFrame:CGRectMake(orderViewX, orderViewY, orderViewW, orderViewH)];
+        orderView.backgroundColor = [UIColor whiteColor];
+        orderView.userInteractionEnabled = YES;
+        [bgView addSubview:orderView];
+        
         CGFloat serviceContentLX = 10;
         CGFloat serviceContentLY = 0;
         CGFloat serviceContentLW = bgView_W - 2 * serviceContentLX;
-        CGFloat serviceContentLH = 44;
+        CGFloat serviceContentLH = 54;
         
         serviceContentL = [[UILabel alloc] initWithFrame:CGRectMake(serviceContentLX, serviceContentLY, serviceContentLW, serviceContentLH)];
         serviceContentL.text = @"产妇护理套餐";
@@ -46,31 +56,30 @@
         serviceContentL.textColor = APPDEFAULTORANGE;
         serviceContentL.font = [UIFont systemFontOfSize:15.0];
         serviceContentL.backgroundColor = [UIColor clearColor];
-        [bgView addSubview:serviceContentL];
+        [orderView addSubview:serviceContentL];
         
-        
-        CGFloat payStatusLabelY = serviceContentLY;
+        CGFloat payStatusLabelY = 0;
         CGFloat payStatusLabelW = 100;
-        CGFloat payStatusLabelX = SCREENWIDTH - payStatusLabelW - 50;
-        CGFloat payStatusLabelH = serviceContentLH;
+        CGFloat payStatusLabelX = orderViewW - payStatusLabelW - 25;
+        CGFloat payStatusLabelH = orderViewH;
         
         payStatusLabel = [[UILabel alloc] initWithFrame:CGRectMake(payStatusLabelX, payStatusLabelY, payStatusLabelW, payStatusLabelH)];
-        payStatusLabel.text = @"已付款";
+        payStatusLabel.text = @"已完成";
         payStatusLabel.textAlignment = NSTextAlignmentRight;
         payStatusLabel.userInteractionEnabled = YES;
-        payStatusLabel.textColor = [UIColor grayColor];
+        payStatusLabel.textColor = [UIColor blackColor];
         payStatusLabel.font = [UIFont systemFontOfSize:15.0];
         payStatusLabel.backgroundColor = [UIColor clearColor];
-        [bgView addSubview:payStatusLabel];
+        [orderView addSubview:payStatusLabel];
         
-        UIImageView *rightV = [[UIImageView alloc] initWithFrame:CGRectMake(bgView_W - 30, 14, 20, 20)];
+        UIImageView *rightV = [[UIImageView alloc] initWithFrame:CGRectMake(orderViewW - 20, (orderViewH - 20) / 2.0, 20, 20)];
         rightV.backgroundColor = [UIColor clearColor];
         rightV.image = [UIImage imageNamed:@"icon_into_right"];
         rightV.userInteractionEnabled = YES;
-        [bgView addSubview:rightV];
+        [orderView addSubview:rightV];
         
         UITapGestureRecognizer *showOrderDetailTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showOrderDetail)];
-        [serviceContentL addGestureRecognizer:showOrderDetailTap];
+        [orderView addGestureRecognizer:showOrderDetailTap];
         
         CGFloat lineX = 5;
         CGFloat lineY = CGRectGetMaxY(serviceContentL.frame);
@@ -149,7 +158,7 @@
         
         CGFloat userTipX = 10;
         CGFloat userTipY = CGRectGetMaxY(line1.frame);
-        CGFloat userTipW = 150;
+        CGFloat userTipW = 80;
         CGFloat userTipH = 40;
         
         UILabel *userTip = [[UILabel alloc] initWithFrame:CGRectMake(userTipX, userTipY, userTipW, userTipH)];
@@ -161,8 +170,9 @@
         
         
         CGFloat userInfoLY = userTipY;
-        CGFloat userInfoLW = 130;
-        CGFloat userInfoLX = bgView_W - userInfoLW - 30;
+        CGFloat userInfoLX = 10;
+        CGFloat userInfoLW = bgView_W - userInfoLX - 25;
+        
         CGFloat userInfoLH = userTipH;
         
         userInfoL = [[UILabel alloc] initWithFrame:CGRectMake(userInfoLX, userInfoLY, userInfoLW, userInfoLH)];
@@ -198,7 +208,7 @@
         
         CGFloat nurseTipX = 10;
         CGFloat nurseTipY = CGRectGetMaxY(line5.frame);
-        CGFloat nurseTipW = 150;
+        CGFloat nurseTipW = 80;
         CGFloat nurseTipH = 40;
         
         UILabel *nurseTip = [[UILabel alloc] initWithFrame:CGRectMake(nurseTipX, nurseTipY, nurseTipW, nurseTipH)];
@@ -210,8 +220,9 @@
         
         
         CGFloat nurseInfoLY = nurseTipY;
-        CGFloat nurseInfoLW = 130;
-        CGFloat nurseInfoLX = bgView_W - nurseInfoLW - 30;
+        CGFloat nurseInfoLX = 10;
+        CGFloat nurseInfoLW = bgView_W - nurseInfoLX - 25;
+        
         CGFloat nurseInfoLH = nurseTipH;
         
         nurseInfoL = [[UILabel alloc] initWithFrame:CGRectMake(nurseInfoLX, nurseInfoLY, nurseInfoLW, nurseInfoLH)];
@@ -235,7 +246,10 @@
         [bgView addSubview:rightV3];
         
         UITapGestureRecognizer *userInfoTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showUserInfo)];
-        [nurseInfoL addGestureRecognizer:userInfoTap];
+        [userInfoL addGestureRecognizer:userInfoTap];
+        
+        UITapGestureRecognizer *showNurseInfoTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showNurseInfo)];
+        [nurseInfoL addGestureRecognizer:showNurseInfoTap];
         
         CGFloat line2X = 5;
         CGFloat line2Y = CGRectGetMaxY(nurseTip.frame);
@@ -256,7 +270,7 @@
         cancleL.userInteractionEnabled = YES;
         cancleL.textAlignment = NSTextAlignmentCenter;
         cancleL.font = [UIFont systemFontOfSize:15.0];
-        cancleL.text = @"再来一单";
+        cancleL.text = @"";
         cancleL.backgroundColor = [UIColor clearColor];
         [bgView addSubview:cancleL];
         
@@ -265,6 +279,7 @@
         
         cancleLX = CGRectGetMaxX(cancleL.frame);
         UILabel *nextStepL = [[UILabel alloc] initWithFrame:CGRectMake(cancleLX, cancleLY, cancleLW, cancleLH)];
+        nextStepL.tag = 1000;
         nextStepL.textColor = [UIColor blackColor];
         nextStepL.userInteractionEnabled = YES;
         nextStepL.textAlignment = NSTextAlignmentCenter;
@@ -300,6 +315,12 @@
     return self;
 }
 
+- (void)setRightLabelWithText:(NSString *)text
+{
+    UILabel *nextStepL = [self viewWithTag:1000];
+    nextStepL.text = text;
+}
+
 - (void)showOrderDetail{
     if (self.showOrderDetailBlock) {
         self.showOrderDetailBlock();
@@ -329,6 +350,13 @@
 - (void)showUserInfo{
     if (self.showUserInfoBlock) {
         self.showUserInfoBlock();
+    }
+}
+
+- (void)showNurseInfo
+{
+    if (self.showNurseInfoBlock) {
+        self.showNurseInfoBlock();
     }
 }
 

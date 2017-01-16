@@ -65,6 +65,9 @@
 		ADCC624A1DFA9EB30065866C /* icon_report.png in Resources */ = {isa = PBXBuildFile; fileRef = ADCC62401DFA9EB30065866C /* icon_report.png */; };
 		ADCC624B1DFA9EB30065866C /* icon_star_yellow.png in Resources */ = {isa = PBXBuildFile; fileRef = ADCC62411DFA9EB30065866C /* icon_star_yellow.png */; };
 		ADEE55F81E2156C000E7A277 /* DLNavigationTabBar.m in Sources */ = {isa = PBXBuildFile; fileRef = ADEE55F71E2156C000E7A277 /* DLNavigationTabBar.m */; };
+		EA01ED841E2CA00900B846A9 /* HeCommentNurseVC.m in Sources */ = {isa = PBXBuildFile; fileRef = EA01ED821E2CA00900B846A9 /* HeCommentNurseVC.m */; };
+		EA01ED851E2CA00900B846A9 /* HeCommentNurseVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = EA01ED831E2CA00900B846A9 /* HeCommentNurseVC.xib */; };
+		EA01ED871E2CB55E00B846A9 /* icon_collection.png in Resources */ = {isa = PBXBuildFile; fileRef = EA01ED861E2CB55E00B846A9 /* icon_collection.png */; };
 		EA0EC7D61E24704F00E5440D /* img_no_data.png in Resources */ = {isa = PBXBuildFile; fileRef = EA0EC7D51E24704F00E5440D /* img_no_data.png */; };
 		EA0EC7DB1E24ABDD00E5440D /* HeProtectedUserInfoVC.m in Sources */ = {isa = PBXBuildFile; fileRef = EA0EC7D91E24ABDD00E5440D /* HeProtectedUserInfoVC.m */; };
 		EA0EC7DC1E24ABDD00E5440D /* HeProtectedUserInfoVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = EA0EC7DA1E24ABDD00E5440D /* HeProtectedUserInfoVC.xib */; };
@@ -774,6 +777,10 @@
 		ADCC62411DFA9EB30065866C /* icon_star_yellow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_star_yellow.png; sourceTree = "<group>"; };
 		ADEE55F61E2156C000E7A277 /* DLNavigationTabBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLNavigationTabBar.h; sourceTree = "<group>"; };
 		ADEE55F71E2156C000E7A277 /* DLNavigationTabBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLNavigationTabBar.m; sourceTree = "<group>"; };
+		EA01ED811E2CA00900B846A9 /* HeCommentNurseVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HeCommentNurseVC.h; sourceTree = "<group>"; };
+		EA01ED821E2CA00900B846A9 /* HeCommentNurseVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HeCommentNurseVC.m; sourceTree = "<group>"; };
+		EA01ED831E2CA00900B846A9 /* HeCommentNurseVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HeCommentNurseVC.xib; sourceTree = "<group>"; };
+		EA01ED861E2CB55E00B846A9 /* icon_collection.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_collection.png; sourceTree = "<group>"; };
 		EA0EC7D51E24704F00E5440D /* img_no_data.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = img_no_data.png; sourceTree = "<group>"; };
 		EA0EC7D81E24ABDD00E5440D /* HeProtectedUserInfoVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HeProtectedUserInfoVC.h; sourceTree = "<group>"; };
 		EA0EC7D91E24ABDD00E5440D /* HeProtectedUserInfoVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HeProtectedUserInfoVC.m; sourceTree = "<group>"; };
@@ -2251,6 +2258,16 @@
 			path = NavigationTabBar;
 			sourceTree = "<group>";
 		};
+		EA01ED801E2C9FEB00B846A9 /* Comment */ = {
+			isa = PBXGroup;
+			children = (
+				EA01ED811E2CA00900B846A9 /* HeCommentNurseVC.h */,
+				EA01ED821E2CA00900B846A9 /* HeCommentNurseVC.m */,
+				EA01ED831E2CA00900B846A9 /* HeCommentNurseVC.xib */,
+			);
+			path = Comment;
+			sourceTree = "<group>";
+		};
 		EA0EC7D71E24ABBE00E5440D /* UserInfo */ = {
 			isa = PBXGroup;
 			children = (
@@ -2450,6 +2467,7 @@
 		EA8C897F1E21D1E10093657B /* Custom */ = {
 			isa = PBXGroup;
 			children = (
+				EA01ED861E2CB55E00B846A9 /* icon_collection.png */,
 				EA70F9BA1E2BEB7E004E3D1C /* choose_item_right.png */,
 				EACA0F1C1E267C94009B4516 /* icon_infromation.png */,
 				EACA0EEB1E2668D1009B4516 /* icon_eye_close_white.png */,
@@ -2781,6 +2799,7 @@
 		EAC2D4A51D4B063900E282A8 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				EA01ED801E2C9FEB00B846A9 /* Comment */,
 				EACA0F1E1E267D3A009B4516 /* Message */,
 				EACA0EE01E266719009B4516 /* Balance */,
 				EA0EC7F91E24C4C500E5440D /* Address */,
@@ -4578,8 +4597,10 @@
 				EA70F9BB1E2BEB7E004E3D1C /* choose_item_right.png in Resources */,
 				EA8C89811E21D1E40093657B /* NavBarIOS7.png in Resources */,
 				EA0EC7FE1E24C4FC00E5440D /* HeSelectProtectUserAddressVC.xib in Resources */,
+				EA01ED871E2CB55E00B846A9 /* icon_collection.png in Resources */,
 				EA8C89A91E21DE1A0093657B /* tabbar_normal_background.png in Resources */,
 				EA9F727A1E227DFC00FED4A3 /* icon_into_right.png in Resources */,
+				EA01ED851E2CA00900B846A9 /* HeCommentNurseVC.xib in Resources */,
 				EAC2D9971D4B063C00E282A8 /* zbar-help.html in Resources */,
 				EA34D7971E232B6600CD8BC5 /* icon_insurance.png in Resources */,
 				ADCC61DF1DFA50510065866C /* main_nurse_selector@2x.png in Resources */,
@@ -5035,6 +5056,7 @@
 				EAC2D8CF1D4B063B00E282A8 /* UIColor+Extension.m in Sources */,
 				EA8C898F1E21D4B60093657B /* DelMenuItem.m in Sources */,
 				EA0EC7DB1E24ABDD00E5440D /* HeProtectedUserInfoVC.m in Sources */,
+				EA01ED841E2CA00900B846A9 /* HeCommentNurseVC.m in Sources */,
 				EAC2D8CA1D4B063B00E282A8 /* SIMenuButton.m in Sources */,
 				EAC2D9001D4B063B00E282A8 /* RACImmediateScheduler.m in Sources */,
 				EAC2D89C1D4B063B00E282A8 /* MJPhotoBrowser.m in Sources */,

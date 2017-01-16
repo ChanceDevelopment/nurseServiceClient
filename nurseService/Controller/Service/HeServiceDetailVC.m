@@ -612,6 +612,9 @@
     NSString *nurseid = @"";
     NSString *contentId = serviceInfoDict[@"manageNursingContentId"];
     if (!contentId) {
+        contentId = serviceInfoDict[@"contentId"];
+    }
+    if (!contentId) {
         contentId = @"";
     }
     NSDictionary * params  = @{@"nurseid":nurseid,@"userid":userid,@"contentId":contentId};

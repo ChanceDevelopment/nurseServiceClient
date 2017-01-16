@@ -11,5 +11,6 @@
 
 
 @interface HeOrderDetailVC : HeBaseViewController
+@property(strong,nonatomic)NSString *orderId;
 
 @end

@@ -48,7 +48,7 @@
     // Do any additional setup after loading the view from its nib.
     [self initializaiton];
     [self initView];
-//    [self getPaitentInfo];
+    [self getPaitentInfo];
 }
 
 - (void)initializaiton
@@ -72,13 +72,12 @@
 
 - (void)getPaitentInfo
 {
-    [self showHudInView:tableview hint:@"获取中..."];
     NSString *personId = userInfoDict[@"personId"];
     if ([personId isMemberOfClass:[NSNull class]] || personId == nil) {
         personId = @"";
     }
     NSDictionary * params = @{@"personId":personId};
-    NSString *url = [NSString stringWithFormat:@"protected/selectprotectedbyid.action"];
+    NSString *url = [NSString stringWithFormat:@"%@/protected/selectprotectedbyid.action",BASEURL];
     
     [AFHttpTool requestWihtMethod:RequestMethodTypePost url:url params:params success:^(AFHTTPRequestOperation* operation,id response){
         [self hideHud];

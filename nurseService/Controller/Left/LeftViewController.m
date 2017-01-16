@@ -244,14 +244,23 @@
     
     HeBookServiceVC *serviceDetailVC = [[HeBookServiceVC alloc] init];
     [[self getCurrentNav] setNavigationBarHidden:YES animated:YES];
-    [serviceDetailVC.view addSubview:[self getPageView]];
+    [serviceDetailVC.view addSubview:[self getPageViewWithParam:dict]];
     [[self getCurrentNav] pushViewController:serviceDetailVC animated:YES];
     
 }
 
-- (HYPageView *)getPageView {
+
+- (HYPageView *)getPageViewWithParam:(NSDictionary *)dict
+{
+    NSString *contentid = dict[@"contentid"];
+    if (!contentid) {
+        contentid = @"";
+    }
+    NSDictionary *myDict = @{@"contentId":contentid};
     
-    HYPageView *pageView = [[HYPageView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, SCREENHEIGH) withTitles:@[@"商品",@"详情",@"评论"] withViewControllers:@[@"HeServiceDetailVC",@"HeServiceInfoVC",@"HeCommentVC"] withParameters:@[@"123",@"这是一片很寂寞的天"]];
+    NSDictionary *nurseInfoDict = [[NSDictionary alloc] init];
+    NSDictionary *paramDict = @{@"service":myDict,@"nurse":nurseInfoDict};
+    HYPageView *pageView = [[HYPageView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, SCREENHEIGH) withTitles:@[@"商品",@"详情",@"评论"] withViewControllers:@[@"HeServiceDetailVC",@"HeServiceInfoVC",@"HeCommentVC"] withParameters:@[paramDict,dict,dict]];
     pageView.isTranslucent = NO;
     pageView.topTabBottomLineColor = [UIColor whiteColor];
     pageView.selectedColor = [UIColor whiteColor];
@@ -261,6 +270,7 @@
     [backImage addTarget:self action:@selector(backItemClick:) forControlEvents:UIControlEventTouchUpInside];
     
     backImage.frame = CGRectMake(0, 0, 25, 25);
+    
     pageView.leftButton = backImage;
     
     return pageView;

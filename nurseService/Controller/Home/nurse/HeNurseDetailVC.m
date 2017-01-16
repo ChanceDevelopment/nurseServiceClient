@@ -105,8 +105,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     [self initializaiton];
-    [self initView];
-    [self addFooterView];
+    
     //加载该护士的详细信息
     NSString *nurseId = nurseDictInfo[@"nurseId"];
     if ([nurseId isMemberOfClass:[NSNull class]] || nurseId == nil) {
@@ -463,6 +462,8 @@
                 [followButton setTitle:@"关注" forState:UIControlStateNormal];
             }
             
+            [self initView];
+            [self addFooterView];
         }
         else{
             NSString *data = respondDict[@"data"];

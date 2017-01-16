@@ -23,9 +23,13 @@
 @property (nonatomic,strong)void(^locationBlock)();
 @property (nonatomic,strong)void(^showUserInfoBlock)();
 
+@property (nonatomic,strong)void(^showNurseInfoBlock)();
+
 @property(strong,nonatomic)NSDictionary *orderInfoDict;
 
 //0:预约框  1:已预约  2:进行中  3:已完成
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier cellSize:(CGSize)cellsize orderType:(NSInteger)orderType;
+//设置底部右边按钮标题
+- (void)setRightLabelWithText:(NSString *)text;
 
 @end

@@ -137,7 +137,7 @@
     coor.latitude = [zoneLocationY floatValue];
     coor.longitude = [zoneLocationX floatValue];;
     annotation.coordinate = coor;
-    annotation.title = @"赛区位置";
+    annotation.title = @"服务位置";
     [_mapView addAnnotation:annotation];
     
     BMKCoordinateSpan span = BMKCoordinateSpanMake(0.003142, 0.001678);
