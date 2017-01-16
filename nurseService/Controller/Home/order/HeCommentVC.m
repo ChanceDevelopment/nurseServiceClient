@@ -87,12 +87,15 @@
     NSLog(@"index = %ld",index);
     currentCommentType = index;
     //初始化分页
-    pageNum = -1;
-    NSString *nurseid = serviceInfoDict[@"nurseId"];
-    if ([nurseid isMemberOfClass:[NSNull class]] || nurseid == nil) {
-        nurseid = @"";
+    pageNum = 0;
+    NSString *contentId = serviceInfoDict[@"manageNursingContentId"];
+    if ([contentId isMemberOfClass:[NSNull class]] || contentId == nil) {
+        contentId = serviceInfoDict[@"contentId"];
+        if ([contentId isMemberOfClass:[NSNull class]] || contentId == nil) {
+            contentId = @"";
+        }
     }
-    [self loadCommentDataWihtNurseId:nurseid];
+    [self loadCommentDataWihtContentId:contentId];
 }
 
 
@@ -102,11 +105,14 @@
     [self initializaiton];
     [self initView];
     NSLog(@"parameter = %@",parameter);
-    NSString *nurseid = serviceInfoDict[@"nurseId"];
-    if ([nurseid isMemberOfClass:[NSNull class]] || nurseid == nil) {
-        nurseid = @"";
+    NSString *contentId = serviceInfoDict[@"manageNursingContentId"];
+    if ([contentId isMemberOfClass:[NSNull class]] || contentId == nil) {
+        contentId = serviceInfoDict[@"contentId"];
+        if ([contentId isMemberOfClass:[NSNull class]] || contentId == nil) {
+            contentId = @"";
+        }
     }
-    [self loadCommentDataWihtNurseId:nurseid];
+    [self loadCommentDataWihtContentId:contentId];
 }
 
 - (void)initializaiton
@@ -158,16 +164,11 @@
 }
 
 //服务评价
-- (void)loadCommentDataWihtNurseId:(NSString *)nurseId
+- (void)loadCommentDataWihtContentId:(NSString *)contentId
 {
     NSString *requestUrl = [NSString stringWithFormat:@"%@/content/selectEvaluateByContentId.action",BASEURL];
     NSString *type = [NSString stringWithFormat:@"%ld",currentCommentType];
     NSString *pageNumStr = [NSString stringWithFormat:@"%ld",pageNum];
-    
-    NSString *contentId = serviceInfoDict[@"manageNursingContentId"];
-    if ([contentId isMemberOfClass:[NSNull class]] || contentId == nil) {
-        contentId = @"";
-    }
     NSDictionary * params  = @{@"contentId":contentId,@"type":type,@"pageNum":pageNumStr};
     [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
         NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
@@ -175,12 +176,12 @@
         if ([[respondDict valueForKey:@"errorCode"] integerValue] == REQUESTCODE_SUCCEED){
             id jsonObj = respondDict[@"json"];
             if ([jsonObj isMemberOfClass:[NSNull class]] || jsonObj == nil) {
-                if ([jsonObj count] == 0 && pageNum != -1) {
+                if ([jsonObj count] == 0 && pageNum != 0) {
                     pageNum--;
                 }
                 return;
             }
-            if (pageNum == -1) {
+            if (pageNum == 0) {
                 [dataSource removeAllObjects];
             }
             else{

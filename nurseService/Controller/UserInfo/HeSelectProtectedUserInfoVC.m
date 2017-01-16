@@ -6,19 +6,20 @@
 //  Copyright © 2017年 iMac. All rights reserved.
 //
 
-#import "HeProtectedUserInfoVC.h"
+#import "HeSelectProtectedUserInfoVC.h"
 #import "HeProtectUserInfoTableCell.h"
 #import "HeEditProtectUserInfoVC.h"
 #import "AFHttpTool.h"
 #import "HeEditProtectUserInfoVC.h"
+#import "HeSelectProtectedUserInfoCell.h"
 
-@interface HeProtectedUserInfoVC ()
+@interface HeSelectProtectedUserInfoVC ()
 @property(strong,nonatomic)IBOutlet UITableView *tableview;
 @property(strong,nonatomic)NSMutableArray *dataSource;
 
 @end
 
-@implementation HeProtectedUserInfoVC
+@implementation HeSelectProtectedUserInfoVC
 @synthesize tableview;
 @synthesize dataSource;
 
@@ -69,6 +70,7 @@
 - (void)addUserInfo:(NSNotification *)notification
 {
     NSLog(@"addUserInfo");
+    [dataSource removeAllObjects];
     [self getDataSource];
 }
 
@@ -107,34 +109,42 @@
     } @finally {
         
     }
-    HeProtectUserInfoTableCell *cell  = [tableView cellForRowAtIndexPath:indexPath];
+    HeSelectProtectedUserInfoCell *cell  = [tableView cellForRowAtIndexPath:indexPath];
     if (!cell) {
-        cell = [[HeProtectUserInfoTableCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIndentifier cellSize:cellSize];
+        cell = [[HeSelectProtectedUserInfoCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIndentifier cellSize:cellSize];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
     NSString *name = [dict valueForKey:@"protectedPersonName"];
-    NSString *sex = [[dict valueForKey:@"protectedPersonName"] isEqualToString:@"1"] ? @"男" : @"女";
-    NSString *phone = [dict valueForKey:@"protectedPersonPhone"];
-    BOOL isDefault = [[dict valueForKey:@"protectedDefault"] isEqualToString:@"1"] ? YES : NO;
+    NSString *sex = [[dict valueForKey:@"protectedPersonSex"] isEqualToString:@"1"] ? @"男" : @"女";
+    NSString *protectedPersonAge = [dict valueForKey:@"protectedPersonAge"];
     
-    cell.baseInfoLabel.text = [NSString stringWithFormat:@"%@  %@  %@",name,sex,phone];
-    cell.addressLabel.text = [dict valueForKey:@"protectedAddress"];
-    cell.defaultLabel.text = isDefault ? @"默认信息" : @"设为默认";
-    cell.selectBt.selected = isDefault ? YES : NO;
+    CGFloat baseInfoLabelX = 10;
+    CGFloat baseInfoLabelY = 10;
+    CGFloat baseInfoLabelW = SCREENWIDTH - 2 * baseInfoLabelX;
+    CGFloat baseInfoLabelH = 30;
+    UILabel *baseInfoLabel = [[UILabel alloc] initWithFrame:CGRectMake(baseInfoLabelX, baseInfoLabelY, baseInfoLabelW, baseInfoLabelH)];
+    baseInfoLabel.backgroundColor = [UIColor clearColor];
+    baseInfoLabel.textColor = [UIColor blackColor];
+    baseInfoLabel.font = [UIFont systemFontOfSize:15.0];
+    baseInfoLabel.text = [NSString stringWithFormat:@"%@  %@  %@",name,sex,protectedPersonAge];
+    [cell addSubview:baseInfoLabel];
     
-    cell.deleteBlock = ^(){
-        NSLog(@"deleteBlock");
-        [self deletProtectedUserInfoWithId:[dict valueForKey:@"protectedPersonId"]];
-    };
-    cell.editBlock = ^(){
-        NSLog(@"edit");
-        HeEditProtectUserInfoVC *heEditProtectUserInfoVC = [[HeEditProtectUserInfoVC alloc] init];
-        heEditProtectUserInfoVC.hidesBottomBarWhenPushed = YES;
-        heEditProtectUserInfoVC.userInfoDict = dict;
-        [self.navigationController pushViewController:heEditProtectUserInfoVC animated:YES];
-        
-    };
-
+    NSString *protectedAddress = dict[@"protectedAddress"];
+    if ([protectedAddress isMemberOfClass:[NSNull class]]) {
+        protectedAddress = @"";
+    }
+    
+    CGFloat addressInfoLabelX = 10;
+    CGFloat addressInfoLabelY = CGRectGetMaxY(baseInfoLabel.frame);
+    CGFloat addressInfoLabelW = SCREENWIDTH - 2 * baseInfoLabelX;
+    CGFloat addressInfoLabelH = 30;
+    UILabel *addressInfoLabel = [[UILabel alloc] initWithFrame:CGRectMake(addressInfoLabelX, addressInfoLabelY, addressInfoLabelW, addressInfoLabelH)];
+    addressInfoLabel.backgroundColor = [UIColor clearColor];
+    addressInfoLabel.textColor = [UIColor blackColor];
+    addressInfoLabel.font = [UIFont systemFontOfSize:15.0];
+    addressInfoLabel.text = protectedAddress;
+    [cell addSubview:addressInfoLabel];
+    
     return  cell;
 }
 
@@ -143,7 +153,7 @@
     NSInteger section = indexPath.section;
     NSInteger row = indexPath.row;
     
-    return 100;
+    return 80;
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
@@ -166,7 +176,7 @@
 
 - (void)getDataSource{
     NSString *userid = [[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY];
-
+    
     NSString *requestUrl = [NSString stringWithFormat:@"%@/protected/selectprotectedbyuserid.action",BASEURL];
     NSDictionary * params  = @{@"userid": userid};
     [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
@@ -175,11 +185,13 @@
         NSDictionary *respondDict = [NSDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
         if ([[[respondDict valueForKey:@"errorCode"] stringValue] isEqualToString:@"200"]) {
             NSLog(@"success");
-            NSArray *tempArr = [NSArray arrayWithArray:[respondDict valueForKey:@"json"]];
-            if (dataSource.count > 0) {
-                [dataSource addObjectsFromArray:tempArr];
-                [tableview reloadData];
+            
+            NSArray *tempArr = [respondDict valueForKey:@"json"];
+            if ([tempArr isMemberOfClass:[NSNull class]] || tempArr == nil) {
+                tempArr = [NSArray array];
             }
+            [dataSource addObjectsFromArray:tempArr];
+            [tableview reloadData];
         }else{
             NSString *errorInfo = [respondDict valueForKey:@"data"];
             if ([errorInfo isMemberOfClass:[NSNull class]] || errorInfo == nil) {
@@ -196,7 +208,7 @@
 
 - (void)deletProtectedUserInfoWithId:(NSString *)userId{
     NSString *requestUrl = [NSString stringWithFormat:@"%@/address/deladdressbyid.action",BASEURL];
-
+    
     NSDictionary * params  = @{@"addressid": userId};
     [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
         NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
@@ -227,13 +239,13 @@
 }
 
 /*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
+ #pragma mark - Navigation
+ 
+ // In a storyboard-based application, you will often want to do a little preparation before navigation
+ - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+ // Get the new view controller using [segue destinationViewController].
+ // Pass the selected object to the new view controller.
+ }
+ */
 
 @end

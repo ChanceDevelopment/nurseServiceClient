@@ -260,7 +260,7 @@
     
     NSDictionary *nurseInfoDict = [[NSDictionary alloc] init];
     NSDictionary *paramDict = @{@"service":myDict,@"nurse":nurseInfoDict};
-    HYPageView *pageView = [[HYPageView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, SCREENHEIGH) withTitles:@[@"商品",@"详情",@"评论"] withViewControllers:@[@"HeServiceDetailVC",@"HeServiceInfoVC",@"HeCommentVC"] withParameters:@[paramDict,dict,dict]];
+    HYPageView *pageView = [[HYPageView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, SCREENHEIGH) withTitles:@[@"商品",@"详情",@"评论"] withViewControllers:@[@"HeServiceDetailVC",@"HeServiceInfoVC",@"HeCommentVC"] withParameters:@[paramDict,myDict,myDict]];
     pageView.isTranslucent = NO;
     pageView.topTabBottomLineColor = [UIColor whiteColor];
     pageView.selectedColor = [UIColor whiteColor];

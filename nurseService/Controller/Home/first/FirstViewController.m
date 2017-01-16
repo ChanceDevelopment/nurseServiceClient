@@ -359,7 +359,12 @@
     } @finally {
         
     }
-    [self bookServiceWithDict:dict];
+    NSString *rollPicId = dict[@"rollPicAddress"];
+    if ([rollPicId isMemberOfClass:[NSNull class]] || rollPicId == nil) {
+        rollPicId = @"";
+    }
+    NSDictionary *myDict = @{@"contentId":rollPicId};
+    [self bookServiceWithDict:myDict];
 }
 
 - (void)banner:(LBBanner *)banner didChangeViewWithIndex:(NSInteger)index {
@@ -442,7 +447,12 @@
         
     }
     NSLog(@"dict = %@",dict);
-    [self bookServiceWithDict:dict];
+    NSString *goodServiceRecommendContentId = dict[@"goodServiceRecommendContentId"];
+    if ([goodServiceRecommendContentId isMemberOfClass:[NSNull class]] || goodServiceRecommendContentId == nil) {
+        goodServiceRecommendContentId = @"";
+    }
+    NSDictionary *myDict = @{@"contentId":goodServiceRecommendContentId};
+    [self bookServiceWithDict:myDict];
 }
 
 - (void)bookServiceWithDict:(NSDictionary *)dict
@@ -450,13 +460,20 @@
     //总控制器，控制商品、详情、评论三个子控制器
     HeBookServiceVC *serviceDetailVC = [[HeBookServiceVC alloc] init];
     [self.navigationController setNavigationBarHidden:YES animated:YES];
-    [serviceDetailVC.view addSubview:[self getPageView]];
+    [serviceDetailVC.view addSubview:[self getPageViewWithParam:dict]];
     [self showViewController:serviceDetailVC sender:nil];
 }
 
-- (HYPageView *)getPageView {
+- (HYPageView *)getPageViewWithParam:(NSDictionary *)dict
+{
+    NSString *contentid = dict[@"contentId"];
+    if (!contentid) {
+        contentid = @"";
+    }
+    NSDictionary *myDict = @{@"contentId":contentid};
     
-    HYPageView *pageView = [[HYPageView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, SCREENHEIGH) withTitles:@[@"商品",@"详情",@"评论"] withViewControllers:@[@"HeServiceDetailVC",@"HeServiceInfoVC",@"HeCommentVC"] withParameters:@[@"123",@"这是一片很寂寞的天"]];
+    NSDictionary *paramDict = @{@"service":myDict};
+    HYPageView *pageView = [[HYPageView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, SCREENHEIGH) withTitles:@[@"商品",@"详情",@"评论"] withViewControllers:@[@"HeServiceDetailVC",@"HeServiceInfoVC",@"HeCommentVC"] withParameters:@[paramDict,myDict,myDict]];
     pageView.isTranslucent = NO;
     pageView.topTabBottomLineColor = [UIColor whiteColor];
     pageView.selectedColor = [UIColor whiteColor];
@@ -466,6 +483,7 @@
     [backImage addTarget:self action:@selector(backItemClick:) forControlEvents:UIControlEventTouchUpInside];
     
     backImage.frame = CGRectMake(0, 0, 25, 25);
+    
     pageView.leftButton = backImage;
     
     return pageView;

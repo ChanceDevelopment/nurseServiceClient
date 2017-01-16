@@ -16,6 +16,12 @@
 #import "MJRefreshNormalHeader.h"
 #import "MLLabel+Size.h"
 #import "MLLabel.h"
+#import "HeServiceTableCell.h"
+#import "HeCommentVC.h"
+#import "HeServiceDetailVC.h"
+#import "BrowserView.h"
+#import "HeBookServiceVC.h"
+#import "HYPageView.h"
 
 @interface NurseViewController ()<UITableViewDelegate,UITableViewDataSource,DOPDropDownMenuDataSource,DOPDropDownMenuDelegate>
 {
@@ -53,6 +59,9 @@
 @property(strong,nonatomic)NSMutableArray *majorModelArray;
 @property(strong,nonatomic)NSMutableArray *subMajorModelArray;
 
+@property(strong,nonatomic)NSMutableArray *selectNurseIdArray;
+
+@property(strong,nonatomic)NSMutableArray *serviceItemArray;
 @end
 
 @implementation NurseViewController
@@ -109,6 +118,8 @@
     if (!longitude) {
         longitude = @"";
     }
+    _selectNurseIdArray = [[NSMutableArray alloc] initWithCapacity:0];
+    _serviceItemArray = [[NSMutableArray alloc] initWithCapacity:0];
 //    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(initCategoryData) name:kLoadHospitalDataNotification object:nil];
 //    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(initCategoryData) name:kLoadMajorDataNotification object:nil];
 }
@@ -490,16 +501,101 @@
     }
 }
 
+- (void)loadNurseService
+{
+    NSString *requestUrl = [NSString stringWithFormat:@"%@/nurseAnduser/selectnurseprojectbyid.action",BASEURL];
+    NSMutableString *nurseid = [[NSMutableString alloc] initWithCapacity:0];
+    for (NSInteger index = 0; index < [_selectNurseIdArray count]; index++) {
+        NSString *tempString = _selectNurseIdArray[index];
+        if (index == 0) {
+            [nurseid appendString:tempString];
+        }
+        else{
+            [nurseid appendFormat:@",%@",tempString];
+        }
+    }
+    NSDictionary * params  = @{@"nurseid":nurseid};
+    [_serviceItemArray removeAllObjects];
+    [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
+        NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
+        NSDictionary *respondDict = [NSDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
+        if ([[respondDict valueForKey:@"errorCode"] integerValue] == REQUESTCODE_SUCCEED){
+            NSArray *jsonArray = [respondDict valueForKey:@"json"];
+            
+            if ([jsonArray isMemberOfClass:[NSNull class]] || jsonArray == nil || [jsonArray count] == 0) {
+                jsonArray = [NSArray array];
+            }
+            _serviceItemArray = [[NSMutableArray alloc] initWithArray:jsonArray];
+            
+            [tableview reloadData];
+        }
+        else{
+            NSString *data = respondDict[@"data"];
+            if ([data isMemberOfClass:[NSNull class]] || data == nil) {
+                data = ERRORREQUESTTIP;
+            }
+            [self showHint:data];
+        }
+    } failure:^(NSError* err){
+        
+    }];
+}
+
+- (void)bookServiceWithDict:(NSDictionary *)dict
+{
+    //总控制器，控制商品、详情、评论三个子控制器
+    HeBookServiceVC *serviceDetailVC = [[HeBookServiceVC alloc] init];
+    [self.navigationController setNavigationBarHidden:YES animated:YES];
+    [serviceDetailVC.view addSubview:[self getPageViewWithParam:dict]];
+    [self showViewController:serviceDetailVC sender:nil];
+}
+
+- (HYPageView *)getPageViewWithParam:(NSDictionary *)dict
+{
+    
+    NSDictionary *paramDict = @{@"service":dict};
+    NSString *nurseId = @"";
+    if ([_selectNurseIdArray count] == 1) {
+        nurseId = _selectNurseIdArray[0];
+        paramDict = @{@"service":dict,@"nurse":nurseId};
+    }
+    
+    HYPageView *pageView = [[HYPageView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, SCREENHEIGH) withTitles:@[@"商品",@"详情",@"评论"] withViewControllers:@[@"HeServiceDetailVC",@"HeServiceInfoVC",@"HeCommentVC"] withParameters:@[paramDict,dict,dict]];
+    pageView.isTranslucent = NO;
+    pageView.topTabBottomLineColor = [UIColor whiteColor];
+    pageView.selectedColor = [UIColor whiteColor];
+    pageView.unselectedColor = [UIColor whiteColor];
+    UIButton *backImage = [[UIButton alloc] init];
+    [backImage setBackgroundImage:[UIImage imageNamed:@"navigationBar_back_icon"] forState:UIControlStateNormal];
+    [backImage addTarget:self action:@selector(backItemClick:) forControlEvents:UIControlEventTouchUpInside];
+    
+    backImage.frame = CGRectMake(0, 0, 25, 25);
+    
+    pageView.leftButton = backImage;
+    
+    return pageView;
+}
+
+- (void)backItemClick:(id)sender
+{
+    [self.navigationController popViewControllerAnimated:YES];
+}
 
 #pragma mark - TableView Delegate
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
+    if (section == 1) {
+        return [_serviceItemArray count];
+    }
     return [dataSource count];
 }
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
+    if ([_serviceItemArray count] > 0) {
+        return 2;
+    }
     return 1;
 }
 
@@ -508,6 +604,73 @@
     NSInteger row = indexPath.row;
     NSInteger section = indexPath.section;
     
+    if (section == 1) {
+        CGSize cellsize = [tableView rectForRowAtIndexPath:indexPath].size;
+        static NSString *cellIndentifier = @"HeServiceTableCell";
+        HeServiceTableCell *cell  = [tableView cellForRowAtIndexPath:indexPath];
+        if (!cell) {
+            cell = [[HeServiceTableCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIndentifier cellSize:cellsize];
+            cell.selectionStyle = UITableViewCellSelectionStyleGray;
+            
+        }
+        NSDictionary *dict = nil;
+        @try {
+            dict = _serviceItemArray[row];
+        } @catch (NSException *exception) {
+            
+        } @finally {
+            
+        }
+        __weak NurseViewController *weakSelf = self;
+        cell.booklBlock = ^{
+            [weakSelf bookServiceWithDict:dict];
+        };
+        
+        NSString *contentImgurl = dict[@"contentImgurl"];
+        if ([contentImgurl isMemberOfClass:[NSNull class]] || contentImgurl == nil) {
+            contentImgurl = @"";
+        }
+        contentImgurl = [NSString stringWithFormat:@"%@/%@",HYTIMAGEURL,contentImgurl];
+        NSString *imageKey = [NSString stringWithFormat:@"%ld%ld_%@",section,row,contentImgurl];
+        UIImageView *imageview = [_imageCache objectForKey:imageKey];
+        if (!imageview) {
+            [cell.userImage sd_setImageWithURL:[NSURL URLWithString:contentImgurl] placeholderImage:[UIImage imageNamed:@"index2"]];
+            imageview = cell.userImage;
+            [_imageCache setObject:imageview forKey:imageKey];
+        }
+        [cell.userImage removeFromSuperview];
+        cell.userImage = imageview;
+        [cell addSubview:cell.userImage];
+        
+        NSString *manageNursingContentName = dict[@"manageNursingContentName"];
+        if ([manageNursingContentName isMemberOfClass:[NSNull class]] || manageNursingContentName == nil) {
+            manageNursingContentName = @"";
+        }
+        cell.serviceTitleLabel.text = manageNursingContentName;
+        
+        NSString *manageNursingContentContent = dict[@"manageNursingContentContent"];
+        if ([manageNursingContentContent isMemberOfClass:[NSNull class]] || manageNursingContentContent == nil) {
+            manageNursingContentContent = @"";
+        }
+        cell.peopleLabel.text = manageNursingContentContent;
+        
+        id contentRequired = dict[@"contentRequired"];
+        if ([contentRequired isMemberOfClass:[NSNull class]]) {
+            contentRequired = @"";
+        }
+        
+        cell.numberLabel.text = [NSString stringWithFormat:@"已服务:  %ld次",[contentRequired integerValue]];
+        
+        id minMoney = dict[@"minMoney"];
+        if ([minMoney isMemberOfClass:[NSNull class]]) {
+            minMoney = @"";
+        }
+        cell.priceLabel.text = [NSString stringWithFormat:@"￥%.2f",[minMoney floatValue]];
+        
+        
+        
+        return cell;
+    }
     static NSString *cellIndentifier = @"HeNurseTableViewCell";
     CGSize cellSize = [tableView rectForRowAtIndexPath:indexPath].size;
     NSDictionary *dict = nil;
@@ -518,12 +681,42 @@
     } @finally {
         
     }
+    
     HeNurseTableViewCell *cell  = [tableView cellForRowAtIndexPath:indexPath];
     if (!cell) {
         cell = [[HeNurseTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIndentifier cellSize:cellSize];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     }
+    NSString *nurseId = dict[@"nurseId"];
+    cell.selectButton.selected = NO;
+    for (NSString *myNurseId in _selectNurseIdArray) {
+        if ([myNurseId isEqualToString:nurseId]) {
+            cell.selectButton.selected = YES;
+            break;
+        }
+    }
+    
+    __weak NurseViewController *weakSelf = self;
+    __weak HeNurseTableViewCell *wealCell = cell;
+    cell.loadServiceBlock = ^{
+        NSString *nurseId = dict[@"nurseId"];
+        if (wealCell.selectButton.selected) {
+            [_selectNurseIdArray addObject:nurseId];
+        }
+        else{
+            for (NSString *myNurseId in _selectNurseIdArray) {
+                if ([myNurseId isEqualToString:nurseId]) {
+                    [_selectNurseIdArray removeObject:myNurseId];
+                    break;
+                }
+            }
+        }
+        [weakSelf loadNurseService];
+    };
+    
+    
+    
     NSString *nurseHeader = dict[@"nurseHeader"];
     if ([nurseHeader isMemberOfClass:[NSNull class]] || nurseHeader == nil) {
         nurseHeader = @"";
@@ -534,7 +727,9 @@
     if (!imageview) {
         [cell.userImage sd_setImageWithURL:[NSURL URLWithString:nurseHeader] placeholderImage:[UIImage imageNamed:@"defalut_icon"]];
         imageview = cell.userImage;
+        [_imageCache setObject:imageview forKey:nurseHeaderKey];
     }
+    [cell.userImage removeFromSuperview];
     cell.userImage = imageview;
     [cell insertSubview:cell.userImage atIndex:0];
     
@@ -587,7 +782,9 @@
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     NSInteger row = indexPath.row;
     NSInteger section = indexPath.section;
-    
+    if (section == 1) {
+        return;
+    }
     NSDictionary *dict = nil;
     @try {
         dict = dataSource[row];

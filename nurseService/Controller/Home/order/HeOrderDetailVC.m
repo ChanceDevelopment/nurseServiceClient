@@ -92,8 +92,16 @@
     statusView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, 55)];
     tableview.tableHeaderView = statusView;
     
-    NSInteger orderSendType = [orderDetailDict[@"orderSendType"] integerValue];
-    NSInteger orderSendState = [orderDetailDict[@"orderSendState"] integerValue];
+    id orderSendTypeObj = orderDetailDict[@"orderSendType"];
+    if ([orderSendTypeObj isMemberOfClass:[NSNull class]]) {
+        orderSendTypeObj = @"";
+    }
+    id orderSendStateObj = orderDetailDict[@"orderSendState"];
+    if ([orderSendStateObj isMemberOfClass:[NSNull class]]) {
+        orderSendStateObj = @"";
+    }
+    NSInteger orderSendType = [orderSendTypeObj integerValue];
+    NSInteger orderSendState = [orderSendStateObj integerValue];
     if (orderSendType == 1 && orderSendState == 0) {
         [self addStatueViewWithStatus:0];
     }
@@ -448,8 +456,16 @@
                 [paperArray addObject:myurl];
             }
             
-            NSInteger orderSendType = [orderDetailDict[@"orderSendType"] integerValue];
-            NSInteger orderSendState = [orderDetailDict[@"orderSendState"] integerValue];
+            id orderSendTypeObj = orderDetailDict[@"orderSendType"];
+            if ([orderSendTypeObj isMemberOfClass:[NSNull class]]) {
+                orderSendTypeObj = @"";
+            }
+            id orderSendStateObj = orderDetailDict[@"orderSendState"];
+            if ([orderSendStateObj isMemberOfClass:[NSNull class]]) {
+                orderSendStateObj = @"";
+            }
+            NSInteger orderSendType = [orderSendTypeObj integerValue];
+            NSInteger orderSendState = [orderSendStateObj integerValue];
             if (orderSendType == 1 && orderSendState == 0){
             
             }
@@ -560,8 +576,18 @@
                     
                     UILabel *subTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(SCREENWIDTH - 80 - 30, 0, 80, cellSize.height)];
                     subTitleLabel.backgroundColor = [UIColor clearColor];
-                    NSInteger orderSendType = [orderDetailDict[@"orderSendType"] integerValue];
-                    NSInteger orderSendState = [orderDetailDict[@"orderSendState"] integerValue];
+                    id orderSendTypeObj = orderDetailDict[@"orderSendType"];
+                    if ([orderSendTypeObj isMemberOfClass:[NSNull class]]) {
+                        orderSendTypeObj = @"";
+                    }
+                    
+                    id orderSendStateObj = orderDetailDict[@"orderSendState"];
+                    if ([orderSendStateObj isMemberOfClass:[NSNull class]]) {
+                        orderSendStateObj = @"";
+                    }
+                    
+                    NSInteger orderSendType = [orderSendTypeObj integerValue];
+                    NSInteger orderSendState = [orderSendStateObj integerValue];
                     if (orderSendType == 1 && orderSendState == 0){
                         subTitleLabel.text = @"未接单";
                     }
@@ -758,7 +784,16 @@
                 }
                 case 2:{
 //                    [cell addSubview:nurseBG];
-                    NSInteger orderSendState = [orderDetailDict[@"orderSendState"] integerValue];
+                    id orderSendTypeObj = orderDetailDict[@"orderSendType"];
+                    if ([orderSendTypeObj isMemberOfClass:[NSNull class]]) {
+                        orderSendTypeObj = @"";
+                    }
+                    id orderSendStateObj = orderDetailDict[@"orderSendState"];
+                    if ([orderSendStateObj isMemberOfClass:[NSNull class]]) {
+                        orderSendStateObj = @"";
+                    }
+                    NSInteger orderSendType = [orderSendTypeObj integerValue];
+                    NSInteger orderSendState = [orderSendStateObj integerValue];
                     
                     if (orderSendState == 0) {
                         //还没接单

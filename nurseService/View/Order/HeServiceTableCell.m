@@ -39,36 +39,37 @@
         CGFloat nameLabelX = CGRectGetMaxX(userImage.frame) + 5;
         CGFloat nameLabelY = userImageY;
         CGFloat nameLabelW = SCREENWIDTH - nameLabelX - 80;
-        CGFloat nameLabelH = userImageH / 3.0;
+        CGFloat nameLabelH = userImageH / 4.0;
         
         serviceTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(nameLabelX, nameLabelY, nameLabelW, nameLabelH)];
         serviceTitleLabel.backgroundColor = [UIColor clearColor];
         serviceTitleLabel.textColor = [UIColor blackColor];
-        serviceTitleLabel.font = [UIFont systemFontOfSize:17.0];
+        serviceTitleLabel.font = [UIFont systemFontOfSize:15.0];
         serviceTitleLabel.text = @"新生儿护理";
         [self addSubview:serviceTitleLabel];
         
         CGFloat peopleLabelX = nameLabelX;
         CGFloat peopleLabelY = CGRectGetMaxY(serviceTitleLabel.frame);
         CGFloat peopleLabelW = SCREENWIDTH - peopleLabelX - 70;
-        CGFloat peopleLabelH = userImageH / 3.0;
+        CGFloat peopleLabelH = userImageH / 4.0 * 2.0;
         
         peopleLabel = [[UILabel alloc] initWithFrame:CGRectMake(peopleLabelX, peopleLabelY, peopleLabelW, peopleLabelH)];
         peopleLabel.backgroundColor = [UIColor clearColor];
         peopleLabel.textColor = [UIColor blackColor];
         peopleLabel.font = [UIFont systemFontOfSize:13.0];
         peopleLabel.text = @"0 - 1周岁";
+        peopleLabel.numberOfLines = 2;
         [self addSubview:peopleLabel];
         
         CGFloat numberLabelX = nameLabelX;
         CGFloat numberLabelY = CGRectGetMaxY(peopleLabel.frame);
         CGFloat numberLabelW = 150;
-        CGFloat numberLabelH = userImageH / 3.0;
+        CGFloat numberLabelH = userImageH / 4.0;
         
         numberLabel = [[UILabel alloc] initWithFrame:CGRectMake(numberLabelX, numberLabelY, numberLabelW, numberLabelH)];
         numberLabel.backgroundColor = [UIColor clearColor];
         numberLabel.textColor = [UIColor grayColor];
-        numberLabel.font = [UIFont systemFontOfSize:15.0];
+        numberLabel.font = [UIFont systemFontOfSize:13.0];
         numberLabel.text = @"服务次数: 0次";
         [self addSubview:numberLabel];
         

@@ -156,7 +156,7 @@
     NSLog(@"endRefreshing");
 }
 
-//加载护士的服务项目
+//加载护士的评价，区别于加载某项服务的评价
 - (void)loadCommentDataWihtNurseId:(NSString *)nurseId
 {
     NSString *requestUrl = [NSString stringWithFormat:@"%@/nurseAnduser/selectnurserated.action",BASEURL];

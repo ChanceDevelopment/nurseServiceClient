@@ -24,16 +24,20 @@
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier cellSize:cellsize];
     if (self) {
         CGFloat buttonBGViewX = 0;
-        CGFloat buttonBGViewW = 40;
+        CGFloat buttonBGViewW = 50;
         CGFloat buttonBGViewH = cellsize.height;
         CGFloat buttonBGViewY = (cellsize.height - buttonBGViewH) / 2.0;
         UIView *buttonBGView = [[UIView alloc] initWithFrame:CGRectMake(buttonBGViewX, buttonBGViewY, buttonBGViewW, buttonBGViewH)];
         buttonBGView.backgroundColor = [UIColor whiteColor];
         [self addSubview:buttonBGView];
         
-        CGFloat selectButtonX = 10;
-        CGFloat selectButtonW = 25;
-        CGFloat selectButtonH = 25;
+        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapges:)];
+        [buttonBGView addGestureRecognizer:tap];
+        
+        CGFloat selectButtonW = 30;
+        CGFloat selectButtonH = 30;
+        CGFloat selectButtonX = (buttonBGViewW - selectButtonW) / 2.0;
+        
         CGFloat selectButtonY = (cellsize.height - selectButtonH) / 2.0;
         
         selectButton = [[UIButton alloc] initWithFrame:CGRectMake(selectButtonX, selectButtonY, selectButtonW, selectButtonH)];
@@ -146,11 +150,18 @@
     return self;
 }
 
+- (void)tapges:(UITapGestureRecognizer *)ges
+{
+    NSLog(@"Ges = %@",ges);
+}
 
 - (void)selectButtonClick:(UIButton *)button
 {
     NSLog(@"selectButtonClick");
     button.selected = !button.selected;
+    if (self.loadServiceBlock) {
+        self.loadServiceBlock();
+    }
 }
 /*
 // Only override drawRect: if you perform custom drawing.

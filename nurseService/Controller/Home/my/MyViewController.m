@@ -91,9 +91,9 @@
 - (void)initialization
 {
     [super initializaiton];
-    iconArr = @[@"icon_protected_person_gray",@"icon_report_gray",@"icon_order_center_gray",@"icon_integral_mall_gray",@"icon_favorites_gray",@"icon_myinvite_gray",@"icon_aboutus_gray",@"icon_advice_gray"];
-    tableItemArr = @[@"被受护人信息",@"护理报告",@"订单中心",@"积分商城",@"收藏夹",@"我的邀请",@"关于我们",@"投诉建议"];
-    viewControllerArray = @[@"HeProtectedUserInfoVC",@"HeOrderReportVC",@"HeUserOrderVC",@"HePointMarketVC",@"HeUserFavouriteVC",@"HeUserInviteVC",@"HeAboutUsVC",@"HeReportVC"];
+    iconArr = @[@"icon_protected_person_gray",@"icon_report_gray",@"icon_order_center_gray",@"icon_favorites_gray",@"icon_myinvite_gray",@"icon_aboutus_gray",@"icon_advice_gray"];
+    tableItemArr = @[@"被受护人信息",@"护理报告",@"订单中心",@"收藏夹",@"我的邀请",@"关于我们",@"投诉建议"];
+    viewControllerArray = @[@"HeProtectedUserInfoVC",@"HeOrderReportVC",@"HeUserOrderVC",@"HeUserFavouriteVC",@"HeUserInviteVC",@"HeAboutUsVC",@"HeReportVC"];
     userInfoModel = [HeSysbsModel getSysModel].user;
 
 }
@@ -560,23 +560,18 @@
             break;
         }
         case 3:{
-            //积分商城
-            [self showHint:@"该功能尚未开通"];
-            break;
-        }
-        case 4:{
             //收藏夹
             break;
         }
-        case 5:{
+        case 4:{
             //我的邀请
             break;
         }
-        case 6:{
+        case 5:{
             //关于我们
             break;
         }
-        case 7:{
+        case 6:{
             //投诉建议
             break;
         }

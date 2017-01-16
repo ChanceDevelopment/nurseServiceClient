@@ -18,6 +18,7 @@
     //用户性别 男 1 女 2
     ENUM_SEXType userSex;
     NSMutableDictionary *postUserInfo;
+    NSString *releation;
 }
 @property(strong,nonatomic)IBOutlet UITableView *tableview;
 @property(strong,nonatomic)NSArray *dataSource;
@@ -64,7 +65,7 @@
     tableview.backgroundColor = APPDEFAULTTABLEBACKGROUNDCOLOR;
     postUserInfo = [[NSMutableDictionary alloc] initWithCapacity:0];
     dataSource = @[@"姓名",@"性别",@"身份证号",@"年龄",@"监护人",@"联系电话",@"关系",@"地址",@"病史备注"];
-    
+    releation = @"自己";
     
 }
 
@@ -205,6 +206,10 @@
     contentField.textAlignment = NSTextAlignmentRight;
     contentField.tag = row + 100;
     
+    NSString *infoKey = [NSString stringWithFormat:@"key%ld",contentField.tag];
+    NSString *temp = [postUserInfo objectForKey:infoKey];
+    contentField.text = temp;
+    
     NSString *placeholder = @"";
     UIFont *contentFont = [UIFont systemFontOfSize:16.0];
     switch (row) {
@@ -292,7 +297,7 @@
             contentLabel.textAlignment = NSTextAlignmentRight;
             contentLabel.textColor = [UIColor blackColor];
             contentLabel.font = contentFont;
-            contentLabel.text = @"自己";
+            contentLabel.text = releation;
             [cell addSubview:contentLabel];
             
             contentField.hidden = YES;
@@ -317,7 +322,14 @@
             
             contentField.hidden = YES;
             if (isEdit) {
+                contentField.hidden = NO;
                 contentField.text  = [userInfoDict objectForKey:@"protectedAddress"];
+            }
+            else{
+                NSString *address = [HeSysbsModel getSysModel].addressResult.address;
+                contentLabel.text = address;
+                contentField.text = address;
+                [postUserInfo setObject:address forKey:@"key107"];
             }
             break;
         }
@@ -353,8 +365,8 @@
                         withMenu:menuArray
                   imageNameArray:nil
                        doneBlock:^(NSInteger selectedIndex) {
-                           NSString *relation = menuArray[selectedIndex];
-                           NSLog(@"relation = %@",relation);
+                           releation = menuArray[selectedIndex];
+                           [tableview reloadData];
                            
                        } dismissBlock:^{
                            
@@ -409,6 +421,12 @@
     if (actionSheet.tag == 100) {
         userSex = buttonIndex + 1;
         NSLog(@"userSex = %ld",buttonIndex);
+        if (userSex == ENUM_SEX_Boy) {
+            [postUserInfo setObject:@"男" forKey:@"key101"];
+        }
+        else{
+            [postUserInfo setObject:@"女" forKey:@"key101"];
+        }
         [tableview reloadData];
     }
 }
@@ -475,11 +493,12 @@
     NSString *age = [NSString stringWithFormat:@"%@",[postUserInfo objectForKey:@"key103"]];
     NSString *phone = [NSString stringWithFormat:@"%@",[postUserInfo objectForKey:@"key105"]];
     NSString *dian = [NSString stringWithFormat:@"%@",[postUserInfo objectForKey:@"key104"]];
-    NSString *nexus = [NSString stringWithFormat:@"%@",[postUserInfo objectForKey:@"key106"]];
+    NSString *nexus = releation;
     NSString *address = [NSString stringWithFormat:@"%@",[postUserInfo objectForKey:@"key107"]];
     NSString *note = [NSString stringWithFormat:@"%@",[postUserInfo objectForKey:@"key108"]];
     NSString *longitude = [NSString stringWithFormat:@"%@",[[[HeSysbsModel getSysModel] userLocationDict] objectForKey:@"longitude"]];
     NSString *latitude = [NSString stringWithFormat:@"%@",[[[HeSysbsModel getSysModel] userLocationDict] objectForKey:@"latitude"]];
+    
     
     NSDictionary * params  = @{@"personName": name,
                                @"personSex": sex,
@@ -495,16 +514,19 @@
                                @"userId": userid,
                                @"longitude ": longitude,
                                @"latitude": latitude};
+    [self showHudInView:tableview hint:@"添加中..."];
     [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
+        [self hideHud];
         NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
         
         NSDictionary *respondDict = [NSDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
         if ([[[respondDict valueForKey:@"errorCode"] stringValue] isEqualToString:@"200"]) {
             NSLog(@"success");
 
-            [self.view makeToast:ERRORREQUESTTIP duration:1.5 position:@"center"];
+            [[NSNotificationCenter defaultCenter] postNotificationName:kAddProtectedUserInfoNotification object:nil];
+            [self showHint:@"成功添加"];
 
-            [self performSelector:@selector(backToRootView) withObject:nil afterDelay:1.5];
+            [self performSelector:@selector(backToRootView) withObject:nil afterDelay:0.8];
         }else{
             NSString *errorInfo = [respondDict valueForKey:@"data"];
             if ([errorInfo isMemberOfClass:[NSNull class]] || errorInfo == nil) {
@@ -514,8 +536,9 @@
             NSLog(@"faile");
         }
     } failure:^(NSError* err){
+        [self hideHud];
         NSLog(@"err:%@",err);
-        [self.view makeToast:ERRORREQUESTTIP duration:2.0 position:@"center"];
+        [self showHint:ERRORREQUESTTIP];
     }];
 }
 

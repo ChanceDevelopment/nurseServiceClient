@@ -98,7 +98,12 @@
 		EA34D7A91E236C1D00CD8BC5 /* UWDatePickerView.m in Sources */ = {isa = PBXBuildFile; fileRef = EA34D7A71E236C1D00CD8BC5 /* UWDatePickerView.m */; };
 		EA34D7AA1E236C1D00CD8BC5 /* UWDatePickerView.xib in Resources */ = {isa = PBXBuildFile; fileRef = EA34D7A81E236C1D00CD8BC5 /* UWDatePickerView.xib */; };
 		EA34D7AD1E236E7200CD8BC5 /* HeServiceTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = EA34D7AC1E236E7200CD8BC5 /* HeServiceTableCell.m */; };
+		EA51EE2E1E2D10B80002D2BC /* icon_checkboxNormal.png in Resources */ = {isa = PBXBuildFile; fileRef = EA51EE2D1E2D10B80002D2BC /* icon_checkboxNormal.png */; };
+		EA51EE321E2D224C0002D2BC /* HeSelectProtectedUserInfoVC.m in Sources */ = {isa = PBXBuildFile; fileRef = EA51EE301E2D224C0002D2BC /* HeSelectProtectedUserInfoVC.m */; };
+		EA51EE331E2D224C0002D2BC /* HeSelectProtectedUserInfoVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = EA51EE311E2D224C0002D2BC /* HeSelectProtectedUserInfoVC.xib */; };
+		EA51EE361E2D26DB0002D2BC /* HeSelectProtectedUserInfoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = EA51EE351E2D26DB0002D2BC /* HeSelectProtectedUserInfoCell.m */; };
 		EA70F9BB1E2BEB7E004E3D1C /* choose_item_right.png in Resources */ = {isa = PBXBuildFile; fileRef = EA70F9BA1E2BEB7E004E3D1C /* choose_item_right.png */; };
+		EA7337691E2D36250071CB3C /* HeUserOrderCell.m in Sources */ = {isa = PBXBuildFile; fileRef = EA7337681E2D36250071CB3C /* HeUserOrderCell.m */; };
 		EA83E5601E25DEBC005E2281 /* leftMenu.plist in Resources */ = {isa = PBXBuildFile; fileRef = EA83E55F1E25DEBC005E2281 /* leftMenu.plist */; };
 		EA899E181E23CB910008AA01 /* HYPageView.m in Sources */ = {isa = PBXBuildFile; fileRef = EA899E171E23CB910008AA01 /* HYPageView.m */; };
 		EA899E1C1E23CD330008AA01 /* HeBookServiceVC.m in Sources */ = {isa = PBXBuildFile; fileRef = EA899E1A1E23CD330008AA01 /* HeBookServiceVC.m */; };
@@ -826,7 +831,15 @@
 		EA34D7A81E236C1D00CD8BC5 /* UWDatePickerView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = UWDatePickerView.xib; sourceTree = "<group>"; };
 		EA34D7AB1E236E7200CD8BC5 /* HeServiceTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HeServiceTableCell.h; sourceTree = "<group>"; };
 		EA34D7AC1E236E7200CD8BC5 /* HeServiceTableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HeServiceTableCell.m; sourceTree = "<group>"; };
+		EA51EE2D1E2D10B80002D2BC /* icon_checkboxNormal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_checkboxNormal.png; sourceTree = "<group>"; };
+		EA51EE2F1E2D224C0002D2BC /* HeSelectProtectedUserInfoVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HeSelectProtectedUserInfoVC.h; sourceTree = "<group>"; };
+		EA51EE301E2D224C0002D2BC /* HeSelectProtectedUserInfoVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HeSelectProtectedUserInfoVC.m; sourceTree = "<group>"; };
+		EA51EE311E2D224C0002D2BC /* HeSelectProtectedUserInfoVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HeSelectProtectedUserInfoVC.xib; sourceTree = "<group>"; };
+		EA51EE341E2D26DB0002D2BC /* HeSelectProtectedUserInfoCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HeSelectProtectedUserInfoCell.h; sourceTree = "<group>"; };
+		EA51EE351E2D26DB0002D2BC /* HeSelectProtectedUserInfoCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HeSelectProtectedUserInfoCell.m; sourceTree = "<group>"; };
 		EA70F9BA1E2BEB7E004E3D1C /* choose_item_right.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = choose_item_right.png; sourceTree = "<group>"; };
+		EA7337671E2D36250071CB3C /* HeUserOrderCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HeUserOrderCell.h; sourceTree = "<group>"; };
+		EA7337681E2D36250071CB3C /* HeUserOrderCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HeUserOrderCell.m; sourceTree = "<group>"; };
 		EA83E55F1E25DEBC005E2281 /* leftMenu.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = leftMenu.plist; sourceTree = "<group>"; };
 		EA899E161E23CB910008AA01 /* HYPageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HYPageView.h; sourceTree = "<group>"; };
 		EA899E171E23CB910008AA01 /* HYPageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HYPageView.m; sourceTree = "<group>"; };
@@ -1927,6 +1940,7 @@
 			children = (
 				EA9456661E27357C001E969A /* Balance */,
 				EA8C897F1E21D1E10093657B /* Custom */,
+				EA51EE2D1E2D10B80002D2BC /* icon_checkboxNormal.png */,
 				ADCC62371DFA9EB30065866C /* myIcon */,
 				ADCC61CF1DFA4EF70065866C /* icon_list */,
 				ADCC61CB1DFA4E240065866C /* index2.png */,
@@ -2277,6 +2291,9 @@
 				EA0EC7D81E24ABDD00E5440D /* HeProtectedUserInfoVC.h */,
 				EA0EC7D91E24ABDD00E5440D /* HeProtectedUserInfoVC.m */,
 				EA0EC7DA1E24ABDD00E5440D /* HeProtectedUserInfoVC.xib */,
+				EA51EE2F1E2D224C0002D2BC /* HeSelectProtectedUserInfoVC.h */,
+				EA51EE301E2D224C0002D2BC /* HeSelectProtectedUserInfoVC.m */,
+				EA51EE311E2D224C0002D2BC /* HeSelectProtectedUserInfoVC.xib */,
 				EA0EC7EC1E24B52D00E5440D /* HeEditProtectUserInfoVC.h */,
 				EA0EC7ED1E24B52D00E5440D /* HeEditProtectUserInfoVC.m */,
 				EA0EC7EE1E24B52D00E5440D /* HeEditProtectUserInfoVC.xib */,
@@ -2313,6 +2330,10 @@
 			children = (
 				EA0EC7F21E24B5C200E5440D /* HeProtectUserInfoTableCell.h */,
 				EA0EC7F31E24B5C200E5440D /* HeProtectUserInfoTableCell.m */,
+				EA51EE341E2D26DB0002D2BC /* HeSelectProtectedUserInfoCell.h */,
+				EA51EE351E2D26DB0002D2BC /* HeSelectProtectedUserInfoCell.m */,
+				EA7337671E2D36250071CB3C /* HeUserOrderCell.h */,
+				EA7337681E2D36250071CB3C /* HeUserOrderCell.m */,
 			);
 			path = UserInfo;
 			sourceTree = "<group>";
@@ -4562,6 +4583,7 @@
 				ADCC62491DFA9EB30065866C /* icon_protected_person.png in Resources */,
 				EA8C89CF1E21EE630093657B /* icon_integral_mall_gray.png in Resources */,
 				EACA0F161E2676EA009B4516 /* HeReportVC.xib in Resources */,
+				EA51EE331E2D224C0002D2BC /* HeSelectProtectedUserInfoVC.xib in Resources */,
 				ADCC624B1DFA9EB30065866C /* icon_star_yellow.png in Resources */,
 				ADCC61DD1DFA504A0065866C /* main_mine_unselector@2x.png in Resources */,
 				EAC2D94B1D4B063B00E282A8 /* LICENSE.txt in Resources */,
@@ -4592,6 +4614,7 @@
 				EA0EC7E11E24AFB900E5440D /* HeServiceItemVC.xib in Resources */,
 				ADCC62431DFA9EB30065866C /* icon_advice.png in Resources */,
 				EAC2D87B1D4B063B00E282A8 /* grayArrow@2x.png in Resources */,
+				EA51EE2E1E2D10B80002D2BC /* icon_checkboxNormal.png in Resources */,
 				EAC2D9561D4B063B00E282A8 /* btn_021@2x.png in Resources */,
 				EACA0F071E26767A009B4516 /* HeUserFavouriteVC.xib in Resources */,
 				EA70F9BB1E2BEB7E004E3D1C /* choose_item_right.png in Resources */,
@@ -4835,6 +4858,7 @@
 				EAC2D8C41D4B063B00E282A8 /* MRZoomScrollView.m in Sources */,
 				EACA0EF21E2669B9009B4516 /* HeUserBalanceVC.m in Sources */,
 				EAC2D8B31D4B063B00E282A8 /* UIScrollView+MJExtension.m in Sources */,
+				EA7337691E2D36250071CB3C /* HeUserOrderCell.m in Sources */,
 				EACA0F061E26767A009B4516 /* HeUserFavouriteVC.m in Sources */,
 				EAC2D8BB1D4B063B00E282A8 /* MLLinkLabel.m in Sources */,
 				EAC2D97C1D4B063B00E282A8 /* HeSysbsModel.m in Sources */,
@@ -4845,6 +4869,7 @@
 				EAC2D8331D4B063B00E282A8 /* ASIInputStream.m in Sources */,
 				EA0EC7F41E24B5C200E5440D /* HeProtectUserInfoTableCell.m in Sources */,
 				EAC2D8CB1D4B063B00E282A8 /* SIMenuCell.m in Sources */,
+				EA51EE361E2D26DB0002D2BC /* HeSelectProtectedUserInfoCell.m in Sources */,
 				EAC2D8281D4B063B00E282A8 /* UIImageView+AFNetworking.m in Sources */,
 				EAC2D8F31D4B063B00E282A8 /* RACCommand.m in Sources */,
 				EAC2D8A41D4B063B00E282A8 /* MJRefreshBackFooter.m in Sources */,
@@ -4956,6 +4981,7 @@
 				EA9F72871E2297E600FED4A3 /* HeSearchInfoVC.m in Sources */,
 				ADCC62011DFA69290065866C /* LBKitConst.m in Sources */,
 				EAC2D8941D4B063B00E282A8 /* README.md in Sources */,
+				EA51EE321E2D224C0002D2BC /* HeSelectProtectedUserInfoVC.m in Sources */,
 				EAC2D8E91D4B063B00E282A8 /* NSString+RACKeyPathUtilities.m in Sources */,
 				EAC2D8521D4B063B00E282A8 /* DFImageHelper.m in Sources */,
 				EAC2D8FC1D4B063B00E282A8 /* RACEmptySignal.m in Sources */,

@@ -18,4 +18,6 @@
 @property(strong,nonatomic)UILabel *addresssLabel;
 @property(strong,nonatomic)UILabel *distanceLabel;
 
+@property (nonatomic,strong)void(^loadServiceBlock)();
+
 @end

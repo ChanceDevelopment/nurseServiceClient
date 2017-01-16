@@ -28,6 +28,7 @@
 #import "DeleteImageProtocol.h"
 #import "UWDatePickerView.h"
 #import "HeOrderCommitVC.h"
+#import "HeSelectProtectedUserInfoVC.h"
 
 #define MAXUPLOADIMAGE 8
 #define MAX_column  4
@@ -38,7 +39,7 @@
 {
     BOOL currentSelectBanner;
     BOOL isBook;// YES:加入预约框 No:立即预约
-    BOOL isHaveSomeProblem; //家中是否有遗传病
+    BOOL isHaveSomeProblem; //家中是否有小孩
     CGFloat currentTotalMoney;
 }
 
@@ -132,6 +133,31 @@
 - (void)selectUserInfoWithDict:(NSDictionary *)userInfo
 {
     NSLog(@"selectUserInfo");
+    NSLog(@"serviceDict = %@",serviceInfoDict);
+    NSLog(@"serviceDetailInfoDict = %@",serviceDetailInfoDict);
+    NSLog(@"userInfo = %@",userInfo);
+    NSArray *allKeyArray = userInfo.allKeys;
+    
+    NSMutableDictionary *mutable_serviceInfoDict = [[NSMutableDictionary alloc] initWithDictionary:serviceInfoDict];
+    NSMutableDictionary *mutable_serviceDetailInfoDict = [[NSMutableDictionary alloc] initWithDictionary:serviceDetailInfoDict];
+    for (NSString *key in allKeyArray) {
+        id obj = userInfo[key];
+        if ([obj isMemberOfClass:[NSNull class]]) {
+            obj = @"";
+        }
+        
+        id obj1 = mutable_serviceInfoDict[key];
+        id obj2 = mutable_serviceDetailInfoDict[key];
+        if (obj1) {
+            [mutable_serviceInfoDict setObject:obj forKey:key];
+        }
+        if (obj2) {
+            [mutable_serviceDetailInfoDict setObject:obj forKey:key];
+        }
+    }
+    serviceInfoDict = [[NSDictionary alloc] initWithDictionary:mutable_serviceInfoDict];
+    serviceDetailInfoDict = [[NSDictionary alloc] initWithDictionary:mutable_serviceDetailInfoDict];
+    [tableview reloadData];
 }
 
 #pragma mark - PrivateMethod
@@ -168,8 +194,11 @@
 - (void)loadServiceArray
 {
     NSString *contentId = serviceInfoDict[@"contentId"];
-    if (contentId == nil) {
+    if ([contentId isMemberOfClass:[NSNull class]] || contentId == nil) {
         contentId = serviceInfoDict[@"manageNursingContentId"];
+        if ([contentId isMemberOfClass:[NSNull class]] || contentId == nil) {
+            contentId = @"";
+        }
     }
     NSDictionary *param = @{@"contentId":contentId};
     NSString *requestUrl = [NSString stringWithFormat:@"%@/goods/selectgoodsbycoentid.action",BASEURL];
@@ -357,18 +386,22 @@
         tipLabel2.backgroundColor = [UIColor clearColor];
         [remarkView addSubview:tipLabel2];
         
-        CGFloat historyButtonX = 10;
-        CGFloat historyButtonY = CGRectGetMaxY(titleLabel2.frame) + 5;
-        CGFloat historyButtonW = 120;
-        CGFloat historyButtonH = 30;
+        UIImage *historySelectedImage = [UIImage imageNamed:@"icon_checkbox"];
+        UIImage *historyImage = [UIImage imageNamed:@"icon_checkboxNormal"];
+        CGFloat historyButtonX = 5;
+        CGFloat historyButtonY = CGRectGetMaxY(titleLabel2.frame) + 2;
+        CGFloat historyButtonH = 40;
+        CGFloat historyButtonW = historySelectedImage.size.width / historySelectedImage.size.height * historyButtonH;
+        
         UIButton *historyButton = [[UIButton alloc] initWithFrame:CGRectMake(historyButtonX, historyButtonY, historyButtonW, historyButtonH)];
         [historyButton setTitle:@"家中有小孩" forState:UIControlStateNormal];
-        historyButton.layer.masksToBounds = YES;
-        historyButton.layer.cornerRadius = 3.0;
+//        historyButton.layer.masksToBounds = YES;
+//        historyButton.layer.cornerRadius = 3.0;
         [historyButton setTitleColor:[UIColor colorWithWhite:100.0 / 255.0 alpha:1.0] forState:UIControlStateNormal];
-        historyButton.layer.borderWidth = 1.0;
-        historyButton.layer.borderColor = [UIColor colorWithWhite:100.0 / 255.0 alpha:1.0].CGColor;
-        [historyButton setBackgroundImage:[UIImage imageNamed:@"icon_checkbox"] forState:UIControlStateSelected];
+//        historyButton.layer.borderWidth = 1.0;
+//        historyButton.layer.borderColor = [UIColor colorWithWhite:100.0 / 255.0 alpha:1.0].CGColor;
+        [historyButton setBackgroundImage:historySelectedImage forState:UIControlStateSelected];
+        [historyButton setBackgroundImage:historyImage forState:UIControlStateNormal];
         historyButton.titleLabel.font = [UIFont systemFontOfSize:13.0];
         [historyButton addTarget:self action:@selector(historyButtonClick:) forControlEvents:UIControlEventTouchUpInside];
         [remarkView addSubview:historyButton];
@@ -609,14 +642,15 @@
 {
     NSString *requestUrl = [NSString stringWithFormat:@"%@/service/selectservicebycontentid.action",BASEURL];
     NSString *userid = [[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY];
-    NSString *nurseid = @"";
+    NSString *nurseid = @"";//为空，暂时不用
     NSString *contentId = serviceInfoDict[@"manageNursingContentId"];
-    if (!contentId) {
+    if ([contentId isMemberOfClass:[NSNull class]] || contentId == nil) {
         contentId = serviceInfoDict[@"contentId"];
+        if ([contentId isMemberOfClass:[NSNull class]] || contentId == nil) {
+            contentId = @"";
+        }
     }
-    if (!contentId) {
-        contentId = @"";
-    }
+    
     NSDictionary * params  = @{@"nurseid":nurseid,@"userid":userid,@"contentId":contentId};
     [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
         NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
@@ -933,7 +967,12 @@
 //加入预约框
 - (IBAction)addToBookItem:(id)sender
 {
+    if (self.tmpDateString == nil || [self.tmpDateString isEqualToString:@""]) {
+        [self showHint:@"请选择服务时间"];
+        return;
+    }
     NSLog(@"addToBookItem");
+    //加入预约框
     isBook = YES;
     [self.view addSubview:self.selectMenuBgView];
     _selectMenuBgView.hidden = NO;
@@ -942,6 +981,11 @@
 //立即预约
 - (IBAction)bookService:(UIButton *)sender
 {
+    if (self.tmpDateString == nil || [self.tmpDateString isEqualToString:@""]) {
+        [self showHint:@"请选择服务时间"];
+        return;
+    }
+    //立即预约
     isBook = NO;
     [self.view addSubview:self.selectMenuBgView];
     _selectMenuBgView.hidden = NO;
@@ -952,17 +996,26 @@
 - (void)commitButtonClick:(UIButton *)button
 {
     NSLog(@"commitButtonClick");
-    _selectMenuBgView.hidden = YES;
-    [self setInfoViewisDown:YES withView:_selectMenuBgView];
-    
     if (self.tmpDateString == nil || [self.tmpDateString isEqualToString:@""]) {
         [self showHint:@"请选择服务时间"];
         return;
     }
+    if ([subSelectArray count] == 0) {
+        [self showHint:@"请选择相应套餐"];
+        return;
+    }
+    _selectMenuBgView.hidden = YES;
+    [self setInfoViewisDown:YES withView:_selectMenuBgView];
+    
+    
     NSDictionary *nurseDict = parameter[@"nurse"];
     
     NSString *userId = [[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY];
     NSString *specifyNurseId = nurseDict[@"nurseId"];
+    if ([specifyNurseId isMemberOfClass:[NSNull class]] || specifyNurseId == nil) {
+        //可以不用指定某个护士
+        specifyNurseId = @"";
+    }
     NSMutableString *goodId = [[NSMutableString alloc] initWithCapacity:0];
     NSInteger index = 0;
     for (NSDictionary *dict in subSelectArray) {
@@ -997,6 +1050,9 @@
     }
     
     NSString *orderSendNote	= @"家中有小孩";
+    if (!isHaveSomeProblem) {
+        orderSendNote = @"";
+    }
     NSString *orderSendCoupon = @"";
     NSString *orderSendTrafficmoney	= @"30.00";
     NSString *orderSendSavemoney = @"0";
@@ -1146,7 +1202,7 @@
             CGFloat titleLabelX = 10;
             CGFloat titleLabelY = 0;
             CGFloat titleLabelH = cellsize.height;
-            CGFloat titleLabelW = 100;
+            CGFloat titleLabelW = cellsize.width / 2.0 - titleLabelX;
             
             UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(titleLabelX, titleLabelY, titleLabelW, titleLabelH)];
             titleLabel.font = [UIFont systemFontOfSize:18.0];
@@ -1160,8 +1216,9 @@
             
             CGFloat endLabelY = 0;
             CGFloat endLabelH = cellsize.height;
-            CGFloat endLabelW = 100;
-            CGFloat endLabelX = SCREENWIDTH - endLabelW - 10;
+            CGFloat endLabelX = cellsize.width / 2.0;
+            CGFloat endLabelW = cellsize.width - endLabelX - 10;
+            
             
             UILabel *endLabel = [[UILabel alloc] initWithFrame:CGRectMake(endLabelX, endLabelY, endLabelW, endLabelH)];
             endLabel.font = [UIFont systemFontOfSize:15.0];
@@ -1351,7 +1408,7 @@
                 case 1:{
                     //被受保护人信息
                     NSLog(@"被受保护人信息");
-                    HeProtectedUserInfoVC *protectedUserInfoVC = [[HeProtectedUserInfoVC alloc] init];
+                    HeSelectProtectedUserInfoVC *protectedUserInfoVC = [[HeSelectProtectedUserInfoVC alloc] init];
                     protectedUserInfoVC.selectDelegate = self;
                     protectedUserInfoVC.hidesBottomBarWhenPushed = YES;
                     [self.navigationController pushViewController:protectedUserInfoVC animated:YES];
