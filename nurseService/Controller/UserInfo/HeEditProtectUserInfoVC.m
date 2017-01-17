@@ -196,9 +196,10 @@
     textFont = [UIFont systemFontOfSize:16.0];
     
     CGFloat contentFieldY = 0;
-    CGFloat contentFieldW = 150;
+    CGFloat contentFieldX = 80;
+    CGFloat contentFieldW = cellSize.width - contentFieldX - 10;
     CGFloat contentFieldH = cellSize.height;
-    CGFloat contentFieldX = SCREENWIDTH - contentFieldW - 15;
+    
     
     UITextField *contentField = [[UITextField alloc] initWithFrame:CGRectMake(contentFieldX, contentFieldY, contentFieldW, contentFieldH)];
     contentField.delegate = self;
@@ -309,7 +310,7 @@
         case 7:
         {
             //地址
-            CGFloat contentLabelX = 90;
+            CGFloat contentLabelX = 50;
             CGFloat contentLabelW = SCREENWIDTH - contentLabelX - 10;
             CGFloat contentLabelY = 0;
             CGFloat contentLabelH = cellSize.height;
@@ -444,6 +445,37 @@
         sex = @"2";
     }
 
+    NSString *name = [userInfoDict objectForKey:@"protectedPersonName"];
+    if ([name isEqualToString:@""] || name == nil) {
+        [self showHint:@"请填写受护人姓名"];
+        return;
+    }
+    NSString *card = [userInfoDict objectForKey:@"protectedPersonCard"];
+    if ([card isEqualToString:@""] || card == nil) {
+        [self showHint:@"请填写受护人身份证"];
+        return;
+    }
+    NSString *age = [userInfoDict objectForKey:@"protectedPersonAge"];
+    if ([age isEqualToString:@""] || age == nil) {
+        [self showHint:@"请输入受护人年龄"];
+        return;
+    }
+    NSString *dian = [userInfoDict objectForKey:@"personGuardian"];
+    if ([dian isEqualToString:@""] || dian == nil) {
+        [self showHint:@"请填写监护人"];
+        return;
+    }
+    NSString *phone = [userInfoDict objectForKey:@"protectedPersonPhone"];
+    if ([phone isEqualToString:@""] || phone == nil) {
+        [self showHint:@"请输入联系电话"];
+        return;
+    }
+    NSString *address = [userInfoDict objectForKey:@"protectedAddress"];
+    if ([address isEqualToString:@""] || address == nil) {
+        [self showHint:@"请输入地址"];
+        return;
+    }
+    
     NSDictionary * params  = @{@"userId": userid,
                                @"personId": [userInfoDict objectForKey:@"protectedPersonId"],
                                @"personName": [userInfoDict objectForKey:@"protectedPersonName"],
@@ -465,8 +497,8 @@
         NSDictionary *respondDict = [NSDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
         if ([[[respondDict objectForKey:@"errorCode"] stringValue] isEqualToString:@"200"]) {
             NSLog(@"success");
-            
-            [self.view makeToast:ERRORREQUESTTIP duration:1.5 position:@"center"];
+            [self showHint:@"修改成功"];
+//            [self.view makeToast:ERRORREQUESTTIP duration:1.5 position:@"center"];
             
             [self performSelector:@selector(backToRootView) withObject:nil afterDelay:1.5];
         }else{
@@ -479,7 +511,8 @@
         }
     } failure:^(NSError* err){
         NSLog(@"err:%@",err);
-        [self.view makeToast:ERRORREQUESTTIP duration:2.0 position:@"center"];
+        [self showHint:ERRORREQUESTTIP];
+//        [self.view makeToast:ERRORREQUESTTIP duration:2.0 position:@"center"];
     }];
 }
 
@@ -499,6 +532,30 @@
     NSString *longitude = [NSString stringWithFormat:@"%@",[[[HeSysbsModel getSysModel] userLocationDict] objectForKey:@"longitude"]];
     NSString *latitude = [NSString stringWithFormat:@"%@",[[[HeSysbsModel getSysModel] userLocationDict] objectForKey:@"latitude"]];
     
+    if ([name isEqualToString:@""] || name == nil) {
+        [self showHint:@"请填写受护人姓名"];
+        return;
+    }
+    if ([card isEqualToString:@""] || card == nil) {
+        [self showHint:@"请填写受护人身份证"];
+        return;
+    }
+    if ([age isEqualToString:@""] || age == nil) {
+        [self showHint:@"请输入受护人年龄"];
+        return;
+    }
+    if ([dian isEqualToString:@""] || dian == nil) {
+        [self showHint:@"请填写监护人"];
+        return;
+    }
+    if ([phone isEqualToString:@""] || phone == nil) {
+        [self showHint:@"请输入联系电话"];
+        return;
+    }
+    if ([address isEqualToString:@""] || address == nil) {
+        [self showHint:@"请输入地址"];
+        return;
+    }
     
     NSDictionary * params  = @{@"personName": name,
                                @"personSex": sex,

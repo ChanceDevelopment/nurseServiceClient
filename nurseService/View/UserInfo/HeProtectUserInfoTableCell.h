@@ -13,6 +13,8 @@
 @property(strong,nonatomic)UILabel *addressLabel;
 @property(strong,nonatomic)UILabel *defaultLabel;
 @property(strong,nonatomic)UIButton *selectBt;
+
+@property (strong,nonatomic) void(^selectBlock)();
 @property (nonatomic,strong) void(^editBlock)();
 @property (nonatomic,strong) void(^deleteBlock)();
 @end

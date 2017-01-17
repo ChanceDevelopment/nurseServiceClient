@@ -684,6 +684,9 @@
 		EACA0F1D1E267C94009B4516 /* icon_infromation.png in Resources */ = {isa = PBXBuildFile; fileRef = EACA0F1C1E267C94009B4516 /* icon_infromation.png */; };
 		EACA0F221E267D49009B4516 /* HeMessageVC.m in Sources */ = {isa = PBXBuildFile; fileRef = EACA0F201E267D49009B4516 /* HeMessageVC.m */; };
 		EACA0F231E267D49009B4516 /* HeMessageVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = EACA0F211E267D49009B4516 /* HeMessageVC.xib */; };
+		EAD0ADFD1E2DB846002893F4 /* icon_nocircle.png in Resources */ = {isa = PBXBuildFile; fileRef = EAD0ADFC1E2DB846002893F4 /* icon_nocircle.png */; };
+		EAD0ADFF1E2DB859002893F4 /* icon_circleclick.png in Resources */ = {isa = PBXBuildFile; fileRef = EAD0ADFE1E2DB859002893F4 /* icon_circleclick.png */; };
+		EAD0AE011E2DBB2B002893F4 /* icon_edit.png in Resources */ = {isa = PBXBuildFile; fileRef = EAD0AE001E2DBB2B002893F4 /* icon_edit.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1856,6 +1859,9 @@
 		EACA0F1F1E267D49009B4516 /* HeMessageVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HeMessageVC.h; sourceTree = "<group>"; };
 		EACA0F201E267D49009B4516 /* HeMessageVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HeMessageVC.m; sourceTree = "<group>"; };
 		EACA0F211E267D49009B4516 /* HeMessageVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HeMessageVC.xib; sourceTree = "<group>"; };
+		EAD0ADFC1E2DB846002893F4 /* icon_nocircle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_nocircle.png; sourceTree = "<group>"; };
+		EAD0ADFE1E2DB859002893F4 /* icon_circleclick.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_circleclick.png; sourceTree = "<group>"; };
+		EAD0AE001E2DBB2B002893F4 /* icon_edit.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_edit.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -2488,6 +2494,9 @@
 		EA8C897F1E21D1E10093657B /* Custom */ = {
 			isa = PBXGroup;
 			children = (
+				EAD0AE001E2DBB2B002893F4 /* icon_edit.png */,
+				EAD0ADFE1E2DB859002893F4 /* icon_circleclick.png */,
+				EAD0ADFC1E2DB846002893F4 /* icon_nocircle.png */,
 				EA01ED861E2CB55E00B846A9 /* icon_collection.png */,
 				EA70F9BA1E2BEB7E004E3D1C /* choose_item_right.png */,
 				EACA0F1C1E267C94009B4516 /* icon_infromation.png */,
@@ -4653,9 +4662,11 @@
 				EAC2D9511D4B063B00E282A8 /* btn_020.disable@2x.png in Resources */,
 				EA899E351E23EE650008AA01 /* icon_collection_full.png in Resources */,
 				ADCC61DA1DFA504A0065866C /* main_home_selector@2x.png in Resources */,
+				EAD0AE011E2DBB2B002893F4 /* icon_edit.png in Resources */,
 				EACA0EE51E26676B009B4516 /* HeUserPointVC.xib in Resources */,
 				EAC2D8601D4B063B00E282A8 /* Expression.plist in Resources */,
 				EA9F726D1E22794E00FED4A3 /* HePaitentInfoVC.xib in Resources */,
+				EAD0ADFD1E2DB846002893F4 /* icon_nocircle.png in Resources */,
 				EAC2D8D61D4B063B00E282A8 /* README.textile in Resources */,
 				ADCC621A1DFA851B0065866C /* down_blue@2x.png in Resources */,
 				EAC2D4331D4B031500E282A8 /* Main.storyboard in Resources */,
@@ -4685,6 +4696,7 @@
 				EA8C89CB1E21EE2F0093657B /* icon_report_gray.png in Resources */,
 				AD6C8F321DF9CFE200C44A8A /* icon_wound.png in Resources */,
 				EA8C899C1E21D78C0093657B /* icon_add_photo.png in Resources */,
+				EAD0ADFF1E2DB859002893F4 /* icon_circleclick.png in Resources */,
 				EA9F72881E2297E600FED4A3 /* HeSearchInfoVC.xib in Resources */,
 				EA0EC7F01E24B52D00E5440D /* HeEditProtectUserInfoVC.xib in Resources */,
 				EA34D7931E23244D00CD8BC5 /* HeOrderCommitVC.xib in Resources */,

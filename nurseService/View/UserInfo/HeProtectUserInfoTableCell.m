@@ -32,8 +32,6 @@
         bgView.backgroundColor = [UIColor whiteColor];
         bgView.userInteractionEnabled = YES;
         [self addSubview:bgView];
-//        [bgView.layer setMasksToBounds:YES];
-//        bgView.layer.cornerRadius = 4.0;
         
         CGFloat labelX = 10;
         CGFloat labelY = 0;
@@ -58,15 +56,15 @@
         labelY = CGRectGetMaxY(addressLabel.frame);
         UILabel *line1 = [[UILabel alloc] initWithFrame:CGRectMake(0, labelY, bgView_W, 1)];
         [bgView addSubview:line1];
-        line1.backgroundColor = [UIColor colorWithWhite:237.0 / 255.0 alpha:1.0];
+        line1.backgroundColor = [UIColor colorWithWhite:200.0 / 255.0 alpha:1.0];
         
-        labelY = CGRectGetMaxY(line1.frame);
+        labelY = CGRectGetMaxY(line1.frame) + 10;
         labelH = bgView_H - labelY;
-        selectBt = [[UIButton alloc] initWithFrame:CGRectMake(10, labelY+(labelH-25)/2.0, 25, 25)];
+        selectBt = [[UIButton alloc] initWithFrame:CGRectMake(10, labelY+(labelH-30)/2.0, 30, 30)];
         [bgView addSubview:selectBt];
         selectBt.backgroundColor = [UIColor clearColor];
-        [selectBt setImage:[UIImage imageNamed:@"unselect_box"] forState:UIControlStateNormal];
-        [selectBt setImage:[UIImage imageNamed:@"select_box"] forState:UIControlStateSelected];
+        [selectBt setImage:[UIImage imageNamed:@"icon_nocircle"] forState:UIControlStateNormal];
+        [selectBt setImage:[UIImage imageNamed:@"icon_circleclick"] forState:UIControlStateSelected];
         [selectBt addTarget:self action:@selector(selectedAction:) forControlEvents:UIControlEventTouchUpInside];
     
         labelX = CGRectGetMaxX(selectBt.frame);
@@ -79,15 +77,15 @@
         [defaultLabel setTextColor:[UIColor blackColor]];
         
         labelX = bgView_W - 180;
-        UIImageView *editImageView = [[UIImageView alloc] initWithFrame:CGRectMake( labelX, labelY+(labelH-25)/2.0, 25, 25)];
+        UIImageView *editImageView = [[UIImageView alloc] initWithFrame:CGRectMake( labelX, labelY+(labelH-30)/2.0, 30, 30)];
         editImageView.backgroundColor = [UIColor clearColor];
         editImageView.image = [UIImage imageNamed:@"icon_delete"];
         editImageView.userInteractionEnabled = YES;
-        [bgView addSubview:editImageView];
+//        [bgView addSubview:editImageView];
         
         labelX = bgView_W - 155;
         UILabel *editLabel = [[UILabel alloc] initWithFrame:CGRectMake(labelX, labelY, 50, labelH)];
-        [bgView addSubview:editLabel];
+//        [bgView addSubview:editLabel];
         editLabel.backgroundColor = [UIColor clearColor];
         editLabel.userInteractionEnabled = YES;
         editLabel.text = @"编辑";
@@ -97,9 +95,9 @@
         editeRect   = CGRectMake(bgView_W - 180, labelY, 75, labelH);
         
         labelX = bgView_W - 95;
-        UIImageView *deleteImageView = [[UIImageView alloc] initWithFrame:CGRectMake( labelX, labelY+(labelH-25)/2.0, 25, 25)];
+        UIImageView *deleteImageView = [[UIImageView alloc] initWithFrame:CGRectMake( labelX, labelY+(labelH-30)/2.0, 30, 30)];
         deleteImageView.backgroundColor = [UIColor clearColor];
-        deleteImageView.image = [UIImage imageNamed:@"icon_delete"];
+        deleteImageView.image = [UIImage imageNamed:@"icon_edit"];
         deleteImageView.userInteractionEnabled = YES;
         [bgView addSubview:deleteImageView];
         
@@ -107,19 +105,22 @@
         UILabel *deleteLabel = [[UILabel alloc] initWithFrame:CGRectMake(labelX, labelY, 50, labelH)];
         deleteLabel.backgroundColor = [UIColor clearColor];
         deleteLabel.userInteractionEnabled = YES;
-        deleteLabel.text = @"删除";
+        deleteLabel.text = @"编辑";
         [bgView addSubview:deleteLabel];
         [deleteLabel setFont:font];
         [deleteLabel setTextColor:[UIColor blackColor]];
         
-        deleteRect  = CGRectMake(bgView_W - 95, labelY, 75, labelH);
+        deleteRect  = CGRectMake(bgView_W - 90, labelY, 80, 40);
         
     }
     return self;
 }
 
 - (void)selectedAction:(UIButton *)sender{
-    sender.selected = !sender.selected;
+    if (self.selectBlock){
+        self.selectBlock();
+    }
+    
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event{
@@ -128,8 +129,26 @@
         if (self.editBlock)
             self.editBlock();
     }else if (CGRectContainsPoint(deleteRect, point)){
-        if (self.deleteBlock)
-            self.deleteBlock();
+        if (self.editBlock)
+            self.editBlock();
     }
 }
+
+- (void)drawRect:(CGRect)rect
+{
+    
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    
+    CGContextSetFillColorWithColor(context, [UIColor clearColor].CGColor);
+    CGContextFillRect(context, rect);
+    
+    //上分割线，
+    CGContextSetStrokeColorWithColor(context, ([UIColor clearColor]).CGColor);
+    CGContextStrokeRect(context, CGRectMake(0, -1, rect.size.width, 1));
+    
+    //下分割线
+    CGContextSetStrokeColorWithColor(context, ([UIColor colorWithWhite:150.0 / 255.0 alpha:1.0]).CGColor);
+    CGContextStrokeRect(context, CGRectMake(0, rect.size.height, rect.size.width, 1));
+}
+
 @end

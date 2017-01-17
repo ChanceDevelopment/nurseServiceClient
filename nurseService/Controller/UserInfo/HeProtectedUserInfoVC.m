@@ -15,12 +15,14 @@
 @interface HeProtectedUserInfoVC ()
 @property(strong,nonatomic)IBOutlet UITableView *tableview;
 @property(strong,nonatomic)NSMutableArray *dataSource;
+@property(strong,nonatomic)NSString *selectedProtectedPersonId;
 
 @end
 
 @implementation HeProtectedUserInfoVC
 @synthesize tableview;
 @synthesize dataSource;
+@synthesize selectedProtectedPersonId;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -53,17 +55,17 @@
 {
     [super initializaiton];
     dataSource = [[NSMutableArray alloc] initWithCapacity:0];
-    [Tool setExtraCellLineHidden:tableview];
-    tableview.backgroundView = nil;
-    tableview.backgroundColor = APPDEFAULTTABLEBACKGROUNDCOLOR;
-    
-    
+
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addUserInfo:) name:kAddProtectedUserInfoNotification object:nil];
 }
 
 - (void)initView
 {
     [super initView];
+    tableview.backgroundView = nil;
+    tableview.backgroundColor = [UIColor colorWithWhite:237.0 / 255.0 alpha:1.0];
+    [Tool setExtraCellLineHidden:tableview];
+    tableview.separatorStyle = UITableViewCellSeparatorStyleNone;
 }
 
 - (void)addUserInfo:(NSNotification *)notification
@@ -113,25 +115,62 @@
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
     NSString *name = [dict valueForKey:@"protectedPersonName"];
-    NSString *sex = [[dict valueForKey:@"protectedPersonName"] isEqualToString:@"1"] ? @"男" : @"女";
+    
+    id protectedPersonSex = dict[@"protectedPersonSex"];
+    if ([protectedPersonSex isMemberOfClass:[NSNull class]]) {
+        protectedPersonSex = @"";
+    }
+    NSString *sex = ([protectedPersonSex integerValue] == ENUM_SEX_Boy) ? @"男" : @"女";
     NSString *phone = [dict valueForKey:@"protectedPersonPhone"];
-    BOOL isDefault = [[dict valueForKey:@"protectedDefault"] isEqualToString:@"1"] ? YES : NO;
     
+    id protectedDefault = dict[@"protectedDefault"];
+    if ([protectedDefault isMemberOfClass:[NSNull class]]) {
+        protectedDefault = @"";
+    }
+    BOOL isDefault = ([protectedDefault integerValue] == 1) ? YES : NO;
+    if (isDefault) {
+        //第一次默认选中默认受护人
+        if (!selectedProtectedPersonId) {
+            selectedProtectedPersonId = dict[@"protectedPersonId"];
+        }
+    }
+    NSString *protectedPersonId = dict[@"protectedPersonId"];
+    if ([selectedProtectedPersonId isEqualToString:protectedPersonId]) {
+        cell.selectBt.selected = YES;
+    }
+    else{
+        cell.selectBt.selected = NO;
+    }
     cell.baseInfoLabel.text = [NSString stringWithFormat:@"%@  %@  %@",name,sex,phone];
-    cell.addressLabel.text = [dict valueForKey:@"protectedAddress"];
-    cell.defaultLabel.text = isDefault ? @"默认信息" : @"设为默认";
-    cell.selectBt.selected = isDefault ? YES : NO;
     
+    NSString *protectedAddress = dict[@"protectedAddress"];
+    if ([protectedAddress isMemberOfClass:[NSNull class]]) {
+        protectedAddress = @"";
+    }
+    cell.addressLabel.text = protectedAddress;
+    cell.defaultLabel.text = isDefault ? @"默认信息" : @"设为默认";
+//    cell.selectBt.selected = isDefault ? YES : NO;
+    
+    
+    cell.selectBlock = ^(){
+        NSString *protectedPersonId = dict[@"protectedPersonId"];
+        if (![selectedProtectedPersonId isEqualToString:protectedPersonId]) {
+            selectedProtectedPersonId = protectedPersonId;
+            [tableview reloadData];
+        }
+        
+    };
     cell.deleteBlock = ^(){
         NSLog(@"deleteBlock");
         [self deletProtectedUserInfoWithId:[dict valueForKey:@"protectedPersonId"]];
     };
     cell.editBlock = ^(){
         NSLog(@"edit");
-        HeEditProtectUserInfoVC *heEditProtectUserInfoVC = [[HeEditProtectUserInfoVC alloc] init];
-        heEditProtectUserInfoVC.hidesBottomBarWhenPushed = YES;
-        heEditProtectUserInfoVC.userInfoDict = dict;
-        [self.navigationController pushViewController:heEditProtectUserInfoVC animated:YES];
+        HeEditProtectUserInfoVC *editProtectUserInfoVC = [[HeEditProtectUserInfoVC alloc] init];
+        editProtectUserInfoVC.isEdit = YES;
+        editProtectUserInfoVC.hidesBottomBarWhenPushed = YES;
+        editProtectUserInfoVC.userInfoDict = [[NSMutableDictionary alloc] initWithDictionary:dict];
+        [self.navigationController pushViewController:editProtectUserInfoVC animated:YES];
         
     };
 
@@ -143,7 +182,7 @@
     NSInteger section = indexPath.section;
     NSInteger row = indexPath.row;
     
-    return 100;
+    return 115;
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
@@ -160,26 +199,35 @@
     } @finally {
         
     }
-    [_selectDelegate selectUserInfoWithDict:dict];
-    [self.navigationController popViewControllerAnimated:YES];
+    HeEditProtectUserInfoVC *heEditProtectUserInfoVC = [[HeEditProtectUserInfoVC alloc] init];
+    heEditProtectUserInfoVC.hidesBottomBarWhenPushed = YES;
+    heEditProtectUserInfoVC.userInfoDict = [[NSMutableDictionary alloc] initWithDictionary:dict];
+    [self.navigationController pushViewController:heEditProtectUserInfoVC animated:YES];
+//    [_selectDelegate selectUserInfoWithDict:dict];
+//    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (void)getDataSource{
+    
+    [self showHudInView:tableview hint:@"获取中..."];
     NSString *userid = [[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY];
 
     NSString *requestUrl = [NSString stringWithFormat:@"%@/protected/selectprotectedbyuserid.action",BASEURL];
     NSDictionary * params  = @{@"userid": userid};
     [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
+        [self hideHud];
         NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
         
         NSDictionary *respondDict = [NSDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
         if ([[[respondDict valueForKey:@"errorCode"] stringValue] isEqualToString:@"200"]) {
             NSLog(@"success");
-            NSArray *tempArr = [NSArray arrayWithArray:[respondDict valueForKey:@"json"]];
-            if (dataSource.count > 0) {
-                [dataSource addObjectsFromArray:tempArr];
-                [tableview reloadData];
+            id jsonArray = [respondDict valueForKey:@"json"];
+            if ([jsonArray isMemberOfClass:[NSNull class]] || jsonArray == nil) {
+                jsonArray = [NSArray array];
             }
+            [dataSource removeAllObjects];
+            [dataSource addObjectsFromArray:jsonArray];
+            [tableview reloadData];
         }else{
             NSString *errorInfo = [respondDict valueForKey:@"data"];
             if ([errorInfo isMemberOfClass:[NSNull class]] || errorInfo == nil) {
@@ -190,7 +238,8 @@
         }
     } failure:^(NSError* err){
         NSLog(@"err:%@",err);
-        [self.view makeToast:ERRORREQUESTTIP duration:2.0 position:@"center"];
+        [self hideHud];
+        [self showHint:ERRORREQUESTTIP];
     }];
 }
 
