@@ -75,6 +75,9 @@
 //登录状态发生变化的通知
 #define KNOTIFICATION_LOGINCHANGE @"loginStateChange"
 
+//更新个人信息
+#define kUpdateUserInfoNotification @"updateUserInfoNotification"
+
 #define UPDATEUSER_NOTIFICATION @"updateUser"
 
 #define RECEIVEBUDDYINVITE_NOTIFICATION @"receiveBuddyInvite"

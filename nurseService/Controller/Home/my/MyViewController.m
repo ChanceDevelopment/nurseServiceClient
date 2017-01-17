@@ -24,6 +24,8 @@
 
 #define InviteLabelTag 100
 #define SignButtonTag 200
+#define USERIMAGETAG 300
+#define USERNAMELABELTAG 400
 
 @interface MyViewController ()<UITableViewDataSource,UITableViewDelegate,UIAlertViewDelegate>
 {
@@ -95,6 +97,8 @@
     tableItemArr = @[@"被受护人信息",@"护理报告",@"订单中心",@"收藏夹",@"我的邀请",@"关于我们",@"投诉建议"];
     viewControllerArray = @[@"HeProtectedUserInfoVC",@"HeOrderReportVC",@"HeUserOrderVC",@"HeUserFavouriteVC",@"HeUserInviteVC",@"HeAboutUsVC",@"HeReportVC"];
     userInfoModel = [HeSysbsModel getSysModel].user;
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUserInfo:) name:kUpdateUserInfoNotification object:nil];
 
 }
 
@@ -143,6 +147,7 @@
     CGFloat imageX = (SCREENWIDTH - imageDia) / 2.0 ;
     CGFloat imageY = (viewHeight - imageDia) / 2.0 - 20;
     portrait = [[UIImageView alloc] initWithFrame:CGRectMake(imageX, imageY, imageDia, imageDia)];
+    portrait.tag = USERIMAGETAG;
     portrait.userInteractionEnabled = YES;
     portrait.image = [UIImage imageNamed:@"defalut_icon"];
     portrait.layer.borderWidth = 0.0;
@@ -161,12 +166,13 @@
     
     
     //用户名
-    CGFloat labelX = imageX;
+    CGFloat labelX = 0;
     CGFloat labelY = imageY+imageDia;
     CGFloat labelH = 25;
-    CGFloat labelW = imageDia;
+    CGFloat labelW = SCREENWIDTH;
     
     userNameL = [[UILabel alloc] init];
+    userNameL.tag = USERNAMELABELTAG;
     userNameL.textAlignment = NSTextAlignmentCenter;
     userNameL.backgroundColor = [UIColor clearColor];
     userNameL.font = [UIFont fontWithName:@"Helvetica" size:18.0];
@@ -216,7 +222,17 @@
     CGFloat balance = [userInfoModel.userBalance floatValue];
     balanceNumLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, commonlabelW, otherInfoLabelBGH / 2.0)];
     balanceNumLabel.backgroundColor = [UIColor clearColor];
+    
     balanceNumLabel.text = [NSString stringWithFormat:@"%.2f元",balance];
+    if (balance > 100000000) {
+        balance = balance / 100000000.0;
+        balanceNumLabel.text = [NSString stringWithFormat:@"%.2f亿元",balance];
+    }
+    else if (balance > 10000){
+        balance = balance / 10000.0;
+        balanceNumLabel.text = [NSString stringWithFormat:@"%.2f万元",balance];
+    }
+    
     balanceNumLabel.font = [UIFont systemFontOfSize:17.0];
     balanceNumLabel.textAlignment = NSTextAlignmentCenter;
     balanceNumLabel.textColor = [UIColor colorWithRed:179.0 / 255.0 green:68.0 / 255.0 blue:65.0 / 255.0 alpha:1.0];
@@ -315,6 +331,64 @@
     [signOutButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [signOutButton addTarget:self action:@selector(signOutButtonClick:) forControlEvents:UIControlEventTouchUpInside];
     [footerView addSubview:signOutButton];
+}
+
+- (void)updateUserInfo:(NSNotification *)notification
+{
+    [self getUserInfoWithUserID:[[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY]];
+    
+    
+}
+
+//获取用户的信息
+- (void)getUserInfoWithUserID:(NSString *)userid
+{
+    if (!userid) {
+        userid = @"";
+    }
+    
+    NSString *requestUrl = [NSString stringWithFormat:@"%@/nurseAnduser/selectuserinfobyid.action",BASEURL];
+    NSDictionary * params  = @{@"userid":userid};
+    
+    [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
+        NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
+        
+        NSDictionary *respondDict = [NSDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
+        if ([[respondDict valueForKey:@"errorCode"] integerValue] == REQUESTCODE_SUCCEED){
+            NSDictionary *userDetailInfoDict = respondDict[@"json"];
+            if ([userDetailInfoDict isMemberOfClass:[NSNull class]]) {
+                return;
+            }
+            NSMutableDictionary *infoDict = [NSMutableDictionary dictionaryWithCapacity:0];
+            
+            for (NSString *key in [userDetailInfoDict allKeys]) {
+                id obj = [userDetailInfoDict objectForKey:key];
+                if ([obj isMemberOfClass:[NSNull class]] || obj == nil) {
+                    obj = @"";
+                }
+                [infoDict setObject:obj forKey:key];
+            }
+            
+            [[NSUserDefaults standardUserDefaults] setObject:infoDict forKey:kUserDetailDataKey];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+            
+            User *userModel = [[User alloc] init];
+            [userModel setValuesForKeysWithDictionary:infoDict];
+            NSLog(@"userModel = %@",userModel);
+            NSDictionary *dict = [[NSUserDefaults standardUserDefaults] objectForKey:kUserDetailDataKey];
+            [HeSysbsModel getSysModel].user = userModel;
+            //刷新视图
+            userInfoModel = [HeSysbsModel getSysModel].user;
+            NSString *userHeader = [NSString stringWithFormat:@"%@/%@",HYTIMAGEURL,userInfoModel.userHeader];
+            [portrait sd_setImageWithURL:[NSURL URLWithString:userHeader] placeholderImage:[UIImage imageNamed:@"defalut_icon"]];
+            NSString *nickName = userInfoModel.userNick;
+            userNameL.text = nickName;
+            [myTableView reloadData];
+            
+        }
+    } failure:^(NSError* err){
+        
+    }];
 }
 
 - (void)loadUserOtherInfo
