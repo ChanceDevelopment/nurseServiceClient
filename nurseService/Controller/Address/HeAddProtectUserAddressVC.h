@@ -8,6 +8,14 @@
 
 #import "HeBaseViewController.h"
 
+@protocol AddProtectUserAddressProtocol <NSObject>
+
+- (void)addProtectUserAddressWithAddressInfo:(NSDictionary *)addressInfo;
+
+@end
+
+
 @interface HeAddProtectUserAddressVC : HeBaseViewController
+@property(assign,nonatomic)id<AddProtectUserAddressProtocol>addressDelegate;
 
 @end

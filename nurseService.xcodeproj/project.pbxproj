@@ -687,6 +687,8 @@
 		EAD0ADFD1E2DB846002893F4 /* icon_nocircle.png in Resources */ = {isa = PBXBuildFile; fileRef = EAD0ADFC1E2DB846002893F4 /* icon_nocircle.png */; };
 		EAD0ADFF1E2DB859002893F4 /* icon_circleclick.png in Resources */ = {isa = PBXBuildFile; fileRef = EAD0ADFE1E2DB859002893F4 /* icon_circleclick.png */; };
 		EAD0AE011E2DBB2B002893F4 /* icon_edit.png in Resources */ = {isa = PBXBuildFile; fileRef = EAD0AE001E2DBB2B002893F4 /* icon_edit.png */; };
+		EAD0AE031E2DECE9002893F4 /* icon_purple_reposition.png in Resources */ = {isa = PBXBuildFile; fileRef = EAD0AE021E2DECE9002893F4 /* icon_purple_reposition.png */; };
+		EAD0AE051E2DF9D1002893F4 /* icon_gray_address.png in Resources */ = {isa = PBXBuildFile; fileRef = EAD0AE041E2DF9D1002893F4 /* icon_gray_address.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1862,6 +1864,8 @@
 		EAD0ADFC1E2DB846002893F4 /* icon_nocircle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_nocircle.png; sourceTree = "<group>"; };
 		EAD0ADFE1E2DB859002893F4 /* icon_circleclick.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_circleclick.png; sourceTree = "<group>"; };
 		EAD0AE001E2DBB2B002893F4 /* icon_edit.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_edit.png; sourceTree = "<group>"; };
+		EAD0AE021E2DECE9002893F4 /* icon_purple_reposition.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_purple_reposition.png; sourceTree = "<group>"; };
+		EAD0AE041E2DF9D1002893F4 /* icon_gray_address.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_gray_address.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -2494,6 +2498,8 @@
 		EA8C897F1E21D1E10093657B /* Custom */ = {
 			isa = PBXGroup;
 			children = (
+				EAD0AE041E2DF9D1002893F4 /* icon_gray_address.png */,
+				EAD0AE021E2DECE9002893F4 /* icon_purple_reposition.png */,
 				EAD0AE001E2DBB2B002893F4 /* icon_edit.png */,
 				EAD0ADFE1E2DB859002893F4 /* icon_circleclick.png */,
 				EAD0ADFC1E2DB846002893F4 /* icon_nocircle.png */,
@@ -4539,6 +4545,7 @@
 				EAC2D8C61D4B063B00E282A8 /* arrow_down1.png in Resources */,
 				EA9F23FE1E2379A0001E4DE9 /* icon_name_authent.png in Resources */,
 				ADCC62471DFA9EB30065866C /* icon_myinvite.png in Resources */,
+				EAD0AE031E2DECE9002893F4 /* icon_purple_reposition.png in Resources */,
 				EA9F24021E237DBE001E4DE9 /* img_bg.png in Resources */,
 				EAC2D95E1D4B063B00E282A8 /* TZImagePickerController.bundle in Resources */,
 				EA9C6FE01E2519FC00096918 /* icon_verticalline.png in Resources */,
@@ -4669,6 +4676,7 @@
 				EAD0ADFD1E2DB846002893F4 /* icon_nocircle.png in Resources */,
 				EAC2D8D61D4B063B00E282A8 /* README.textile in Resources */,
 				ADCC621A1DFA851B0065866C /* down_blue@2x.png in Resources */,
+				EAD0AE051E2DF9D1002893F4 /* icon_gray_address.png in Resources */,
 				EAC2D4331D4B031500E282A8 /* Main.storyboard in Resources */,
 				EA899E311E23EE3F0008AA01 /* icon_phone.png in Resources */,
 				ADCC62451DFA9EB30065866C /* icon_integral_mall.png in Resources */,

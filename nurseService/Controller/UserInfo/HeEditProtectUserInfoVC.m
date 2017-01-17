@@ -13,12 +13,13 @@
 #import "FTPopOverMenu.h"
 #import "HeSelectProtectUserAddressVC.h"
 
-@interface HeEditProtectUserInfoVC ()<UITextFieldDelegate,UIActionSheetDelegate>
+@interface HeEditProtectUserInfoVC ()<UITextFieldDelegate,UIActionSheetDelegate,SelectAddressProtocol>
 {
     //用户性别 男 1 女 2
     ENUM_SEXType userSex;
     NSMutableDictionary *postUserInfo;
     NSString *releation;
+    NSString *userAddress;
 }
 @property(strong,nonatomic)IBOutlet UITableView *tableview;
 @property(strong,nonatomic)NSArray *dataSource;
@@ -322,15 +323,19 @@
             [cell addSubview:contentLabel];
             
             contentField.hidden = YES;
+            //地址不可编辑，取到专门的页面编辑
+            contentField.enabled = NO;
             if (isEdit) {
                 contentField.hidden = NO;
                 contentField.text  = [userInfoDict objectForKey:@"protectedAddress"];
             }
             else{
-                NSString *address = [HeSysbsModel getSysModel].addressResult.address;
-                contentLabel.text = address;
-                contentField.text = address;
-                [postUserInfo setObject:address forKey:@"key107"];
+                if (!userAddress) {
+                    userAddress = [HeSysbsModel getSysModel].addressResult.address;
+                }
+                contentLabel.text = userAddress;
+                contentField.text = userAddress;
+                [postUserInfo setObject:userAddress forKey:@"key107"];
             }
             break;
         }
@@ -407,6 +412,7 @@
         case 7:{
             //选择地址
             HeSelectProtectUserAddressVC *selectAddressVC = [[HeSelectProtectUserAddressVC alloc] init];
+            selectAddressVC.addressDeleage = self;
             selectAddressVC.hidesBottomBarWhenPushed = YES;
             [self.navigationController pushViewController:selectAddressVC animated:YES];
             break;
@@ -417,6 +423,17 @@
     NSLog(@"row = %ld , section = %ld",row,section);
 }
 
+- (void)selectAddressWithAddressInfo:(NSDictionary *)addressDcit
+{
+    NSString *address = addressDcit[@"address"];
+    if (isEdit) {
+        [userInfoDict setObject:address forKey:@"protectedAddress"];
+    }
+    else{
+        userAddress = address;
+    }
+    [tableview reloadData];
+}
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     if (actionSheet.tag == 100) {

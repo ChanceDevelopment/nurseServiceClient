@@ -43,6 +43,8 @@
 @property (nonatomic, weak) DOPDropDownMenu *menu;
 
 @property(strong,nonatomic)IBOutlet UITableView *tableview;
+@property(strong,nonatomic)IBOutlet UITableView *servicetableview;
+
 @property(strong,nonatomic)NSMutableArray *chooseArray;
 @property(strong,nonatomic)NSMutableArray *currentClassArray;
 @property(strong,nonatomic)IBOutlet UIView *sectionHeaderView;
@@ -66,6 +68,7 @@
 
 @implementation NurseViewController
 @synthesize tableview;
+@synthesize servicetableview;
 @synthesize currentClassArray;
 @synthesize sectionHeaderView;
 @synthesize chooseArray;
@@ -130,6 +133,16 @@
     [Tool setExtraCellLineHidden:tableview];
     tableview.backgroundView = nil;
     tableview.backgroundColor = [UIColor colorWithWhite:237.0 / 255.0 alpha:1.0];
+    
+    [Tool setExtraCellLineHidden:servicetableview];
+    servicetableview.backgroundView = nil;
+    servicetableview.backgroundColor = [UIColor colorWithWhite:237.0 / 255.0 alpha:1.0];
+    servicetableview.tag = 100;
+    servicetableview.hidden = YES;
+    
+    tableview.showsVerticalScrollIndicator = NO;
+    servicetableview.showsVerticalScrollIndicator = NO;
+    
     [self initSelectView];
     
     UIButton *searchButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 25, 25)];
@@ -503,6 +516,12 @@
 
 - (void)loadNurseService
 {
+    if ([_selectNurseIdArray count] == 0) {
+        servicetableview.hidden = YES;
+        [_serviceItemArray removeAllObjects];
+        [servicetableview reloadData];
+        return;
+    }
     NSString *requestUrl = [NSString stringWithFormat:@"%@/nurseAnduser/selectnurseprojectbyid.action",BASEURL];
     NSMutableString *nurseid = [[NSMutableString alloc] initWithCapacity:0];
     for (NSInteger index = 0; index < [_selectNurseIdArray count]; index++) {
@@ -526,8 +545,13 @@
                 jsonArray = [NSArray array];
             }
             _serviceItemArray = [[NSMutableArray alloc] initWithArray:jsonArray];
-            
-            [tableview reloadData];
+            if ([_serviceItemArray count] == 0) {
+                servicetableview.hidden = YES;
+            }
+            else{
+                servicetableview.hidden = NO;
+            }
+            [servicetableview reloadData];
         }
         else{
             NSString *data = respondDict[@"data"];
@@ -585,17 +609,15 @@
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    if (section == 1) {
+    if (tableView.tag == 100) {
         return [_serviceItemArray count];
     }
     return [dataSource count];
+    
 }
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    if ([_serviceItemArray count] > 0) {
-        return 2;
-    }
     return 1;
 }
 
@@ -604,7 +626,7 @@
     NSInteger row = indexPath.row;
     NSInteger section = indexPath.section;
     
-    if (section == 1) {
+    if (tableView.tag == 100) {
         CGSize cellsize = [tableView rectForRowAtIndexPath:indexPath].size;
         static NSString *cellIndentifier = @"HeServiceTableCell";
         HeServiceTableCell *cell  = [tableView cellForRowAtIndexPath:indexPath];
@@ -631,7 +653,7 @@
             contentImgurl = @"";
         }
         contentImgurl = [NSString stringWithFormat:@"%@/%@",HYTIMAGEURL,contentImgurl];
-        NSString *imageKey = [NSString stringWithFormat:@"%ld%ld_%@",section,row,contentImgurl];
+        NSString *imageKey = [NSString stringWithFormat:@"%ld%ld_%@_service",section,row,contentImgurl];
         UIImageView *imageview = [_imageCache objectForKey:imageKey];
         if (!imageview) {
             [cell.userImage sd_setImageWithURL:[NSURL URLWithString:contentImgurl] placeholderImage:[UIImage imageNamed:@"index2"]];
@@ -722,7 +744,7 @@
         nurseHeader = @"";
     }
     nurseHeader = [NSString stringWithFormat:@"%@/%@",HYTIMAGEURL,nurseHeader];
-    NSString *nurseHeaderKey = [NSString stringWithFormat:@"%ld%ld_%@",section,row,nurseHeader];
+    NSString *nurseHeaderKey = [NSString stringWithFormat:@"%ld%ld_%@_nurse",section,row,nurseHeader];
     UIImageView *imageview = [_imageCache objectForKey:nurseHeaderKey];
     if (!imageview) {
         [cell.userImage sd_setImageWithURL:[NSURL URLWithString:nurseHeader] placeholderImage:[UIImage imageNamed:@"defalut_icon"]];
@@ -777,12 +799,38 @@
     return 100;
 }
 
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    if (tableView.tag == 100 && [_serviceItemArray count] != 0) {
+        return 30;
+    }
+    return 0;
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+{
+    if (tableView.tag == 100 && [_serviceItemArray count] != 0) {
+        UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, 30)];
+        headerView.backgroundColor = [UIColor colorWithWhite:237.0 / 255.0 alpha:1.0];
+        UILabel *titleLabel = [[UILabel alloc] initWithFrame:headerView.bounds];
+        titleLabel.textColor = [UIColor colorWithWhite:150.0 / 255.0  alpha:1.0];
+        titleLabel.text = @"    护士可提供服务";
+        titleLabel.backgroundColor = [UIColor clearColor];
+        titleLabel.font = [UIFont systemFontOfSize:13.0];
+        [headerView addSubview:titleLabel];
+        
+        return headerView;
+    }
+    return nil;
+}
+
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     NSInteger row = indexPath.row;
     NSInteger section = indexPath.section;
-    if (section == 1) {
+    if (tableView.tag == 100) {
         return;
     }
     NSDictionary *dict = nil;

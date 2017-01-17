@@ -8,6 +8,13 @@
 
 #import "HeBaseViewController.h"
 
+@protocol SelectAddressProtocol <NSObject>
+
+- (void)selectAddressWithAddressInfo:(NSDictionary *)addressDcit;
+
+@end
+
 @interface HeSelectProtectUserAddressVC : HeBaseViewController
+@property(assign,nonatomic)id <SelectAddressProtocol>addressDeleage;
 
 @end

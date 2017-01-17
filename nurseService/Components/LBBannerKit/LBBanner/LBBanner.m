@@ -261,6 +261,7 @@
  */
 - (void)creatCustomPageControl {
     self.customPageCtrl = [[LBPageControl alloc] init];
+    self.customPageCtrl.tintColor = [UIColor redColor];
     self.customPageCtrl.frame = CGRectMake(0, self.height  - 20 - 40, self.width, 40);
     self.customPageCtrl.enabled = NO;
     [self addSubview:self.customPageCtrl];

@@ -11,6 +11,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="NurseViewController">
             <connections>
+                <outlet property="servicetableview" destination="h87-9L-QKV" id="wz3-YU-UiN"/>
                 <outlet property="tableview" destination="gb8-wK-lZt" id="3Zq-xX-Q6Z"/>
                 <outlet property="view" destination="iN0-l3-epB" id="dvG-f8-ScT"/>
             </connections>
@@ -28,13 +29,27 @@
                         <outlet property="delegate" destination="-1" id="fHm-L1-x4t"/>
                     </connections>
                 </tableView>
+                <tableView hidden="YES" clipsSubviews="YES" tag="100" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="h87-9L-QKV">
+                    <rect key="frame" x="0.0" y="427" width="375" height="240"/>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="240" id="sMf-JR-TBK"/>
+                    </constraints>
+                    <connections>
+                        <outlet property="dataSource" destination="-1" id="MwW-fZ-ndS"/>
+                        <outlet property="delegate" destination="-1" id="6v7-0M-en6"/>
+                    </connections>
+                </tableView>
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
                 <constraint firstItem="gb8-wK-lZt" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="44" id="CUM-D2-bdc"/>
+                <constraint firstAttribute="trailing" secondItem="h87-9L-QKV" secondAttribute="trailing" id="THo-cG-btn"/>
                 <constraint firstAttribute="trailing" secondItem="gb8-wK-lZt" secondAttribute="trailing" id="amD-Sa-bgJ"/>
                 <constraint firstAttribute="bottom" secondItem="gb8-wK-lZt" secondAttribute="bottom" id="bJI-ms-b9t"/>
+                <constraint firstItem="h87-9L-QKV" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="gq7-sc-Bt7"/>
                 <constraint firstItem="gb8-wK-lZt" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="oMY-vM-fxO"/>
+                <constraint firstAttribute="bottom" secondItem="h87-9L-QKV" secondAttribute="bottom" id="xT2-uU-tAr"/>
             </constraints>
             <point key="canvasLocation" x="59.5" y="154.5"/>
         </view>

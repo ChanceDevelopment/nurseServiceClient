@@ -9,17 +9,20 @@
 #import "HeSelectProtectUserAddressVC.h"
 #import "HeAddProtectUserAddressVC.h"
 #import "HeBaseTableViewCell.h"
+#import "HeSelectProtectedUserInfoCell.h"
 
-@interface HeSelectProtectUserAddressVC ()
+@interface HeSelectProtectUserAddressVC ()<AddProtectUserAddressProtocol>
 {
-    NSMutableArray *dataSource;
     NSArray *sectionArr;
 }
 @property (strong, nonatomic) IBOutlet UITableView *tableView;
+@property (strong,nonatomic)NSMutableArray *dataSource;
+
 @end
 
 @implementation HeSelectProtectUserAddressVC
 @synthesize tableView;
+@synthesize dataSource;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -45,6 +48,7 @@
     // Do any additional setup after loading the view from its nib.
     [self initializaiton];
     [self initView];
+    [self getDataSource];
 }
 
 - (void)initializaiton
@@ -57,13 +61,67 @@
 - (void)initView
 {
     [super initView];
+    tableView.backgroundView = nil;
+    tableView.backgroundColor = [UIColor colorWithWhite:237.0 / 255.0 alpha:1.0];
+    [Tool setExtraCellLineHidden:tableView];
+    tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+}
+
+- (void)getDataSource{
+    NSString *userid = [[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY];
+    
+    NSString *requestUrl = [NSString stringWithFormat:@"%@/protected/selectprotectedbyuserid.action",BASEURL];
+    NSDictionary * params  = @{@"userid": userid};
+    [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
+        NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
+        
+        NSDictionary *respondDict = [NSDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
+        if ([[[respondDict valueForKey:@"errorCode"] stringValue] isEqualToString:@"200"]) {
+            NSLog(@"success");
+            
+            NSArray *tempArr = [respondDict valueForKey:@"json"];
+            if ([tempArr isMemberOfClass:[NSNull class]] || tempArr == nil) {
+                tempArr = [NSArray array];
+            }
+            [dataSource removeAllObjects];
+            [dataSource addObjectsFromArray:tempArr];
+            [tableView reloadData];
+        }else{
+            NSString *errorInfo = [respondDict valueForKey:@"data"];
+            if ([errorInfo isMemberOfClass:[NSNull class]] || errorInfo == nil) {
+                errorInfo = ERRORREQUESTTIP;
+            }
+            [self showHint:errorInfo];
+            NSLog(@"faile");
+        }
+    } failure:^(NSError* err){
+        NSLog(@"err:%@",err);
+        [self.view makeToast:ERRORREQUESTTIP duration:2.0 position:@"center"];
+    }];
+}
+
+- (void)addProtectUserAddressWithAddressInfo:(NSDictionary *)addressInfo
+{
+    NSString *protectedAddress = addressInfo[@"address"];
+    if ([protectedAddress isMemberOfClass:[NSNull class]]) {
+        protectedAddress = @"";
+    }
+    NSDictionary *addressDict = @{@"address":protectedAddress};
+    [_addressDeleage selectAddressWithAddressInfo:addressDict];
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (IBAction)addUserAddress:(id)sender
 {
     HeAddProtectUserAddressVC *addProtectUserAddressVC = [[HeAddProtectUserAddressVC alloc] init];
+    addProtectUserAddressVC.addressDelegate = self;
     addProtectUserAddressVC.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:addProtectUserAddressVC animated:YES];
+}
+
+- (void)relocationButtonClick:(UIButton *)button
+{
+    [tableView reloadData];
 }
 
 
@@ -80,12 +138,12 @@
             return 1;
             break;
         case 2:
-            return 5;
+            return [dataSource count];
             break;
         default:
             break;
     }
-    return 5;
+    return 0;
 }
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -99,57 +157,136 @@
     NSInteger section = indexPath.section;
 
     
-    static NSString *cellIndentifier = @"OrderFinishedTableViewCell";
-    CGSize cellSize = [tableView rectForRowAtIndexPath:indexPath].size;
-//    NSDictionary *dict = [NSDictionary dictionaryWithDictionary:infoDic];
     
-    HeBaseTableViewCell *cell  = [tableView cellForRowAtIndexPath:indexPath];
-    if (!cell) {
-        cell = [[HeBaseTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIndentifier cellSize:cellSize];
-        cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    }
+    CGSize cellSize = [tableView rectForRowAtIndexPath:indexPath].size;
     
     switch (section) {
         case 0:
         {
-            UILabel *addressLabel = [[UILabel alloc] initWithFrame:CGRectMake(40, 0, 200, cellSize.height)];
+            static NSString *cellIndentifier = @"HeBaseTableViewCell";
+            HeBaseTableViewCell *cell  = [tableView cellForRowAtIndexPath:indexPath];
+            if (!cell) {
+                cell = [[HeBaseTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIndentifier cellSize:cellSize];
+                cell.selectionStyle = UITableViewCellSelectionStyleNone;
+            }
+            CGFloat addressIconX = 10;
+            CGFloat addressIconW = 25;
+            CGFloat addressIconH = 25;
+            CGFloat addressIconY = (cellSize.height - addressIconH) / 2.0;
+            UIImageView *addressIcon = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"icon_address"]];
+            addressIcon.frame = CGRectMake(addressIconX, addressIconY, addressIconW, addressIconH);
+            [cell addSubview:addressIcon];
+            
+            NSString *currentAddress = [HeSysbsModel getSysModel].addressResult.address;
+            CGFloat addressLabelX = CGRectGetMaxX(addressIcon.frame);
+            CGFloat addressLabelY = 0;
+            CGFloat addressLabelW = SCREENWIDTH - addressLabelX - 110;
+            CGFloat addressLabelH = cellSize.height;
+            
+            UILabel *addressLabel = [[UILabel alloc] initWithFrame:CGRectMake(addressLabelX, addressLabelY, addressLabelW, addressLabelH)];
+            addressLabel.numberOfLines = 2;
             addressLabel.backgroundColor = [UIColor clearColor];
-            addressLabel.numberOfLines = 0;
-            addressLabel.text = @"中国浙江";
-            addressLabel.font = [UIFont systemFontOfSize:15.0];
+            addressLabel.text = currentAddress;
+            addressLabel.font = [UIFont systemFontOfSize:13.0];
             addressLabel.textColor = [UIColor blackColor];
             [cell addSubview:addressLabel];
+            
+            
+            CGFloat relocationButtonY = 0;
+            CGFloat relocationButtonH = cellSize.height;
+            CGFloat relocationButtonW = 80;
+            CGFloat relocationButtonX = SCREENWIDTH - relocationButtonW - 10;
+            
+            UIButton *relocationButton = [[UIButton alloc] initWithFrame:CGRectMake(relocationButtonX, relocationButtonY, relocationButtonW, relocationButtonH)];
+            [relocationButton setTitle:@"重新定位" forState:UIControlStateNormal];
+            relocationButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight;
+            [relocationButton setTitleColor:APPDEFAULTORANGE forState:UIControlStateNormal];
+            relocationButton.titleLabel.font = [UIFont systemFontOfSize:14.0];
+            [relocationButton addTarget:self action:@selector(relocationButtonClick:) forControlEvents:UIControlEventTouchUpInside];
+            [cell addSubview:relocationButton];
+            
+            UIImageView *image = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"icon_purple_reposition"]];
+            image.frame = CGRectMake(0, (cellSize.height - 20) / 2.0, 20, 20);
+            [relocationButton addSubview:image];
+            
+            return cell;
         }
             break;
         case 1:
         {
-            UIButton *addressBt = [[UIButton alloc] initWithFrame:CGRectMake(10, 5, 50, 25)];
+            static NSString *cellIndentifier = @"HeBaseTableViewCell";
+            HeBaseTableViewCell *cell  = [tableView cellForRowAtIndexPath:indexPath];
+            if (!cell) {
+                cell = [[HeBaseTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIndentifier cellSize:cellSize];
+                cell.selectionStyle = UITableViewCellSelectionStyleNone;
+            }
+            
+            UIButton *addressBt = [[UIButton alloc] initWithFrame:CGRectMake(10, 10, 80, 25)];
             [addressBt setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
             [addressBt setTitle:@"杭州" forState:UIControlStateNormal];
             addressBt.layer.cornerRadius = 4.0;//2.0是圆角的弧度，根据需求自己更改
             addressBt.layer.borderWidth = 1.0f;
-            addressBt.layer.borderColor = [[UIColor colorWithRed:152.0 / 255.0 green:67.0 / 255.0 blue:141.0 / 255.0 alpha:1.0] CGColor];
-//            [addressBt addTarget:self action:@selector(saveAction) forControlEvents:UIControlEventTouchUpInside];
+            addressBt.titleLabel.font = [UIFont systemFontOfSize:15.0];
+            addressBt.layer.borderColor = APPDEFAULTORANGE.CGColor;
             addressBt.backgroundColor = [UIColor clearColor];
             [cell addSubview:addressBt];
 
+            return cell;
         }
             break;
         case 2:
         {
-            UILabel *userInfoLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, cellSize.width-20, 44)];
-            userInfoLabel.backgroundColor = [UIColor clearColor];
-            userInfoLabel.text = @"艾米 女士 2345678909";
-            userInfoLabel.font = [UIFont systemFontOfSize:15.0];
-            userInfoLabel.textColor = [UIColor blackColor];
-            [cell addSubview:userInfoLabel];
+            NSInteger row = indexPath.row;
+            NSInteger section = indexPath.section;
             
-            UILabel *addressLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 44, cellSize.width-20, 44)];
-            addressLabel.backgroundColor = [UIColor clearColor];
-            addressLabel.text = @"中国浙江";
-            addressLabel.font = [UIFont systemFontOfSize:15.0];
-            addressLabel.textColor = [UIColor blackColor];
-            [cell addSubview:addressLabel];
+            static NSString *cellIndentifier = @"HeProtectUserInfoTableCell";
+            CGSize cellSize = [tableView rectForRowAtIndexPath:indexPath].size;
+            
+            NSDictionary *dict = nil;
+            @try {
+                dict = dataSource[row];
+            } @catch (NSException *exception) {
+                
+            } @finally {
+                
+            }
+            HeSelectProtectedUserInfoCell *cell  = [tableView cellForRowAtIndexPath:indexPath];
+            if (!cell) {
+                cell = [[HeSelectProtectedUserInfoCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIndentifier cellSize:cellSize];
+                cell.selectionStyle = UITableViewCellSelectionStyleNone;
+            }
+            NSString *name = [dict valueForKey:@"protectedPersonName"];
+            NSString *sex = [[dict valueForKey:@"protectedPersonSex"] isEqualToString:@"1"] ? @"男" : @"女";
+            NSString *protectedPersonAge = [dict valueForKey:@"protectedPersonAge"];
+            
+            CGFloat baseInfoLabelX = 10;
+            CGFloat baseInfoLabelY = 10;
+            CGFloat baseInfoLabelW = SCREENWIDTH - 2 * baseInfoLabelX;
+            CGFloat baseInfoLabelH = 30;
+            UILabel *baseInfoLabel = [[UILabel alloc] initWithFrame:CGRectMake(baseInfoLabelX, baseInfoLabelY, baseInfoLabelW, baseInfoLabelH)];
+            baseInfoLabel.backgroundColor = [UIColor clearColor];
+            baseInfoLabel.textColor = [UIColor blackColor];
+            baseInfoLabel.font = [UIFont systemFontOfSize:15.0];
+            baseInfoLabel.text = [NSString stringWithFormat:@"%@  %@  %@",name,sex,protectedPersonAge];
+            [cell addSubview:baseInfoLabel];
+            
+            NSString *protectedAddress = dict[@"protectedAddress"];
+            if ([protectedAddress isMemberOfClass:[NSNull class]]) {
+                protectedAddress = @"";
+            }
+            
+            CGFloat addressInfoLabelX = 10;
+            CGFloat addressInfoLabelY = CGRectGetMaxY(baseInfoLabel.frame);
+            CGFloat addressInfoLabelW = SCREENWIDTH - 2 * baseInfoLabelX;
+            CGFloat addressInfoLabelH = 30;
+            UILabel *addressInfoLabel = [[UILabel alloc] initWithFrame:CGRectMake(addressInfoLabelX, addressInfoLabelY, addressInfoLabelW, addressInfoLabelH)];
+            addressInfoLabel.backgroundColor = [UIColor clearColor];
+            addressInfoLabel.textColor = [UIColor blackColor];
+            addressInfoLabel.font = [UIFont systemFontOfSize:15.0];
+            addressInfoLabel.text = protectedAddress;
+            [cell addSubview:addressInfoLabel];
+            
+            return  cell;
             
         }
             break;
@@ -158,7 +295,6 @@
             break;
     }
 
-    return cell;
     return nil;
 }
 
@@ -173,10 +309,10 @@
             return 50;
             break;
         case 1:
-            return 90;
+            return 45;
             break;
         case 2:
-            return 90;
+            return 80;
             break;
         default:
             break;
@@ -187,22 +323,22 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    return 30;
+    return 40;
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
     
     UIView *v = nil;
 
-    v = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 30)];
+    v = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 40)];
     v.userInteractionEnabled = YES;
     [v setBackgroundColor:[UIColor colorWithWhite:244.0 / 255.0 alpha:1.0]];
     
-    UILabel *labelTitle = [[UILabel alloc] initWithFrame:CGRectMake(10.0f, 0.0f, 200.0f, 30.0f)];
+    UILabel *labelTitle = [[UILabel alloc] initWithFrame:CGRectMake(10.0f, 0.0f, 200.0f, 40)];
     [labelTitle setBackgroundColor:[UIColor clearColor]];
     labelTitle.text = sectionArr[section];
     labelTitle.userInteractionEnabled = YES;
-    labelTitle.font = [UIFont systemFontOfSize:12.0];
+    labelTitle.font = [UIFont systemFontOfSize:13.0];
     labelTitle.textColor = [UIColor lightGrayColor];
     [v addSubview:labelTitle];
     return v;
@@ -215,39 +351,25 @@
     NSInteger section = indexPath.section;
     
     NSLog(@"row = %ld, section = %ld",row,section);
-}
-
-
-
-- (void)getDataSource{
-    NSString *userid = [[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY];
-    
-    NSString *requestUrl = [NSString stringWithFormat:@"%@/protected/selectprotectedbyuserid.action",BASEURL];
-    NSDictionary * params  = @{@"userid": userid};
-    [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
-        NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
-        
-        NSDictionary *respondDict = [NSDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
-        if ([[[respondDict valueForKey:@"errorCode"] stringValue] isEqualToString:@"200"]) {
-            NSLog(@"success");
-            NSArray *tempArr = [NSArray arrayWithArray:[respondDict valueForKey:@"json"]];
-            if (dataSource.count > 0) {
-                [dataSource addObjectsFromArray:tempArr];
-                [tableView reloadData];
-            }
-        }else{
-            NSString *errorInfo = [respondDict valueForKey:@"data"];
-            if ([errorInfo isMemberOfClass:[NSNull class]] || errorInfo == nil) {
-                errorInfo = ERRORREQUESTTIP;
-            }
-            [self showHint:errorInfo];
-            NSLog(@"faile");
+    if (section == 2) {
+        NSDictionary *dict = nil;
+        @try {
+            dict = dataSource[row];
+        } @catch (NSException *exception) {
+            
+        } @finally {
+            
         }
-    } failure:^(NSError* err){
-        NSLog(@"err:%@",err);
-        [self.view makeToast:ERRORREQUESTTIP duration:2.0 position:@"center"];
-    }];
+        NSString *protectedAddress = dict[@"protectedAddress"];
+        if ([protectedAddress isMemberOfClass:[NSNull class]]) {
+            protectedAddress = @"";
+        }
+        NSDictionary *addressDict = @{@"address":protectedAddress};
+        [_addressDeleage selectAddressWithAddressInfo:addressDict];
+        [self.navigationController popViewControllerAnimated:YES];
+    }
 }
+
 
 
 - (void)didReceiveMemoryWarning {

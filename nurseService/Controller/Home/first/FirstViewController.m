@@ -112,7 +112,6 @@
     UIImage *arrowImage = [UIImage imageNamed:@"icon_white_down"];
     [addressButton setImage:arrowImage forState:UIControlStateNormal];
     // 设置按钮图片偏移
-    // 设置按钮标题偏移
     [addressButton setTitleEdgeInsets:UIEdgeInsetsMake(0.0,-addressButton.imageView.bounds.size.width, 0.0,addressButton.imageView.bounds.size.width)];
     [addressButton setImageEdgeInsets:UIEdgeInsetsMake(0.0, addressButton.titleLabel.bounds.size.width, 0.0, -addressButton.titleLabel.bounds.size.width)];
     

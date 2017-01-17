@@ -358,6 +358,7 @@
             [_locService stopUserLocationService];
             
             BMKReverseGeoCodeOption *reverseGeoCodeOption = [[BMKReverseGeoCodeOption alloc] init];
+            
             reverseGeoCodeOption.reverseGeoPoint = coordinate;
             _geoSearch.delegate = self;
             //进行反地理编码
