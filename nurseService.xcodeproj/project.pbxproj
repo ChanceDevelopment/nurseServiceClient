@@ -105,6 +105,13 @@
 		EA34D7A91E236C1D00CD8BC5 /* UWDatePickerView.m in Sources */ = {isa = PBXBuildFile; fileRef = EA34D7A71E236C1D00CD8BC5 /* UWDatePickerView.m */; };
 		EA34D7AA1E236C1D00CD8BC5 /* UWDatePickerView.xib in Resources */ = {isa = PBXBuildFile; fileRef = EA34D7A81E236C1D00CD8BC5 /* UWDatePickerView.xib */; };
 		EA34D7AD1E236E7200CD8BC5 /* HeServiceTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = EA34D7AC1E236E7200CD8BC5 /* HeServiceTableCell.m */; };
+		EA4567721E2FB78100480A95 /* HeBalanceDetailVC.m in Sources */ = {isa = PBXBuildFile; fileRef = EA4567701E2FB78100480A95 /* HeBalanceDetailVC.m */; };
+		EA4567731E2FB78100480A95 /* HeBalanceDetailVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = EA4567711E2FB78100480A95 /* HeBalanceDetailVC.xib */; };
+		EA4567771E2FB7B900480A95 /* HeSettingPayPasswordVC.m in Sources */ = {isa = PBXBuildFile; fileRef = EA4567751E2FB7B900480A95 /* HeSettingPayPasswordVC.m */; };
+		EA4567781E2FB7B900480A95 /* HeSettingPayPasswordVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = EA4567761E2FB7B900480A95 /* HeSettingPayPasswordVC.xib */; };
+		EA45677B1E2FB86400480A95 /* HeBalanceDetailCell.m in Sources */ = {isa = PBXBuildFile; fileRef = EA45677A1E2FB86400480A95 /* HeBalanceDetailCell.m */; };
+		EA45677F1E2FDDF600480A95 /* HeBalanceEditVC.m in Sources */ = {isa = PBXBuildFile; fileRef = EA45677D1E2FDDF600480A95 /* HeBalanceEditVC.m */; };
+		EA4567801E2FDDF600480A95 /* HeBalanceEditVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = EA45677E1E2FDDF600480A95 /* HeBalanceEditVC.xib */; };
 		EA51EE2E1E2D10B80002D2BC /* icon_checkboxNormal.png in Resources */ = {isa = PBXBuildFile; fileRef = EA51EE2D1E2D10B80002D2BC /* icon_checkboxNormal.png */; };
 		EA51EE321E2D224C0002D2BC /* HeSelectProtectedUserInfoVC.m in Sources */ = {isa = PBXBuildFile; fileRef = EA51EE301E2D224C0002D2BC /* HeSelectProtectedUserInfoVC.m */; };
 		EA51EE331E2D224C0002D2BC /* HeSelectProtectedUserInfoVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = EA51EE311E2D224C0002D2BC /* HeSelectProtectedUserInfoVC.xib */; };
@@ -858,6 +865,17 @@
 		EA34D7A81E236C1D00CD8BC5 /* UWDatePickerView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = UWDatePickerView.xib; sourceTree = "<group>"; };
 		EA34D7AB1E236E7200CD8BC5 /* HeServiceTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HeServiceTableCell.h; sourceTree = "<group>"; };
 		EA34D7AC1E236E7200CD8BC5 /* HeServiceTableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HeServiceTableCell.m; sourceTree = "<group>"; };
+		EA45676F1E2FB78100480A95 /* HeBalanceDetailVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HeBalanceDetailVC.h; sourceTree = "<group>"; };
+		EA4567701E2FB78100480A95 /* HeBalanceDetailVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HeBalanceDetailVC.m; sourceTree = "<group>"; };
+		EA4567711E2FB78100480A95 /* HeBalanceDetailVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HeBalanceDetailVC.xib; sourceTree = "<group>"; };
+		EA4567741E2FB7B900480A95 /* HeSettingPayPasswordVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HeSettingPayPasswordVC.h; sourceTree = "<group>"; };
+		EA4567751E2FB7B900480A95 /* HeSettingPayPasswordVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HeSettingPayPasswordVC.m; sourceTree = "<group>"; };
+		EA4567761E2FB7B900480A95 /* HeSettingPayPasswordVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HeSettingPayPasswordVC.xib; sourceTree = "<group>"; };
+		EA4567791E2FB86400480A95 /* HeBalanceDetailCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HeBalanceDetailCell.h; sourceTree = "<group>"; };
+		EA45677A1E2FB86400480A95 /* HeBalanceDetailCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HeBalanceDetailCell.m; sourceTree = "<group>"; };
+		EA45677C1E2FDDF600480A95 /* HeBalanceEditVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HeBalanceEditVC.h; sourceTree = "<group>"; };
+		EA45677D1E2FDDF600480A95 /* HeBalanceEditVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HeBalanceEditVC.m; sourceTree = "<group>"; };
+		EA45677E1E2FDDF600480A95 /* HeBalanceEditVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HeBalanceEditVC.xib; sourceTree = "<group>"; };
 		EA51EE2D1E2D10B80002D2BC /* icon_checkboxNormal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_checkboxNormal.png; sourceTree = "<group>"; };
 		EA51EE2F1E2D224C0002D2BC /* HeSelectProtectedUserInfoVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HeSelectProtectedUserInfoVC.h; sourceTree = "<group>"; };
 		EA51EE301E2D224C0002D2BC /* HeSelectProtectedUserInfoVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HeSelectProtectedUserInfoVC.m; sourceTree = "<group>"; };
@@ -2370,6 +2388,8 @@
 		EA0EC7F11E24B57600E5440D /* UserInfo */ = {
 			isa = PBXGroup;
 			children = (
+				EA4567791E2FB86400480A95 /* HeBalanceDetailCell.h */,
+				EA45677A1E2FB86400480A95 /* HeBalanceDetailCell.m */,
 				EA0EC7F21E24B5C200E5440D /* HeProtectUserInfoTableCell.h */,
 				EA0EC7F31E24B5C200E5440D /* HeProtectUserInfoTableCell.m */,
 				EA51EE341E2D26DB0002D2BC /* HeSelectProtectedUserInfoCell.h */,
@@ -4451,9 +4471,18 @@
 		EACA0EE01E266719009B4516 /* Balance */ = {
 			isa = PBXGroup;
 			children = (
+				EA45677C1E2FDDF600480A95 /* HeBalanceEditVC.h */,
+				EA45677D1E2FDDF600480A95 /* HeBalanceEditVC.m */,
+				EA45677E1E2FDDF600480A95 /* HeBalanceEditVC.xib */,
+				EA45676F1E2FB78100480A95 /* HeBalanceDetailVC.h */,
+				EA4567701E2FB78100480A95 /* HeBalanceDetailVC.m */,
+				EA4567711E2FB78100480A95 /* HeBalanceDetailVC.xib */,
 				EACA0EEF1E2669B9009B4516 /* HeUserBalanceVC.h */,
 				EACA0EF01E2669B9009B4516 /* HeUserBalanceVC.m */,
 				EACA0EF11E2669B9009B4516 /* HeUserBalanceVC.xib */,
+				EA4567741E2FB7B900480A95 /* HeSettingPayPasswordVC.h */,
+				EA4567751E2FB7B900480A95 /* HeSettingPayPasswordVC.m */,
+				EA4567761E2FB7B900480A95 /* HeSettingPayPasswordVC.xib */,
 			);
 			path = Balance;
 			sourceTree = "<group>";
@@ -4601,6 +4630,7 @@
 				EA9F23FE1E2379A0001E4DE9 /* icon_name_authent.png in Resources */,
 				ADCC62471DFA9EB30065866C /* icon_myinvite.png in Resources */,
 				EAD0AE031E2DECE9002893F4 /* icon_purple_reposition.png in Resources */,
+				EA4567781E2FB7B900480A95 /* HeSettingPayPasswordVC.xib in Resources */,
 				EA9F24021E237DBE001E4DE9 /* img_bg.png in Resources */,
 				EAC2D95E1D4B063B00E282A8 /* TZImagePickerController.bundle in Resources */,
 				EA9C6FE01E2519FC00096918 /* icon_verticalline.png in Resources */,
@@ -4749,6 +4779,7 @@
 				EAC2D87C1D4B063B00E282A8 /* whiteArrow.png in Resources */,
 				EA899E391E23F3920008AA01 /* icon_picc.png in Resources */,
 				EAC2D8A21D4B063B00E282A8 /* LICENSE in Resources */,
+				EA4567801E2FDDF600480A95 /* HeBalanceEditVC.xib in Resources */,
 				EA34D7951E23270800CD8BC5 /* icon_agree.png in Resources */,
 				AD6C8F311DF9CFE200C44A8A /* icon_nursing_workers.png in Resources */,
 				EA9456681E2735A3001E969A /* icon_money_white.png in Resources */,
@@ -4793,6 +4824,7 @@
 				EA8A7F751E2F437A007CEC56 /* icon_elect_onic_report.png in Resources */,
 				EACA0F1D1E267C94009B4516 /* icon_infromation.png in Resources */,
 				EA8C89AA1E21DE1A0093657B /* tabbar_normal_background@2x.png in Resources */,
+				EA4567731E2FB78100480A95 /* HeBalanceDetailVC.xib in Resources */,
 				EA8C89B71E21E70C0093657B /* OrderViewController.xib in Resources */,
 				ADCC62481DFA9EB30065866C /* icon_order_center.png in Resources */,
 				EA8C899E1E21D78C0093657B /* icon_look.png in Resources */,
@@ -4902,6 +4934,7 @@
 				AD6C8EED1DF9C7C100C44A8A /* HomeTabbarController.m in Sources */,
 				EAC2D8AD1D4B063B00E282A8 /* MJRefreshBackStateFooter.m in Sources */,
 				EAC2D9681D4B063B00E282A8 /* UIButton+associate.m in Sources */,
+				EA4567721E2FB78100480A95 /* HeBalanceDetailVC.m in Sources */,
 				EAC2D84D1D4B063B00E282A8 /* LXActionSheet.m in Sources */,
 				EAC2D8D81D4B063B00E282A8 /* RACEXTRuntimeExtensions.m in Sources */,
 				EAC2D8EA1D4B063B00E282A8 /* NSString+RACSequenceAdditions.m in Sources */,
@@ -5030,6 +5063,7 @@
 				EAC2D9441D4B063B00E282A8 /* UIImageView+HighlightedWebCache.m in Sources */,
 				EAC2D8951D4B063B00E282A8 /* KxMenu.m in Sources */,
 				EAC2D8721D4B063B00E282A8 /* i2KEPCSingleComponentPickerView.m in Sources */,
+				EA45677B1E2FB86400480A95 /* HeBalanceDetailCell.m in Sources */,
 				EAC2D8A11D4B063B00E282A8 /* README.md in Sources */,
 				EAC2D8201D4B063B00E282A8 /* AFURLResponseSerialization.m in Sources */,
 				EAC2D8CC1D4B063B00E282A8 /* SIMenuConfiguration.m in Sources */,
@@ -5087,6 +5121,7 @@
 				EA8C89901E21D4B60093657B /* UIView+Toast.m in Sources */,
 				EAC2D9191D4B063B00E282A8 /* RACTargetQueueScheduler.m in Sources */,
 				EAC2D8EE1D4B063B00E282A8 /* RACArraySequence.m in Sources */,
+				EA4567771E2FB7B900480A95 /* HeSettingPayPasswordVC.m in Sources */,
 				EAC2D8481D4B063B00E282A8 /* DFBaseResponse.m in Sources */,
 				EA34D7921E23244D00CD8BC5 /* HeOrderCommitVC.m in Sources */,
 				EAC2D88E1D4B063B00E282A8 /* NSArray+Sort.m in Sources */,
@@ -5149,6 +5184,7 @@
 				EAC2D95C1D4B063B00E282A8 /* TZAssetModel.m in Sources */,
 				EAC2D8DB1D4B063B00E282A8 /* NSDictionary+RACSequenceAdditions.m in Sources */,
 				EAC2D8F01D4B063B00E282A8 /* RACBehaviorSubject.m in Sources */,
+				EA45677F1E2FDDF600480A95 /* HeBalanceEditVC.m in Sources */,
 				EA9F72771E22799200FED4A3 /* HeUserLocatiVC.m in Sources */,
 				EAC2D88C1D4B063B00E282A8 /* IQTitleBarButtonItem.m in Sources */,
 				ADCC62361DFA93990065866C /* Tools.m in Sources */,

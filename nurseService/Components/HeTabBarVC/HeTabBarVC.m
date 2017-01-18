@@ -41,6 +41,7 @@
     // Do any additional setup after loading the view from its nib.
     //获取用户资料
     [self getUserInfoWithUserID:[[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY]];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getUserPayInfo) name:kUpdateUserPayInfoNotificaiton object:nil];
     //获取左边侧栏的菜单
     [self loadLeftMenu];
     [self autoLogin];
@@ -52,6 +53,8 @@
     [self getHospitalData];
     //获取专业分类数据
     [self getMajorData];
+    [self getUserPayInfo];
+    
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -59,6 +62,39 @@
     [super viewWillDisappear:YES];
     [_locService stopUserLocationService];
     _geoSearch.delegate = nil;
+}
+
+- (void)getUserPayInfo
+{
+    NSString *userId = [[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY];
+    if (!userId) {
+        userId = @"";
+    }
+    NSDictionary * params  = @{@"userId":userId};
+    NSString *requestUrl = [NSString stringWithFormat:@"%@/nurseAnduser/selectUserThreeInfo.action",BASEURL];
+    [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
+        
+        NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
+        NSDictionary *respondDict = [NSDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
+        if ([[respondDict valueForKey:@"errorCode"] integerValue] == REQUESTCODE_SUCCEED){
+            NSDictionary *payInfo = respondDict[@"json"];
+            NSMutableDictionary *dict = [[NSMutableDictionary alloc] initWithDictionary:payInfo];
+            NSArray *keyArray = dict.allKeys;
+            for (NSString *key in keyArray) {
+                id obj = dict[key];
+                if ([obj isMemberOfClass:[NSNull class]] || obj == nil) {
+                    obj = @"";
+                }
+                [dict setObject:obj forKey:key];
+            }
+            payInfo = [[NSDictionary alloc] initWithDictionary:dict];
+            [[NSUserDefaults standardUserDefaults] setObject:payInfo forKey:kUserPayInfoKey];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+        }
+        
+    } failure:^(NSError* err){
+        
+    }];
 }
 
 - (void)initLocationService
@@ -414,6 +450,10 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kUpdateUserPayInfoNotificaiton object:nil];
+}
 /*
 #pragma mark - Navigation
 

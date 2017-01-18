@@ -93,6 +93,7 @@
 - (void)initialization
 {
     [super initializaiton];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUserBalanceInfo:) name:kUpdateUserPayInfoNotificaiton object:nil];
     iconArr = @[@"icon_protected_person_gray",@"icon_report_gray",@"icon_order_center_gray",@"icon_favorites_gray",@"icon_myinvite_gray",@"icon_aboutus_gray",@"icon_advice_gray"];
     tableItemArr = @[@"被受护人信息",@"护理报告",@"订单中心",@"收藏夹",@"我的邀请",@"关于我们",@"投诉建议"];
     viewControllerArray = @[@"HeProtectedUserInfoVC",@"HeOrderReportVC",@"HeUserOrderVC",@"HeUserFavouriteVC",@"HeUserInviteVC",@"HeAboutUsVC",@"HeReportVC"];
@@ -336,8 +337,11 @@
 - (void)updateUserInfo:(NSNotification *)notification
 {
     [self getUserInfoWithUserID:[[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY]];
-    
-    
+}
+
+- (void)updateUserBalanceInfo:(NSNotification *)notification
+{
+
 }
 
 //获取用户的信息
@@ -474,6 +478,15 @@
         NSInteger point = [userInfoModel.userMark integerValue];
         
         balanceNumLabel.text = [NSString stringWithFormat:@"%.2f元",balance];
+        if (balance > 100000000) {
+            balance = balance / 100000000.0;
+            balanceNumLabel.text = [NSString stringWithFormat:@"%.2f亿元",balance];
+        }
+        else if (balance > 10000){
+            balance = balance / 10000.0;
+            balanceNumLabel.text = [NSString stringWithFormat:@"%.2f万元",balance];
+        }
+        
         couponNumLabel.text = [NSString stringWithFormat:@"%ld张",couponNum];
         pointNumLabel.text = [NSString stringWithFormat:@"%ld分",point];
     }
@@ -505,6 +518,7 @@
 {
     NSLog(@"signAccount");
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:USERACCOUNTKEY];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:USERIDKEY];
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:kUserDataKey];
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:kUserDetailDataKey];
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:USERIDKEY];
@@ -796,6 +810,10 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kUpdateUserInfoNotification object:nil];
+}
 /*
 #pragma mark - Navigation
 

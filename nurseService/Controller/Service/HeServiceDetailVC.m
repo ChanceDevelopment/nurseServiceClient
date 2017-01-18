@@ -35,7 +35,7 @@
 #define MAX_row 3
 #define IMAGEWIDTH 70
 
-@interface HeServiceDetailVC ()<DeleteImageProtocol,UITableViewDelegate,UITableViewDataSource,LBBannerDelegate,UIWebViewDelegate,UIAlertViewDelegate,UWDatePickerViewDelegate,SelectProtectUserInfoProtocol,TZImagePickerControllerDelegate,UINavigationControllerDelegate,UIImagePickerControllerDelegate,UIAlertViewDelegate,UIActionSheetDelegate>
+@interface HeServiceDetailVC ()<DeleteImageProtocol,UITableViewDelegate,UITableViewDataSource,LBBannerDelegate,UIWebViewDelegate,UIAlertViewDelegate,UWDatePickerViewDelegate,SelectProtectUserInfoProtocol,TZImagePickerControllerDelegate,UINavigationControllerDelegate,UIImagePickerControllerDelegate,UIAlertViewDelegate,UIActionSheetDelegate,UITextFieldDelegate>
 {
     BOOL currentSelectBanner;
     BOOL isBook;// YES:加入预约框 No:立即预约
@@ -377,13 +377,15 @@
         
         titleLabelX2 = CGRectGetMaxX(titleLabel2.frame);
         titleLabelW2 = SCREENWIDTH - 20 - titleLabelX2;
-        UILabel *tipLabel2 = [[UILabel alloc] initWithFrame:CGRectMake(titleLabelX2, titleLabelY2, titleLabelW2, titleLabelH2)];
+        UITextField *tipLabel2 = [[UITextField alloc] initWithFrame:CGRectMake(titleLabelX2, titleLabelY2, titleLabelW2, titleLabelH2)];
+        tipLabel2.tag = 2400;
         tipLabel2.backgroundColor = [UIColor clearColor];
         tipLabel2.font = [UIFont systemFontOfSize:15.0];
         tipLabel2.textColor = [UIColor grayColor];
-        tipLabel2.text = @"病史、禁忌、特殊说明";
-        tipLabel2.textAlignment = NSTextAlignmentRight;
-        tipLabel2.backgroundColor = [UIColor clearColor];
+        tipLabel2.placeholder = @"病史、禁忌、特殊说明";
+        tipLabel2.delegate = self;
+//        tipLabel2.textAlignment = NSTextAlignmentRight;
+//        tipLabel2.backgroundColor = [UIColor clearColor];
         [remarkView addSubview:tipLabel2];
         
         UIImage *historySelectedImage = [UIImage imageNamed:@"icon_checkbox"];
@@ -547,6 +549,13 @@
     return _selectMenuBgView;
 }
 
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    if ([textField isFirstResponder]) {
+        [textField resignFirstResponder];
+    }
+    return YES;
+}
 
 - (void)initView
 {
@@ -1048,10 +1057,14 @@
             [orderSendUserpic appendFormat:@",%@",base64String];
         }
     }
-    
+    UITextField *field = (UITextField *)[_selectMenuBgView viewWithTag:2400];
+    NSString *mark = field.text;
     NSString *orderSendNote	= @"家中有小孩";
     if (!isHaveSomeProblem) {
         orderSendNote = @"";
+    }
+    if (![mark isEqualToString:@""] && mark != nil) {
+        orderSendNote = [NSString stringWithFormat:@"%@,%@",mark,orderSendNote];
     }
     NSString *orderSendCoupon = @"";
     NSString *orderSendTrafficmoney	= @"30.00";

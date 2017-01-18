@@ -9,6 +9,7 @@
 #import "HeOrderReportDetailVC.h"
 #import "HeBaseTableViewCell.h"
 #import "ReportCell.h"
+#import "BrowserView.h"
 
 @interface HeOrderReportDetailVC ()<UITableViewDelegate,UITableViewDataSource>
 @property(strong,nonatomic)IBOutlet UITableView *tableview;
@@ -125,6 +126,17 @@
     CGFloat cellH = 150;
     CGFloat cellW = SCREENWIDTH;
     
+    NSMutableArray *arrowImageArray = [[NSMutableArray alloc] initWithCapacity:0];
+    [arrowImageArray addObject:@"icon_left_arrow"];
+    [arrowImageArray addObject:@"icon_left_arrow_two"];
+    [arrowImageArray addObject:@"icon_left_arrow_three"];
+    
+    NSMutableArray *colorArray = [[NSMutableArray alloc] initWithCapacity:0];
+    [colorArray addObject:APPDEFAULTORANGE];
+    [colorArray addObject:RGB(71, 100, 160, 1)];
+    [colorArray addObject:RGB(73, 161, 118, 1)];
+    
+
     for (NSInteger index = 0; index < [reportArray count]; index++) {
         NSDictionary *reportDict = reportArray[index];
         
@@ -145,6 +157,9 @@
         if ([orderSendServicecontent isMemberOfClass:[NSNull class]] || orderSendServicecontent == nil) {
             orderSendServicecontent = @"";
         }
+        NSArray *orderSendServicecontentArray = [orderSendServicecontent componentsSeparatedByString:@":"];
+        orderSendServicecontent = orderSendServicecontentArray[0];
+        
         NSString *nurseNick = reportDict[@"nurseNick"];
         if ([nurseNick isMemberOfClass:[NSNull class]]) {
             nurseNick = @"";
@@ -158,14 +173,44 @@
         if ([orderSendAddree isMemberOfClass:[NSNull class]]) {
             orderSendAddree = @"";
         }
-        ReportCell *reportView = [[ReportCell alloc] initViewWithColor:APPDEFAULTORANGE frame:CGRectMake(cellX, cellY, cellW, cellH)];
+        UIImage *arrow = [UIImage imageNamed:arrowImageArray[0]];
+        UIColor *color = colorArray[0];
+        
+        ReportCell *reportView = [[ReportCell alloc] initViewWithColor:color frame:CGRectMake(cellX, cellY, cellW, cellH)];
         reportView.backgroundColor = [UIColor colorWithWhite:237.0 / 255.0 alpha:1.0];
         reportView.timeLabel.text = time;
-        reportView.serviceLabel.text = orderSendServicecontent;
+        reportView.serviceLabel.text = [NSString stringWithFormat:@"  %@",orderSendServicecontent];
         reportView.nameLabel.text = nurseNick;
         reportView.officeLabel.text = nurseOffice;
         reportView.addressLabel.text = orderSendAddree;
         [reportView updateFrame];
+        [reportView setArrowImageWithImage:arrow];
+        
+        id obj = arrowImageArray[0];
+        [arrowImageArray removeObjectAtIndex:0];
+        [arrowImageArray addObject:obj];
+        obj = colorArray[0];
+        [colorArray removeObjectAtIndex:0];
+        [colorArray addObject:obj];
+        
+        __weak HeOrderReportDetailVC *weakSelf = self;
+        reportView.showReportDetailBlock = ^{
+            NSString *nursingReportOrderid = reportDict[@"nursingReportOrderid"];
+            if ([nursingReportOrderid isMemberOfClass:[NSNull class]]) {
+                nursingReportOrderid = @"";
+            }
+            NSString *protectedPersonId = reportDict[@"protectedPersonId"];
+            if ([protectedPersonId isMemberOfClass:[NSNull class]]) {
+                protectedPersonId = @"";
+            }
+            
+            NSString *url = [NSString stringWithFormat:@"http://118.178.186.59:8080/nurseDoor/selectReportdetails.action?orderSendId=%@&protectedPersonId=%@",nursingReportOrderid,protectedPersonId];
+            NSString *title = @"护理报告";
+            BrowserView *scanReportDetailVC = [[BrowserView alloc] initWithURL:url title:title];
+            scanReportDetailVC.hidesBottomBarWhenPushed = YES;
+            [weakSelf.navigationController pushViewController:scanReportDetailVC animated:YES];
+        };
+        
         [footerScrollview addSubview:reportView];
         
         cellY = cellY + cellH;

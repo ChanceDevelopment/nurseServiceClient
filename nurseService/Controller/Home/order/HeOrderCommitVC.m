@@ -21,6 +21,7 @@
 #import "BrowserView.h"
 #import "DeleteImageProtocol.h"
 #import "UWDatePickerView.h"
+#import "HeSettingPayPasswordVC.h"
 
 #define ALERTTAG 200
 #define MinLocationSucceedNum 1   //要求最少成功定位的次数
@@ -31,7 +32,7 @@
 #define MAX_row 3
 #define IMAGEWIDTH 70
 
-@interface HeOrderCommitVC ()<DeleteImageProtocol,UITableViewDataSource,UITableViewDelegate,UIActionSheetDelegate,UINavigationControllerDelegate,UIImagePickerControllerDelegate,UIAlertViewDelegate,TZImagePickerControllerDelegate,UWDatePickerViewDelegate>
+@interface HeOrderCommitVC ()<DeleteImageProtocol,UITableViewDataSource,UITableViewDelegate,UIActionSheetDelegate,UINavigationControllerDelegate,UIImagePickerControllerDelegate,UIAlertViewDelegate,TZImagePickerControllerDelegate,UWDatePickerViewDelegate,UITextFieldDelegate>
 {
     BOOL currentSelectBanner;
     NSInteger payType; //支付方式 0：在线 1：支付宝
@@ -1154,13 +1155,22 @@
     [self.view addSubview:dismissView];
     dismissView.hidden = NO;
     
+    NSDictionary *payInfo = [[NSUserDefaults standardUserDefaults] objectForKey:kUserPayInfoKey];
+    NSString *password = [payInfo objectForKey:kPayPassword];
+    if ([password isMemberOfClass:[NSNull class]] || password == nil || [password isEqualToString:@""]) {
+        password = @"";
+        HeSettingPayPasswordVC *settingPayVC = [[HeSettingPayPasswordVC alloc] init];
+        settingPayVC.hidesBottomBarWhenPushed = YES;
+        [self.navigationController pushViewController:settingPayVC animated:YES];
+        return;
+    }
     CGFloat viewX = 10;
     CGFloat viewY = 100;
     CGFloat viewW = SCREENWIDTH - 2 * viewX;
     CGFloat viewH = 150;
     UIView *shareAlert = [[UIView alloc] init];
     shareAlert.frame = CGRectMake(viewX, viewY, viewW, viewH);
-    shareAlert.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"NavBarIOS7"]];
+    shareAlert.backgroundColor = [UIColor whiteColor];
     shareAlert.layer.cornerRadius = 5.0;
     shareAlert.layer.borderWidth = 0;
     shareAlert.layer.masksToBounds = YES;
@@ -1175,9 +1185,9 @@
     
     UILabel *messageTitleLabel = [[UILabel alloc] init];
     messageTitleLabel.font = shareFont;
-    messageTitleLabel.textColor = [UIColor whiteColor];
+    messageTitleLabel.textColor = [UIColor blackColor];
     messageTitleLabel.textAlignment = NSTextAlignmentCenter;
-    messageTitleLabel.backgroundColor = APPDEFAULTORANGE;
+    messageTitleLabel.backgroundColor = [UIColor clearColor];
     messageTitleLabel.text = @"支付密码";
     messageTitleLabel.frame = CGRectMake(0, 0, viewW, labelH);
     [shareAlert addSubview:messageTitleLabel];
@@ -1213,9 +1223,9 @@
     [shareButton addTarget:self action:@selector(alertbuttonClick:) forControlEvents:UIControlEventTouchUpInside];
     shareButton.tag = 1;
     [shareButton.titleLabel setFont:shareFont];
-    [shareButton setBackgroundColor:APPDEFAULTORANGE];
-    [shareButton setBackgroundImage:[Tool buttonImageFromColor:APPDEFAULTORANGE withImageSize:shareButton.frame.size] forState:UIControlStateHighlighted];
-    [shareButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+//    [shareButton setBackgroundColor:APPDEFAULTORANGE];
+//    [shareButton setBackgroundImage:[Tool buttonImageFromColor:APPDEFAULTORANGE withImageSize:shareButton.frame.size] forState:UIControlStateHighlighted];
+    [shareButton setTitleColor:APPDEFAULTORANGE forState:UIControlStateNormal];
     [shareAlert addSubview:shareButton];
     
     UIButton *cancelButton = [[UIButton alloc] initWithFrame:CGRectMake(buttonX + buttonDis + buttonW, buttonY, buttonW, buttonH)];
@@ -1223,9 +1233,9 @@
     [cancelButton addTarget:self action:@selector(alertbuttonClick:) forControlEvents:UIControlEventTouchUpInside];
     cancelButton.tag = 0;
     [cancelButton.titleLabel setFont:shareFont];
-    [cancelButton setBackgroundColor:APPDEFAULTORANGE];
-    [cancelButton setBackgroundImage:[Tool buttonImageFromColor:APPDEFAULTORANGE withImageSize:shareButton.frame.size] forState:UIControlStateHighlighted];
-    [cancelButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+//    [cancelButton setBackgroundColor:APPDEFAULTORANGE];
+//    [cancelButton setBackgroundImage:[Tool buttonImageFromColor:APPDEFAULTORANGE withImageSize:shareButton.frame.size] forState:UIControlStateHighlighted];
+    [cancelButton setTitleColor:APPDEFAULTORANGE forState:UIControlStateNormal];
     [shareAlert addSubview:cancelButton];
     
     CAKeyframeAnimation *popAnimation = [CAKeyframeAnimation animationWithKeyPath:@"transform"];
@@ -1268,6 +1278,13 @@
     [self verifyPassword:password];
 }
 
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    if ([textField isFirstResponder]) {
+        [textField resignFirstResponder];
+    }
+    return YES;
+}
 
 //验证密码
 - (void)verifyPassword:(NSString *)password

@@ -73,15 +73,15 @@
     if (self) {
         UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
         label.backgroundColor = [UIColor clearColor];
-        label.font = [UIFont boldSystemFontOfSize:20.0];
-        label.textColor = [UIColor whiteColor];
+        label.font = APPDEFAULTTITLETEXTFONT;
+        label.textColor = APPDEFAULTTITLECOLOR;
         label.textAlignment = NSTextAlignmentCenter;
         self.navigationItem.titleView = label;
         label.text = title;
         [label sizeToFit];
         self.title = title;
         
-        self.webURL =  [NSURL fileURLWithPath:filePath];
+        self.webURL =  [[NSURL alloc] initWithString:filePath];
     }
     return self;
 }

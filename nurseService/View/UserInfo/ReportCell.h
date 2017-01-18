@@ -17,5 +17,8 @@
 
 - (id)initViewWithColor:(UIColor *)color frame:(CGRect)frame;
 - (void)updateFrame;
+- (void)setArrowImageWithImage:(UIImage *)arrowImage;
+
+@property (nonatomic,strong)void(^showReportDetailBlock)();
 
 @end

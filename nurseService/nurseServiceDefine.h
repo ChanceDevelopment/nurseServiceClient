@@ -85,6 +85,17 @@
 //图片上传成功发出的通知
 #define UPLOADIMAGESUCCEED_NOTIFICATION @"uploadImageSucceed"
 
+//支付账号
+#define kPayAccount @"userCity"
+//支付密码
+#define kPayPassword @"userDistrict"
+//支付余额
+#define kPayBalance @"userBalance"
+
+//用户支付信息更新通知
+#define kUpdateUserPayInfoNotificaiton @"updateUserPayInfoNotificaiton"
+//用户的支付信息
+#define kUserPayInfoKey @"userPayInfoKey"
 //用户的签名 sign
 #define USERSIGNKEY @"userSignKey"
 //用户的ID userid

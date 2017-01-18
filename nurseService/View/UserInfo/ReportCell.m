@@ -78,6 +78,7 @@
         CGFloat arrowImageViewW = 25;
         
         UIImageView *arrowImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"icon_left_arrow"]];
+        arrowImageView.tag = 2000;
         arrowImageView.frame = CGRectMake(arrowImageViewX, arrowImageViewY, arrowImageViewW, arrowImageViewH);
         [rightView addSubview:arrowImageView];
         
@@ -149,10 +150,25 @@
         addressLabel.backgroundColor = [UIColor clearColor];
         [contentView addSubview:addressLabel];
         
-        
+        rightView.userInteractionEnabled = YES;
+        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(scanReportDetail)];
+        [rightView addGestureRecognizer:tap];
         
     }
     return self;
+}
+
+- (void)scanReportDetail
+{
+    if (self.showReportDetailBlock) {
+        self.showReportDetailBlock();
+    }
+}
+
+- (void)setArrowImageWithImage:(UIImage *)arrowImage
+{
+    UIImageView *arrowImageView = [self viewWithTag:2000];
+    arrowImageView.image = arrowImage;
 }
 
 - (void)updateFrame
