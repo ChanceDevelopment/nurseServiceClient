@@ -191,7 +191,7 @@ BMKMapManager* _mapManager;
 -(void)receiveNotification:(NSDictionary *)userInfo
 {
     NSLog(@"receiveNotification = %@",userInfo);
-    
+    [[NSNotificationCenter defaultCenter] postNotificationName:kHanldeCancelOrderNotification object:nil];
 }
 
 #pragma mark - login changed

@@ -146,6 +146,7 @@
 //当清理所有的推送标签的时候默认的标签
 #define DEFAULTPUSHTAG @"xTdn8EVY3TeyCXrdkjaMdHOv"
 
+#define kHanldeCancelOrderNotification @"kHanldeCancelOrderNotification"
 //登录的广播
 #define LOGINSTATEKEY @"loginStateKey"
 #define LOGINOUTKEY   @"loginOut"       //退出登录

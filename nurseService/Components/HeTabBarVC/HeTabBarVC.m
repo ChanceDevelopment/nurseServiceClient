@@ -42,6 +42,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     //获取用户资料
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(hanldeCancelOrder:) name:kHanldeCancelOrderNotification object:nil];
     [self getUserInfoWithUserID:[[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY]];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getUserPayInfo) name:kUpdateUserPayInfoNotificaiton object:nil];
     cancerOrderArray = [[NSMutableArray alloc] initWithCapacity:0];
@@ -70,6 +71,12 @@
     _geoSearch.delegate = nil;
 }
 
+//处理护士端取消的订单
+- (void)hanldeCancelOrder:(NSNotification *)notification
+{
+//    [self getCancelOrder];
+}
+
 - (void)getCancelOrder
 {
     NSString *userId = [[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY];
@@ -89,6 +96,7 @@
             }
             [cancerOrderArray removeAllObjects];
             cancerOrderArray = [[NSMutableArray alloc] initWithArray:jsonArray];
+            
         }
         
     } failure:^(NSError* err){
@@ -96,6 +104,34 @@
     }];
 }
 
+- (void)agreeCancelOrder:(BOOL)isAgree
+{
+    NSString *userId = [[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY];
+    if (!userId) {
+        userId = @"";
+    }
+    NSString *orderSendId = @"";
+    NSString *agreeState = @"";  //0同意1不同意
+    NSDictionary * params  = @{@"orderSendId":orderSendId,@"userId":userId,@"agreeState":agreeState};
+    NSString *requestUrl = [NSString stringWithFormat:@"%@/orderSend/agreecancelOrder.action",BASEURL];
+    [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
+        
+        NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
+        NSDictionary *respondDict = [NSDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
+        if ([[respondDict valueForKey:@"errorCode"] integerValue] == REQUESTCODE_SUCCEED){
+            NSArray *jsonArray = respondDict[@"json"];
+            if ([jsonArray isMemberOfClass:[NSNull class]]) {
+                jsonArray = [NSArray array];
+            }
+            [cancerOrderArray removeAllObjects];
+            cancerOrderArray = [[NSMutableArray alloc] initWithArray:jsonArray];
+            
+        }
+        
+    } failure:^(NSError* err){
+        
+    }];
+}
 - (void)getUserPayInfo
 {
     NSString *userId = [[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY];
@@ -485,6 +521,8 @@
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kUpdateUserPayInfoNotificaiton object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kHanldeCancelOrderNotification object:nil];
+    
 }
 /*
 #pragma mark - Navigation
