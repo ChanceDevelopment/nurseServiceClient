@@ -34,7 +34,7 @@
 #import <UserNotifications/UserNotifications.h>
 #endif
 
-@interface AppDelegate ()
+@interface AppDelegate ()<JPUSHRegisterDelegate>
 
 @end
 
@@ -128,7 +128,7 @@ BMKMapManager* _mapManager;
     
     NSLog(@"iOS7及以上系统，收到通知:%@", userInfo);
     
-    //    [self performSelector:@selector(receiveNotification:) withObject:userInfo afterDelay:0.5];
+    [self performSelector:@selector(receiveNotification:) withObject:userInfo afterDelay:0.5];
 }
 #endif
 
@@ -149,7 +149,7 @@ BMKMapManager* _mapManager;
     if([notification.request.trigger isKindOfClass:[UNPushNotificationTrigger class]]) {
         [JPUSHService handleRemoteNotification:userInfo];
         NSLog(@"iOS10 前台收到远程通知:%@", userInfo);
-        
+        [self performSelector:@selector(receiveNotification:) withObject:userInfo afterDelay:0.5];
         //        [rootViewController addNotificationCount];
         
     }
@@ -175,7 +175,7 @@ BMKMapManager* _mapManager;
     if([response.notification.request.trigger isKindOfClass:[UNPushNotificationTrigger class]]) {
         [JPUSHService handleRemoteNotification:userInfo];
         NSLog(@"iOS10 收到远程通知:%@", userInfo);
-        //        [rootViewController addNotificationCount];
+        [self performSelector:@selector(receiveNotification:) withObject:userInfo afterDelay:0.5];
         
     }
     else {

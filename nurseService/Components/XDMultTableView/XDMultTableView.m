@@ -28,7 +28,7 @@ static const CGFloat CELLHEIGHT = 44.0f;
         _tableView = [[UITableView alloc] initWithFrame:self.bounds];
         _tableView.delegate = self;
         _tableView.dataSource = self;
-        _tableView.backgroundColor  = [UIColor purpleColor];
+        _tableView.backgroundColor  = APPDEFAULTORANGE;
         _tableView.separatorStyle   = UITableViewCellSeparatorStyleNone;
         
         _tableView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;
@@ -114,7 +114,7 @@ static const CGFloat CELLHEIGHT = 44.0f;
         view.frame = frame;
     }else{
         view = [[UIView alloc] init];
-        view.backgroundColor = [UIColor purpleColor];
+        view.backgroundColor = APPDEFAULTORANGE;
         view.layer.borderColor = [UIColor clearColor].CGColor;
         view.layer.borderWidth = 0.5;
         

@@ -19,6 +19,7 @@
 #import <Foundation/Foundation.h>
 #import "nurseServiceDefine.h"
 #import "Tool.h"
+#import "Tools.h"
 #import "User.h"
 #import "UIViewController+HUD.h"
 #import "appAPIDefine.h"
@@ -69,7 +70,7 @@
 #define SCREENHEIGH [UIScreen mainScreen].bounds.size.height
 
 
-#define TOPNAVIBGCOLOR [UIColor purpleColor]
+#define TOPNAVIBGCOLOR APPDEFAULTORANGE
 
 
 

@@ -9,10 +9,14 @@
 #import "HeAboutUsVC.h"
 
 @interface HeAboutUsVC ()
+@property(strong,nonatomic)IBOutlet UILabel *versionLabel;
+@property(strong,nonatomic)IBOutlet UIImageView *appIconImage;
 
 @end
 
 @implementation HeAboutUsVC
+@synthesize versionLabel;
+@synthesize appIconImage;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -27,7 +31,7 @@
         self.navigationItem.titleView = label;
         label.text = @"关于我们";
         [label sizeToFit];
-        self.title = @"我的邀请";
+        self.title = @"关于我们";
     }
     return self;
 }
@@ -47,6 +51,11 @@
 - (void)initView
 {
     [super initView];
+    self.view.backgroundColor = APPDEFAULTORANGE;
+    appIconImage.layer.cornerRadius = 8.0;
+    appIconImage.layer.masksToBounds = YES;
+    NSString *version = [Tool getAppVersion];
+    versionLabel.text = [NSString stringWithFormat:@"版本号: %@",version];
 }
 
 - (void)didReceiveMemoryWarning {

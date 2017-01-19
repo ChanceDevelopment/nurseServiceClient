@@ -9,6 +9,7 @@
 #import "Tools.h"
 #include <sys/xattr.h>
 #import "HeSysbsModel.h"
+#import "AppDelegate.h"
 
 @implementation Tools
 + (void)setExtraCellLineHidden: (UITableView *)tableView
@@ -16,6 +17,19 @@
     UIView *view = [UIView new];
     view.backgroundColor = [UIColor clearColor];
     [tableView setTableFooterView:view];
+}
+
+//初始化推送服务
++ (void)initPush
+{
+    NSString *userId = [[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY];
+    if (userId == nil) {
+        userId = DEFAULTPUSHTAG;
+    }
+    NSArray *objectarray = [NSArray arrayWithObject:userId];
+    AppDelegate *appdelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    [JPUSHService setTags:[[NSSet alloc] initWithArray:objectarray] alias:userId callbackSelector:@selector(tagsAliasCallback:tags:alias:) object:appdelegate];
+    
 }
 
 + (CGSize)sizeWithString:(NSString *)str font:(UIFont *)font maxSize:(CGSize)maxSize

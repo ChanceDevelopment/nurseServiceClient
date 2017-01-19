@@ -11,6 +11,9 @@
 @interface Tools : NSObject
 + (void)setExtraCellLineHidden: (UITableView *)tableView;
 
+//初始化推送服务
++ (void)initPush;
+
 + (CGSize)sizeWithString:(NSString *)str font:(UIFont *)font maxSize:(CGSize)maxSize;
 
 //获取openUUID

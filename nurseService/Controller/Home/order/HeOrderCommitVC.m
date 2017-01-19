@@ -22,6 +22,7 @@
 #import "DeleteImageProtocol.h"
 #import "UWDatePickerView.h"
 #import "HeSettingPayPasswordVC.h"
+#import "HeReportVC.h"
 
 #define ALERTTAG 200
 #define MinLocationSucceedNum 1   //要求最少成功定位的次数
@@ -134,7 +135,7 @@
 - (void)initView
 {
     [super initView];
-    
+
     CGFloat payButtonW = 100;
     CGFloat payButtonX = SCREENWIDTH - payButtonW;
     CGFloat payButtonY = 0;
@@ -241,6 +242,7 @@
     
     [self addServiceLabel];
 }
+
 
 - (void)payButtonClick:(UIButton *)sender
 {

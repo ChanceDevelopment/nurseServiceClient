@@ -129,7 +129,7 @@
 //活动的图标空位符号
 #define EMPTYSTRING @"     : "
 //默认橙色的RGB
-#define APPDEFAULTORANGE ([UIColor colorWithRed:152.0 / 255.0 green:67.0 / 255.0 blue:141.0 / 255.0 alpha:1.0])
+#define APPDEFAULTORANGE ([UIColor colorWithRed:175.0 / 255.0 green:88.0 / 255.0 blue:156.0 / 255.0 alpha:1.0])
 //默认标题颜色
 #define APPDEFAULTTITLECOLOR ([UIColor whiteColor])
 //默认标题的字体
@@ -142,6 +142,9 @@
 #define APPDEFAULTVIEWCOLOR ([UIColor whiteColor])
 //图片加载出错的时候默认图
 #define DEFAULTERRORIMAGE @"errorImage"
+
+//当清理所有的推送标签的时候默认的标签
+#define DEFAULTPUSHTAG @"xTdn8EVY3TeyCXrdkjaMdHOv"
 
 //登录的广播
 #define LOGINSTATEKEY @"loginStateKey"

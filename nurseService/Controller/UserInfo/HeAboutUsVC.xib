@@ -1,12 +1,18 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11134" systemVersion="15F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11762" systemVersion="16C67" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11106"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="HeAboutUsVC">
             <connections>
+                <outlet property="appIconImage" destination="KEO-Ww-EFe" id="576-qZ-YkI"/>
+                <outlet property="versionLabel" destination="c33-NI-69w" id="scf-sK-hV5"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -14,7 +20,60 @@
         <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
             <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <subviews>
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="appIcon.png" translatesAutoresizingMaskIntoConstraints="NO" id="KEO-Ww-EFe">
+                    <rect key="frame" x="152" y="70" width="70" height="70"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="70" id="JOF-6f-OAo"/>
+                        <constraint firstAttribute="height" constant="70" id="dD9-7F-bND"/>
+                    </constraints>
+                </imageView>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="安心护" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="S1P-dU-V2p">
+                    <rect key="frame" x="0.0" y="155" width="375" height="40"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="40" id="eFz-gD-DLN"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="22"/>
+                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="版本号: 1.0.30" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="c33-NI-69w">
+                    <rect key="frame" x="0.0" y="203" width="375" height="30"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="30" id="hbE-fX-8a6"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="本产品最终解释权归杭州小护健康科技有限公司所有" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ET2-Cc-5gl">
+                    <rect key="frame" x="0.0" y="278" width="375" height="30"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="30" id="If1-EG-Fns"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <nil key="highlightedColor"/>
+                </label>
+            </subviews>
+            <color key="backgroundColor" red="0.68627450980392157" green="0.34509803921568627" blue="0.61176470588235299" alpha="1" colorSpace="calibratedRGB"/>
+            <constraints>
+                <constraint firstItem="ET2-Cc-5gl" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="1c0-Ig-KE5"/>
+                <constraint firstAttribute="trailing" secondItem="c33-NI-69w" secondAttribute="trailing" id="2JH-Pz-bwn"/>
+                <constraint firstItem="c33-NI-69w" firstAttribute="top" secondItem="S1P-dU-V2p" secondAttribute="bottom" constant="8" id="2ve-WH-naC"/>
+                <constraint firstItem="ET2-Cc-5gl" firstAttribute="top" secondItem="c33-NI-69w" secondAttribute="bottom" constant="45" id="BW6-Yu-HIj"/>
+                <constraint firstItem="S1P-dU-V2p" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="CCl-FD-hFk"/>
+                <constraint firstItem="KEO-Ww-EFe" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="70" id="DN6-TH-DQW"/>
+                <constraint firstAttribute="trailing" secondItem="S1P-dU-V2p" secondAttribute="trailing" id="Tl5-0d-6t9"/>
+                <constraint firstItem="c33-NI-69w" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="UJK-W5-m1s"/>
+                <constraint firstAttribute="trailing" secondItem="ET2-Cc-5gl" secondAttribute="trailing" id="fNK-7D-5IS"/>
+                <constraint firstItem="KEO-Ww-EFe" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="r7p-H0-jnr"/>
+                <constraint firstItem="S1P-dU-V2p" firstAttribute="top" secondItem="KEO-Ww-EFe" secondAttribute="bottom" constant="15" id="xTA-eZ-O3i"/>
+            </constraints>
+            <point key="canvasLocation" x="41.5" y="128.5"/>
         </view>
     </objects>
+    <resources>
+        <image name="appIcon.png" width="180" height="180"/>
+    </resources>
 </document>

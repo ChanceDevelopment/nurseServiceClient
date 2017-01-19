@@ -100,7 +100,7 @@
 
 - (void)initView
 {
-    self.view.backgroundColor = [UIColor purpleColor];
+    self.view.backgroundColor = APPDEFAULTORANGE;
     
     
     _tableView.frame = CGRectMake(0, 64, SCREENWIDTH, self.view.frame.size.width - 64);
@@ -153,7 +153,7 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
     }
     UIView *view = [[UIView alloc] initWithFrame:cell.bounds] ;
-    view.layer.backgroundColor  = [UIColor purpleColor].CGColor;
+    view.layer.backgroundColor  = APPDEFAULTORANGE.CGColor;
     view.layer.masksToBounds    = YES;
     view.layer.borderWidth      = 0.1;
     view.layer.borderColor      = [UIColor lightGrayColor].CGColor;

@@ -7,7 +7,9 @@
 //
 
 #import "HeBaseViewController.h"
+#import "HeBaseDistributeVC.h"
 
-@interface HeReportVC : HeBaseViewController
+@interface HeReportVC : HeBaseDistributeVC
+@property(strong,nonatomic)NSString *orderSendId;
 
 @end

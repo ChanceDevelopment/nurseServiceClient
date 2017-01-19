@@ -68,6 +68,8 @@
 		EA01ED841E2CA00900B846A9 /* HeCommentNurseVC.m in Sources */ = {isa = PBXBuildFile; fileRef = EA01ED821E2CA00900B846A9 /* HeCommentNurseVC.m */; };
 		EA01ED851E2CA00900B846A9 /* HeCommentNurseVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = EA01ED831E2CA00900B846A9 /* HeCommentNurseVC.xib */; };
 		EA01ED871E2CB55E00B846A9 /* icon_collection.png in Resources */ = {isa = PBXBuildFile; fileRef = EA01ED861E2CB55E00B846A9 /* icon_collection.png */; };
+		EA05B3031E3067B200D5D5E8 /* HeUserCouponCell.m in Sources */ = {isa = PBXBuildFile; fileRef = EA05B3021E3067B200D5D5E8 /* HeUserCouponCell.m */; };
+		EA05B3051E30717400D5D5E8 /* appIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = EA05B3041E30717400D5D5E8 /* appIcon.png */; };
 		EA0EC7D61E24704F00E5440D /* img_no_data.png in Resources */ = {isa = PBXBuildFile; fileRef = EA0EC7D51E24704F00E5440D /* img_no_data.png */; };
 		EA0EC7DB1E24ABDD00E5440D /* HeProtectedUserInfoVC.m in Sources */ = {isa = PBXBuildFile; fileRef = EA0EC7D91E24ABDD00E5440D /* HeProtectedUserInfoVC.m */; };
 		EA0EC7DC1E24ABDD00E5440D /* HeProtectedUserInfoVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = EA0EC7DA1E24ABDD00E5440D /* HeProtectedUserInfoVC.xib */; };
@@ -93,6 +95,9 @@
 		EA195CFC1E2F0D7000D545C6 /* RPPageControl.m in Sources */ = {isa = PBXBuildFile; fileRef = EA195CF71E2F0D7000D545C6 /* RPPageControl.m */; };
 		EA195CFD1E2F0D7100D545C6 /* RPPagesCarousel.m in Sources */ = {isa = PBXBuildFile; fileRef = EA195CF91E2F0D7000D545C6 /* RPPagesCarousel.m */; };
 		EA195CFE1E2F0D7100D545C6 /* RPRingedPages.m in Sources */ = {isa = PBXBuildFile; fileRef = EA195CFB1E2F0D7000D545C6 /* RPRingedPages.m */; };
+		EA2FACBB1E308DE600E24EC2 /* HeUserInviteCell.m in Sources */ = {isa = PBXBuildFile; fileRef = EA2FACBA1E308DE600E24EC2 /* HeUserInviteCell.m */; };
+		EA2FACC01E30931C00E24EC2 /* HeBaseDistributeVC.m in Sources */ = {isa = PBXBuildFile; fileRef = EA2FACBE1E30931C00E24EC2 /* HeBaseDistributeVC.m */; };
+		EA2FACC11E30931C00E24EC2 /* HeBaseDistributeVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = EA2FACBF1E30931C00E24EC2 /* HeBaseDistributeVC.xib */; };
 		EA34D7921E23244D00CD8BC5 /* HeOrderCommitVC.m in Sources */ = {isa = PBXBuildFile; fileRef = EA34D7901E23244D00CD8BC5 /* HeOrderCommitVC.m */; };
 		EA34D7931E23244D00CD8BC5 /* HeOrderCommitVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = EA34D7911E23244D00CD8BC5 /* HeOrderCommitVC.xib */; };
 		EA34D7951E23270800CD8BC5 /* icon_agree.png in Resources */ = {isa = PBXBuildFile; fileRef = EA34D7941E23270800CD8BC5 /* icon_agree.png */; };
@@ -810,6 +815,9 @@
 		EA01ED821E2CA00900B846A9 /* HeCommentNurseVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HeCommentNurseVC.m; sourceTree = "<group>"; };
 		EA01ED831E2CA00900B846A9 /* HeCommentNurseVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HeCommentNurseVC.xib; sourceTree = "<group>"; };
 		EA01ED861E2CB55E00B846A9 /* icon_collection.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_collection.png; sourceTree = "<group>"; };
+		EA05B3011E3067B200D5D5E8 /* HeUserCouponCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HeUserCouponCell.h; sourceTree = "<group>"; };
+		EA05B3021E3067B200D5D5E8 /* HeUserCouponCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HeUserCouponCell.m; sourceTree = "<group>"; };
+		EA05B3041E30717400D5D5E8 /* appIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = appIcon.png; sourceTree = "<group>"; };
 		EA0EC7D51E24704F00E5440D /* img_no_data.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = img_no_data.png; sourceTree = "<group>"; };
 		EA0EC7D81E24ABDD00E5440D /* HeProtectedUserInfoVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HeProtectedUserInfoVC.h; sourceTree = "<group>"; };
 		EA0EC7D91E24ABDD00E5440D /* HeProtectedUserInfoVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HeProtectedUserInfoVC.m; sourceTree = "<group>"; };
@@ -847,6 +855,11 @@
 		EA195CF91E2F0D7000D545C6 /* RPPagesCarousel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RPPagesCarousel.m; sourceTree = "<group>"; };
 		EA195CFA1E2F0D7000D545C6 /* RPRingedPages.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RPRingedPages.h; sourceTree = "<group>"; };
 		EA195CFB1E2F0D7000D545C6 /* RPRingedPages.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RPRingedPages.m; sourceTree = "<group>"; };
+		EA2FACB91E308DE600E24EC2 /* HeUserInviteCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HeUserInviteCell.h; sourceTree = "<group>"; };
+		EA2FACBA1E308DE600E24EC2 /* HeUserInviteCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HeUserInviteCell.m; sourceTree = "<group>"; };
+		EA2FACBD1E30931C00E24EC2 /* HeBaseDistributeVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HeBaseDistributeVC.h; sourceTree = "<group>"; };
+		EA2FACBE1E30931C00E24EC2 /* HeBaseDistributeVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HeBaseDistributeVC.m; sourceTree = "<group>"; };
+		EA2FACBF1E30931C00E24EC2 /* HeBaseDistributeVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HeBaseDistributeVC.xib; sourceTree = "<group>"; };
 		EA34D78F1E23244D00CD8BC5 /* HeOrderCommitVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HeOrderCommitVC.h; sourceTree = "<group>"; };
 		EA34D7901E23244D00CD8BC5 /* HeOrderCommitVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HeOrderCommitVC.m; sourceTree = "<group>"; };
 		EA34D7911E23244D00CD8BC5 /* HeOrderCommitVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HeOrderCommitVC.xib; sourceTree = "<group>"; };
@@ -2398,6 +2411,10 @@
 				EA7337681E2D36250071CB3C /* HeUserOrderCell.m */,
 				EA8A7F781E2F5C33007CEC56 /* ReportCell.h */,
 				EA8A7F791E2F5C33007CEC56 /* ReportCell.m */,
+				EA05B3011E3067B200D5D5E8 /* HeUserCouponCell.h */,
+				EA05B3021E3067B200D5D5E8 /* HeUserCouponCell.m */,
+				EA2FACB91E308DE600E24EC2 /* HeUserInviteCell.h */,
+				EA2FACBA1E308DE600E24EC2 /* HeUserInviteCell.m */,
 			);
 			path = UserInfo;
 			sourceTree = "<group>";
@@ -2435,6 +2452,16 @@
 				EA195CFB1E2F0D7000D545C6 /* RPRingedPages.m */,
 			);
 			path = RPRingedPages;
+			sourceTree = "<group>";
+		};
+		EA2FACBC1E30931800E24EC2 /* Custom */ = {
+			isa = PBXGroup;
+			children = (
+				EA2FACBD1E30931C00E24EC2 /* HeBaseDistributeVC.h */,
+				EA2FACBE1E30931C00E24EC2 /* HeBaseDistributeVC.m */,
+				EA2FACBF1E30931C00E24EC2 /* HeBaseDistributeVC.xib */,
+			);
+			path = Custom;
 			sourceTree = "<group>";
 		};
 		EA34D7A51E236C1D00CD8BC5 /* UWDatePickerView */ = {
@@ -2565,6 +2592,7 @@
 		EA8C897F1E21D1E10093657B /* Custom */ = {
 			isa = PBXGroup;
 			children = (
+				EA05B3041E30717400D5D5E8 /* appIcon.png */,
 				EA8A7F761E2F58A1007CEC56 /* icon_white_down_gray.png */,
 				EA8A7F741E2F437A007CEC56 /* icon_elect_onic_report.png */,
 				EA195CEF1E2F06BE00D545C6 /* icon_left_arrow_three.png */,
@@ -2908,6 +2936,7 @@
 		EAC2D4A51D4B063900E282A8 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				EA2FACBC1E30931800E24EC2 /* Custom */,
 				EA01ED801E2C9FEB00B846A9 /* Comment */,
 				EACA0F1E1E267D3A009B4516 /* Message */,
 				EACA0EE01E266719009B4516 /* Balance */,
@@ -4626,6 +4655,7 @@
 				EA8C89D51E21EE860093657B /* icon_aboutus_gray.png in Resources */,
 				ADCC61CD1DFA4E240065866C /* index2.png in Resources */,
 				EACA0F0C1E2676AE009B4516 /* HeUserInviteVC.xib in Resources */,
+				EA05B3051E30717400D5D5E8 /* appIcon.png in Resources */,
 				EAC2D8C61D4B063B00E282A8 /* arrow_down1.png in Resources */,
 				EA9F23FE1E2379A0001E4DE9 /* icon_name_authent.png in Resources */,
 				ADCC62471DFA9EB30065866C /* icon_myinvite.png in Resources */,
@@ -4709,6 +4739,7 @@
 				EA9C6FDE1E2519FC00096918 /* icon_unagree.png in Resources */,
 				EA899E2E1E23E2CB0008AA01 /* icon_star_normal.png in Resources */,
 				EA899E3B1E23FB480008AA01 /* icon_favorites_gray_modify.png in Resources */,
+				EA2FACC11E30931C00E24EC2 /* HeBaseDistributeVC.xib in Resources */,
 				ADCC61DC1DFA504A0065866C /* main_mine_selector@2x.png in Resources */,
 				EAC2D86B1D4B063B00E282A8 /* down_dark.png in Resources */,
 				EA8C89DB1E21EEE30093657B /* icon_personal.png in Resources */,
@@ -4914,6 +4945,7 @@
 				EAC2D8A91D4B063B00E282A8 /* MJRefreshAutoNormalFooter.m in Sources */,
 				EAC2D8541D4B063B00E282A8 /* DFToolUtil.m in Sources */,
 				ADCC62001DFA69290065866C /* LBPageControl.m in Sources */,
+				EA05B3031E3067B200D5D5E8 /* HeUserCouponCell.m in Sources */,
 				EAC2D9271D4B063B00E282A8 /* UIDatePicker+RACSignalSupport.m in Sources */,
 				EAC2D83C1D4B063B00E282A8 /* NSDictionary+JSON.m in Sources */,
 				EAC2D96F1D4B063B00E282A8 /* NSMutableArray+convenience.m in Sources */,
@@ -4937,6 +4969,7 @@
 				EA4567721E2FB78100480A95 /* HeBalanceDetailVC.m in Sources */,
 				EAC2D84D1D4B063B00E282A8 /* LXActionSheet.m in Sources */,
 				EAC2D8D81D4B063B00E282A8 /* RACEXTRuntimeExtensions.m in Sources */,
+				EA2FACC01E30931C00E24EC2 /* HeBaseDistributeVC.m in Sources */,
 				EAC2D8EA1D4B063B00E282A8 /* NSString+RACSequenceAdditions.m in Sources */,
 				EAC2D84F1D4B063B00E282A8 /* PullToRefreshView.m in Sources */,
 				EAC2D8361D4B063B00E282A8 /* BrowserView.m in Sources */,
@@ -5019,6 +5052,7 @@
 				EAC2D9211D4B063B00E282A8 /* UIAlertView+RACSignalSupport.m in Sources */,
 				EAC2D8411D4B063B00E282A8 /* UITabBar+Badge.m in Sources */,
 				EAC2D8B81D4B063B00E282A8 /* MLLabel.m in Sources */,
+				EA2FACBB1E308DE600E24EC2 /* HeUserInviteCell.m in Sources */,
 				EAC2D83B1D4B063B00E282A8 /* MLLabel+Size.m in Sources */,
 				EAC2D84E1D4B063B00E282A8 /* PullMoreFooterView.m in Sources */,
 				EAC2D8AC1D4B063B00E282A8 /* MJRefreshBackNormalFooter.m in Sources */,

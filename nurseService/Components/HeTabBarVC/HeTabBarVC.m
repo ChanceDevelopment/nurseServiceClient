@@ -24,6 +24,7 @@
 //定位
 @property (nonatomic,assign)NSInteger locationSucceedNum; //定位成功的次数
 @property (nonatomic,strong)NSMutableDictionary *userLocationDict;
+@property (nonatomic,strong)NSMutableArray *cancerOrderArray;
 
 @end
 
@@ -32,6 +33,7 @@
 @synthesize nurseVC;
 @synthesize orderVC;
 @synthesize userVC;
+@synthesize cancerOrderArray;
 
 @synthesize locationSucceedNum;
 @synthesize userLocationDict;
@@ -42,6 +44,7 @@
     //获取用户资料
     [self getUserInfoWithUserID:[[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY]];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getUserPayInfo) name:kUpdateUserPayInfoNotificaiton object:nil];
+    cancerOrderArray = [[NSMutableArray alloc] initWithCapacity:0];
     //获取左边侧栏的菜单
     [self loadLeftMenu];
     [self autoLogin];
@@ -54,6 +57,9 @@
     //获取专业分类数据
     [self getMajorData];
     [self getUserPayInfo];
+    //获取取消的订单
+    [self getCancelOrder];
+    [Tools initPush];
     
 }
 
@@ -62,6 +68,32 @@
     [super viewWillDisappear:YES];
     [_locService stopUserLocationService];
     _geoSearch.delegate = nil;
+}
+
+- (void)getCancelOrder
+{
+    NSString *userId = [[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY];
+    if (!userId) {
+        userId = @"";
+    }
+    NSDictionary * params  = @{@"userId":userId};
+    NSString *requestUrl = [NSString stringWithFormat:@"%@/orderSend/selectOrderInfoOfNotHandleBecancel.action",BASEURL];
+    [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
+        
+        NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
+        NSDictionary *respondDict = [NSDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
+        if ([[respondDict valueForKey:@"errorCode"] integerValue] == REQUESTCODE_SUCCEED){
+            NSArray *jsonArray = respondDict[@"json"];
+            if ([jsonArray isMemberOfClass:[NSNull class]]) {
+                jsonArray = [NSArray array];
+            }
+            [cancerOrderArray removeAllObjects];
+            cancerOrderArray = [[NSMutableArray alloc] initWithArray:jsonArray];
+        }
+        
+    } failure:^(NSError* err){
+        
+    }];
 }
 
 - (void)getUserPayInfo

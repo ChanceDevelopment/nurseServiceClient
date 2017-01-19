@@ -15,6 +15,7 @@
 #import "HeUserLocatiVC.h"
 #import "HePaitentInfoVC.h"
 #import "HeNurseDetailVC.h"
+#import "HeReportVC.h"
 
 @interface HeOrderDetailVC ()<UITableViewDelegate,UITableViewDataSource>
 {
@@ -83,6 +84,13 @@
 - (void)initView
 {
     [super initView];
+    UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] init];
+    rightItem.tintColor = [UIColor whiteColor];
+    rightItem.title = @"投诉";
+    rightItem.target = self;
+    rightItem.action = @selector(reportAction:);
+    self.navigationItem.rightBarButtonItem = rightItem;
+    
     self.view.backgroundColor = [UIColor colorWithWhite:237.0 / 255.0 alpha:1.0];
     tableview.separatorStyle = UITableViewCellSeparatorStyleNone;
     tableview.backgroundView = nil;
@@ -154,6 +162,14 @@
     CGFloat receivescrollH = 80;
     nurseBG = [[UIScrollView alloc] initWithFrame:CGRectMake(receivescrollX, receivescrollY, receivescrollW, receivescrollH)];
     [self addNurseHead];
+}
+
+- (void)reportAction:(id)sender
+{
+    HeReportVC *reportVC = [[HeReportVC alloc] init];
+    reportVC.orderSendId = [NSString stringWithFormat:@"%@",_orderId];
+    reportVC.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:reportVC animated:YES];
 }
 
 - (void)addNurseHead

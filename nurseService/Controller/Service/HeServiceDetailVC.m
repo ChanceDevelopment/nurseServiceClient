@@ -701,11 +701,16 @@
                 isfollow = @"";
             }
             if ([isfollow boolValue]) {
-                collectButton.enabled = NO;
                 collectButton.selected = YES;
+                [collectButton setTitle:@"已收藏" forState:UIControlStateNormal];
+                [collectButton setImage:[UIImage imageNamed:@"icon_favorites_gray_modify"] forState:UIControlStateNormal];
+//                collectButton.enabled = NO;
+                
             }
             else{
                 collectButton.enabled = YES;
+                [collectButton setTitle:@"收藏" forState:UIControlStateNormal];
+                [collectButton setImage:[UIImage imageNamed:@"icon_favorites_gray"] forState:UIControlStateNormal];
                 collectButton.selected = NO;
             }
             
@@ -953,8 +958,10 @@
                 isfollow = @"";
             }
             if ([isfollow boolValue]) {
-                sender.enabled = NO;
                 sender.selected = YES;
+                [sender setTitle:@"已收藏" forState:UIControlStateNormal];
+                [sender setImage:[UIImage imageNamed:@"icon_favorites_gray_modify"] forState:UIControlStateNormal];
+//                sender.enabled = NO;
             }
             else{
                 sender.enabled = YES;

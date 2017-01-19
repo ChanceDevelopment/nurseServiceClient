@@ -28,6 +28,7 @@
 @interface HeUserFavouriteVC ()<UITableViewDelegate,UITableViewDataSource>
 {
     NSInteger pageNum;
+    NSInteger servicePageNum;
     NSInteger currentIndex;
 }
 @property(nonatomic,strong)DLNavigationTabBar *navigationTabBar;
@@ -63,12 +64,15 @@
 - (void)navigationDidSelectedControllerIndex:(NSInteger)index {
     NSLog(@"index = %ld",index);
     currentIndex = index;
-    if (currentIndex == 0) {
+    if (currentIndex == 0 && [dataSource count] == 0) {
         [self loadNurseData];
+        return;
     }
-    else{
+    else if (currentIndex == 1 && [_serviceItemArray count] == 0){
         [self loadServiceData];
+        return;
     }
+    [tableview reloadData];
 }
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -94,6 +98,7 @@
     // Do any additional setup after loading the view from its nib.
     [self initializaiton];
     [self initView];
+    [self loadNurseData];
 }
 
 - (void)initializaiton
@@ -103,7 +108,7 @@
     dataSource = [[NSMutableArray alloc] initWithCapacity:0];
     _imageCache = [[NSCache alloc] init];
     _serviceItemArray = [[NSMutableArray alloc] initWithCapacity:0];
-    
+    servicePageNum = 0;
     currentIndex = 0;
     pageNum = 0;
 }
@@ -151,12 +156,82 @@
 
 - (void)loadNurseData
 {
-
+    [self showHudInView:tableview hint:@"加载中..."];
+    NSString *requestUrl = [NSString stringWithFormat:@"%@/follow/selectfollowbyfollowid.action",BASEURL];
+    NSMutableString *followId = [[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY];
+    NSString *pageNumStr = [NSString stringWithFormat:@"%ld",pageNum];
+    NSDictionary * params  = @{@"followId":followId,@"pageNum":pageNumStr};
+    [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
+        [self hideHud];
+        NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
+        NSDictionary *respondDict = [NSDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
+        if ([[respondDict valueForKey:@"errorCode"] integerValue] == REQUESTCODE_SUCCEED){
+            NSArray *jsonArray = [respondDict valueForKey:@"json"];
+            
+            if ([jsonArray isMemberOfClass:[NSNull class]] || jsonArray == nil || [jsonArray count] == 0) {
+                jsonArray = [NSArray array];
+            }
+            if (pageNum == 0) {
+                [dataSource removeAllObjects];
+            }
+            if (pageNum > 0 && [jsonArray count] == 0) {
+                pageNum--;
+            }
+            [dataSource addObjectsFromArray:jsonArray];
+            
+            [tableview reloadData];
+        }
+        else{
+            NSString *data = respondDict[@"data"];
+            if ([data isMemberOfClass:[NSNull class]] || data == nil) {
+                data = ERRORREQUESTTIP;
+            }
+            [self showHint:data];
+        }
+    } failure:^(NSError* err){
+        [self hideHud];
+        [self showHint:ERRORREQUESTTIP];
+    }];
 }
 
 - (void)loadServiceData
 {
-
+    [self showHudInView:tableview hint:@"加载中..."];
+    NSString *requestUrl = [NSString stringWithFormat:@"%@/follow/selectcollects.action",BASEURL];
+    NSMutableString *userId = [[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY];
+    NSString *pageNumStr = [NSString stringWithFormat:@"%ld",servicePageNum];
+    NSDictionary * params  = @{@"userId":userId,@"pageNum":pageNumStr};
+    [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
+        [self hideHud];
+        NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
+        NSDictionary *respondDict = [NSDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
+        if ([[respondDict valueForKey:@"errorCode"] integerValue] == REQUESTCODE_SUCCEED){
+            NSArray *jsonArray = [respondDict valueForKey:@"json"];
+            
+            if ([jsonArray isMemberOfClass:[NSNull class]] || jsonArray == nil || [jsonArray count] == 0) {
+                jsonArray = [NSArray array];
+            }
+            if (servicePageNum == 0) {
+                [_serviceItemArray removeAllObjects];
+            }
+            if (servicePageNum > 0 && [jsonArray count] == 0) {
+                servicePageNum--;
+            }
+            [_serviceItemArray addObjectsFromArray:jsonArray];
+            
+            [tableview reloadData];
+        }
+        else{
+            NSString *data = respondDict[@"data"];
+            if ([data isMemberOfClass:[NSNull class]] || data == nil) {
+                data = ERRORREQUESTTIP;
+            }
+            [self showHint:data];
+        }
+    } failure:^(NSError* err){
+        [self hideHud];
+        [self showHint:ERRORREQUESTTIP];
+    }];
 }
 
 #pragma mark - TableView Delegate
@@ -202,7 +277,7 @@
             [weakSelf bookServiceWithDict:dict];
         };
         
-        NSString *contentImgurl = dict[@"contentImgurl"];
+        NSString *contentImgurl = dict[@"imgUrl"];
         if ([contentImgurl isMemberOfClass:[NSNull class]] || contentImgurl == nil) {
             contentImgurl = @"";
         }
@@ -218,13 +293,13 @@
         cell.userImage = imageview;
         [cell addSubview:cell.userImage];
         
-        NSString *manageNursingContentName = dict[@"manageNursingContentName"];
+        NSString *manageNursingContentName = dict[@"contentName"];
         if ([manageNursingContentName isMemberOfClass:[NSNull class]] || manageNursingContentName == nil) {
             manageNursingContentName = @"";
         }
         cell.serviceTitleLabel.text = manageNursingContentName;
         
-        NSString *manageNursingContentContent = dict[@"manageNursingContentContent"];
+        NSString *manageNursingContentContent = dict[@"content"];
         if ([manageNursingContentContent isMemberOfClass:[NSNull class]] || manageNursingContentContent == nil) {
             manageNursingContentContent = @"";
         }
@@ -234,7 +309,7 @@
         if ([contentRequired isMemberOfClass:[NSNull class]]) {
             contentRequired = @"";
         }
-        
+        cell.numberLabel.hidden = YES;
         cell.numberLabel.text = [NSString stringWithFormat:@"已服务:  %ld次",[contentRequired integerValue]];
         
         id minMoney = dict[@"minMoney"];
@@ -340,8 +415,14 @@
     } @finally {
         
     }
+    NSString *nurseId = dict[@"followBefollowid"];
+    if ([nurseId isMemberOfClass:[NSNull class]]) {
+        nurseId = @"";
+    }
+    NSMutableDictionary *nurseDict = [[NSMutableDictionary alloc] initWithDictionary:dict];
+    [nurseDict setObject:nurseId forKey:@"nurseId"];
     HeNurseDetailVC *nurseDetailVC = [[HeNurseDetailVC alloc] init];
-    nurseDetailVC.nurseDictInfo = [[NSDictionary alloc] initWithDictionary:dict];
+    nurseDetailVC.nurseDictInfo = [[NSDictionary alloc] initWithDictionary:nurseDict];
     nurseDetailVC.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:nurseDetailVC animated:YES];
 }
@@ -357,12 +438,52 @@
 
 - (HYPageView *)getPageViewWithParam:(NSDictionary *)dict
 {
+    NSMutableDictionary *serviceDict = [[NSMutableDictionary alloc] initWithCapacity:0];
+//    manageNursingContentId
+    NSString *collectionContentid = dict[@"collectionContentid"];
+    if ([collectionContentid isMemberOfClass:[NSNull class]] || collectionContentid == nil) {
+        collectionContentid = @"";
+    }
+    [serviceDict setObject:collectionContentid forKey:@"contentId"];
     
-    NSDictionary *paramDict = @{@"service":dict};
+//    manageNursingContentCreatetime
+    NSString *collectionCreatime = dict[@"collectionCreatime"];
+    if ([collectionCreatime isMemberOfClass:[NSNull class]] || collectionCreatime == nil) {
+        collectionCreatime = @"";
+    }
+    [serviceDict setObject:collectionCreatime forKey:@"manageNursingContentCreatetime"];
+    
+//    manageNursingContentContent
+    NSString *content = dict[@"content"];
+    if ([content isMemberOfClass:[NSNull class]] || content == nil) {
+        content = @"";
+    }
+    [serviceDict setObject:content forKey:@"manageNursingContentContent"];
+    
+//    manageNursingContentName
+    NSString *contentName = dict[@"contentName"];
+    if ([contentName isMemberOfClass:[NSNull class]] || contentName == nil) {
+        contentName = @"";
+    }
+    [serviceDict setObject:contentName forKey:@"manageNursingContentName"];
+    
+//    contentImgurl
+    NSString *imgUrl = dict[@"imgUrl"];
+    if ([imgUrl isMemberOfClass:[NSNull class]] || imgUrl == nil) {
+        imgUrl = @"";
+    }
+    [serviceDict setObject:imgUrl forKey:@"contentImgurl"];
+    
+    NSString *minMoney = dict[@"minMoney"];
+    if ([minMoney isMemberOfClass:[NSNull class]] || minMoney == nil) {
+        minMoney = @"";
+    }
+    [serviceDict setObject:minMoney forKey:@"minMoney"];
+    
     NSString *nurseId = @"";
-    paramDict = @{@"service":dict,@"nurse":nurseId};
+    NSDictionary *paramDict = @{@"service":serviceDict,@"nurse":nurseId};
     
-    HYPageView *pageView = [[HYPageView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, SCREENHEIGH) withTitles:@[@"商品",@"详情",@"评论"] withViewControllers:@[@"HeServiceDetailVC",@"HeServiceInfoVC",@"HeCommentVC"] withParameters:@[paramDict,dict,dict]];
+    HYPageView *pageView = [[HYPageView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, SCREENHEIGH) withTitles:@[@"商品",@"详情",@"评论"] withViewControllers:@[@"HeServiceDetailVC",@"HeServiceInfoVC",@"HeCommentVC"] withParameters:@[paramDict,serviceDict,serviceDict]];
     pageView.isTranslucent = NO;
     pageView.topTabBottomLineColor = [UIColor whiteColor];
     pageView.selectedColor = [UIColor whiteColor];

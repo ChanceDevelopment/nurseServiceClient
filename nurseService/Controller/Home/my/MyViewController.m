@@ -445,6 +445,8 @@
 
 - (void)scanUserPoint:(UITapGestureRecognizer *)tap
 {
+    [self showHint:@"该功能尚未开通"];
+    return;
     HeUserPointVC *userPointVC = [[HeUserPointVC alloc] init];
     userPointVC.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:userPointVC animated:YES];
@@ -526,6 +528,7 @@
     //清空用户的资料
     [HeSysbsModel getSysModel].user = nil;
     
+    [Tools initPush];
     [[NSNotificationCenter defaultCenter] postNotificationName:KNOTIFICATION_LOGINCHANGE object:@NO];
 }
 
