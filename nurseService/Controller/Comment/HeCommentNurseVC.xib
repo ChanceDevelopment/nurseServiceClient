@@ -14,7 +14,7 @@
                 <outlet property="markView" destination="pUT-M2-RHW" id="afI-FU-G2j"/>
                 <outlet property="nurseImage" destination="ueJ-4Z-KXF" id="mYl-r4-vqE"/>
                 <outlet property="nurseLabel" destination="cf5-QW-coW" id="l2A-nP-RBe"/>
-                <outlet property="textView" destination="q0H-VO-gSn" id="bQb-9l-ok7"/>
+                <outlet property="textView" destination="q0H-VO-gSn" id="LsH-IW-dN8"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -27,7 +27,7 @@
                     <rect key="frame" x="10" y="10" width="355" height="180"/>
                     <subviews>
                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="defalut_icon.png" translatesAutoresizingMaskIntoConstraints="NO" id="ueJ-4Z-KXF">
-                            <rect key="frame" x="20" y="20" width="60" height="60"/>
+                            <rect key="frame" x="10" y="20" width="60" height="60"/>
                             <constraints>
                                 <constraint firstAttribute="width" constant="60" id="GSY-2P-Vma"/>
                                 <constraint firstAttribute="height" constant="60" id="rqb-jh-DFr"/>
@@ -60,14 +60,14 @@
                     </subviews>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     <constraints>
-                        <constraint firstItem="ueJ-4Z-KXF" firstAttribute="leading" secondItem="5cA-nC-NmY" secondAttribute="leading" constant="20" id="HKp-OT-Lqj"/>
+                        <constraint firstItem="ueJ-4Z-KXF" firstAttribute="leading" secondItem="5cA-nC-NmY" secondAttribute="leading" constant="10" id="HKp-OT-Lqj"/>
                         <constraint firstAttribute="height" constant="180" id="N5G-Hc-cLe"/>
                         <constraint firstItem="ueJ-4Z-KXF" firstAttribute="top" secondItem="5cA-nC-NmY" secondAttribute="top" constant="20" id="OEY-Dr-74K"/>
                         <constraint firstItem="RkA-wf-IsF" firstAttribute="leading" secondItem="5cA-nC-NmY" secondAttribute="leading" id="SyZ-8Z-w7g"/>
                         <constraint firstAttribute="trailing" secondItem="cf5-QW-coW" secondAttribute="trailing" id="Ty6-FA-e32"/>
                         <constraint firstItem="RkA-wf-IsF" firstAttribute="top" secondItem="cf5-QW-coW" secondAttribute="bottom" constant="10" id="a3G-eC-Ijq"/>
                         <constraint firstItem="pUT-M2-RHW" firstAttribute="top" secondItem="RkA-wf-IsF" secondAttribute="bottom" constant="10" id="bx6-lU-1fn"/>
-                        <constraint firstItem="cf5-QW-coW" firstAttribute="leading" secondItem="ueJ-4Z-KXF" secondAttribute="trailing" constant="8" id="f9C-Jf-4XS"/>
+                        <constraint firstItem="cf5-QW-coW" firstAttribute="leading" secondItem="ueJ-4Z-KXF" secondAttribute="trailing" constant="18" id="f9C-Jf-4XS"/>
                         <constraint firstAttribute="trailing" secondItem="pUT-M2-RHW" secondAttribute="trailing" id="mHp-SL-32K"/>
                         <constraint firstItem="pUT-M2-RHW" firstAttribute="leading" secondItem="5cA-nC-NmY" secondAttribute="leading" id="pnE-1T-VUd"/>
                         <constraint firstItem="cf5-QW-coW" firstAttribute="top" secondItem="5cA-nC-NmY" secondAttribute="top" constant="20" id="rl9-BY-GCJ"/>
@@ -81,7 +81,7 @@
                         <constraint firstAttribute="height" constant="1" id="q8m-Cl-1mR"/>
                     </constraints>
                 </view>
-                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="q0H-VO-gSn" customClass="IQTextView">
+                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="q0H-VO-gSn" customClass="SAMTextView">
                     <rect key="frame" x="10" y="202" width="355" height="60"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     <constraints>

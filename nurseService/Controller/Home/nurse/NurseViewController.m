@@ -342,7 +342,9 @@
     NSString *requestUrl = [NSString stringWithFormat:@"%@/nurseAnduser/selectnursebyhosandmaj.action",BASEURL];
     NSString *pageNumStr = [NSString stringWithFormat:@"%ld",pageNum];
     NSDictionary * params  = @{@"hospitalName":hospitalNameID,@"majorName":majorNameID,@"latitude":latitude,@"longitude":longitude,@"pageNum":pageNumStr};
+    [self showHudInView:tableview hint:@"加载中..."];
     [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
+        [self hideHud];
         NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
         NSDictionary *respondDict = [NSDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
         if ([[respondDict valueForKey:@"errorCode"] integerValue] == REQUESTCODE_SUCCEED){
@@ -361,14 +363,46 @@
             for (NSDictionary *dict in jsonArray) {
                 [dataSource addObject:dict];
             }
+           
+            if ([dataSource count] == 0) {
+                UIView *bgView = [[UIView alloc] initWithFrame:self.view.bounds];
+                UIImage *noImage = [UIImage imageNamed:@"img_no_data_refresh"];
+                CGFloat scale = noImage.size.height / noImage.size.width;
+                CGFloat imageW = 120;
+                CGFloat imageH = imageW * scale;
+                UIImageView *imageview = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"img_no_data_refresh"]];
+                imageview.frame = CGRectMake(100, 100, imageW, imageH);
+                imageview.center = bgView.center;
+                [bgView addSubview:imageview];
+                tableview.backgroundView = bgView;
+            }
             
             [tableview reloadData];
+        
         }
         else{
+            [self hideHud];
             NSString *data = respondDict[@"data"];
             if ([data isMemberOfClass:[NSNull class]] || data == nil) {
                 data = ERRORREQUESTTIP;
             }
+            if (pageNum == 0) {
+                [dataSource removeAllObjects];
+                [tableview reloadData];
+            }
+            if ([dataSource count] == 0) {
+                UIView *bgView = [[UIView alloc] initWithFrame:self.view.bounds];
+                UIImage *noImage = [UIImage imageNamed:@"img_no_data_refresh"];
+                CGFloat scale = noImage.size.height / noImage.size.width;
+                CGFloat imageW = 120;
+                CGFloat imageH = imageW * scale;
+                UIImageView *imageview = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"img_no_data_refresh"]];
+                imageview.frame = CGRectMake(100, 100, imageW, imageH);
+                imageview.center = bgView.center;
+                [bgView addSubview:imageview];
+                tableview.backgroundView = bgView;
+            }
+            [tableview reloadData];
             [self showHint:data];
         }
     } failure:^(NSError* err){
@@ -497,18 +531,37 @@
         if (indexPath.column == 0) {
             
             NSLog(@"点击子医院是: %@",_subHospitalModelArray[indexPath.row][indexPath.item]);
+            majorNameID = _subHospitalModelArray[indexPath.row][indexPath.item][@"majorId"];
+            if ([majorNameID isMemberOfClass:[NSNull class]] || majorNameID == nil) {
+                majorNameID = @"";
+            }
+            [self loadNurseData];
         }
         else if (indexPath.column == 1){
             NSLog(@"点击子分类是: %@",_subMajorModelArray[indexPath.row][indexPath.item]);
+            hospitalNameID = _subMajorModelArray[indexPath.row][indexPath.item][@"hospitalsrId"];
+            if ([hospitalNameID isMemberOfClass:[NSNull class]] || hospitalNameID == nil) {
+                hospitalNameID = @"";
+            }
+            [self loadNurseData];
         }
     }else {
         //点击主分类
         NSLog(@"点击了 %ld - %ld 项目",indexPath.column,indexPath.row);
         if (indexPath.column == 0) {
             NSLog(@"点击总医院是: %@",_hospitalModelArray[indexPath.row]);
+            hospitalNameID = _hospitalModelArray[indexPath.row][@"hospitalId"];
+            if ([hospitalNameID isMemberOfClass:[NSNull class]] || hospitalNameID == nil) {
+                hospitalNameID = @"";
+            }
+            
         }
         else if (indexPath.column == 1){
             NSLog(@"点击总分类是: %@",_majorModelArray[indexPath.row]);
+            majorNameID = _majorModelArray[indexPath.row][@"majorId"];
+            if ([majorNameID isMemberOfClass:[NSNull class]] || majorNameID == nil) {
+                majorNameID = @"";
+            }
         }
         
     }
@@ -551,6 +604,20 @@
             else{
                 servicetableview.hidden = NO;
             }
+            
+            if ([_serviceItemArray count] == 0) {
+                UIView *bgView = [[UIView alloc] initWithFrame:self.view.bounds];
+                UIImage *noImage = [UIImage imageNamed:@"img_no_data_refresh"];
+                CGFloat scale = noImage.size.height / noImage.size.width;
+                CGFloat imageW = 120;
+                CGFloat imageH = imageW * scale;
+                UIImageView *imageview = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"img_no_data_refresh"]];
+                imageview.frame = CGRectMake(100, 100, imageW, imageH);
+                imageview.center = bgView.center;
+                [bgView addSubview:imageview];
+                tableview.backgroundView = bgView;
+            }
+            
             [servicetableview reloadData];
         }
         else{

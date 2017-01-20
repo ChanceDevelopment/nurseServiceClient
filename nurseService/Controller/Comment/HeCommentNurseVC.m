@@ -8,9 +8,10 @@
 
 #import "HeCommentNurseVC.h"
 #import "IQTextView.h"
+#import "SAMTextView.h"
 
 @interface HeCommentNurseVC ()
-@property(strong,nonatomic)IBOutlet IQTextView *textView;
+@property(strong,nonatomic)IBOutlet SAMTextView *textView;
 @property(strong,nonatomic)IBOutlet UIImageView *nurseImage;
 @property(strong,nonatomic)IBOutlet UILabel *nurseLabel;
 @property(strong,nonatomic)IBOutlet UIView *markView;
@@ -79,9 +80,9 @@
     nurseLabel.text = nurseNick;
     
     currentRank = 1;
-    CGFloat imageDistance = 10;
-    CGFloat imageH = 25;
-    CGFloat imageW = 25;
+    CGFloat imageDistance = 5;
+    CGFloat imageH = 30;
+    CGFloat imageW = 30;
     CGFloat imageY = 2.5;
     CGFloat imageX = (SCREENWIDTH - 20 - (5 * imageW) - (4 * imageDistance)) / 2.0;
     for (NSInteger index = 0; index < 5; index++) {

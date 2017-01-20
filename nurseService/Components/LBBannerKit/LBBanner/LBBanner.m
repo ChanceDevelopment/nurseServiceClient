@@ -126,6 +126,35 @@
 - (void)setImageURLArray:(NSArray *)imageURLArray {
     _imageURLArray = imageURLArray;
     
+    
+    // 设置滑动视图的实际尺寸
+    self.scrollView.contentSize = CGSizeMake(self.width * imageURLArray.count, self.height);
+    // 设置滑动视图的偏移量
+    self.scrollView.contentOffset = CGPointMake(self.width, 0);
+    for (int i = 0; i < imageURLArray.count; i ++) {
+        NSString *imageURL = imageURLArray[i];
+        UIImageView *imageview = [[UIImageView alloc] init];
+        imageview.frame = CGRectMake(i * self.width, 0, self.width, self.height);
+        imageview.tag = i + 100;
+        [imageview sd_setImageWithURL:[NSURL URLWithString:imageURL] placeholderImage:[UIImage imageNamed:@"index2"]];
+        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(imgViewAction:)];
+        imageview.userInteractionEnabled = YES;
+        self.scrollView.userInteractionEnabled = YES;
+        [imageview addGestureRecognizer:tap];
+        //        UIButton * imgViewBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+        //        imgViewBtn.frame = CGRectMake(i * self.width, 0, self.width, self.height);
+        //        [imgViewBtn setBackgroundImage:images[i] forState:UIControlStateNormal];
+        //        [imgViewBtn setBackgroundImage:images[i] forState:UIControlStateHighlighted];
+        //        imgViewBtn.tag = i + 100;
+        //        [imgViewBtn addTarget:self action:@selector(imgViewAction:) forControlEvents:UIControlEventTouchUpInside];
+        
+        [self.scrollView addSubview:imageview];
+    }
+    
+    // 设置分页控件的页数
+    self.systemPageCtrl.numberOfPages = self.imageURLArray.count - 2;
+    self.customPageCtrl.numberOfPages = self.imageURLArray.count - 2;
+    
     // 将图片URL数组转换为图片数组
     
     //image
@@ -149,7 +178,7 @@
             // 把这个图片数组添加首尾图片
             self.images = [[self addHeadAndTailImage:self.images] mutableCopy];
             
-            [self setScrollViewData:self.images];
+//            [self setScrollViewData:self.images];
         });
     } );
 }
@@ -189,6 +218,13 @@
     }
 }
 
+- (void)imgViewAction:(UITapGestureRecognizer *)sender
+{
+    UIView *subview = sender.view;
+    if ([self.delegate respondsToSelector:@selector(banner:didClickViewWithIndex:)]) {
+        [self.delegate banner:self didClickViewWithIndex:subview.tag - 100];
+    }
+}
 #pragma mark - Public
 
 /**

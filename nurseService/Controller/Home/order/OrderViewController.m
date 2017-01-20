@@ -118,7 +118,8 @@
     tableview.backgroundColor = [UIColor colorWithWhite:237.0 / 255.0 alpha:1.0];
     self.tableview.header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
         // 进入刷新状态后会自动调用这个block,刷新
-        [self.tableview.header performSelector:@selector(endRefreshing) withObject:nil afterDelay:1.0];
+        [self.tableview.header performSelector:@selector(endRefreshing) withObject:nil afterDelay:0.5];
+        [self loadOrderDataWithOrderState:currentOrderType];
         
     }];
     

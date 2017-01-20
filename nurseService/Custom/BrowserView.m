@@ -13,6 +13,7 @@
 @property(strong,nonatomic)UIActivityIndicatorView *indicatorView;
 @property(strong,nonatomic)NSString *website;
 @property(strong,nonatomic)NSURL *webURL;
+@property(strong,nonatomic)NSString *webTitle;
 
 @end
 
@@ -63,6 +64,7 @@
         self.title = @"护士上门用户协议";
         
         self.webURL =  [NSURL fileURLWithPath:filePath];
+        
     }
     return self;
 }
@@ -107,6 +109,7 @@
 - (void)initializaiton
 {
     [super initializaiton];
+    _webTitle = self.title;
 }
 
 - (void)initView
@@ -152,6 +155,13 @@
 {
     indicatorView.hidden = YES;
     [indicatorView stopAnimating];
+    if (_webTitle == nil) {
+         _webTitle = [webView stringByEvaluatingJavaScriptFromString:@"document.title"];
+        self.title = _webTitle;
+        UILabel *label = (UILabel *)self.navigationItem.titleView;
+        label.text = _webTitle;
+        [label sizeToFit];
+    }
 }
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
 {

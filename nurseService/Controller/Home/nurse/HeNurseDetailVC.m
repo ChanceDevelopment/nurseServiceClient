@@ -399,6 +399,8 @@
 //加载该护士的详细信息
 - (void)loadNurserDetailInfo:(NSString *)nurseId
 {
+    tableview.hidden = YES;
+    [self showHudInView:self.view hint:@"加载中..."];
     NSString *requestUrl = [NSString stringWithFormat:@"%@/nurseAnduser/selectfornursebyid.action",BASEURL];
     NSString *userId = [[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY];
     NSString *latitude = [[HeSysbsModel getSysModel].userLocationDict objectForKey:@"longitude"];
@@ -411,6 +413,7 @@
     }
     NSDictionary * params  = @{@"userId":userId,@"nurseid":nurseId,@"latitude":latitude,@"longitude":longitude};
     [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
+        [self hideHud];
         NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
         NSDictionary *respondDict = [NSDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
         if ([[respondDict valueForKey:@"errorCode"] integerValue] == REQUESTCODE_SUCCEED){
@@ -461,11 +464,12 @@
                 followButton.enabled = YES;
                 [followButton setTitle:@"关注" forState:UIControlStateNormal];
             }
-            
+            tableview.hidden = NO;
             [self initView];
             [self addFooterView];
         }
         else{
+            [self hideHud];
             NSString *data = respondDict[@"data"];
             if ([data isMemberOfClass:[NSNull class]] || data == nil) {
                 data = ERRORREQUESTTIP;
@@ -473,7 +477,8 @@
             [self showHint:data];
         }
     } failure:^(NSError* err){
-        
+        [self hideHud];
+        [self showHint:ERRORREQUESTTIP];
     }];
 }
 

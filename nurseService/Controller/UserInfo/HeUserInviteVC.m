@@ -136,6 +136,19 @@
             }
             [dataSource addObjectsFromArray:resultArray];
             
+            if ([dataSource count] == 0) {
+                UIView *bgView = [[UIView alloc] initWithFrame:self.view.bounds];
+                UIImage *noImage = [UIImage imageNamed:@"img_no_data_refresh"];
+                CGFloat scale = noImage.size.height / noImage.size.width;
+                CGFloat imageW = 120;
+                CGFloat imageH = imageW * scale;
+                UIImageView *imageview = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"img_no_data_refresh"]];
+                imageview.frame = CGRectMake(100, 100, imageW, imageH);
+                imageview.center = bgView.center;
+                [bgView addSubview:imageview];
+                tableview.backgroundView = bgView;
+            }
+            
             [self.tableview reloadData];
         }
         else{

@@ -199,7 +199,7 @@
     signBtn.layer.borderColor = [[UIColor whiteColor] CGColor];
     [signBtn setTitle:@"签到" forState:UIControlStateNormal];
     [signBtn addTarget:self action:@selector(toSignInView) forControlEvents:UIControlEventTouchUpInside];
-    [headerView addSubview:signBtn];
+//    [headerView addSubview:signBtn];
     
     CGFloat otherInfoLabelBGX = 0;
     CGFloat otherInfoLabelBGH = 60;

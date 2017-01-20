@@ -35,6 +35,8 @@
 #define MAX_row 3
 #define IMAGEWIDTH 70
 
+#define ALERTTAG 500
+
 @interface HeServiceDetailVC ()<DeleteImageProtocol,UITableViewDelegate,UITableViewDataSource,LBBannerDelegate,UIWebViewDelegate,UIAlertViewDelegate,UWDatePickerViewDelegate,SelectProtectUserInfoProtocol,TZImagePickerControllerDelegate,UINavigationControllerDelegate,UIImagePickerControllerDelegate,UIAlertViewDelegate,UIActionSheetDelegate,UITextFieldDelegate>
 {
     BOOL currentSelectBanner;
@@ -74,6 +76,8 @@
 @property(strong,nonatomic)NSArray *subServiceArray;
 @property(strong,nonatomic)NSMutableArray *subSelectArray;
 
+@property(strong,nonatomic)UIView *dismissView;
+
 @end
 
 @implementation HeServiceDetailVC
@@ -92,6 +96,8 @@
 
 @synthesize subServiceArray;
 @synthesize subSelectArray;
+
+@synthesize dismissView;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -185,8 +191,11 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
+//    [self initializaiton];
+//    [self initView];
+    tableview.hidden = YES;
+    footerBGView.hidden = YES;
     [self initializaiton];
-    [self initView];
     [self loadServiceDetail];
     [self loadServiceArray];
 }
@@ -377,16 +386,20 @@
         
         titleLabelX2 = CGRectGetMaxX(titleLabel2.frame);
         titleLabelW2 = SCREENWIDTH - 20 - titleLabelX2;
-        UITextField *tipLabel2 = [[UITextField alloc] initWithFrame:CGRectMake(titleLabelX2, titleLabelY2, titleLabelW2, titleLabelH2)];
+        UILabel *tipLabel2 = [[UILabel alloc] initWithFrame:CGRectMake(titleLabelX2, titleLabelY2, titleLabelW2, titleLabelH2)];
         tipLabel2.tag = 2400;
         tipLabel2.backgroundColor = [UIColor clearColor];
         tipLabel2.font = [UIFont systemFontOfSize:15.0];
         tipLabel2.textColor = [UIColor grayColor];
-        tipLabel2.placeholder = @"病史、禁忌、特殊说明";
-        tipLabel2.delegate = self;
-//        tipLabel2.textAlignment = NSTextAlignmentRight;
-//        tipLabel2.backgroundColor = [UIColor clearColor];
+        tipLabel2.text = @"病史、禁忌、特殊说明";
+//        tipLabel2.delegate = self;
+        tipLabel2.textAlignment = NSTextAlignmentRight;
+        tipLabel2.backgroundColor = [UIColor clearColor];
         [remarkView addSubview:tipLabel2];
+        tipLabel2.userInteractionEnabled = YES;
+        
+        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(inputReamrk)];
+        [tipLabel2 addGestureRecognizer:tap];
         
         UIImage *historySelectedImage = [UIImage imageNamed:@"icon_checkbox"];
         UIImage *historyImage = [UIImage imageNamed:@"icon_checkboxNormal"];
@@ -610,6 +623,16 @@
     [headerView addSubview:banner];
     
     [self loadContentView];
+    
+    dismissView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, [UIScreen mainScreen].bounds.size.height)];
+    dismissView.backgroundColor = [UIColor blackColor];
+    dismissView.hidden = YES;
+    dismissView.alpha = 0.7;
+    [self.view addSubview:dismissView];
+    UITapGestureRecognizer *tapGes = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissViewGes:)];
+    tapGes.numberOfTapsRequired = 1;
+    tapGes.numberOfTouchesRequired = 1;
+    [dismissView addGestureRecognizer:tapGes];
 }
 
 - (void)selectButtonClick:(UIButton *)button
@@ -649,6 +672,7 @@
 
 - (void)loadServiceDetail
 {
+    [self showHudInView:self.view hint:@"加载中..."];
     NSString *requestUrl = [NSString stringWithFormat:@"%@/service/selectservicebycontentid.action",BASEURL];
     NSString *userid = [[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY];
     NSString *nurseid = @"";//为空，暂时不用
@@ -662,6 +686,7 @@
     
     NSDictionary * params  = @{@"nurseid":nurseid,@"userid":userid,@"contentId":contentId};
     [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
+        [self hideHud];
         NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
         NSDictionary *respondDict = [NSDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
         if ([[respondDict valueForKey:@"errorCode"] integerValue] == REQUESTCODE_SUCCEED){
@@ -669,8 +694,12 @@
             if ([jsonObj isMemberOfClass:[NSNull class]] || jsonObj == nil) {
                 return;
             }
+            
             serviceDetailInfoDict = [[NSDictionary alloc] initWithDictionary:jsonObj];
             serviceInfoDict = [[NSDictionary alloc] initWithDictionary:jsonObj];
+            tableview.hidden = NO;
+            footerBGView.hidden = NO;
+            [self initView];
             
             NSString *imgurls = serviceDetailInfoDict[@"imgurls"];
             if ([imgurls isMemberOfClass:[NSNull class]]) {
@@ -690,7 +719,13 @@
             }
             CGFloat bannerHeight = 180;
             LBBanner *banner1 = [tableview.tableHeaderView viewWithTag:100];
-            LBBanner *banner = [[LBBanner alloc] initWithImageURLArray:imageUrlArray andFrame:CGRectMake(0, 0, SCREENWIDTH, bannerHeight)];
+            LBBanner *banner = nil;
+            if ([imageUrlArray count] == 0) {
+                banner = [[LBBanner alloc] initWithImageNames:@[@"index2"] andFrame:CGRectMake(0, 0, SCREENWIDTH, bannerHeight)];
+            }
+            else{
+                banner = [[LBBanner alloc] initWithImageURLArray:imageUrlArray andFrame:CGRectMake(0, 0, SCREENWIDTH, bannerHeight)];
+            }
             banner.tag = 100;
             banner.delegate = self;
             [tableview.tableHeaderView addSubview:banner];
@@ -717,6 +752,7 @@
             [tableview reloadData];
         }
         else{
+            [self hideHud];
             NSString *data = respondDict[@"data"];
             if ([data isMemberOfClass:[NSNull class]] || data == nil) {
                 data = ERRORREQUESTTIP;
@@ -724,7 +760,8 @@
             [self showHint:data];
         }
     } failure:^(NSError* err){
-        
+        [self hideHud];
+        [self showHint:ERRORREQUESTTIP];
     }];
 }
 
@@ -1064,7 +1101,7 @@
             [orderSendUserpic appendFormat:@",%@",base64String];
         }
     }
-    UITextField *field = (UITextField *)[_selectMenuBgView viewWithTag:2400];
+    UILabel *field = (UILabel *)[_selectMenuBgView viewWithTag:2400];
     NSString *mark = field.text;
     NSString *orderSendNote	= @"家中有小孩";
     if (!isHaveSomeProblem) {
@@ -1879,6 +1916,153 @@
 {
     
     [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)dismissViewGes:(UITapGestureRecognizer *)ges
+{
+    
+    UIView *mydismissView = ges.view;
+    mydismissView.hidden = YES;
+    
+    UIView *alertview = [self.view viewWithTag:ALERTTAG];
+    
+    [alertview removeFromSuperview];
+}
+
+- (BOOL)textViewShouldEndEditing:(UITextView *)textView
+{
+    if ([textView isFirstResponder]) {
+        [textView resignFirstResponder];
+    }
+    return YES;
+}
+
+
+- (void)inputReamrk
+{
+    [self.view addSubview:dismissView];
+    dismissView.hidden = NO;
+    
+    CGFloat viewX = 10;
+    CGFloat viewY = 120;
+    CGFloat viewW = SCREENWIDTH - 2 * viewX;
+    CGFloat viewH = 120;
+    UIView *shareAlert = [[UIView alloc] init];
+    shareAlert.frame = CGRectMake(viewX, viewY, viewW, viewH);
+    shareAlert.backgroundColor = [UIColor whiteColor];
+    shareAlert.layer.cornerRadius = 5.0;
+    shareAlert.layer.borderWidth = 0;
+    shareAlert.layer.masksToBounds = YES;
+    shareAlert.tag = ALERTTAG;
+    shareAlert.layer.borderColor = [UIColor clearColor].CGColor;
+    shareAlert.userInteractionEnabled = YES;
+    
+    CGFloat labelH = 30;
+    CGFloat labelY = 0;
+    
+    UIFont *shareFont = [UIFont systemFontOfSize:13.0];
+    
+    UILabel *messageTitleLabel = [[UILabel alloc] init];
+    messageTitleLabel.font = shareFont;
+    messageTitleLabel.textColor = [UIColor blackColor];
+    messageTitleLabel.textAlignment = NSTextAlignmentCenter;
+    messageTitleLabel.backgroundColor = [UIColor clearColor];
+    messageTitleLabel.text = @"备注信息";
+    messageTitleLabel.frame = CGRectMake(0, 0, viewW, labelH);
+    [shareAlert addSubview:messageTitleLabel];
+    
+    UIImageView *logoImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"login_logoImage"]];
+    logoImage.frame = CGRectMake(20, 5, 30, 30);
+    [shareAlert addSubview:logoImage];
+    
+    
+    labelY = labelY + labelH + 10;
+    UITextField *textview = [[UITextField alloc] init];
+    textview.tag = 10;
+    textview.backgroundColor = [UIColor whiteColor];
+    textview.placeholder = @"病史、禁忌、特殊说明";
+    
+    UILabel *field = (UILabel *)[_selectMenuBgView viewWithTag:2400];
+    NSString *fieldText = field.text;
+    
+    if ([fieldText hasPrefix:@"病史、禁忌、特殊说明"]) {
+        fieldText = nil;
+    }
+    textview.text = fieldText;
+    textview.font = shareFont;
+    textview.delegate = self;
+    textview.frame = CGRectMake(10, labelY, shareAlert.frame.size.width - 20, labelH);
+    textview.layer.borderWidth = 1.0;
+    textview.layer.cornerRadius = 5.0;
+    textview.layer.masksToBounds = YES;
+    textview.layer.borderColor = [UIColor colorWithWhite:0xcc / 255.0 alpha:1.0].CGColor;
+    [shareAlert addSubview:textview];
+    
+    CGFloat buttonDis = 10;
+    CGFloat buttonW = (viewW - 3 * buttonDis) / 2.0;
+    CGFloat buttonH = 30;
+    CGFloat buttonY = labelY = labelY + labelH + 10;
+    CGFloat buttonX = 10;
+    
+    UIButton *shareButton = [[UIButton alloc] initWithFrame:CGRectMake(buttonX, buttonY, buttonW, buttonH)];
+    [shareButton setTitle:@"确定" forState:UIControlStateNormal];
+    [shareButton addTarget:self action:@selector(alertbuttonClick:) forControlEvents:UIControlEventTouchUpInside];
+    shareButton.tag = 1;
+    [shareButton.titleLabel setFont:shareFont];
+    //    [shareButton setBackgroundColor:APPDEFAULTORANGE];
+    //    [shareButton setBackgroundImage:[Tool buttonImageFromColor:APPDEFAULTORANGE withImageSize:shareButton.frame.size] forState:UIControlStateHighlighted];
+    [shareButton setTitleColor:APPDEFAULTORANGE forState:UIControlStateNormal];
+    [shareAlert addSubview:shareButton];
+    
+    UIButton *cancelButton = [[UIButton alloc] initWithFrame:CGRectMake(buttonX + buttonDis + buttonW, buttonY, buttonW, buttonH)];
+    [cancelButton setTitle:@"取消" forState:UIControlStateNormal];
+    [cancelButton addTarget:self action:@selector(alertbuttonClick:) forControlEvents:UIControlEventTouchUpInside];
+    cancelButton.tag = 0;
+    [cancelButton.titleLabel setFont:shareFont];
+    //    [cancelButton setBackgroundColor:APPDEFAULTORANGE];
+    //    [cancelButton setBackgroundImage:[Tool buttonImageFromColor:APPDEFAULTORANGE withImageSize:cancelButton.frame.size] forState:UIControlStateHighlighted];
+    [cancelButton setTitleColor:APPDEFAULTORANGE forState:UIControlStateNormal];
+    [shareAlert addSubview:cancelButton];
+    
+    CAKeyframeAnimation *popAnimation = [CAKeyframeAnimation animationWithKeyPath:@"transform"];
+    popAnimation.duration = 0.4;
+    popAnimation.values = @[[NSValue valueWithCATransform3D:CATransform3DMakeScale(0.01f, 0.01f, 1.0f)],
+                            [NSValue valueWithCATransform3D:CATransform3DMakeScale(1.1f, 1.1f, 1.0f)],
+                            [NSValue valueWithCATransform3D:CATransform3DMakeScale(0.9f, 0.9f, 1.0f)],
+                            [NSValue valueWithCATransform3D:CATransform3DIdentity]];
+    popAnimation.keyTimes = @[@0.2f, @0.5f, @0.75f, @1.0f];
+    popAnimation.timingFunctions = @[[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut],
+                                     [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut],
+                                     [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
+    [shareAlert.layer addAnimation:popAnimation forKey:nil];
+    [[UIApplication sharedApplication].keyWindow addSubview:shareAlert];
+}
+
+- (void)alertbuttonClick:(UIButton *)button
+{
+    UIView *mydismissView = dismissView;
+    mydismissView.hidden = YES;
+    
+    UIView *alertview = [[UIApplication sharedApplication].keyWindow viewWithTag:ALERTTAG];
+    
+    UIView *subview = [alertview viewWithTag:10];
+    if (button.tag == 0) {
+        [alertview removeFromSuperview];
+        return;
+    }
+    UITextField *textview = nil;
+    if ([subview isMemberOfClass:[UITextField class]]) {
+        textview = (UITextField *)subview;
+    }
+    NSString *password = textview.text;
+    [alertview removeFromSuperview];
+    if (password == nil || [password isEqualToString:@""]) {
+        
+        [self showHint:@"请输入备注"];
+        return;
+    }
+    UILabel *field = (UILabel *)[_selectMenuBgView viewWithTag:2400];
+    field.text = password;
 }
 
 - (void)didReceiveMemoryWarning {

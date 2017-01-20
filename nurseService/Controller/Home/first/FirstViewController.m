@@ -19,6 +19,7 @@
 #import "HeServiceDetailVC.h"
 #import "HeBookServiceVC.h"
 #import "HYPageView.h"
+#import "BrowserView.h"
 
 #define LBBannerTag 100
 #define HeadTag  200
@@ -203,7 +204,7 @@
     [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
         NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
         if (pageNum == 0) {
-            [dataSource removeAllObjects];
+            [bannerDataSource removeAllObjects];
         }
         NSMutableDictionary *respondDict = [NSMutableDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
         if ([[respondDict valueForKey:@"errorCode"] integerValue] == REQUESTCODE_SUCCEED){
@@ -259,6 +260,18 @@
             }
             for (id dict in jsonArray) {
                 [dataSource addObject:dict];
+            }
+            if ([dataSource count] == 0) {
+                UIView *bgView = [[UIView alloc] initWithFrame:self.view.bounds];
+                UIImage *noImage = [UIImage imageNamed:@"img_no_data_refresh"];
+                CGFloat scale = noImage.size.height / noImage.size.width;
+                CGFloat imageW = 120;
+                CGFloat imageH = imageW * scale;
+                UIImageView *imageview = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"img_no_data_refresh"]];
+                imageview.frame = CGRectMake(100, 100, imageW, imageH);
+                imageview.center = bgView.center;
+                [bgView addSubview:imageview];
+                tableview.backgroundView = bgView;
             }
             [tableview reloadData];
         }
@@ -359,11 +372,24 @@
         
     }
     NSString *rollPicId = dict[@"rollPicAddress"];
-    if ([rollPicId isMemberOfClass:[NSNull class]] || rollPicId == nil) {
-        rollPicId = @"";
+    if ([rollPicId isMemberOfClass:[NSNull class]] || rollPicId == nil || [rollPicId isEqualToString:@""]) {
+        rollPicId = dict[@"rollPicNote"];
+        
+        if ([rollPicId isMemberOfClass:[NSNull class]] || rollPicId == nil || [rollPicId isEqualToString:@""]) {
+            
+        }
+        else{
+            NSString *url = rollPicId;
+            BrowserView *scanReportDetailVC = [[BrowserView alloc] initWithURL:url title:nil];
+            scanReportDetailVC.hidesBottomBarWhenPushed = YES;
+            [self.navigationController pushViewController:scanReportDetailVC animated:YES];
+        }
     }
-    NSDictionary *myDict = @{@"contentId":rollPicId};
-    [self bookServiceWithDict:myDict];
+    else{
+        NSDictionary *myDict = @{@"contentId":rollPicId};
+        [self bookServiceWithDict:myDict];
+    }
+    
 }
 
 - (void)banner:(LBBanner *)banner didChangeViewWithIndex:(NSInteger)index {
