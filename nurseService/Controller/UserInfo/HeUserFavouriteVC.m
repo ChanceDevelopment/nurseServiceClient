@@ -507,7 +507,8 @@
     [serviceDict setObject:minMoney forKey:@"minMoney"];
     
     NSString *nurseId = @"";
-    NSDictionary *paramDict = @{@"service":serviceDict,@"nurse":nurseId};
+    NSDictionary *nurseDict = @{@"nurseId":nurseId};
+    NSDictionary *paramDict = @{@"service":serviceDict,@"nurse":nurseDict};
     
     HYPageView *pageView = [[HYPageView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, SCREENHEIGH) withTitles:@[@"商品",@"详情",@"评论"] withViewControllers:@[@"HeServiceDetailVC",@"HeServiceInfoVC",@"HeCommentVC"] withParameters:@[paramDict,serviceDict,serviceDict]];
     pageView.isTranslucent = NO;

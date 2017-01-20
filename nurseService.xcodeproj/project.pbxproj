@@ -5547,8 +5547,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.channce.nurseServiceClient;
 				PRODUCT_NAME = "安心护";
-				PROVISIONING_PROFILE = "63f246e2-f1c3-4748-bd2b-d26e3d74d948";
-				PROVISIONING_PROFILE_SPECIFIER = "20170119_ nurseServiceClient_Release";
+				PROVISIONING_PROFILE = "633cd57d-1ea5-420e-baff-b5ee8f2e1125";
+				PROVISIONING_PROFILE_SPECIFIER = "20170120_ nurseServiceClient_Release";
 			};
 			name = Release;
 		};
