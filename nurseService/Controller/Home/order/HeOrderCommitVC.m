@@ -23,6 +23,9 @@
 #import "UWDatePickerView.h"
 #import "HeSettingPayPasswordVC.h"
 #import "HeReportVC.h"
+#import "Order.h"
+#import "DataSigner.h"
+#import <AlipaySDK/AlipaySDK.h>
 
 #define ALERTTAG 200
 #define MinLocationSucceedNum 1   //要求最少成功定位的次数
@@ -117,6 +120,8 @@
 - (void)initializaiton
 {
     [super initializaiton];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(GetAlipayResult:) name:@"GetAlipayResult" object:nil];
+    
     dataSource = @[@"服务时间",@"受护人",@"产妇护理套餐",@"套餐列表",@"备注信息",@"图片资料",@"优惠券",@"交通费",@"总额",@"支付方式",@"      中国人寿保险"];
     payMethodDataSource = @[@"支付宝支付",@"在线支付"];
     payIconDataSource = @[@"icon_online",@"icon_alipay"];
@@ -243,11 +248,78 @@
     [self addServiceLabel];
 }
 
+- (void)GetAlipayResult:(NSNotification *)notification
+{
+    NSDictionary *userInfo = notification.userInfo;
+    if (![[userInfo objectForKey:@"result"] boolValue]) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"温馨提示" message:@"支付未能成功" delegate:nil cancelButtonTitle:@"知道了" otherButtonTitles:nil, nil];
+        [alert show];
+        return;
+    }
+    [self showHint:@"支付成功"];
+    [self.navigationController popViewControllerAnimated:YES];
+}
 
 - (void)payButtonClick:(UIButton *)sender
 {
     NSLog(@"payButtonClick");
+    if (payType == 1) {
+        sender.enabled = NO;
+        [self alipay];
+        return;
+    }
     [self inputPayPassword];
+}
+
+- (void)alipay
+{
+    NSString *requestWorkingTaskPath = [NSString stringWithFormat:@"%@/alipay/signProve.action",BASEURL];
+    
+    NSString *userId = [[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY];
+    if (!userId) {
+        userId = @"";
+    }
+    id finalyMoney = orderDetailDict[@"orderSendTotalmoney"];
+    if ([finalyMoney isMemberOfClass:[NSNull class]] || finalyMoney == nil) {
+        finalyMoney = @"";
+    }
+    CGFloat money = [finalyMoney floatValue];
+    
+    NSString *moneyStr = [NSString stringWithFormat:@"%.2f",money];
+    NSDictionary *requestMessageParams = @{@"userId":userId,@"money":moneyStr,@"Type":@"2",@"orderId":_orderId,@"couponId":@""};
+    [self showHudInView:self.view hint:@"支付中..."];
+    
+    [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestWorkingTaskPath params:requestMessageParams success:^(AFHTTPRequestOperation* operation,id response){
+        [self hideHud];
+        
+        NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
+        NSDictionary *respondDict = [respondString objectFromJSONString];
+        NSInteger statueCode = [[respondDict objectForKey:@"errorCode"] integerValue];
+        if (statueCode == REQUESTCODE_SUCCEED) {
+            
+            NSString *appScheme = @"AlipaySdkNurseServiceClient";//-----回调id,返回应用
+            NSString *orderString = respondDict[@"json"];
+            [[AlipaySDK defaultService] payOrder:orderString fromScheme:appScheme callback:^(NSDictionary *resultDic) {
+                NSLog(@"resultDic: %@",resultDic);
+                /*
+                 *
+                 *
+                 *此处不返回支付结果
+                 *
+                 *
+                 ***/
+            }];
+        }
+        else{
+            NSString *data = respondDict[@"data"];
+            if ([data isMemberOfClass:[NSNull class]] || data == nil) {
+                data = ERRORREQUESTTIP;
+            }
+            [self showHint:data];
+        }
+    } failure:^(NSError *error){
+        [self showHint:ERRORREQUESTTIP];
+    }];
 }
 
 - (void)loadOrderDetail
