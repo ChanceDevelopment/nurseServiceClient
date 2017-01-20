@@ -67,10 +67,10 @@
 {
     if (!_navigationTabBar) {
         self.navigationTabBar = [[DLNavigationTabBar alloc] initWithTitles:@[@"预约框",@"已预约",@"进行中",@"已完成"]];
-        self.navigationTabBar.backgroundColor = [UIColor colorWithWhite:237.0 / 255.0 alpha:1.0];
+        self.navigationTabBar.backgroundColor = [UIColor whiteColor];
         self.navigationTabBar.frame = CGRectMake(0, 0, SCREENWIDTH, 44);
         self.navigationTabBar.sliderBackgroundColor = APPDEFAULTORANGE;
-        self.navigationTabBar.buttonNormalTitleColor = [UIColor grayColor];
+        self.navigationTabBar.buttonNormalTitleColor = [UIColor blackColor];
         self.navigationTabBar.buttonSelectedTileColor = APPDEFAULTORANGE;
         __weak typeof(self) weakSelf = self;
         [self.navigationTabBar setDidClickAtIndex:^(NSInteger index){
@@ -180,6 +180,20 @@
             NSMutableArray *orderArray = dataSource[orderState];
             [orderArray removeAllObjects];
             [orderArray addObjectsFromArray:jsonArray];
+            
+            if ([jsonArray count] == 0) {
+                UIView *bgView = [[UIView alloc] initWithFrame:self.view.bounds];
+                UIImage *noImage = [UIImage imageNamed:@"img_no_data_refresh"];
+                CGFloat scale = noImage.size.height / noImage.size.width;
+                CGFloat imageW = 120;
+                CGFloat imageH = imageW * scale;
+                UIImageView *imageview = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"img_no_data_refresh"]];
+                imageview.frame = CGRectMake(100, 100, imageW, imageH);
+                imageview.center = bgView.center;
+                [bgView addSubview:imageview];
+                tableview.backgroundView = bgView;
+            }
+            
             if (orderState == currentOrderType) {
                 [tableview reloadData];
             }

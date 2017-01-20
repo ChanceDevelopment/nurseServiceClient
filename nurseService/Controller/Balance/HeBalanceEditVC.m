@@ -8,9 +8,9 @@
 
 #import "HeBalanceEditVC.h"
 #import "UIButton+Bootstrap.h"
-//#import "Order.h"
-//#import "DataSigner.h"
-//#import <AlipaySDK/AlipaySDK.h>
+#import "Order.h"
+#import "DataSigner.h"
+#import <AlipaySDK/AlipaySDK.h>
 
 #define WITHDRAWMIN 200
 #define WITHDRAWMAX 2000
@@ -54,11 +54,11 @@
     label.textAlignment = NSTextAlignmentCenter;
     self.navigationItem.titleView = label;
     
-    editField.layer.borderColor = [UIColor grayColor].CGColor;
-    editField.layer.borderWidth = 1.0;
-    editField.layer.masksToBounds = YES;
-    editField.layer.cornerRadius = 5.0;
-    
+//    editField.layer.borderColor = [UIColor grayColor].CGColor;
+//    editField.layer.borderWidth = 1.0;
+//    editField.layer.masksToBounds = YES;
+//    editField.layer.cornerRadius = 5.0;
+    self.view.backgroundColor = [UIColor colorWithWhite:237.0 / 255.0 alpha:1.0];
     [commitButton dangerStyle];
     commitButton.layer.borderWidth = 0;
     commitButton.layer.borderColor = [UIColor clearColor].CGColor;
@@ -179,8 +179,6 @@
 //充值
 - (void)rechargeMoney:(CGFloat)money
 {
-    [self showHint:@"该功能暂未开通"];
-    return;
     NSString *requestWorkingTaskPath = [NSString stringWithFormat:@"%@/alipay/signProve.action",BASEURL];
     
     NSString *userId = [[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY];
@@ -199,18 +197,18 @@
         NSInteger statueCode = [[respondDict objectForKey:@"errorCode"] integerValue];
         if (statueCode == REQUESTCODE_SUCCEED) {
             
-//            NSString *appScheme = @"AlipaySdkBeautyContest";//-----回调id,返回应用
-//            NSString *orderString = respondDict[@"json"];
-//            [[AlipaySDK defaultService] payOrder:orderString fromScheme:appScheme callback:^(NSDictionary *resultDic) {
-//                NSLog(@"resultDic: %@",resultDic);
-//                /*
-//                 *
-//                 *
-//                 *此处不返回支付结果
-//                 *
-//                 *
-//                 ***/
-//            }];
+            NSString *appScheme = @"AlipaySdkNurseServiceClient";//-----回调id,返回应用
+            NSString *orderString = respondDict[@"json"];
+            [[AlipaySDK defaultService] payOrder:orderString fromScheme:appScheme callback:^(NSDictionary *resultDic) {
+                NSLog(@"resultDic: %@",resultDic);
+                /*
+                 *
+                 *
+                 *此处不返回支付结果
+                 *
+                 *
+                 ***/
+            }];
         }
         else{
             NSString *data = respondDict[@"data"];

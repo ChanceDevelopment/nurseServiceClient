@@ -1022,7 +1022,7 @@
 //获取app的协议头
 + (NSString *)getAppScheme
 {
-    return [[[[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleURLTypes"] objectAtIndex:0] objectForKey:@"CFBundleURLSchemes"] objectAtIndex:0];
+    return @"AlipaySdkNurseServiceClient";
 }
 
 //获取系统的版本

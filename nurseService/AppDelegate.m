@@ -29,6 +29,7 @@
 #import "TOWebViewController.h"
 #import <SMS_SDK/SMSSDK.h>
 #import "HeTabBarVC.h"
+#import <AlipaySDK/AlipaySDK.h>
 
 #ifdef NSFoundationVersionNumber_iOS_9_x_Max
 #import <UserNotifications/UserNotifications.h>
@@ -470,6 +471,145 @@ BMKMapManager* _mapManager;
 
 - (void)applicationWillTerminate:(UIApplication *)application {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+}
+
+#if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_9_0
+- (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<NSString*, id> *)options {
+    /*
+     此处必须执行,不然的话在设备安装支付宝app的情况下,
+     使用支付宝支付时,获取不到支付结果的回调
+     */
+    NSString *appScheme = [Tool getAppScheme];
+    //传过来的参数
+    NSString *paramsID = [url host];
+    NSLog(@"appScheme = %@, paramsID = %@",appScheme,paramsID);
+    //根据不同的参数ID做不同处理
+    //    [[AlipaySDK defaultService] processOrderWithPaymentResult:url standbyCallback:^(NSDictionary *resultDic){
+    //
+    //    }];
+    
+    if ([url.host isEqualToString:@"safepay"]) {
+        //跳转支付宝钱包进行支付，处理支付结果
+        [[AlipaySDK defaultService] processOrderWithPaymentResult:url standbyCallback:^(NSDictionary *resultDic) {
+            NSLog(@"result = %@",resultDic);
+            if ([[resultDic objectForKey:@"resultStatus"] isEqualToString:@"9000"]) {
+                
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"GetAlipayResult" object:nil userInfo:@{@"result":@YES}];
+                //------发送通知-------
+                //                [[NSNotificationCenter defaultCenter] postNotificationName:@"realRecharge" object:nil userInfo:@{@"result":@"true"}];//发送通知,重新加载未支付订单
+                
+                //----未支付订单支付完成------发送通知--------
+                //                [[NSNotificationCenter defaultCenter] postNotificationName:@"initOrderList" object:nil userInfo:nil];//发送通知,重新加载未支付订单
+            }else if([[resultDic objectForKey:@"resultStatus"] isEqualToString:@"6001"]){
+                //用户中途取消
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"GetAlipayResult" object:nil userInfo:@{@"result":@NO}];
+            }
+            else{
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"GetAlipayResult" object:nil userInfo:@{@"result":@NO}];
+            }
+            
+        }];
+    }
+    
+    return YES;
+}
+#endif
+
+//支付
+//独立客户端回调函数,支付宝支付回调,分享回调,
+- (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url {
+    //	[self parse:url application:application];
+    //    danertuChunKang
+    
+    if ([[url scheme] isEqualToString:@"danertuChunKang"])
+    {
+        NSLog(@"%@",url);
+    }
+    return YES;
+    /*
+     return [ShareSDK handleOpenURL:url wxDelegate:self];
+     return [ShareSDK handleOpenURL:url
+     wxDelegate:self];
+     */
+}
+
+//------分享使用------这个严重影响了支付宝支付结果的回调------
+/*
+ - (BOOL)application:(UIApplication *)application
+ openURL:(NSURL *)url
+ sourceApplication:(NSString *)sourceApplication
+ annotation:(id)annotation
+ {
+ return [ShareSDK handleOpenURL:url
+ sourceApplication:sourceApplication
+ annotation:annotation
+ wxDelegate:self];
+ }
+ */
+
+- (BOOL)application:(UIApplication *)application
+            openURL:(NSURL *)url
+  sourceApplication:(NSString *)sourceApplication
+         annotation:(id)annotation {
+    
+    /*
+     此处必须执行,不然的话在设备安装支付宝app的情况下,
+     使用支付宝支付时,获取不到支付结果的回调
+     */
+    NSString *appScheme = [Tool getAppScheme];
+    //传过来的参数
+    NSString *paramsID = [url host];
+    NSLog(@"appScheme = %@, paramsID = %@",appScheme,paramsID);
+    //根据不同的参数ID做不同处理
+    //    [[AlipaySDK defaultService] processOrderWithPaymentResult:url standbyCallback:^(NSDictionary *resultDic){
+    //
+    //    }];
+    if ([url.host isEqualToString:@"safepay"]) {
+        //跳转支付宝钱包进行支付，处理支付结果
+        //跳转支付宝钱包进行支付，处理支付结果
+        [[AlipaySDK defaultService] processOrderWithPaymentResult:url standbyCallback:^(NSDictionary *resultDic) {
+            NSLog(@"result = %@",resultDic);
+            if ([[resultDic objectForKey:@"resultStatus"] isEqualToString:@"9000"]) {
+                
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"GetAlipayResult" object:nil userInfo:@{@"result":@"YES"}];
+                //------发送通知-------
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"realRecharge" object:nil userInfo:@{@"result":@"true"}];//发送通知,重新加载未支付订单
+                
+                //----未支付订单支付完成------发送通知--------
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"initOrderList" object:nil userInfo:nil];//发送通知,重新加载未支付订单
+            }else if([[resultDic objectForKey:@"resultStatus"] isEqualToString:@"6001"]){
+                //用户中途取消
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"GetAlipayResult" object:nil userInfo:@{@"result":@"NO"}];
+            }
+            
+        }];
+    }
+    //    NSString *urlStr  = [url.absoluteString stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    //    NSLog(@"jgoreigoiejgioe--%@---%@--%@",urlStr,url,url.host);
+    //    if ([url.host isEqualToString:@"safepay"]) {
+    //        if ([urlStr rangeOfString:@"\"ResultStatus\":\"9000\""].location!=NSNotFound) {
+    //            //------发送通知-------
+    //            [[NSNotificationCenter defaultCenter] postNotificationName:@"realRecharge" object:nil userInfo:@{@"result":@"true"}];//发送通知,重新加载未支付订单
+    //            NSLog(@"gjireojgieorg-----");
+    //
+    //            //----未支付订单支付完成------发送通知--------
+    //            [[NSNotificationCenter defaultCenter] postNotificationName:@"initOrderList" object:nil userInfo:nil];//发送通知,重新加载未支付订单
+    //        }
+    //
+    //        [[AlipaySDK defaultService] processOrderWithPaymentResult:url standbyCallback:^(NSDictionary *resultDic){
+    //            NSLog(@"resultDic:%@",resultDic);
+    //        }];
+    //
+    //        [[AlipaySDK defaultService] processAuth_V2Result:url
+    //                                         standbyCallback:^(NSDictionary *resultDic) {
+    //
+    //                                             NSString *resultStr = resultDic[@"result"];
+    //                                             NSLog(@"hfeufhe = %@,%@",resultDic,resultStr);
+    //                                             [[NSNotificationCenter defaultCenter] postNotificationName:@"realRecharge" object:nil userInfo:@{@"result":@"true"}];//发送通知,重新加载未支付订单
+    //                                         }];
+    //    }
+    
+    return YES;
 }
 
 @end
