@@ -1282,7 +1282,9 @@
             endLabel.textColor = [UIColor redColor];
             endLabel.textAlignment = NSTextAlignmentRight;
             id serviceMoney = serviceDetailInfoDict[@"serviceMoney"];
-            
+            if ([serviceMoney isMemberOfClass:[NSNull class]]) {
+                serviceMoney = @"";
+            }
             endLabel.text = [NSString stringWithFormat:@"￥%@起",serviceMoney];
             [cell addSubview:endLabel];
             
@@ -1339,11 +1341,18 @@
                     NSString *protectedPersonName = serviceDetailInfoDict[@"protectedPersonName"];
                     
                     id protectedPersonSex = serviceDetailInfoDict[@"protectedPersonSex"];
+                    if ([protectedPersonSex isMemberOfClass:[NSNull class]]) {
+                        protectedPersonSex = @"";
+                    }
+                    
                     NSString *sexStr = @"女";
                     if ([protectedPersonSex integerValue] == ENUM_SEX_Boy) {
                         sexStr = @"男";
                     }
                     id protectedPersonAge = serviceDetailInfoDict[@"protectedPersonAge"];
+                    if ([protectedPersonAge isMemberOfClass:[NSNull class]]) {
+                        protectedPersonAge = @"";
+                    }
                     nameLabel.text = [NSString stringWithFormat:@"%@  %@  %@",protectedPersonName,sexStr,protectedPersonAge];
                     
                     nameLabel.textColor = [UIColor  grayColor];
