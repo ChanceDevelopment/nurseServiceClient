@@ -1111,8 +1111,14 @@
         orderSendNote = [NSString stringWithFormat:@"%@,%@",mark,orderSendNote];
     }
     NSString *orderSendCoupon = @"";
-    NSString *orderSendTrafficmoney	= @"30.00";
-    NSString *orderSendSavemoney = @"0";
+    NSString *orderSendTrafficmoney	= serviceDetailInfoDict[@"trafficCost"];
+    if ([orderSendTrafficmoney isMemberOfClass:[NSNull class]] || orderSendTrafficmoney == nil) {
+        orderSendTrafficmoney = @"";
+    }
+    NSString *orderSendSavemoney = serviceDetailInfoDict[@"saveCost"];
+    if ([orderSendSavemoney isMemberOfClass:[NSNull class]] || orderSendSavemoney == nil) {
+        orderSendSavemoney = @"";
+    }
     NSString *orderSendIspayment = @"0";
     NSString *orderSendIssafe = @"1";
     long long timeSp = [Tool convertStringToTimesp:self.tmpDateString dateFormate:@"yyyy-MM-dd HH:mm"];

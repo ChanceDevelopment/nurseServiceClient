@@ -123,7 +123,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(GetAlipayResult:) name:@"GetAlipayResult" object:nil];
     
     dataSource = @[@"服务时间",@"受护人",@"产妇护理套餐",@"套餐列表",@"备注信息",@"图片资料",@"优惠券",@"交通费",@"总额",@"支付方式",@"      中国人寿保险"];
-    payMethodDataSource = @[@"支付宝支付",@"在线支付"];
+    payMethodDataSource = @[@"在线支付",@"支付宝支付"];
     payIconDataSource = @[@"icon_online",@"icon_alipay"];
     bannerImageDataSource = [[NSMutableArray alloc] initWithCapacity:0];
     
@@ -710,7 +710,7 @@
             endLabel.text = [NSString stringWithFormat:@"￥%@",orderSendCostmoney];
             
             endLabel.textAlignment = NSTextAlignmentRight;
-            endLabel.textColor = [UIColor orangeColor];
+            endLabel.textColor = [UIColor redColor];
             [cell addSubview:endLabel];
             
             break;
@@ -751,7 +751,7 @@
                 endLabel.text = @"暂无图片资料";
                 
                 endLabel.textAlignment = NSTextAlignmentRight;
-                endLabel.textColor = [UIColor orangeColor];
+                endLabel.textColor = [UIColor redColor];
                 [cell addSubview:endLabel];
             }
             
@@ -771,7 +771,7 @@
             endLabel.font = [UIFont systemFontOfSize:15.0];
             endLabel.text = @"无可用优惠券";
             endLabel.textAlignment = NSTextAlignmentRight;
-            endLabel.textColor = [UIColor orangeColor];
+            endLabel.textColor = [UIColor redColor];
             [cell addSubview:endLabel];
             
             break;
@@ -788,7 +788,7 @@
             id orderSendTrafficmoney = orderDetailDict[@"orderSendTrafficmoney"];
             endLabel.text = [NSString stringWithFormat:@"￥%@",orderSendTrafficmoney];
             endLabel.textAlignment = NSTextAlignmentRight;
-            endLabel.textColor = [UIColor orangeColor];
+            endLabel.textColor = APPDEFAULTORANGE;
             [cell addSubview:endLabel];
             break;
         }
@@ -804,7 +804,7 @@
             id orderSendTotalmoney = orderDetailDict[@"orderSendTotalmoney"];
             endLabel.text = [NSString stringWithFormat:@"￥%@",orderSendTotalmoney];
             endLabel.textAlignment = NSTextAlignmentRight;
-            endLabel.textColor = [UIColor orangeColor];
+            endLabel.textColor = [UIColor redColor];
             [cell addSubview:endLabel];
             
             break;
