@@ -13,6 +13,7 @@
 #import "MLLabel+Size.h"
 #import "MJRefreshAutoNormalFooter.h"
 #import "MJRefreshNormalHeader.h"
+#import "HeServiceCommentCell.h"
 
 @interface HeServiceCommentVC ()<UITableViewDataSource,UITableViewDelegate>
 {
@@ -113,6 +114,7 @@
     [super initializaiton];
     dataSource = [[NSMutableArray alloc] initWithCapacity:0];
     nurseInfoDict = parameter;
+    pageNum = -1;
 }
 
 - (void)initView
@@ -231,9 +233,9 @@
     NSInteger section = indexPath.section;
     CGSize cellsize = [tableView rectForRowAtIndexPath:indexPath].size;
     static NSString *cellIndentifier = @"HeCommentCell";
-    HeCommentCell *cell  = [tableView cellForRowAtIndexPath:indexPath];
+    HeServiceCommentCell *cell  = [tableView cellForRowAtIndexPath:indexPath];
     if (!cell) {
-        cell = [[HeCommentCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIndentifier cellSize:cellsize];
+        cell = [[HeServiceCommentCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIndentifier cellSize:cellsize];
         
     }
     NSDictionary *dict = nil;
@@ -267,10 +269,11 @@
     }
     cell.phoneLabel.text = userNike;
     
-//    manageNursingContenName
-//    CGFloat serviceNameLabelX = 10;
-//    CGFloat serviceNameLabel
-//    UILabel *serviceNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(<#CGFloat x#>, <#CGFloat y#>, <#CGFloat width#>, <#CGFloat height#>)]
+    NSString *manageNursingContenName = dict[@"manageNursingContenName"];
+    if ([manageNursingContenName isMemberOfClass:[NSNull class]] || manageNursingContenName == nil) {
+        manageNursingContenName = @"";
+    }
+    cell.serviceLabel.text = [NSString stringWithFormat:@"护理项:  %@",manageNursingContenName];
     
     NSString *commentContent = dict[@"evaluateContent"];
     if ([commentContent isMemberOfClass:[NSNull class]] || commentContent == nil) {
@@ -306,7 +309,7 @@
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 100;
+    return 140;
 }
 
 

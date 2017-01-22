@@ -117,7 +117,7 @@
         
         orderMoney = [[UILabel alloc] initWithFrame:CGRectMake(orderMoneyX, orderMoneyY, orderMoneyW, orderMoneyH)];
         orderMoney.text = @"￥335";
-        orderMoney.textColor = [UIColor orangeColor];
+        orderMoney.textColor = [UIColor redColor];
         orderMoney.textAlignment = NSTextAlignmentRight;
         orderMoney.font = [UIFont systemFontOfSize:14.0];
         orderMoney.backgroundColor = [UIColor clearColor];
@@ -205,12 +205,14 @@
         [bgView addSubview:line2];
         line2.backgroundColor = [UIColor colorWithWhite:237.0 / 255.0 alpha:1.0];
         
+        CGFloat buttonDetal = 0;
+        
         CGFloat cancleLX = 0;
         CGFloat cancleLY = CGRectGetMaxY(line2.frame);
-        CGFloat cancleLW = bgView_W / 2.0;
+        CGFloat cancleLW = bgView_W / 2.0 - buttonDetal;
         CGFloat cancleLH = 40;
         
-        UILabel *cancleL = [[UILabel alloc] initWithFrame:CGRectMake(cancleLX, cancleLY, cancleLW, cancleLH)];
+        UILabel *cancleL = [[UILabel alloc] initWithFrame:CGRectMake(cancleLX, cancleLY, cancleLW , cancleLH)];
         cancleL.textColor = [UIColor blackColor];
         cancleL.userInteractionEnabled = YES;
         cancleL.textAlignment = NSTextAlignmentCenter;
@@ -222,7 +224,7 @@
         
         
         cancleLX = CGRectGetMaxX(cancleL.frame);
-        UILabel *nextStepL = [[UILabel alloc] initWithFrame:CGRectMake(cancleLX, cancleLY, cancleLW, cancleLH)];
+        UILabel *nextStepL = [[UILabel alloc] initWithFrame:CGRectMake(cancleLX, cancleLY, cancleLW + 2 * buttonDetal, cancleLH)];
         nextStepL.textColor = [UIColor blackColor];
         nextStepL.userInteractionEnabled = YES;
         nextStepL.textAlignment = NSTextAlignmentCenter;
@@ -246,7 +248,7 @@
         CGFloat line4Y = CGRectGetMinY(cancleL.frame) + 5;
         CGFloat line4H = cancleLH - 10;
         CGFloat line4W = 1;
-        CGFloat line4X = bgView_W / 2.0 - line4W / 2.0;
+        CGFloat line4X = bgView_W / 2.0 - line4W / 2.0 - buttonDetal;
         
         UILabel *line4 = [[UILabel alloc] initWithFrame:CGRectMake(line4X, line4Y, line4W, line4H)];
         [bgView addSubview:line4];

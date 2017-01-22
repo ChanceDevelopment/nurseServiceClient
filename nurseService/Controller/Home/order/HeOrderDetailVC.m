@@ -84,12 +84,22 @@
 - (void)initView
 {
     [super initView];
-    UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] init];
-    rightItem.tintColor = [UIColor whiteColor];
-    rightItem.title = @"投诉";
-    rightItem.target = self;
-    rightItem.action = @selector(reportAction:);
-    self.navigationItem.rightBarButtonItem = rightItem;
+    
+    id orderSendStateObj = orderDetailDict[@"orderSendState"];
+    if ([orderSendStateObj isMemberOfClass:[NSNull class]] || orderSendStateObj == nil) {
+        orderSendStateObj = @"";
+    }
+    NSInteger orderSendState = [orderSendStateObj integerValue];
+    if (orderSendState == 1) {
+        UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] init];
+        rightItem.tintColor = [UIColor whiteColor];
+        rightItem.title = @"投诉";
+        rightItem.target = self;
+        rightItem.action = @selector(reportAction:);
+        self.navigationItem.rightBarButtonItem = rightItem;
+    }
+    
+    
     
     self.view.backgroundColor = [UIColor colorWithWhite:237.0 / 255.0 alpha:1.0];
     tableview.separatorStyle = UITableViewCellSeparatorStyleNone;
@@ -104,12 +114,9 @@
     if ([orderSendTypeObj isMemberOfClass:[NSNull class]]) {
         orderSendTypeObj = @"";
     }
-    id orderSendStateObj = orderDetailDict[@"orderSendState"];
-    if ([orderSendStateObj isMemberOfClass:[NSNull class]]) {
-        orderSendStateObj = @"";
-    }
+    
     NSInteger orderSendType = [orderSendTypeObj integerValue];
-    NSInteger orderSendState = [orderSendStateObj integerValue];
+    orderSendState = [orderSendStateObj integerValue];
     if (orderSendType == 1 && orderSendState == 0) {
         [self addStatueViewWithStatus:0];
     }
@@ -152,7 +159,7 @@
     CGFloat scrollH = imageScrollViewHeigh;
     photoScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(scrollX, scrollY, scrollW, scrollH)];
     [self addPhotoScrollView];
-    serviceBG = [[UIView alloc] initWithFrame:CGRectMake(10, 0, SCREENWIDTH - 20, 0)];
+    serviceBG = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH - 20, 0)];
     
     [self addServiceLabel];
     
@@ -224,25 +231,44 @@
         orderSendServicecontent = @"";
     }
     NSArray *orderSendServicecontentArray = [orderSendServicecontent componentsSeparatedByString:@":"];
-    orderSendServicecontent = orderSendServicecontentArray[1];
+    @try {
+        orderSendServicecontent = orderSendServicecontentArray[1];
+    } @catch (NSException *exception) {
+        
+    } @finally {
+        
+    }
+    
     
     NSArray *serviceArray = [orderSendServicecontent componentsSeparatedByString:@","];
     CGFloat endLabelY = 10;
     CGFloat endLabelW = 10;
     CGFloat endLabelH = 30;
-    CGFloat endLabelX = 0;
+    CGFloat endLabelX = 10;
     
-    CGFloat endLabelHDistance = 10;
+    CGFloat endLabelHDistance = 5;
     CGFloat endLabelVDistance = 5;
+    
+    CGFloat maxWidth = SCREENWIDTH - 2 * endLabelX - 2 * endLabelHDistance;
     
     UIFont *textFont = [UIFont systemFontOfSize:14.0];
     
     for (NSInteger index = 0; index < [serviceArray count]; index ++ ) {
         
         NSString *title = serviceArray[index];
-        CGSize size = [MLLabel getViewSizeByString:title maxWidth:SCREENWIDTH - 20 font:textFont lineHeight:1.2f lines:0];
+        
+        CGSize size = [MLLabel getViewSizeByString:title maxWidth:maxWidth font:textFont lineHeight:1.2f lines:0];
+        if (size.width < 30) {
+            size.width = 30;
+        }
+        else{
+            if ((size.width + 10) <= maxWidth) {
+                size.width = size.width + 10;
+            }
+        }
         endLabelW = size.width;
-        if ((size.width + endLabelX) > CGRectGetWidth(serviceBG.frame)) {
+        
+        if ((size.width + endLabelX) > maxWidth) {
             endLabelX = 0;
             endLabelY = endLabelY + endLabelVDistance + endLabelH;
         }
@@ -252,7 +278,7 @@
         endLabel.textColor = APPDEFAULTORANGE;
         endLabel.textAlignment = NSTextAlignmentCenter;
         endLabel.backgroundColor = [UIColor clearColor];
-        endLabel.layer.cornerRadius = 3.0;
+        endLabel.layer.cornerRadius = 5.0;
         endLabel.layer.masksToBounds = YES;
         endLabel.layer.borderWidth = 0.5;
         endLabel.layer.borderColor = APPDEFAULTORANGE.CGColor;
@@ -264,8 +290,10 @@
         CGRect serviceFrame = serviceBG.frame;
         serviceFrame.size.height = CGRectGetMaxY(endLabel.frame);
         serviceBG.frame = serviceFrame;
-        
     }
+    CGRect serviceFrame = serviceBG.frame;
+    serviceFrame.size.height = serviceFrame.size.height + 10;
+    serviceBG.frame = serviceFrame;
 }
 
 - (void)addStatueViewWithStatus:(eOrderStatusType)statusType
@@ -769,7 +797,7 @@
                         endLabel.text = @"暂无图片资料";
                         
                         endLabel.textAlignment = NSTextAlignmentRight;
-                        endLabel.textColor = [UIColor orangeColor];
+                        endLabel.textColor = [UIColor redColor];
                         [cell addSubview:endLabel];
                     }
                     break;
@@ -826,7 +854,7 @@
                         endLabel.text = @"暂无护士资料";
                         
                         endLabel.textAlignment = NSTextAlignmentLeft;
-                        endLabel.textColor = [UIColor orangeColor];
+                        endLabel.textColor = [UIColor redColor];
                         [cell addSubview:endLabel];
                     }
                     else{
@@ -1007,7 +1035,7 @@
         case 0:
         {
             if (row == 1) {
-                return serviceBG.frame.size.height + 20;
+                return serviceBG.frame.size.height;
             }
             else if (row == 2) {
                 return 60;
@@ -1110,6 +1138,21 @@
             switch (row) {
                 case 2:
                 {
+                    id orderSendTypeObj = orderDetailDict[@"orderSendType"];
+                    if ([orderSendTypeObj isMemberOfClass:[NSNull class]]) {
+                        orderSendTypeObj = @"";
+                    }
+                    id orderSendStateObj = orderDetailDict[@"orderSendState"];
+                    if ([orderSendStateObj isMemberOfClass:[NSNull class]]) {
+                        orderSendStateObj = @"";
+                    }
+                    NSInteger orderSendType = [orderSendTypeObj integerValue];
+                    NSInteger orderSendState = [orderSendStateObj integerValue];
+                    
+                    if (orderSendState == 0) {
+                        //还没接单
+                        return;
+                    }
                     HeNurseDetailVC *nurseDetailVC = [[HeNurseDetailVC alloc] init];
                     nurseDetailVC.nurseDictInfo = [[NSDictionary alloc] initWithDictionary:orderDetailDict];
                     nurseDetailVC.hidesBottomBarWhenPushed = YES;

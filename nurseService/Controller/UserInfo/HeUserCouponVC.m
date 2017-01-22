@@ -241,6 +241,53 @@
     return 80.0;
 }
 
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSInteger row = indexPath.row;
+    NSInteger section = indexPath.section;
+    NSDictionary *dict = nil;
+    @try {
+        dict = dataSource[row];
+    } @catch (NSException *exception) {
+        
+    } @finally {
+        
+    }
+    id couponUserFullGiveObj = dict[@"couponUserFullGive"];
+
+    id orderSendCostmoney = _orderDict[@"orderSendCostmoney"];
+    if ([orderSendCostmoney floatValue] < [couponUserFullGiveObj floatValue]) {
+        [self showHint:@"优惠券不可用"];
+        return;
+    }
+    id couponUserMoneyObj = dict[@"couponUserMoney"];
+    if ([couponUserMoneyObj isMemberOfClass:[NSNull class]] || couponUserMoneyObj == nil) {
+        couponUserMoneyObj = @"";
+    }
+    CGFloat realGive = [orderSendCostmoney floatValue] - [couponUserMoneyObj floatValue];
+    if (realGive < 0.001) {
+        realGive = 0;
+    }
+    NSString *orderSendCostmoneyStr = [NSString stringWithFormat:@"%.2f",realGive];
+    
+    id orderSendTrafficmoney = _orderDict[@"orderSendTrafficmoney"];
+    if ([orderSendTrafficmoney isMemberOfClass:[NSNull class]] || orderSendTrafficmoney == nil) {
+        orderSendTrafficmoney = @"";
+    }
+    realGive = realGive + [orderSendTrafficmoney floatValue];
+    NSString *realGiveStr = [NSString stringWithFormat:@"%.2f",realGive];
+    
+    NSMutableDictionary *m_Dict = [[NSMutableDictionary alloc] initWithDictionary:_orderDict];
+    [m_Dict setObject:couponUserMoneyObj forKey:@"orderSendCoupon"];
+    [m_Dict setObject:realGiveStr forKey:@"orderSendTotalmoney"];
+//    [m_Dict setObject:orderSendCostmoneyStr forKey:@"orderSendCostmoney"];
+    
+    _orderDict = [[NSDictionary alloc] initWithDictionary:m_Dict];
+    
+    
+    [self.selectDelegate selectCouponWithOrder:_orderDict];
+    [self.navigationController popViewControllerAnimated:YES];
+}
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.

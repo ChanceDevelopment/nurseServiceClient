@@ -8,6 +8,14 @@
 
 #import "HeBaseViewController.h"
 
+@protocol SelectCouponDelegate <NSObject>
+
+- (void)selectCouponWithOrder:(NSDictionary *)orderDict;
+
+@end
+
 @interface HeUserCouponVC : HeBaseViewController
+@property(strong,nonatomic)NSDictionary *orderDict;
+@property(assign,nonatomic)id<SelectCouponDelegate>selectDelegate;
 
 @end

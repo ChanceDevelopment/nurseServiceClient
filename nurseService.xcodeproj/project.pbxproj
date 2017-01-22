@@ -95,6 +95,9 @@
 		EA195CFC1E2F0D7000D545C6 /* RPPageControl.m in Sources */ = {isa = PBXBuildFile; fileRef = EA195CF71E2F0D7000D545C6 /* RPPageControl.m */; };
 		EA195CFD1E2F0D7100D545C6 /* RPPagesCarousel.m in Sources */ = {isa = PBXBuildFile; fileRef = EA195CF91E2F0D7000D545C6 /* RPPagesCarousel.m */; };
 		EA195CFE1E2F0D7100D545C6 /* RPRingedPages.m in Sources */ = {isa = PBXBuildFile; fileRef = EA195CFB1E2F0D7000D545C6 /* RPRingedPages.m */; };
+		EA1D6FB41E34EB0E006DEEF7 /* SSPopup.m in Sources */ = {isa = PBXBuildFile; fileRef = EA1D6FB31E34EB0E006DEEF7 /* SSPopup.m */; };
+		EA1D6FB71E34F5A9006DEEF7 /* HeSubServiceCell.m in Sources */ = {isa = PBXBuildFile; fileRef = EA1D6FB61E34F5A9006DEEF7 /* HeSubServiceCell.m */; };
+		EA1D6FBA1E34F880006DEEF7 /* HeServiceCommentCell.m in Sources */ = {isa = PBXBuildFile; fileRef = EA1D6FB91E34F880006DEEF7 /* HeServiceCommentCell.m */; };
 		EA2FACBB1E308DE600E24EC2 /* HeUserInviteCell.m in Sources */ = {isa = PBXBuildFile; fileRef = EA2FACBA1E308DE600E24EC2 /* HeUserInviteCell.m */; };
 		EA2FACC01E30931C00E24EC2 /* HeBaseDistributeVC.m in Sources */ = {isa = PBXBuildFile; fileRef = EA2FACBE1E30931C00E24EC2 /* HeBaseDistributeVC.m */; };
 		EA2FACC11E30931C00E24EC2 /* HeBaseDistributeVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = EA2FACBF1E30931C00E24EC2 /* HeBaseDistributeVC.xib */; };
@@ -138,6 +141,7 @@
 		EA51EE321E2D224C0002D2BC /* HeSelectProtectedUserInfoVC.m in Sources */ = {isa = PBXBuildFile; fileRef = EA51EE301E2D224C0002D2BC /* HeSelectProtectedUserInfoVC.m */; };
 		EA51EE331E2D224C0002D2BC /* HeSelectProtectedUserInfoVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = EA51EE311E2D224C0002D2BC /* HeSelectProtectedUserInfoVC.xib */; };
 		EA51EE361E2D26DB0002D2BC /* HeSelectProtectedUserInfoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = EA51EE351E2D26DB0002D2BC /* HeSelectProtectedUserInfoCell.m */; };
+		EA5BB28C1E34B23900FD595E /* icon_hook.png in Resources */ = {isa = PBXBuildFile; fileRef = EA5BB28B1E34B23900FD595E /* icon_hook.png */; };
 		EA70F9BB1E2BEB7E004E3D1C /* choose_item_right.png in Resources */ = {isa = PBXBuildFile; fileRef = EA70F9BA1E2BEB7E004E3D1C /* choose_item_right.png */; };
 		EA7337691E2D36250071CB3C /* HeUserOrderCell.m in Sources */ = {isa = PBXBuildFile; fileRef = EA7337681E2D36250071CB3C /* HeUserOrderCell.m */; };
 		EA83E5601E25DEBC005E2281 /* leftMenu.plist in Resources */ = {isa = PBXBuildFile; fileRef = EA83E55F1E25DEBC005E2281 /* leftMenu.plist */; };
@@ -872,6 +876,12 @@
 		EA195CF91E2F0D7000D545C6 /* RPPagesCarousel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RPPagesCarousel.m; sourceTree = "<group>"; };
 		EA195CFA1E2F0D7000D545C6 /* RPRingedPages.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RPRingedPages.h; sourceTree = "<group>"; };
 		EA195CFB1E2F0D7000D545C6 /* RPRingedPages.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RPRingedPages.m; sourceTree = "<group>"; };
+		EA1D6FB21E34EB0E006DEEF7 /* SSPopup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSPopup.h; sourceTree = "<group>"; };
+		EA1D6FB31E34EB0E006DEEF7 /* SSPopup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSPopup.m; sourceTree = "<group>"; };
+		EA1D6FB51E34F5A9006DEEF7 /* HeSubServiceCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HeSubServiceCell.h; sourceTree = "<group>"; };
+		EA1D6FB61E34F5A9006DEEF7 /* HeSubServiceCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HeSubServiceCell.m; sourceTree = "<group>"; };
+		EA1D6FB81E34F880006DEEF7 /* HeServiceCommentCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HeServiceCommentCell.h; sourceTree = "<group>"; };
+		EA1D6FB91E34F880006DEEF7 /* HeServiceCommentCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HeServiceCommentCell.m; sourceTree = "<group>"; };
 		EA2FACB91E308DE600E24EC2 /* HeUserInviteCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HeUserInviteCell.h; sourceTree = "<group>"; };
 		EA2FACBA1E308DE600E24EC2 /* HeUserInviteCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HeUserInviteCell.m; sourceTree = "<group>"; };
 		EA2FACBD1E30931C00E24EC2 /* HeBaseDistributeVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HeBaseDistributeVC.h; sourceTree = "<group>"; };
@@ -1014,6 +1024,7 @@
 		EA51EE311E2D224C0002D2BC /* HeSelectProtectedUserInfoVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HeSelectProtectedUserInfoVC.xib; sourceTree = "<group>"; };
 		EA51EE341E2D26DB0002D2BC /* HeSelectProtectedUserInfoCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HeSelectProtectedUserInfoCell.h; sourceTree = "<group>"; };
 		EA51EE351E2D26DB0002D2BC /* HeSelectProtectedUserInfoCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HeSelectProtectedUserInfoCell.m; sourceTree = "<group>"; };
+		EA5BB28B1E34B23900FD595E /* icon_hook.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_hook.png; sourceTree = "<group>"; };
 		EA70F9BA1E2BEB7E004E3D1C /* choose_item_right.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = choose_item_right.png; sourceTree = "<group>"; };
 		EA7337671E2D36250071CB3C /* HeUserOrderCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HeUserOrderCell.h; sourceTree = "<group>"; };
 		EA7337681E2D36250071CB3C /* HeUserOrderCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HeUserOrderCell.m; sourceTree = "<group>"; };
@@ -2579,6 +2590,15 @@
 			path = RPRingedPages;
 			sourceTree = "<group>";
 		};
+		EA1D6FB11E34EB0E006DEEF7 /* SSPopup */ = {
+			isa = PBXGroup;
+			children = (
+				EA1D6FB21E34EB0E006DEEF7 /* SSPopup.h */,
+				EA1D6FB31E34EB0E006DEEF7 /* SSPopup.m */,
+			);
+			path = SSPopup;
+			sourceTree = "<group>";
+		};
 		EA2FACBC1E30931800E24EC2 /* Custom */ = {
 			isa = PBXGroup;
 			children = (
@@ -2735,6 +2755,8 @@
 			children = (
 				EA899E291E23DD150008AA01 /* HeCommentCell.h */,
 				EA899E2A1E23DD150008AA01 /* HeCommentCell.m */,
+				EA1D6FB81E34F880006DEEF7 /* HeServiceCommentCell.h */,
+				EA1D6FB91E34F880006DEEF7 /* HeServiceCommentCell.m */,
 			);
 			path = Comment;
 			sourceTree = "<group>";
@@ -2842,6 +2864,7 @@
 		EA8C897F1E21D1E10093657B /* Custom */ = {
 			isa = PBXGroup;
 			children = (
+				EA5BB28B1E34B23900FD595E /* icon_hook.png */,
 				EA05B3041E30717400D5D5E8 /* appIcon.png */,
 				EA8A7F761E2F58A1007CEC56 /* icon_white_down_gray.png */,
 				EA8A7F741E2F437A007CEC56 /* icon_elect_onic_report.png */,
@@ -2992,6 +3015,8 @@
 				EA9F72821E2289E500FED4A3 /* HeFinishOrderTabelCell.m */,
 				EA34D7AB1E236E7200CD8BC5 /* HeServiceTableCell.h */,
 				EA34D7AC1E236E7200CD8BC5 /* HeServiceTableCell.m */,
+				EA1D6FB51E34F5A9006DEEF7 /* HeSubServiceCell.h */,
+				EA1D6FB61E34F5A9006DEEF7 /* HeSubServiceCell.m */,
 			);
 			path = Order;
 			sourceTree = "<group>";
@@ -3219,6 +3244,7 @@
 		EAC2D4B61D4B063900E282A8 /* Custom */ = {
 			isa = PBXGroup;
 			children = (
+				EA1D6FB11E34EB0E006DEEF7 /* SSPopup */,
 				EA195CF51E2F0D7000D545C6 /* RPRingedPages */,
 				EA0EC7F51E24C2BC00E5440D /* FTPopOverMenu */,
 				EA899E151E23CB910008AA01 /* HYPageView */,
@@ -4995,6 +5021,7 @@
 				ADCC61DC1DFA504A0065866C /* main_mine_selector@2x.png in Resources */,
 				EAC2D86B1D4B063B00E282A8 /* down_dark.png in Resources */,
 				EA8C89DB1E21EEE30093657B /* icon_personal.png in Resources */,
+				EA5BB28C1E34B23900FD595E /* icon_hook.png in Resources */,
 				EA8C89A21E21D78C0093657B /* unselect_box.png in Resources */,
 				EAC2D9901D4B063C00E282A8 /* README.txt in Resources */,
 				EA8C89E31E21F6100093657B /* icon_purple_down.png in Resources */,
@@ -5231,6 +5258,7 @@
 				EAC2D8811D4B063B00E282A8 /* FMDatabaseAdditions.m in Sources */,
 				EADCD5F41E2F358E009A3AA0 /* HeOrderReportDetailVC.m in Sources */,
 				ADCC62101DFA7ECE0065866C /* RESideMenu.m in Sources */,
+				EA1D6FB71E34F5A9006DEEF7 /* HeSubServiceCell.m in Sources */,
 				EAC2D8091D4B063B00E282A8 /* NSDate+Category.m in Sources */,
 				EAC2D88F1D4B063B00E282A8 /* UIView+Hierarchy.m in Sources */,
 				EAC2D93D1D4B063B00E282A8 /* SDWebImageDownloaderOperation.m in Sources */,
@@ -5354,6 +5382,7 @@
 				EAC2D8BD1D4B063B00E282A8 /* NSAttributedString+MLExpression.m in Sources */,
 				EAC2D9441D4B063B00E282A8 /* UIImageView+HighlightedWebCache.m in Sources */,
 				EAC2D8951D4B063B00E282A8 /* KxMenu.m in Sources */,
+				EA1D6FBA1E34F880006DEEF7 /* HeServiceCommentCell.m in Sources */,
 				EAC2D8721D4B063B00E282A8 /* i2KEPCSingleComponentPickerView.m in Sources */,
 				EA45677B1E2FB86400480A95 /* HeBalanceDetailCell.m in Sources */,
 				EAC2D8A11D4B063B00E282A8 /* README.md in Sources */,
@@ -5527,6 +5556,7 @@
 				EAC2D85C1D4B063B00E282A8 /* DFTableViewRefreshControl.m in Sources */,
 				EAC2D8851D4B063B00E282A8 /* GTMBase64.m in Sources */,
 				EAC2D8701D4B063B00E282A8 /* i2KEPCMultiComponentPickerView.m in Sources */,
+				EA1D6FB41E34EB0E006DEEF7 /* SSPopup.m in Sources */,
 				EAC2D42A1D4B031500E282A8 /* main.m in Sources */,
 				EAC2D81A1D4B063B00E282A8 /* AFHTTPRequestOperationManager.m in Sources */,
 				EAC2D8AF1D4B063B00E282A8 /* MJRefreshNormalHeader.m in Sources */,

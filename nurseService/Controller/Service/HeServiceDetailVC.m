@@ -453,7 +453,7 @@
             
             historyButtonX = historyButtonX + historyButtonW + buttonDistacne;
             
-            remarkView.contentSize = CGSizeMake(historyButtonX, historyButtonX);
+            remarkView.contentSize = CGSizeMake(historyButtonX, 0);
         }
 
         //图片资料
@@ -465,8 +465,6 @@
         bannerImageBG = [[UIView alloc] initWithFrame:CGRectMake(pictureViewX, pictureViewY, pictureViewW, pictureViewH)];
         [contentScrollView addSubview:bannerImageBG];
         
-        
-        
         addPictureButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 35, IMAGEWIDTH, IMAGEWIDTH)];
         [addPictureButton setBackgroundImage:[UIImage imageNamed:@"icon_add_photo"] forState:UIControlStateNormal];
         addPictureButton.tag = 100;
@@ -477,7 +475,6 @@
         [bannerImageBG addSubview:addPictureButton];
         bannerImageBG.userInteractionEnabled = YES;
         [contentScrollView addSubview:bannerImageBG];
-        
         
         [self updateImageBG];
         
@@ -1416,6 +1413,11 @@
                     CGFloat titleLabelX = 10;
                     CGFloat titleLabelY = 0;
                     CGFloat titleLabelH = cellsize.height / 2.0;
+                    NSString *protectedPersonName = serviceDetailInfoDict[@"protectedPersonName"];
+                    if ([protectedPersonName isMemberOfClass:[NSNull class]] || protectedPersonName == nil) {
+                        titleLabelH = cellsize.height;
+                    }
+                    
                     CGFloat titleLabelW = 100;
                     
                     UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(titleLabelX, titleLabelY, titleLabelW, titleLabelH)];
@@ -1431,7 +1433,13 @@
                     nameLabel.textAlignment = NSTextAlignmentRight;
                     nameLabel.font = [UIFont systemFontOfSize:15.0];
                     
-                    NSString *protectedPersonName = serviceDetailInfoDict[@"protectedPersonName"];
+                    if ([protectedPersonName isMemberOfClass:[NSNull class]] || protectedPersonName == nil) {
+                        protectedPersonName = @"暂无受护人信息";
+                        nameLabel.text = protectedPersonName;
+                        nameLabel.textColor = [UIColor  grayColor];
+                        [cell addSubview:nameLabel];
+                        break;
+                    }
                     
                     id protectedPersonSex = serviceDetailInfoDict[@"protectedPersonSex"];
                     if ([protectedPersonSex isMemberOfClass:[NSNull class]]) {
@@ -1520,6 +1528,12 @@
     NSInteger section = indexPath.section;
     NSInteger row = indexPath.row;
     if (section == 1 && (row == 2 || row == 1)) {
+        if (row == 1) {
+            NSString *protectedPersonName = serviceDetailInfoDict[@"protectedPersonName"];
+            if ([protectedPersonName isMemberOfClass:[NSNull class]] || protectedPersonName == nil) {
+                return 44;
+            }
+        }
         return 80;
     }
     return 44;
@@ -1622,6 +1636,9 @@
 - (void)updateImageBG
 {
     for (UIView *subview in bannerImageBG.subviews) {
+        if ([subview isKindOfClass:[UILabel class]]) {
+            continue;
+        }
         [subview removeFromSuperview];
     }
     CGFloat buttonH = IMAGEWIDTH;
@@ -1713,6 +1730,12 @@
         addPictureButton.hidden = YES;
     }
     [bannerImageBG addSubview:addPictureButton];
+    
+    CGFloat contentHeight = CGRectGetMaxY(bannerImageBG.frame) + 10;
+    
+    UIScrollView *contentScrollView = (UIScrollView *)bannerImageBG.superview;
+    contentScrollView.contentSize = CGSizeMake(0, contentHeight);
+    
 }
 
 - (void)scanImageTap:(UITapGestureRecognizer *)tap

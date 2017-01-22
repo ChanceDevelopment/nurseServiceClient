@@ -28,6 +28,8 @@
 #import <AlipaySDK/AlipaySDK.h>
 #import "HeSelectProtectedUserInfoVC.h"
 #import "FTPopOverMenu.h"
+#import "SSPopup.h"
+#import "HeUserCouponVC.h"
 
 #define ALERTTAG 200
 #define MinLocationSucceedNum 1   //要求最少成功定位的次数
@@ -38,7 +40,7 @@
 #define MAX_row 3
 #define IMAGEWIDTH 70
 
-@interface HeOrderCommitVC ()<DeleteImageProtocol,UITableViewDataSource,UITableViewDelegate,UIActionSheetDelegate,UINavigationControllerDelegate,UIImagePickerControllerDelegate,UIAlertViewDelegate,TZImagePickerControllerDelegate,UWDatePickerViewDelegate,UITextFieldDelegate,SelectProtectUserInfoProtocol>
+@interface HeOrderCommitVC ()<DeleteImageProtocol,UITableViewDataSource,UITableViewDelegate,UIActionSheetDelegate,UINavigationControllerDelegate,UIImagePickerControllerDelegate,UIAlertViewDelegate,TZImagePickerControllerDelegate,UWDatePickerViewDelegate,UITextFieldDelegate,SelectProtectUserInfoProtocol,SSPopupDelegate,SelectCouponDelegate>
 {
     BOOL currentSelectBanner;
     NSInteger payType; //支付方式 0：在线 1：支付宝
@@ -251,7 +253,7 @@
     myScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 35, SCREENWIDTH, 110)];
     
     
-    serviceBG = [[UIView alloc] initWithFrame:CGRectMake(10, 0, SCREENWIDTH - 20, 0)];
+    serviceBG = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH - 20, 0)];
     
     [self addServiceLabel];
 }
@@ -556,23 +558,31 @@
     CGFloat endLabelY = 10;
     CGFloat endLabelW = 10;
     CGFloat endLabelH = 30;
-    CGFloat endLabelX = 0;
+    CGFloat endLabelX = 10;
     
-    CGFloat endLabelHDistance = 10;
+    CGFloat endLabelHDistance = 5;
     CGFloat endLabelVDistance = 5;
+    
+    CGFloat maxWidth = SCREENWIDTH - 2 * endLabelX - 2 * endLabelHDistance;
     
     UIFont *textFont = [UIFont systemFontOfSize:14.0];
     
     for (NSInteger index = 0; index < [serviceArray count]; index ++ ) {
         
         NSString *title = serviceArray[index];
-        CGSize size = [MLLabel getViewSizeByString:title maxWidth:SCREENWIDTH - 20 font:textFont lineHeight:1.2f lines:0];
-        endLabelW = size.width;
-        if (endLabelW + 10 < CGRectGetWidth(serviceBG.frame)) {
-            endLabelW = endLabelW + 10;
-            size.width = size.width + 10;
+        
+        CGSize size = [MLLabel getViewSizeByString:title maxWidth:maxWidth font:textFont lineHeight:1.2f lines:0];
+        if (size.width < 30) {
+            size.width = 30;
         }
-        if ((size.width + endLabelX) > CGRectGetWidth(serviceBG.frame)) {
+        else{
+            if ((size.width + 10) <= maxWidth) {
+                size.width = size.width + 10;
+            }
+        }
+        endLabelW = size.width;
+
+        if ((size.width + endLabelX) > maxWidth) {
             endLabelX = 0;
             endLabelY = endLabelY + endLabelVDistance + endLabelH;
         }
@@ -582,7 +592,7 @@
         endLabel.textColor = APPDEFAULTORANGE;
         endLabel.textAlignment = NSTextAlignmentCenter;
         endLabel.backgroundColor = [UIColor clearColor];
-        endLabel.layer.cornerRadius = 3.0;
+        endLabel.layer.cornerRadius = 5.0;
         endLabel.layer.masksToBounds = YES;
         endLabel.layer.borderWidth = 0.5;
         endLabel.layer.borderColor = APPDEFAULTORANGE.CGColor;
@@ -594,8 +604,10 @@
         CGRect serviceFrame = serviceBG.frame;
         serviceFrame.size.height = CGRectGetMaxY(endLabel.frame);
         serviceBG.frame = serviceFrame;
-        
     }
+    CGRect serviceFrame = serviceBG.frame;
+    serviceFrame.size.height = serviceFrame.size.height + 10;
+    serviceBG.frame = serviceFrame;
 }
 
 #pragma mark - TableView Delegate
@@ -753,8 +765,8 @@
             cell.textLabel.text = nil;
             
             UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 10, 100, 20)];
-            titleLabel.font = [UIFont systemFontOfSize:14.0];
-            titleLabel.text = @"图片资料";
+            titleLabel.font = [UIFont systemFontOfSize:15.0];
+            titleLabel.text = @" 图片资料";
             [cell addSubview:titleLabel];
             
             CGRect bannerFrame = bannerImageBG.frame;
@@ -784,6 +796,9 @@
         case 6:{
             //优惠券
             id orderSendCoupon = orderDetailDict[@"orderSendCoupon"];
+            if ([orderSendCoupon isMemberOfClass:[NSNull class]] || orderSendCoupon == nil) {
+                orderSendCoupon = @"";
+            }
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
             
             CGFloat endLabelY = 0;
@@ -793,7 +808,10 @@
             
             UILabel *endLabel = [[UILabel alloc] initWithFrame:CGRectMake(endLabelX, endLabelY, endLabelW, endLabelH)];
             endLabel.font = [UIFont systemFontOfSize:15.0];
-            endLabel.text = @"无可用优惠券";
+            endLabel.text = @"选择可用优惠券";
+            if ([orderSendCoupon floatValue] > 0) {
+                endLabel.text = [NSString stringWithFormat:@"-￥%.2f",[orderSendCoupon floatValue]];
+            }
             endLabel.textAlignment = NSTextAlignmentRight;
             endLabel.textColor = [UIColor redColor];
             [cell addSubview:endLabel];
@@ -919,7 +937,7 @@
     NSInteger row = indexPath.row;
     switch (section) {
         case 3:{
-            return serviceBG.frame.size.height + 15;
+            return serviceBG.frame.size.height;
             break;
         }
         case 5:
@@ -942,6 +960,8 @@
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     NSInteger row = indexPath.row;
     NSInteger section = indexPath.section;
+    HeBaseTableViewCell *cell  = [tableView cellForRowAtIndexPath:indexPath];
+    
     switch (section) {
         case 0:
         {
@@ -964,6 +984,24 @@
             protectedUserInfoVC.selectDelegate = self;
             protectedUserInfoVC.hidesBottomBarWhenPushed = YES;
             [self.navigationController pushViewController:protectedUserInfoVC animated:YES];
+            return;
+        }
+        case 3:{
+            //选择的护士套餐
+            NSLog(@"选择的护士套餐");
+            [self selectService];
+            
+            return;
+        }
+        case 6:{
+            //优惠券
+            NSLog(@"优惠券");
+            HeUserCouponVC *userCouponVC = [[HeUserCouponVC alloc] init];
+            userCouponVC.selectDelegate = self;
+            userCouponVC.orderDict = [[NSDictionary alloc] initWithDictionary:orderDetailDict];
+            userCouponVC.hidesBottomBarWhenPushed = YES;
+            [self.navigationController pushViewController:userCouponVC animated:YES];
+            return;
         }
         case 9:{
             //支付方式
@@ -972,6 +1010,11 @@
             }
             payType = row - 1;
             [tableView reloadData];
+        }
+        case 10:{
+            //中国人寿
+            NSLog(@"中国人寿");
+            return;
         }
         default:
             break;
@@ -1532,7 +1575,6 @@
                 return;
             }
             subServiceArray = [[NSArray alloc] initWithArray:jsonArray];
-            [self selectService];
         }
         else{
             
@@ -1559,7 +1601,6 @@
     }
     NSArray *select_serviceArray = [orderSendServicecontent componentsSeparatedByString:@","];
     
-    
     NSMutableArray *nameArray = [[NSMutableArray alloc] initWithCapacity:0];
     for (NSDictionary *dict in subServiceArray) {
         NSString *goodsName = dict[@"goodsName"];
@@ -1568,10 +1609,112 @@
         }
         [nameArray addObject:goodsName];
     }
+    SSPopup* selection=[[SSPopup alloc]init];
+    selection.selectArray = [[NSMutableArray alloc] initWithArray:select_serviceArray];
+    selection.backgroundColor=[UIColor colorWithWhite:0.00 alpha:0.4];
     
+    selection.frame = CGRectMake(0,0,SCREENWIDTH,self.view.frame.size.height);
+    selection.SSPopupDelegate=self;
+    [self.view  addSubview:selection];
+    
+    [selection CreateTableview:nameArray withSender:nil  withTitle:@"请选择套餐" setCompletionBlock:^(int tag){
+        
+        NSLog(@"Tag--->%d",tag);
+        
+        
+    }];
     
 }
 
+- (void)selectWithArray:(NSArray *)array
+{
+    NSMutableString *goodsString = [[NSMutableString alloc] initWithCapacity:0];
+    for (NSInteger index = 0; index < [array count]; index++) {
+        NSString *myName = array[index];
+        for (NSDictionary *dict in subServiceArray) {
+            NSString *goodsName = dict[@"goodsName"];
+            if ([goodsName isMemberOfClass:[NSNull class]] || goodsName == nil) {
+                goodsName = @"";
+            }
+            if ([myName isEqualToString:goodsName]) {
+                NSString *goodsId = dict[@"goodsId"];
+                if ([goodsId isMemberOfClass:[NSNull class]] || goodsId == nil) {
+                    goodsId = @"";
+                }
+                if (index == 0) {
+                    [goodsString appendString:goodsId];
+                }
+                else{
+                    [goodsString appendFormat:@",%@",goodsId];
+                }
+            }
+        }
+    }
+    
+    //更新订单信息
+    NSString *orderSendId = [NSString stringWithFormat:@"%@",_orderId];
+    if ([orderSendId isMemberOfClass:[NSNull class]] || orderSendId == nil) {
+        orderSendId = @"";
+    }
+    NSString *orderSendBegintime = @"";
+    NSString *personId = @"";
+    if ([personId isMemberOfClass:[NSNull class]] || personId == nil) {
+        personId = @"";
+    }
+    NSString *goodId = [NSString stringWithFormat:@"%@",goodsString];
+    NSString *orderSendTrafficmoney = orderDetailDict[@"orderSendTrafficmoney"];
+    if ([orderSendTrafficmoney isMemberOfClass:[NSNull class]] || orderSendTrafficmoney == nil) {
+        orderSendTrafficmoney = @"";
+    }
+    NSString *orderSendSavemoney = orderDetailDict[@"orderSendSavemoney"];
+    if ([orderSendSavemoney isMemberOfClass:[NSNull class]] || orderSendSavemoney == nil) {
+        orderSendSavemoney = @"";
+    }
+    NSDictionary *paramDict = @{@"orderSendId":orderSendId,@"orderSendBegintime":orderSendBegintime,@"personId":personId,@"goodId":goodId,@"orderSendTrafficmoney":orderSendTrafficmoney,@"orderSendSavemoney":orderSendSavemoney};
+    [self updateOrderInfoWithParam:paramDict];
+    
+}
+
+- (void)selectCouponWithOrder:(NSDictionary *)myorderDict
+{
+    orderDetailDict = [[NSDictionary alloc] initWithDictionary:myorderDict];
+    NSString *contentId = orderDetailDict[@"contentId"];
+    if ([contentId isMemberOfClass:[NSNull class]] || contentId == nil) {
+        contentId = @"";
+    }
+    [self loadOrderServiceArrayWithContentId:contentId];
+    
+    id zoneCreatetimeObj = [orderDetailDict objectForKey:@"orderSendBegintime"];
+    if ([zoneCreatetimeObj isMemberOfClass:[NSNull class]] || zoneCreatetimeObj == nil) {
+        NSTimeInterval  timeInterval = [[NSDate date] timeIntervalSince1970];
+        zoneCreatetimeObj = [NSString stringWithFormat:@"%.0f000",timeInterval];
+    }
+    long long timestamp = [zoneCreatetimeObj longLongValue];
+    NSString *zoneCreatetime = [NSString stringWithFormat:@"%lld",timestamp];
+    if ([zoneCreatetime length] > 3) {
+        //时间戳
+        zoneCreatetime = [zoneCreatetime substringToIndex:[zoneCreatetime length] - 3];
+    }
+    
+    NSString *time = [Tool convertTimespToString:[zoneCreatetime longLongValue] dateFormate:@"yyyy/MM/dd HH:mm"];
+    self.tmpDateString = time;
+    //所有数据重新刷新一次
+    [self initializaiton];
+    [self initView];
+    
+    bannerImageDataSource = [[NSMutableArray alloc] initWithCapacity:0];
+    NSString *orderSendUserpic = orderDetailDict[@"orderSendUserpic"];
+    if ([orderSendUserpic isMemberOfClass:[NSNull class]] || orderSendUserpic == nil) {
+        orderSendUserpic = nil;
+    }
+    NSArray *orderSendUserpicArray = [orderSendUserpic componentsSeparatedByString:@","];
+    for (NSString *url in orderSendUserpicArray) {
+        NSString *myurl = [NSString stringWithFormat:@"%@/%@",HYTIMAGEURL,url];
+        [bannerImageDataSource addObject:myurl];
+    }
+    [self updateImageBG];
+    [tableview reloadData];
+}
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
