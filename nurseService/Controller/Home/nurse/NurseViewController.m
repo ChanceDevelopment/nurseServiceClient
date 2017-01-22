@@ -816,7 +816,7 @@
     
     
     
-    NSString *nurseHeader = dict[@"nurseHeader"];
+    NSString *nurseHeader = dict[@"nurseCardpic"];
     if ([nurseHeader isMemberOfClass:[NSNull class]] || nurseHeader == nil) {
         nurseHeader = @"";
     }

@@ -58,7 +58,7 @@
 
 -(void)loadWebview
 {
-    webView.scalesPageToFit = YES;
+//    webView.scalesPageToFit = YES;
     
     webView.frame = self.view.bounds;
     webView.delegate = self;

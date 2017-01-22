@@ -26,6 +26,8 @@
 #import "Order.h"
 #import "DataSigner.h"
 #import <AlipaySDK/AlipaySDK.h>
+#import "HeSelectProtectedUserInfoVC.h"
+#import "FTPopOverMenu.h"
 
 #define ALERTTAG 200
 #define MinLocationSucceedNum 1   //要求最少成功定位的次数
@@ -36,7 +38,7 @@
 #define MAX_row 3
 #define IMAGEWIDTH 70
 
-@interface HeOrderCommitVC ()<DeleteImageProtocol,UITableViewDataSource,UITableViewDelegate,UIActionSheetDelegate,UINavigationControllerDelegate,UIImagePickerControllerDelegate,UIAlertViewDelegate,TZImagePickerControllerDelegate,UWDatePickerViewDelegate,UITextFieldDelegate>
+@interface HeOrderCommitVC ()<DeleteImageProtocol,UITableViewDataSource,UITableViewDelegate,UIActionSheetDelegate,UINavigationControllerDelegate,UIImagePickerControllerDelegate,UIAlertViewDelegate,TZImagePickerControllerDelegate,UWDatePickerViewDelegate,UITextFieldDelegate,SelectProtectUserInfoProtocol>
 {
     BOOL currentSelectBanner;
     NSInteger payType; //支付方式 0：在线 1：支付宝
@@ -60,6 +62,7 @@
 @property(strong,nonatomic)NSDictionary *orderDetailDict;
 @property(strong,nonatomic)UIView *dismissView;
 @property(strong,nonatomic)UIScrollView *myScrollView;
+@property(strong,nonatomic)NSArray *subServiceArray;
 
 @end
 
@@ -78,6 +81,8 @@
 @synthesize orderDetailDict;
 @synthesize dismissView;
 @synthesize myScrollView;
+@synthesize orderDict;
+@synthesize subServiceArray;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -101,6 +106,8 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     
+    subServiceArray = [[NSMutableArray alloc] initWithCapacity:0];
+    
     dismissView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, [UIScreen mainScreen].bounds.size.height)];
     dismissView.backgroundColor = [UIColor blackColor];
     dismissView.hidden = YES;
@@ -115,6 +122,7 @@
     tableview.backgroundColor = [UIColor colorWithWhite:237.0 / 255.0 alpha:1.0];
     [Tool setExtraCellLineHidden:tableview];
     [self loadOrderDetail];
+    
 }
 
 - (void)initializaiton
@@ -337,11 +345,17 @@
     NSDictionary * params  = @{@"userId":userId,@"orderSendId":orderSendId,@"latitude":latitude,@"longitude":longitude};
     NSString *requestUrl = [NSString stringWithFormat:@"%@/orderSend/OrderSendDescriptionById.action",BASEURL];
     [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
+        [self hideHud];
         NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
         NSDictionary *respondDict = [NSDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
         if ([[respondDict valueForKey:@"errorCode"] integerValue] == REQUESTCODE_SUCCEED){
             
             orderDetailDict = [[NSDictionary alloc] initWithDictionary:respondDict[@"json"]];
+            NSString *contentId = orderDetailDict[@"contentId"];
+            if ([contentId isMemberOfClass:[NSNull class]] || contentId == nil) {
+                contentId = @"";
+            }
+            [self loadOrderServiceArrayWithContentId:contentId];
             
             id zoneCreatetimeObj = [orderDetailDict objectForKey:@"orderSendBegintime"];
             if ([zoneCreatetimeObj isMemberOfClass:[NSNull class]] || zoneCreatetimeObj == nil) {
@@ -357,7 +371,7 @@
             
             NSString *time = [Tool convertTimespToString:[zoneCreatetime longLongValue] dateFormate:@"yyyy/MM/dd HH:mm"];
             self.tmpDateString = time;
-            
+            //所有数据重新刷新一次
             [self initializaiton];
             [self initView];
             
@@ -375,6 +389,7 @@
             [tableview reloadData];
         }
         else{
+            [self hideHud];
             NSString *data = respondDict[@"data"];
             if ([data isMemberOfClass:[NSNull class]] || data == nil) {
                 data = ERRORREQUESTTIP;
@@ -383,6 +398,8 @@
         }
     } failure:^(NSError* err){
         NSLog(@"errorInfo = %@",err);
+        [self hideHud];
+        [self showHint:ERRORREQUESTTIP];
     }];
 }
 
@@ -526,7 +543,14 @@
         orderSendServicecontent = @"";
     }
     NSArray *orderSendServicecontentArray = [orderSendServicecontent componentsSeparatedByString:@":"];
-    orderSendServicecontent = orderSendServicecontentArray[1];
+    @try {
+        orderSendServicecontent = orderSendServicecontentArray[1];
+    } @catch (NSException *exception) {
+        
+    } @finally {
+        
+    }
+    
 
     NSArray *serviceArray = [orderSendServicecontent componentsSeparatedByString:@","];
     CGFloat endLabelY = 10;
@@ -936,6 +960,10 @@
         }
         case 1:{
             //受保护人
+            HeSelectProtectedUserInfoVC *protectedUserInfoVC = [[HeSelectProtectedUserInfoVC alloc] init];
+            protectedUserInfoVC.selectDelegate = self;
+            protectedUserInfoVC.hidesBottomBarWhenPushed = YES;
+            [self.navigationController pushViewController:protectedUserInfoVC animated:YES];
         }
         case 9:{
             //支付方式
@@ -1435,6 +1463,113 @@
 - (void)backToLastView
 {
     [self.navigationController popViewControllerAnimated:YES];
+}
+
+#pragma mark - SelectProtectUserInfoProtocol
+- (void)selectUserInfoWithDict:(NSDictionary *)userInfo
+{
+    //更新订单信息
+    NSString *orderSendId = [NSString stringWithFormat:@"%@",_orderId];
+    if ([orderSendId isMemberOfClass:[NSNull class]] || orderSendId == nil) {
+        orderSendId = @"";
+    }
+    NSString *orderSendBegintime = @"";
+    NSString *personId = userInfo[@"protectedPersonId"];
+    if ([personId isMemberOfClass:[NSNull class]] || personId == nil) {
+        personId = @"";
+    }
+    NSString *goodId = @"";
+    NSString *orderSendTrafficmoney = orderDetailDict[@"orderSendTrafficmoney"];
+    if ([orderSendTrafficmoney isMemberOfClass:[NSNull class]] || orderSendTrafficmoney == nil) {
+        orderSendTrafficmoney = @"";
+    }
+    NSString *orderSendSavemoney = orderDetailDict[@"orderSendSavemoney"];
+    if ([orderSendSavemoney isMemberOfClass:[NSNull class]] || orderSendSavemoney == nil) {
+        orderSendSavemoney = @"";
+    }
+    NSDictionary *paramDict = @{@"orderSendId":orderSendId,@"orderSendBegintime":orderSendBegintime,@"personId":personId,@"goodId":goodId,@"orderSendTrafficmoney":orderSendTrafficmoney,@"orderSendSavemoney":orderSendSavemoney};
+    [self updateOrderInfoWithParam:paramDict];
+}
+
+- (void)updateOrderInfoWithParam:(NSDictionary *)param
+{
+    NSString *requestWorkingTaskPath = [NSString stringWithFormat:@"%@/orderSend/updateOrderInfo.action",BASEURL];
+
+    [self showHudInView:self.view hint:@"更新订单..."];
+    __weak HeOrderCommitVC *weakSelf = self;
+    [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestWorkingTaskPath params:param success:^(AFHTTPRequestOperation* operation,id response){
+        [self hideHud];
+        NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
+        NSDictionary *respondDict = [respondString objectFromJSONString];
+        NSInteger statueCode = [[respondDict objectForKey:@"errorCode"] integerValue];
+        
+        if (statueCode == REQUESTCODE_SUCCEED){
+            [weakSelf loadOrderDetail];
+        }
+        else{
+            NSString *data = respondDict[@"data"];
+            if ([data isMemberOfClass:[NSNull class]] || data == nil) {
+                data = @"";
+            }
+            [self showHint:data];
+        }
+    } failure:^(NSError *error){
+        [self hideHud];
+        [self showHint:ERRORREQUESTTIP];
+    }];
+}
+
+- (void)loadOrderServiceArrayWithContentId:(NSString *)contentId
+{
+    NSDictionary *param = @{@"contentId":contentId};
+    NSString *requestUrl = [NSString stringWithFormat:@"%@/goods/selectgoodsbycoentid.action",BASEURL];
+    [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:param success:^(AFHTTPRequestOperation* operation,id response){
+        NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
+        NSDictionary *respondDict = [NSDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
+        if ([[respondDict valueForKey:@"errorCode"] integerValue] == REQUESTCODE_SUCCEED){
+            NSArray *jsonArray = [respondDict objectForKey:@"json"];
+            if ([jsonArray isMemberOfClass:[NSNull class]]) {
+                return;
+            }
+            subServiceArray = [[NSArray alloc] initWithArray:jsonArray];
+            [self selectService];
+        }
+        else{
+            
+        }
+    } failure:^(NSError* err){
+        NSLog(@"errorInfo = %@",err);
+    }];
+}
+
+- (void)selectService
+{
+//    goodsId,goodsName
+    NSString *orderSendServicecontent = orderDetailDict[@"orderSendServicecontent"];
+    if ([orderSendServicecontent isMemberOfClass:[NSNull class]]) {
+        orderSendServicecontent = @"";
+    }
+    NSArray *select_orderSendServicecontentArray = [orderSendServicecontent componentsSeparatedByString:@":"];
+    @try {
+        orderSendServicecontent = select_orderSendServicecontentArray[1];
+    } @catch (NSException *exception) {
+        
+    } @finally {
+        
+    }
+    NSArray *select_serviceArray = [orderSendServicecontent componentsSeparatedByString:@","];
+    
+    
+    NSMutableArray *nameArray = [[NSMutableArray alloc] initWithCapacity:0];
+    for (NSDictionary *dict in subServiceArray) {
+        NSString *goodsName = dict[@"goodsName"];
+        if ([goodsName isMemberOfClass:[NSNull class]] || goodsName == nil) {
+            goodsName = @"";
+        }
+        [nameArray addObject:goodsName];
+    }
+    
+    
 }
 
 - (void)didReceiveMemoryWarning {

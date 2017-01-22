@@ -59,17 +59,62 @@
 - (void)initView
 {
     [super initView];
+    NSString *phone = [HeSysbsModel getSysModel].user.userPhone;
+    self.tipLabel.text = [NSString stringWithFormat:@"请将手机号 %@ 收到的验证码填写到下面的输入框中",phone];
+    
+    getCodeButton.layer.cornerRadius = 3.0;
+    getCodeButton.layer.borderColor = APPDEFAULTORANGE.CGColor;
+    getCodeButton.layer.borderWidth = 0.5;
+    getCodeButton.layer.masksToBounds = YES;
 }
 
 - (IBAction)nextButtonClick:(id)sender
 {
-    tipLabel.hidden = YES;
-    codeField.hidden = YES;
-    getCodeButton.hidden = YES;
-    nextButton.hidden = YES;
+    NSString *drawcode = codeField.text;
+    if (drawcode == nil || [drawcode isEqualToString:@""]) {
+        [self showHint:@"请输入验证码"];
+        return;
+    }
+    if ([codeField isFirstResponder]) {
+        [codeField resignFirstResponder];
+    }
+    //验证验证码是否正确
+    NSString *requestUrl = [NSString stringWithFormat:@"%@/nurseAnduser/SMSVerification.action",BASEURL];
+    [self showHudInView:self.view hint:@"验证中..."];
+    NSDictionary * params  = @{@"drawcode":drawcode};
+    [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
+        NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
+        
+        NSDictionary *respondDict = [NSDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
+        NSInteger errorCode = [[respondDict objectForKey:@"errorCode"] integerValue];
+        if (errorCode == REQUESTCODE_SUCCEED) {
+            [self hideHud];
+            tipLabel.hidden = YES;
+            codeField.hidden = YES;
+            getCodeButton.hidden = YES;
+            nextButton.hidden = YES;
+            
+            passwordField.hidden = NO;
+            resetButton.hidden = NO;
+        }
+        else{
+            [self hideHud];
+            NSString *data = [respondDict objectForKey:@"data"];
+            if ([data isMemberOfClass:[NSNull class]] || data == nil) {
+                data = ERRORREQUESTTIP;
+            }
+            [self showHint:data];
+        }
+        
+        
+    } failure:^(NSError* err){
+        [self hideHud];
+        [self showHint:ERRORREQUESTTIP];
+    }];
     
-    passwordField.hidden = NO;
-    resetButton.hidden = NO;
+    
+    
+    
 }
 
 - (IBAction)resetPassword:(id)sender
@@ -85,6 +130,7 @@
     }
     NSString *drawcode = codeField.text;
     NSString *requestUrl = [NSString stringWithFormat:@"%@/nurseAnduser/sendSmsByUserBindPassword.action",BASEURL];
+    [self showHudInView:self.view hint:@"修改中..."];
     NSDictionary * params  = @{@"userId": userId,@"alipayPassword":alipayPassword,@"drawcode":drawcode};
     [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
         NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
@@ -133,6 +179,7 @@
         NSInteger errorCode = [[respondDict objectForKey:@"errorCode"] integerValue];
         if (errorCode == REQUESTCODE_SUCCEED) {
             [self showHint:@"验证码已发送"];
+//            [getCodeButton setTitle:@"重发验证码" forState:UIControlStateNormal];
         }
         else{
             [self hideHud];

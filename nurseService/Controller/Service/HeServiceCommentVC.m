@@ -208,7 +208,7 @@
             if ([data isMemberOfClass:[NSNull class]] || data == nil) {
                 data = ERRORREQUESTTIP;
             }
-            [self showHint:data];
+//            [self showHint:data];
         }
     } failure:^(NSError* err){
         
@@ -266,6 +266,11 @@
         userNike = @"";
     }
     cell.phoneLabel.text = userNike;
+    
+//    manageNursingContenName
+//    CGFloat serviceNameLabelX = 10;
+//    CGFloat serviceNameLabel
+//    UILabel *serviceNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(<#CGFloat x#>, <#CGFloat y#>, <#CGFloat width#>, <#CGFloat height#>)]
     
     NSString *commentContent = dict[@"evaluateContent"];
     if ([commentContent isMemberOfClass:[NSNull class]] || commentContent == nil) {

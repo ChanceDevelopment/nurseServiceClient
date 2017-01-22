@@ -78,6 +78,9 @@
 
 @property(strong,nonatomic)UIView *dismissView;
 
+@property(strong,nonatomic)NSString *remarKString;
+@property(strong,nonatomic)NSMutableArray *remarKStringArray;
+
 @end
 
 @implementation HeServiceDetailVC
@@ -98,6 +101,8 @@
 @synthesize subSelectArray;
 
 @synthesize dismissView;
+@synthesize remarKString;
+@synthesize remarKStringArray;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -236,6 +241,8 @@
     serviceInfoDict = [parameter objectForKey:@"service"];
     currentTotalMoney = 0;
     subSelectArray = [[NSMutableArray alloc] initWithCapacity:0];
+    remarKString = @"";
+    remarKStringArray = [[NSMutableArray alloc] initWithCapacity:0];
 }
 
 - (UIView *)selectMenuBgView
@@ -368,7 +375,7 @@
         CGFloat remarkViewW = SCREENWIDTH;
         CGFloat remarkViewH = 80;
         
-        UIView *remarkView = [[UIView alloc] initWithFrame:CGRectMake(remarkViewX, remarkViewY, remarkViewW, remarkViewH)];
+        UIScrollView *remarkView = [[UIScrollView alloc] initWithFrame:CGRectMake(remarkViewX, remarkViewY, remarkViewW, remarkViewH)];
         [contentScrollView addSubview:remarkView];
         
         CGFloat titleLabelX2 = 0;
@@ -401,6 +408,22 @@
         UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(inputReamrk)];
         [tipLabel2 addGestureRecognizer:tap];
         
+        id firstService = subServiceArray[0];
+        @try {
+            firstService = subServiceArray[0];
+        } @catch (NSException *exception) {
+            
+        } @finally {
+            
+        }
+        
+        NSString *contentNote = firstService[@"contentNote"];
+        if ([contentNote isMemberOfClass:[NSNull class]] || contentNote == nil) {
+            contentNote = @"";
+        }
+        
+        NSArray *contentNoteArray = [contentNote componentsSeparatedByString:@","];
+        
         UIImage *historySelectedImage = [UIImage imageNamed:@"icon_checkbox"];
         UIImage *historyImage = [UIImage imageNamed:@"icon_checkboxNormal"];
         CGFloat historyButtonX = 5;
@@ -408,20 +431,31 @@
         CGFloat historyButtonH = 40;
         CGFloat historyButtonW = historySelectedImage.size.width / historySelectedImage.size.height * historyButtonH;
         
-        UIButton *historyButton = [[UIButton alloc] initWithFrame:CGRectMake(historyButtonX, historyButtonY, historyButtonW, historyButtonH)];
-        [historyButton setTitle:@"家中有小孩" forState:UIControlStateNormal];
-//        historyButton.layer.masksToBounds = YES;
-//        historyButton.layer.cornerRadius = 3.0;
-        [historyButton setTitleColor:[UIColor colorWithWhite:100.0 / 255.0 alpha:1.0] forState:UIControlStateNormal];
-//        historyButton.layer.borderWidth = 1.0;
-//        historyButton.layer.borderColor = [UIColor colorWithWhite:100.0 / 255.0 alpha:1.0].CGColor;
-        [historyButton setBackgroundImage:historySelectedImage forState:UIControlStateSelected];
-        [historyButton setBackgroundImage:historyImage forState:UIControlStateNormal];
-        historyButton.titleLabel.font = [UIFont systemFontOfSize:13.0];
-        [historyButton addTarget:self action:@selector(historyButtonClick:) forControlEvents:UIControlEventTouchUpInside];
-        [remarkView addSubview:historyButton];
-        
-        
+        CGFloat buttonDistacne = 8;
+        for (NSInteger index = 0; index < [contentNoteArray count]; index++) {
+            id note = contentNoteArray[index];
+            if ([note isMemberOfClass:[NSNull class]] || note == nil) {
+                note = @"";
+            }
+            historySelectedImage = [UIImage imageNamed:@"icon_checkbox"];
+            historyImage = [UIImage imageNamed:@"icon_checkboxNormal"];
+            
+            UIButton *historyButton = [[UIButton alloc] initWithFrame:CGRectMake(historyButtonX, historyButtonY, historyButtonW, historyButtonH)];
+            [historyButton setTitle:note forState:UIControlStateNormal];
+            historyButton.tag = index;
+            [historyButton setTitleColor:[UIColor colorWithWhite:100.0 / 255.0 alpha:1.0] forState:UIControlStateNormal];
+
+            [historyButton setBackgroundImage:historySelectedImage forState:UIControlStateSelected];
+            [historyButton setBackgroundImage:historyImage forState:UIControlStateNormal];
+            historyButton.titleLabel.font = [UIFont systemFontOfSize:13.0];
+            [historyButton addTarget:self action:@selector(historyButtonClick:) forControlEvents:UIControlEventTouchUpInside];
+            [remarkView addSubview:historyButton];
+            
+            historyButtonX = historyButtonX + historyButtonW + buttonDistacne;
+            
+            remarkView.contentSize = CGSizeMake(historyButtonX, historyButtonX);
+        }
+
         //图片资料
         CGFloat pictureViewX = 5;
         CGFloat pictureViewY = CGRectGetMaxY(remarkView.frame);
@@ -865,7 +899,51 @@
 - (void)historyButtonClick:(UIButton *)button
 {
     button.selected = !button.selected;
-    isHaveSomeProblem = button.selected;
+    
+    id firstService = subServiceArray[0];
+    @try {
+        firstService = subServiceArray[0];
+    } @catch (NSException *exception) {
+        
+    } @finally {
+        
+    }
+    
+    NSString *contentNote = firstService[@"contentNote"];
+    NSArray *contentNoteArray = [contentNote componentsSeparatedByString:@","];
+    
+    if ([contentNote isMemberOfClass:[NSNull class]] || contentNote == nil) {
+        contentNote = @"";
+    }
+    
+    if (button.selected) {
+        [remarKStringArray addObject:[NSString stringWithFormat:@"%ld",button.tag]];
+    }
+    else{
+        for (NSInteger index = 0; index < [remarKStringArray count]; index++) {
+            id obj = remarKStringArray[index];
+            if ([obj integerValue] == button.tag) {
+                [remarKStringArray removeObject:obj];
+                break;
+            }
+        }
+    }
+    
+    
+    NSMutableString *tempString = [[NSMutableString alloc] initWithCapacity:0];
+    for (NSInteger index = 0; index < [remarKStringArray count]; index++) {
+        NSString *indexObj = remarKStringArray[index];
+        NSInteger myindex = [indexObj integerValue];
+        id obj = contentNoteArray[myindex];
+        if (index == 0) {
+            [tempString appendString:obj];
+        }
+        else{
+            [tempString appendFormat:@",%@",obj];
+        }
+    }
+    remarKString = [NSString stringWithFormat:@"%@",tempString];
+    NSLog(@"remarKString = %@",remarKString);
 }
 
 // 进入详情的动画
@@ -971,16 +1049,21 @@
     if ([isfollow boolValue]) {
         return;
     }
-    NSString *requestUrl = [NSString stringWithFormat:@"%@/service/selectservicebycontentid.action",BASEURL];
+    
+    
+    NSString *requestUrl = [NSString stringWithFormat:@"%@/follow/addcollects.action",BASEURL];
     NSString *userId = [[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY];
-    //role 关注人的角色（0用户，1护士）
-    NSString *role = @"0";
-    NSString *befollowId = serviceDetailInfoDict[@"nurseId"];
-    if ([befollowId isMemberOfClass:[NSNull class]] || befollowId == nil) {
-        befollowId = @"";
+    NSString *contentId = serviceDetailInfoDict[@"contentId"];
+    if ([contentId isMemberOfClass:[NSNull class]] || contentId == nil) {
+        contentId = serviceDetailInfoDict[@"manageNursingContentId"];
+        if ([contentId isMemberOfClass:[NSNull class]] || contentId == nil) {
+            contentId = @"";
+        }
     }
-    NSDictionary * params  = @{@"followId":userId,@"befollowId":befollowId,@"role":role};
+    [self showHudInView:tableview hint:@"正在收藏，请稍候..."];
+    NSDictionary * params  = @{@"userId":userId,@"contentId":contentId};
     [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
+        [self hideHud];
         NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
         NSDictionary *respondDict = [NSDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
         if ([[respondDict valueForKey:@"errorCode"] integerValue] == REQUESTCODE_SUCCEED){
@@ -1007,6 +1090,7 @@
             [self showHint:@"收藏成功"];
         }
         else{
+            [self hideHud];
             NSString *data = respondDict[@"data"];
             if ([data isMemberOfClass:[NSNull class]] || data == nil) {
                 data = ERRORREQUESTTIP;
@@ -1015,6 +1099,8 @@
         }
     } failure:^(NSError* err){
         NSLog(@"errorInfo = %@",err);
+        [self hideHud];
+        [self showHint:ERRORREQUESTTIP];
     }];
 }
 //加入预约框
@@ -1082,7 +1168,10 @@
         index++;
     }
     NSString *personId = serviceDetailInfoDict[@"protectedPersonId"];
-    
+    if ([personId isMemberOfClass:[NSNull class]] || personId == nil || [personId isEqualToString:@""]) {
+        [self showHint:@"请选择或者新增被护人信息"];
+        return;
+    }
     
     NSMutableString *orderSendUserpic = [[NSMutableString alloc] initWithCapacity:0];
     
@@ -1103,10 +1192,8 @@
     }
     UILabel *field = (UILabel *)[_selectMenuBgView viewWithTag:2400];
     NSString *mark = field.text;
-    NSString *orderSendNote	= @"家中有小孩";
-    if (!isHaveSomeProblem) {
-        orderSendNote = @"";
-    }
+    NSString *orderSendNote	= [NSString stringWithFormat:@"%@",remarKString];
+    
     if (![mark isEqualToString:@""] && mark != nil) {
         orderSendNote = [NSString stringWithFormat:@"%@,%@",mark,orderSendNote];
     }

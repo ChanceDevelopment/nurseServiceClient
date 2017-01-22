@@ -157,7 +157,7 @@
             if ([data isMemberOfClass:[NSNull class]] || data == nil) {
                 data = ERRORREQUESTTIP;
             }
-            [self showHint:data];
+//            [self showHint:data];
         }
     } failure:^(NSError* err){
         

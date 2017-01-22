@@ -65,8 +65,16 @@
     tableview.backgroundView = nil;
     tableview.backgroundColor = APPDEFAULTTABLEBACKGROUNDCOLOR;
     postUserInfo = [[NSMutableDictionary alloc] initWithCapacity:0];
-    dataSource = @[@"姓名",@"性别",@"身份证号",@"年龄",@"监护人",@"联系电话",@"关系",@"地址",@"病史备注"];
+    dataSource = @[@"姓名",@"性别",@"身份证号",@"年龄",@"联系电话",@"关系",@"地址",@"病史备注"];
     releation = @"自己";
+    userSex = ENUM_SEX_Girl;
+    id protectedPersonSex = userInfoDict[@"protectedPersonSex"];
+    if ([protectedPersonSex isMemberOfClass:[NSNull class]] || protectedPersonSex == nil) {
+        protectedPersonSex = @"";
+    }
+    if ([protectedPersonSex integerValue] == 1) {
+        userSex = ENUM_SEX_Boy;
+    }
     
 }
 
@@ -125,19 +133,19 @@
             case 103:
                 [userInfoDict setObject:temp forKey:@"protectedPersonAge"];
                 break;
+//            case 104:
+//                [userInfoDict setObject:temp forKey:@"personGuardian"];
+//                break;
             case 104:
-                [userInfoDict setObject:temp forKey:@"personGuardian"];
-                break;
-            case 105:
                 [userInfoDict setObject:temp forKey:@"protectedPersonPhone"];
                 break;
-            case 106:
+            case 105:
                 [userInfoDict setObject:temp forKey:@"protectedPersonNexus"];
                 break;
-            case 107:
+            case 106:
                 [userInfoDict setObject:temp forKey:@"protectedAddress"];
                 break;
-            case 108:
+            case 107:
                 [userInfoDict setObject:temp forKey:@"protectedPersonNote"];
                 break;
             default:
@@ -258,6 +266,7 @@
             if (isEdit) {
                 contentField.text  = [userInfoDict objectForKey:@"protectedPersonCard"];
             }
+            contentField.keyboardType = UIKeyboardTypeNumbersAndPunctuation;
             break;
         }
         case 3:
@@ -267,27 +276,38 @@
             if (isEdit) {
                 contentField.text  = [userInfoDict objectForKey:@"protectedPersonAge"];
             }
+            contentField.keyboardType = UIKeyboardTypeNumberPad;
             break;
         }
+//        case 4:
+//        {
+//            //年龄
+//            placeholder = @"请输监护人";
+//            if (isEdit) {
+//                NSString *protectedPersonGuardian = [userInfoDict objectForKey:@"personGuardian"];
+//                if ([protectedPersonGuardian isMemberOfClass:[NSNull class]] || protectedPersonGuardian == nil) {
+//                    protectedPersonGuardian = [userInfoDict objectForKey:@"protectedPersonGuardian"];
+//                    if ([protectedPersonGuardian isMemberOfClass:[NSNull class]] || protectedPersonGuardian == nil) {
+//                        protectedPersonGuardian = @"";
+//                    }
+//                }
+//                contentField.text  = protectedPersonGuardian;
+//                
+//            }
+//            
+//            break;
+//        }
         case 4:
-        {
-            //年龄
-            placeholder = @"请输监护人";
-            if (isEdit) {
-                contentField.text  = [userInfoDict objectForKey:@"personGuardian"];
-            }
-            break;
-        }
-        case 5:
         {
             //联系电话
             placeholder = @"请输入联系电话";
             if (isEdit) {
                 contentField.text  = [userInfoDict objectForKey:@"protectedPersonPhone"];
             }
+            contentField.keyboardType = UIKeyboardTypePhonePad;
             break;
         }
-        case 6:
+        case 5:
         {
             //关系
             CGFloat contentLabelX = 90;
@@ -304,11 +324,16 @@
             
             contentField.hidden = YES;
             if (isEdit) {
-                contentField.text  = [userInfoDict objectForKey:@"protectedPersonNexus"];
+                releation = [userInfoDict objectForKey:@"protectedPersonNexus"];
+                if ([releation isMemberOfClass:[NSNull class]] || releation == nil) {
+                    releation = @"";
+                }
+                contentLabel.text = releation;
+                contentField.text  = releation;
             }
             break;
         }
-        case 7:
+        case 6:
         {
             //地址
             CGFloat contentLabelX = 50;
@@ -335,11 +360,11 @@
                 }
                 contentLabel.text = userAddress;
                 contentField.text = userAddress;
-                [postUserInfo setObject:userAddress forKey:@"key107"];
+                [postUserInfo setObject:userAddress forKey:@"key106"];
             }
             break;
         }
-        case 8:
+        case 7:
         {
             //病史备注
             placeholder = @"请输入备注信息";
@@ -366,12 +391,16 @@
 
 - (void)selectRelation:(id)sender
 {
-    NSArray *menuArray = @[@"父亲",@"母亲",@"妻子",@"自己",@"丈夫"];
+    NSArray *menuArray = @[@"自己",@"爸爸",@"妈妈",@"亲戚",@"朋友",@"孩子",@"其他"];
     [FTPopOverMenu showForSender:sender
                         withMenu:menuArray
                   imageNameArray:nil
                        doneBlock:^(NSInteger selectedIndex) {
                            releation = menuArray[selectedIndex];
+                           if (!releation) {
+                               releation = @"自己";
+                           }
+                           [userInfoDict setObject:releation forKey:@"protectedPersonNexus"];
                            [tableview reloadData];
                            
                        } dismissBlock:^{
@@ -403,13 +432,13 @@
             [actionsheet showInView:cell];
             break;
         }
-        case 6:
+        case 5:
         {
             //选择关系
             [self selectRelation:cell];
             break;
         }
-        case 7:{
+        case 6:{
             //选择地址
             HeSelectProtectUserAddressVC *selectAddressVC = [[HeSelectProtectUserAddressVC alloc] init];
             selectAddressVC.addressDeleage = self;
@@ -437,13 +466,22 @@
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     if (actionSheet.tag == 100) {
-        userSex = buttonIndex + 1;
+        if (buttonIndex + 1 == 1) {
+            userSex = ENUM_SEX_Boy;
+        }
+        else{
+            userSex = ENUM_SEX_Girl;
+        }
         NSLog(@"userSex = %ld",buttonIndex);
         if (userSex == ENUM_SEX_Boy) {
             [postUserInfo setObject:@"男" forKey:@"key101"];
         }
         else{
             [postUserInfo setObject:@"女" forKey:@"key101"];
+        }
+        if (isEdit) {
+            NSString *sex = [NSString stringWithFormat:@"%d",userSex];
+            [userInfoDict setObject:sex forKey:@"protectedPersonSex"];
         }
         [tableview reloadData];
     }
@@ -456,7 +494,7 @@
     NSString *requestUrl = [NSString stringWithFormat:@"%@/protected/updateprotectedbyid.action",BASEURL];
     NSString *userid = [[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY];
     NSString *sex = @"";
-    if ([[userInfoDict valueForKey:@"protectedPersonSex"] isEqualToString:@"男"] || [[userInfoDict valueForKey:@"protectedPersonSex"] isEqualToString:@"1"]) {
+    if (userSex == ENUM_SEX_Boy) {
         sex = @"1";
     }else{
         sex = @"2";
@@ -472,19 +510,35 @@
         [self showHint:@"请填写受护人身份证"];
         return;
     }
+    if ([card length] > 18) {
+        [self showHint:@"请输入正确的身份证号"];
+        return;
+    }
     NSString *age = [userInfoDict objectForKey:@"protectedPersonAge"];
     if ([age isEqualToString:@""] || age == nil) {
         [self showHint:@"请输入受护人年龄"];
         return;
     }
-    NSString *dian = [userInfoDict objectForKey:@"personGuardian"];
-    if ([dian isEqualToString:@""] || dian == nil) {
-        [self showHint:@"请填写监护人"];
+    if ([age integerValue] <= 0 || [age integerValue] > 1000) {
+        [self showHint:@"请输入正确的年龄"];
         return;
     }
+//    NSString *dian = [userInfoDict objectForKey:@"personGuardian"];
+//    if ([dian isEqualToString:@""] || dian == nil) {
+//        dian = [userInfoDict objectForKey:@"protectedPersonGuardian"];
+//        if ([dian isEqualToString:@""] || dian == nil) {
+//            dian = @"";
+//            [self showHint:@"请填写监护人"];
+//            return;
+//        }
+//    }
     NSString *phone = [userInfoDict objectForKey:@"protectedPersonPhone"];
     if ([phone isEqualToString:@""] || phone == nil) {
         [self showHint:@"请输入联系电话"];
+        return;
+    }
+    if (![Tool isMobileNumber:phone]) {
+        [self showHint:@"请输入正确的手机号码"];
         return;
     }
     NSString *address = [userInfoDict objectForKey:@"protectedAddress"];
@@ -493,20 +547,28 @@
         return;
     }
     
+    NSString *protectedPersonGuardian = [userInfoDict objectForKey:@"personGuardian"];
+    if ([protectedPersonGuardian isMemberOfClass:[NSNull class]] || protectedPersonGuardian == nil) {
+        protectedPersonGuardian = [userInfoDict objectForKey:@"protectedPersonGuardian"];
+        if ([protectedPersonGuardian isMemberOfClass:[NSNull class]] || protectedPersonGuardian == nil) {
+            protectedPersonGuardian = @"";
+        }
+    }
+//    @"personGuardian": protectedPersonGuardian,
     NSDictionary * params  = @{@"userId": userid,
                                @"personId": [userInfoDict objectForKey:@"protectedPersonId"],
                                @"personName": [userInfoDict objectForKey:@"protectedPersonName"],
                                @"personSex": sex,
                                @"personCard": [userInfoDict objectForKey:@"protectedPersonCard"],
                                @"personAge": [userInfoDict objectForKey:@"protectedPersonAge"],
-                               @"personGuardian": [userInfoDict objectForKey:@"personGuardian"],
+                               
                                @"personPhone": [userInfoDict objectForKey:@"protectedPersonPhone"],
                                @"personnexus": [userInfoDict objectForKey:@"protectedPersonNexus"],
                                @"addressId": [userInfoDict objectForKey:@"protectedAddressId"],  //关联受护地址id
                                @"personNote": [userInfoDict objectForKey:@"protectedPersonNote"],
                                @"address": [userInfoDict objectForKey:@"protectedAddress"],
                                @"isdefault": [userInfoDict objectForKey:@"protectedDefault"],
-                               @"longitude ": [[[HeSysbsModel getSysModel] userLocationDict] objectForKey:@"longitude"],
+                               @"longitude": [[[HeSysbsModel getSysModel] userLocationDict] objectForKey:@"longitude"],
                                @"latitude": [[[HeSysbsModel getSysModel] userLocationDict] objectForKey:@"latitude"]};
     [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
         NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
@@ -538,14 +600,17 @@
     NSString *requestUrl = [NSString stringWithFormat:@"%@/protected/addprotected.action",BASEURL];
     NSString *userid = [[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY];
     NSString *name = [NSString stringWithFormat:@"%@",[postUserInfo objectForKey:@"key100"]];
-    NSString *sex = [[postUserInfo objectForKey:@"key101"] isEqualToString:@"男"] ? @"1" : @"2";
+    NSString *sex = @"2";
+    if (userSex == ENUM_SEX_Boy) {
+        sex = @"1";
+    }
     NSString *card = [NSString stringWithFormat:@"%@",[postUserInfo objectForKey:@"key102"]];
     NSString *age = [NSString stringWithFormat:@"%@",[postUserInfo objectForKey:@"key103"]];
-    NSString *phone = [NSString stringWithFormat:@"%@",[postUserInfo objectForKey:@"key105"]];
-    NSString *dian = [NSString stringWithFormat:@"%@",[postUserInfo objectForKey:@"key104"]];
+    NSString *phone = [NSString stringWithFormat:@"%@",[postUserInfo objectForKey:@"key104"]];
+//    NSString *dian = [NSString stringWithFormat:@"%@",[postUserInfo objectForKey:@"key104"]];
     NSString *nexus = releation;
-    NSString *address = [NSString stringWithFormat:@"%@",[postUserInfo objectForKey:@"key107"]];
-    NSString *note = [NSString stringWithFormat:@"%@",[postUserInfo objectForKey:@"key108"]];
+    NSString *address = [NSString stringWithFormat:@"%@",[postUserInfo objectForKey:@"key106"]];
+    NSString *note = [NSString stringWithFormat:@"%@",[postUserInfo objectForKey:@"key107"]];
     NSString *longitude = [NSString stringWithFormat:@"%@",[[[HeSysbsModel getSysModel] userLocationDict] objectForKey:@"longitude"]];
     NSString *latitude = [NSString stringWithFormat:@"%@",[[[HeSysbsModel getSysModel] userLocationDict] objectForKey:@"latitude"]];
     
@@ -557,28 +622,42 @@
         [self showHint:@"请填写受护人身份证"];
         return;
     }
+    if ([card length] > 18) {
+        [self showHint:@"请输入正确的身份证号"];
+        return;
+    }
     if ([age isEqualToString:@""] || age == nil) {
         [self showHint:@"请输入受护人年龄"];
         return;
     }
-    if ([dian isEqualToString:@""] || dian == nil) {
-        [self showHint:@"请填写监护人"];
+    if ([age integerValue] <= 0 || [age integerValue] > 1000) {
+        [self showHint:@"请输入正确的年龄"];
         return;
     }
+    
+//    if ([dian isEqualToString:@""] || dian == nil) {
+//        [self showHint:@"请填写监护人"];
+//        return;
+//    }
     if ([phone isEqualToString:@""] || phone == nil) {
         [self showHint:@"请输入联系电话"];
         return;
     }
+    if (![Tool isMobileNumber:phone]) {
+        [self showHint:@"请输入正确的手机号码"];
+        return;
+    }
+    
     if ([address isEqualToString:@""] || address == nil) {
         [self showHint:@"请输入地址"];
         return;
     }
-    
+//    @"personGuardian": dian,
     NSDictionary * params  = @{@"personName": name,
                                @"personSex": sex,
                                @"personCard": card,
                                @"personAge": age,
-                               @"personGuardian": dian,
+                               
                                @"personPhone": phone,
                                @"personnexus": nexus,
                                @"address": address,
@@ -586,7 +665,7 @@
                                @"addressId": @"",
                                @"isdefault": @"0",
                                @"userId": userid,
-                               @"longitude ": longitude,
+                               @"longitude": longitude,
                                @"latitude": latitude};
     [self showHudInView:tableview hint:@"添加中..."];
     [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){

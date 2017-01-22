@@ -10,5 +10,6 @@
 
 @interface HeOrderCommitVC : HeBaseViewController
 @property(strong,nonatomic)NSString *orderId;
+@property(strong,nonatomic)NSDictionary *orderDict;
 
 @end
