@@ -374,7 +374,11 @@
             contentField.textAlignment = NSTextAlignmentLeft;
             
             if (isEdit) {
-                contentField.text  = [userInfoDict objectForKey:@"protectedPersonNote"];
+                NSString *protectedPersonNote = [userInfoDict objectForKey:@"protectedPersonNote"];
+                if ([protectedPersonNote isMemberOfClass:[NSNull class]] || protectedPersonNote == nil) {
+                    protectedPersonNote = @"";
+                }
+                contentField.text  = protectedPersonNote;
             }
             break;
         }

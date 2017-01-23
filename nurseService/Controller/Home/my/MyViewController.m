@@ -516,6 +516,7 @@
     
 }
 
+
 - (void)signAccount
 {
     NSLog(@"signAccount");
@@ -525,6 +526,12 @@
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:kUserDetailDataKey];
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:USERIDKEY];
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:USERPASSWORDKEY];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:kUserPayInfoKey];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:kPayAccount];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:kPayPassword];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:kPayBalance];
+    
+    [[NSUserDefaults standardUserDefaults] synchronize];
     //清空用户的资料
     [HeSysbsModel getSysModel].user = nil;
     

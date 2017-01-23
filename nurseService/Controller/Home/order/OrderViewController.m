@@ -188,8 +188,10 @@
                     CGFloat scale = noImage.size.height / noImage.size.width;
                     CGFloat imageW = 120;
                     CGFloat imageH = imageW * scale;
+                    CGFloat imageX = (SCREENWIDTH - imageW) / 2.0;
+                    CGFloat imageY = SCREENHEIGH - imageH - 100;
                     UIImageView *imageview = [[UIImageView alloc] initWithImage:noImage];
-                    imageview.frame = CGRectMake(100, 100, imageW, imageH);
+                    imageview.frame = CGRectMake(imageX, imageY, imageW, imageH);
                     imageview.center = bgView.center;
                     [bgView addSubview:imageview];
                     tableview.backgroundView = bgView;
@@ -264,7 +266,12 @@
         if ([orderSendId isMemberOfClass:[NSNull class]]) {
             orderSendId = @"";
         }
+        id isEvaluate = orderDict[@"isEvaluate"];
+        if ([isEvaluate isMemberOfClass:[NSNull class]] || isEvaluate == nil) {
+            isEvaluate = @"";
+        }
         HeOrderDetailVC *orderDetailVC = [[HeOrderDetailVC alloc] init];
+        orderDetailVC.isEvaluate = [isEvaluate boolValue];
         orderDetailVC.orderId = orderSendId;
         orderDetailVC.hidesBottomBarWhenPushed = YES;
         [self.navigationController pushViewController:orderDetailVC animated:YES];

@@ -92,8 +92,10 @@
                 CGFloat scale = noImage.size.height / noImage.size.width;
                 CGFloat imageW = 120;
                 CGFloat imageH = imageW * scale;
+                CGFloat imageX = (SCREENWIDTH - imageW) / 2.0;
+                CGFloat imageY = SCREENHEIGH - imageH - 100;
                 UIImageView *imageview = [[UIImageView alloc] initWithImage:noImage];
-                imageview.frame = CGRectMake(100, 100, imageW, imageH);
+                imageview.frame = CGRectMake(imageX, imageY, imageW, imageH);
                 imageview.center = bgView.center;
                 [bgView addSubview:imageview];
                 tableView.backgroundView = bgView;

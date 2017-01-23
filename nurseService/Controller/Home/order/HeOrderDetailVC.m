@@ -121,6 +121,11 @@
         [self addStatueViewWithStatus:0];
     }
     else{
+        if (orderSendState >= 3) {
+            if (self.isEvaluate) {
+                orderSendState = orderSendState + 1;
+            }
+        }
         [self addStatueViewWithStatus:orderSendState];
     }
     
@@ -296,7 +301,7 @@
     serviceBG.frame = serviceFrame;
 }
 
-- (void)addStatueViewWithStatus:(eOrderStatusType)statusType
+- (void)addStatueViewWithStatus:(NSInteger)statusType
 {
     CGFloat statusLabelX = 5;
     CGFloat statusLabelY = 10;
@@ -351,6 +356,9 @@
     sepLineW = SCREENWIDTH - sepLineX;
     UIView *sepLine = [[UIView alloc] initWithFrame:CGRectMake(sepLineX, sepLineY, sepLineW, sepLineH)];
     sepLine.backgroundColor = [UIColor colorWithWhite:237.0 / 255.0 alpha:1.0];
+    if (statusType == [statusArray count]) {
+        sepLine.backgroundColor = APPDEFAULTORANGE;
+    }
     [statusView addSubview:sepLine];
     
 }
@@ -514,16 +522,23 @@
             
             }
             else{
+                
+                
                 NSString *nurseHeader = orderDetailDict[@"nurseHeader"];
                 if ([nurseHeader isMemberOfClass:[NSNull class]] || nurseHeader == nil) {
                     nurseHeader = @"";
                 }
-                nurseHeader = [NSString stringWithFormat:@"%@/%@",BASEURL,nurseHeader];
-                [nurseArray addObject:nurseHeader];
+                
+                NSString *nurseId = orderDetailDict[@"nurseId"];
+                if ([nurseId isMemberOfClass:[NSNull class]] || nurseId == nil) {
+                    nurseId = @"";
+                }
+                else{
+                    nurseHeader = [NSString stringWithFormat:@"%@/%@",BASEURL,nurseHeader];
+                    [nurseArray addObject:nurseHeader];
+                }
+                
             }
-            
-            
-            
             [self initView];
             [tableview reloadData];
         }
@@ -1108,7 +1123,28 @@
                 case 2:
                 {
                     //位置
+                    NSString *orderSendAddree = orderDetailDict[@"orderSendAddree"];
+                    NSArray *orderSendAddreeArray = [orderSendAddree componentsSeparatedByString:@","];
+                    NSString *zoneLocationX = nil;
+                    @try {
+                        zoneLocationX = orderSendAddreeArray[0];
+                    } @catch (NSException *exception) {
+                        zoneLocationX = @"";
+                    } @finally {
+                        
+                    }
+                    NSString *zoneLocationY = nil;
+                    @try {
+                        zoneLocationY = orderSendAddreeArray[1];
+                    } @catch (NSException *exception) {
+                        zoneLocationY = @"";
+                    } @finally {
+                        
+                    }
+                    
+                    NSDictionary *userLocationDict = @{@"zoneLocationX":zoneLocationX,@"zoneLocationY":zoneLocationY};
                     HeUserLocatiVC *userLocationVC = [[HeUserLocatiVC alloc] init];
+                    userLocationVC.userLocationDict = [[NSDictionary alloc] initWithDictionary:userLocationDict];
                     userLocationVC.hidesBottomBarWhenPushed = YES;
                     [self.navigationController pushViewController:userLocationVC animated:YES];
                     break;

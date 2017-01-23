@@ -232,7 +232,7 @@
         couponUserFullGiveObj = @"";
     }
     CGFloat couponUserFullGive = [couponUserFullGiveObj floatValue];
-    cell.conditionLabel.text = [NSString stringWithFormat:@"满%.0f可用",couponUserFullGive];
+    cell.conditionLabel.text = [NSString stringWithFormat:@"满%.2f可用",couponUserFullGive];
     return cell;
 }
 
@@ -243,6 +243,9 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    if (![self.selectDelegate respondsToSelector:@selector(selectCouponWithOrder:)]) {
+        return;
+    }
     NSInteger row = indexPath.row;
     NSInteger section = indexPath.section;
     NSDictionary *dict = nil;

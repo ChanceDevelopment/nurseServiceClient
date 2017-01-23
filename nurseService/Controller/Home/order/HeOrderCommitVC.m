@@ -133,7 +133,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(GetAlipayResult:) name:@"GetAlipayResult" object:nil];
     
     dataSource = @[@"服务时间",@"受护人",@"产妇护理套餐",@"套餐列表",@"备注信息",@"图片资料",@"优惠券",@"交通费",@"总额",@"支付方式",@"      中国人寿保险"];
-    payMethodDataSource = @[@"在线支付",@"支付宝支付"];
+    payMethodDataSource = @[@"余额支付",@"支付宝支付"];
     payIconDataSource = @[@"icon_online",@"icon_alipay"];
     bannerImageDataSource = [[NSMutableArray alloc] initWithCapacity:0];
     
@@ -1303,6 +1303,7 @@
     NSDictionary *payInfo = [[NSUserDefaults standardUserDefaults] objectForKey:kUserPayInfoKey];
     NSString *password = [payInfo objectForKey:kPayPassword];
     if ([password isMemberOfClass:[NSNull class]] || password == nil || [password isEqualToString:@""]) {
+        dismissView.hidden = YES;
         password = @"";
         HeSettingPayPasswordVC *settingPayVC = [[HeSettingPayPasswordVC alloc] init];
         settingPayVC.hidesBottomBarWhenPushed = YES;

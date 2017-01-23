@@ -103,7 +103,7 @@
     NSDictionary * params  = @{@"userId":userId};
     NSString *requestUrl = [NSString stringWithFormat:@"%@/nurseAnduser/selectUserThreeInfo.action",BASEURL];
     [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
-        [self hidesBottomBarWhenPushed];
+        [self hideHud];
         NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
         NSDictionary *respondDict = [NSDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
         if ([[respondDict valueForKey:@"errorCode"] integerValue] == REQUESTCODE_SUCCEED){
@@ -208,6 +208,7 @@
                     if ([alipayAccountInfo isMemberOfClass:[NSNull class]] || alipayAccountInfo == nil || [alipayAccountInfo isEqualToString:@""]) {
                         alipayAccountInfo = @"";
                         [self alertBindAccount];
+                        return;
                     }
                     CGFloat maxWithDrawMoney = [[userPayInfo objectForKey:kPayBalance] doubleValue];
                     HeBalanceEditVC *recharegeVC = [[HeBalanceEditVC alloc] init];
@@ -223,6 +224,7 @@
                     if ([alipayAccountInfo isMemberOfClass:[NSNull class]] || alipayAccountInfo == nil || [alipayAccountInfo isEqualToString:@""]) {
                         alipayAccountInfo = @"";
                         [self alertBindAccount];
+                        return;
                     }
                     //充值
                     HeBalanceEditVC *recharegeVC = [[HeBalanceEditVC alloc] init];
@@ -237,6 +239,7 @@
                     if ([alipayAccountInfo isMemberOfClass:[NSNull class]] || alipayAccountInfo == nil || [alipayAccountInfo isEqualToString:@""]) {
                         alipayAccountInfo = @"";
                         [self alertBindAccount];
+                        return;
                     }
                     break;
                 }

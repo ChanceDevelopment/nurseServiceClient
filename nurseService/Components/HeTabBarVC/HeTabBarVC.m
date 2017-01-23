@@ -59,7 +59,7 @@
     [self getMajorData];
     [self getUserPayInfo];
     //获取取消的订单
-    [self getCancelOrder];
+//    [self getCancelOrder];
     [Tools initPush];
     
 }
@@ -273,7 +273,7 @@
     }
     
     NSString *requestUrl = [NSString stringWithFormat:@"%@/latitude/userlatiude.action",BASEURL];
-    NSDictionary * params  = @{@"userid":userid,@"latitude": latitude,@"longitude":longitude};
+    NSDictionary * params  = @{@"userid":userid,@"latitude": longitude,@"longitude":latitude};
     
     [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
         NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];

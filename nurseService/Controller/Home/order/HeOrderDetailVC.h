@@ -12,5 +12,6 @@
 
 @interface HeOrderDetailVC : HeBaseViewController
 @property(strong,nonatomic)NSString *orderId;
+@property(assign,nonatomic)BOOL isEvaluate;
 
 @end

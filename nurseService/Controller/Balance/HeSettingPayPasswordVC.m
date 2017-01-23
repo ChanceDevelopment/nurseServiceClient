@@ -129,7 +129,7 @@
         return;
     }
     NSString *drawcode = codeField.text;
-    NSString *requestUrl = [NSString stringWithFormat:@"%@/nurseAnduser/sendSmsByUserBindPassword.action",BASEURL];
+    NSString *requestUrl = [NSString stringWithFormat:@"%@/nurseAnduser/AlipayPassword.action",BASEURL];
     [self showHudInView:self.view hint:@"修改中..."];
     NSDictionary * params  = @{@"userId": userId,@"alipayPassword":alipayPassword,@"drawcode":drawcode};
     [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
@@ -138,9 +138,10 @@
         NSDictionary *respondDict = [NSDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
         NSInteger errorCode = [[respondDict objectForKey:@"errorCode"] integerValue];
         if (errorCode == REQUESTCODE_SUCCEED) {
-            [self showHint:@"修改成功"];
-            [[NSNotificationCenter defaultCenter] postNotificationName:kUpdateUserInfoNotification object:nil];
-            [self performSelector:@selector(backToLastView) withObject:nil afterDelay:0.8];
+            
+            [self updateUserPayInfo];
+            [[NSNotificationCenter defaultCenter] postNotificationName:kUpdateUserPayInfoNotificaiton object:nil];
+            
         }
         else{
             [self hideHud];
@@ -157,6 +158,55 @@
         [self.view makeToast:ERRORREQUESTTIP duration:2.0 position:@"center"];
     }];
 }
+
+- (void)updateUserPayInfo
+{
+    NSString *userId = [[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY];
+    if (!userId) {
+        userId = @"";
+    }
+    NSDictionary * params  = @{@"userId":userId};
+    NSString *requestUrl = [NSString stringWithFormat:@"%@/nurseAnduser/selectUserThreeInfo.action",BASEURL];
+    [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
+        [self hideHud];
+        NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
+        NSDictionary *respondDict = [NSDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
+        if ([[respondDict valueForKey:@"errorCode"] integerValue] == REQUESTCODE_SUCCEED){
+            NSDictionary *payInfo = respondDict[@"json"];
+            NSMutableDictionary *dict = [[NSMutableDictionary alloc] initWithDictionary:payInfo];
+            NSArray *keyArray = dict.allKeys;
+            for (NSString *key in keyArray) {
+                id obj = dict[key];
+                if ([obj isMemberOfClass:[NSNull class]] || obj == nil) {
+                    obj = @"";
+                }
+                [dict setObject:obj forKey:key];
+            }
+            payInfo = [[NSDictionary alloc] initWithDictionary:dict];
+            NSString *balance = [payInfo objectForKey:kPayBalance];
+            if ([balance isMemberOfClass:[NSNull class]]) {
+                balance = @"";
+            }
+            [[NSUserDefaults standardUserDefaults] setObject:payInfo forKey:kUserPayInfoKey];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+            
+            [self showHint:@"修改成功"];
+            [self performSelector:@selector(backToLastView) withObject:nil afterDelay:0.8];
+        }
+        else{
+            [self hideHud];
+            NSString *data = [respondDict objectForKey:@"data"];
+            if ([data isMemberOfClass:[NSNull class]] || data == nil) {
+                data = ERRORREQUESTTIP;
+            }
+            [self showHint:data];
+        }
+        
+    } failure:^(NSError* err){
+        
+    }];
+}
+
 
 //获取验证码
 - (IBAction)getCodeButtonClick:(UIButton *)sender

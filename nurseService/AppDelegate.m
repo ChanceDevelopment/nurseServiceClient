@@ -36,6 +36,9 @@
 #endif
 
 @interface AppDelegate ()<JPUSHRegisterDelegate>
+@property(strong,nonatomic)NSMutableArray *cancerOrderArray;
+@property(strong,nonatomic)NSArray *improcessOrderArray;
+@property(strong,nonatomic)NSTimer *cancelOrderTimer;
 
 @end
 
@@ -43,6 +46,9 @@ BMKMapManager* _mapManager;
 
 @implementation AppDelegate
 @synthesize queue;
+@synthesize cancerOrderArray;
+@synthesize improcessOrderArray;
+@synthesize cancelOrderTimer;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
@@ -51,6 +57,7 @@ BMKMapManager* _mapManager;
     [self launchBaiduMap];
     [self initAPServiceWithOptions:launchOptions];
     [self umengTrack];
+    [self performSelector:@selector(getCancelOrder) withObject:nil afterDelay:1.0];
     self.window.rootViewController = self.viewController;
     //清除缓存
     NSInvocationOperation *operation = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(clearImg:) object:nil];
@@ -193,6 +200,7 @@ BMKMapManager* _mapManager;
 {
     NSLog(@"receiveNotification = %@",userInfo);
     [[NSNotificationCenter defaultCenter] postNotificationName:kHanldeCancelOrderNotification object:nil];
+    [self performSelector:@selector(getCancelOrder) withObject:nil afterDelay:1.0];
 }
 
 #pragma mark - login changed
@@ -283,6 +291,8 @@ BMKMapManager* _mapManager;
 
 - (void)initialization
 {
+    
+    cancerOrderArray = [[NSMutableArray alloc] initWithCapacity:0];
     [[NSUserDefaults standardUserDefaults] setObject:@NO forKey:USERHAVELOGINKEY];
     //注册登录状态监听
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -462,6 +472,165 @@ BMKMapManager* _mapManager;
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
+    if ([cancerOrderArray count] == 0) {
+        [self performSelector:@selector(getCancelOrder) withObject:nil afterDelay:1.0];
+    }
+    
+}
+
+- (void)getCancelOrder
+{
+    NSString *userId = [[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY];
+    if (!userId) {
+        userId = @"";
+        return;
+    }
+    NSDictionary * params  = @{@"userId":userId};
+    NSString *requestUrl = [NSString stringWithFormat:@"%@/orderSend/selectOrderInfoOfNotHandleBecancel.action",BASEURL];
+    [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
+        
+        NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
+        NSDictionary *respondDict = [NSDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
+        if ([[respondDict valueForKey:@"errorCode"] integerValue] == REQUESTCODE_SUCCEED){
+            NSArray *jsonArray = respondDict[@"json"];
+            if ([jsonArray isMemberOfClass:[NSNull class]]) {
+                jsonArray = [NSArray array];
+            }
+            [cancerOrderArray removeAllObjects];
+            for (NSDictionary *dict in jsonArray) {
+                NSString *orderSendId = dict[@"orderSendId"];
+                if ([orderSendId isMemberOfClass:[NSNull class]] || orderSendId == nil) {
+                    orderSendId = @"";
+                    continue;
+                }
+                BOOL haveOrder = NO;
+                for (NSDictionary *myDict in cancerOrderArray) {
+                    NSString *myOrderSendId = myDict[@"orderSendId"];
+                    if ([myOrderSendId isMemberOfClass:[NSNull class]] || myOrderSendId == nil) {
+                        myOrderSendId = @"";
+                        continue;
+                    }
+                    if ([orderSendId isEqualToString:myOrderSendId]) {
+                        haveOrder = YES;
+                        break;
+                    }
+                }
+                if (!haveOrder) {
+                    [cancerOrderArray addObject:dict];
+                }
+            }
+            if (!cancelOrderTimer) {
+                cancelOrderTimer = [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(hanldeCancelOrder) userInfo:nil repeats:YES];
+                [cancelOrderTimer fire];
+            }
+        }
+        
+    } failure:^(NSError* err){
+        
+    }];
+}
+
+- (void)hanldeCancelOrder
+{
+    if ([self.improcessOrderArray count] != 0) {
+        return;
+    }
+    if ([cancerOrderArray count] == 0) {
+        return;
+    }
+    self.improcessOrderArray = [[NSArray alloc] initWithObjects:cancerOrderArray[0], nil];
+    NSDictionary *orderDetailDict = self.improcessOrderArray[0];
+    NSString *orderName = orderDetailDict[@"orderSendServicecontent"];
+    if ([orderName isMemberOfClass:[NSNull class]] || orderName == nil) {
+        orderName = @"";
+    }
+    id zoneCreatetimeObj = [orderDetailDict objectForKey:@"orderSendGetOrderTime"];
+    if ([zoneCreatetimeObj isMemberOfClass:[NSNull class]] || zoneCreatetimeObj == nil) {
+        NSTimeInterval  timeInterval = [[NSDate date] timeIntervalSince1970];
+        zoneCreatetimeObj = [NSString stringWithFormat:@"%.0f000",timeInterval];
+    }
+    long long timestamp = [zoneCreatetimeObj longLongValue];
+    NSString *zoneCreatetime = [NSString stringWithFormat:@"%lld",timestamp];
+    if ([zoneCreatetime length] > 3) {
+        //时间戳
+        zoneCreatetime = [zoneCreatetime substringToIndex:[zoneCreatetime length] - 3];
+    }
+    
+    NSString *time = [Tool convertTimespToString:[zoneCreatetime longLongValue] dateFormate:@"yyyy/MM/dd HH:mm"];
+    
+    NSString *message = [NSString stringWithFormat:@"有护士取消了您的订单:%@(%@)，是否确认，若确认，我们将全额退还您的订单金额",orderName,time];
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"确认取消" message:message preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){
+        NSLog(@"取消");
+//        NSString *currentSendId = self.improcessOrderArray[0][@"orderSendId"];
+//        for (NSDictionary *dict in self.cancerOrderArray) {
+//            NSString *temporderSendId = dict[@"orderSendId"];
+//            if ([currentSendId isEqualToString:temporderSendId]) {
+//                [self.cancerOrderArray removeObject:dict];
+//                self.improcessOrderArray = nil; //清空处理池
+//                break;
+//            }
+//        }
+        
+        [self agreeCancelOrder:NO];
+    }];
+    UIAlertAction *commitAction = [UIAlertAction actionWithTitle:@"确认" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){
+        NSLog(@"确认");
+//        NSString *currentSendId = self.improcessOrderArray[0][@"orderSendId"];
+//        for (NSDictionary *dict in self.cancerOrderArray) {
+//            NSString *temporderSendId = dict[@"orderSendId"];
+//            if ([currentSendId isEqualToString:temporderSendId]) {
+//                [self.cancerOrderArray removeObject:dict];
+//                self.improcessOrderArray = nil; //清空处理池
+//                break;
+//            }
+//        }
+        [self agreeCancelOrder:YES];
+    }];
+    [alertController addAction:cancelAction];
+    [alertController addAction:commitAction];
+    [self.viewController presentViewController:alertController animated:YES completion:nil];
+    
+}
+
+- (void)agreeCancelOrder:(BOOL)isAgree
+{
+    NSString *userId = [[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY];
+    if (!userId) {
+        userId = @"";
+    }
+    NSDictionary *currentOrderDict = self.improcessOrderArray[0];
+    
+    NSString *orderSendId = currentOrderDict[@"orderSendId"];
+    if ([orderSendId isMemberOfClass:[NSNull class]] || orderSendId == nil) {
+        orderSendId = @"";
+    }
+    NSString *agreeState = @"1";  //0同意1不同意
+    if (isAgree) {
+        agreeState = @"0";
+    }
+    
+    NSDictionary * params  = @{@"orderSendId":orderSendId,@"userId":userId,@"agreeState":agreeState};
+    NSString *requestUrl = [NSString stringWithFormat:@"%@/orderSend/agreecancelOrder.action",BASEURL];
+    [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
+        
+        NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
+        NSDictionary *respondDict = [NSDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
+        
+        NSString *currentSendId = self.improcessOrderArray[0][@"orderSendId"];
+        for (NSDictionary *dict in self.cancerOrderArray) {
+            NSString *temporderSendId = dict[@"orderSendId"];
+            if ([currentSendId isEqualToString:temporderSendId]) {
+                [self.cancerOrderArray removeObject:dict];
+                self.improcessOrderArray = nil; //清空处理池
+                break;
+            }
+        }
+        
+        
+    } failure:^(NSError* err){
+        
+    }];
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {

@@ -146,6 +146,8 @@
 //当清理所有的推送标签的时候默认的标签
 #define DEFAULTPUSHTAG @"xTdn8EVY3TeyCXrdkjaMdHOv"
 
+#define kGetCancelOrderDataNotification @"kGetCancelOrderDataNotification"
+
 #define kHanldeCancelOrderNotification @"kHanldeCancelOrderNotification"
 //登录的广播
 #define LOGINSTATEKEY @"loginStateKey"
@@ -173,10 +175,10 @@ typedef enum {
 
 typedef enum{
     eOrderStatusTypeReceive = 0,
-    eOrderStatusTypeContact,
-    eOrderStatusTypeGo,
-    eOrderStatusTypeStart,
-    eOrderStatusTypeFinish
+    eOrderStatusTypeContact = 1,
+    eOrderStatusTypeGo = 2,
+    eOrderStatusTypeStart = 3,
+    eOrderStatusTypeFinish = 4
 } eOrderStatusType;
 
 #endif /* nurseServiceDefine_h */
