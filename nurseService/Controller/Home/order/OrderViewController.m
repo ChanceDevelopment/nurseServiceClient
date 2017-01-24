@@ -474,6 +474,7 @@
     NSString *nursePhone = orderInfo[@"nursePhone"];
     if ([nursePhone isMemberOfClass:[NSNull class]] || nursePhone == nil) {
         [self showHint:@"暂无护士的联系方式"];
+        return;
     }
     NSString *phoneStr = [NSString stringWithFormat:@"tel://%@",nursePhone];
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:phoneStr]];

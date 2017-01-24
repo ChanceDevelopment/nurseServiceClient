@@ -446,7 +446,7 @@
         NSLog(@"联系护士");
         NSString *nursePhone = orderDetailDict[@"nursePhone"];
         if ([nursePhone isMemberOfClass:[NSNull class]] || nursePhone == nil) {
-            
+            [self showHint:@"暂无护士的联系方式"];
             return;
         }
         NSString *phoneStr = [NSString stringWithFormat:@"tel://%@",nursePhone];
