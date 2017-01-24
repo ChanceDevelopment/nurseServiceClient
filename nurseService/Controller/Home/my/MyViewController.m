@@ -21,6 +21,7 @@
 #import "HeReportVC.h"
 #import "HePointMarketVC.h"
 #import "HeMessageVC.h"
+#import "HeModifyPasswordVC.h"
 
 #define InviteLabelTag 100
 #define SignButtonTag 200
@@ -94,9 +95,9 @@
 {
     [super initializaiton];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUserBalanceInfo:) name:kUpdateUserPayInfoNotificaiton object:nil];
-    iconArr = @[@"icon_protected_person_gray",@"icon_report_gray",@"icon_order_center_gray",@"icon_favorites_gray",@"icon_myinvite_gray",@"icon_aboutus_gray",@"icon_advice_gray"];
-    tableItemArr = @[@"被受护人信息",@"护理报告",@"订单中心",@"收藏夹",@"我的邀请",@"关于我们",@"投诉建议"];
-    viewControllerArray = @[@"HeProtectedUserInfoVC",@"HeOrderReportVC",@"HeUserOrderVC",@"HeUserFavouriteVC",@"HeUserInviteVC",@"HeAboutUsVC",@"HeReportVC"];
+    iconArr = @[@"icon_protected_person_gray",@"icon_report_gray",@"icon_order_center_gray",@"icon_favorites_gray",@"icon_myinvite_gray",@"icon_advice_gray",@"icon_aboutus_gray",@"icon_advice_gray"];
+    tableItemArr = @[@"被受护人信息",@"护理报告",@"订单中心",@"收藏夹",@"我的邀请",@"修改密码",@"关于我们",@"投诉建议"];
+    viewControllerArray = @[@"HeProtectedUserInfoVC",@"HeOrderReportVC",@"HeUserOrderVC",@"HeUserFavouriteVC",@"HeUserInviteVC",@"HeModifyPasswordVC",@"HeAboutUsVC",@"HeReportVC"];
     userInfoModel = [HeSysbsModel getSysModel].user;
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUserInfo:) name:kUpdateUserInfoNotification object:nil];

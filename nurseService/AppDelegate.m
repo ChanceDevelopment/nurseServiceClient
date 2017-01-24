@@ -609,7 +609,19 @@ BMKMapManager* _mapManager;
     if (isAgree) {
         agreeState = @"0";
     }
-    
+    else{
+        //不同意
+        NSString *currentSendId = self.improcessOrderArray[0][@"orderSendId"];
+        for (NSDictionary *dict in self.cancerOrderArray) {
+            NSString *temporderSendId = dict[@"orderSendId"];
+            if ([currentSendId isEqualToString:temporderSendId]) {
+                [self.cancerOrderArray removeObject:dict];
+                self.improcessOrderArray = nil; //清空处理池
+                break;
+            }
+        }
+        return;
+    }
     NSDictionary * params  = @{@"orderSendId":orderSendId,@"userId":userId,@"agreeState":agreeState};
     NSString *requestUrl = [NSString stringWithFormat:@"%@/orderSend/agreecancelOrder.action",BASEURL];
     [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){

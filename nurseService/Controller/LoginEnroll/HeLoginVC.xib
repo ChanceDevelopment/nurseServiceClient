@@ -102,6 +102,21 @@
                         <action selector="securityButtonClick:" destination="-1" eventType="touchUpInside" id="gjy-wZ-Bol"/>
                     </connections>
                 </button>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="right" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9Kp-Ps-yIc">
+                    <rect key="frame" x="223" y="226" width="77" height="30"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="77" id="SJX-tU-I37"/>
+                        <constraint firstAttribute="height" constant="30" id="X61-3y-PQZ"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                    <state key="normal" title="忘记密码?">
+                        <color key="titleColor" red="0.68627450980000004" green="0.34509803919999998" blue="0.61176470589999998" alpha="1" colorSpace="calibratedRGB"/>
+                    </state>
+                    <connections>
+                        <action selector="forgetPassword:" destination="-1" eventType="touchUpInside" id="APE-xJ-3U9"/>
+                        <action selector="forgetPasswordButtonClick:" destination="-1" eventType="touchUpInside" id="l6K-Bo-fMs"/>
+                    </connections>
+                </button>
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
             <constraints>
@@ -112,6 +127,7 @@
                 <constraint firstAttribute="trailing" secondItem="jqo-1n-sew" secondAttribute="trailing" constant="20" id="LEh-HZ-3ta"/>
                 <constraint firstAttribute="trailing" secondItem="wRZ-tg-xmy" secondAttribute="trailing" constant="48" id="MKN-wX-fQr"/>
                 <constraint firstItem="Ske-Vs-klz" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="20" id="TyD-lM-ZDQ"/>
+                <constraint firstAttribute="trailing" secondItem="9Kp-Ps-yIc" secondAttribute="trailing" constant="20" id="UqY-ar-dWK"/>
                 <constraint firstItem="Ske-Vs-klz" firstAttribute="top" secondItem="OAr-qU-etH" secondAttribute="bottom" constant="16" id="XzG-iy-JIH"/>
                 <constraint firstItem="wRZ-tg-xmy" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="20" id="b0a-He-yiY"/>
                 <constraint firstItem="mOQ-0s-FDG" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="20" id="bzv-pS-oXh"/>
@@ -121,11 +137,12 @@
                 <constraint firstItem="OAr-qU-etH" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="20" id="kOZ-bX-pvO"/>
                 <constraint firstItem="jqo-1n-sew" firstAttribute="top" secondItem="gES-eX-HD2" secondAttribute="bottom" id="oh9-sK-cZU"/>
                 <constraint firstItem="wRZ-tg-xmy" firstAttribute="top" secondItem="jqo-1n-sew" secondAttribute="bottom" constant="9" id="s16-jW-2PK"/>
+                <constraint firstItem="9Kp-Ps-yIc" firstAttribute="top" secondItem="OAr-qU-etH" secondAttribute="bottom" constant="16" id="s9L-pc-Wzw"/>
                 <constraint firstAttribute="trailing" secondItem="gES-eX-HD2" secondAttribute="trailing" constant="20" id="sxN-r2-6d9"/>
                 <constraint firstItem="OAr-qU-etH" firstAttribute="top" secondItem="mOQ-0s-FDG" secondAttribute="bottom" constant="34" id="vwZ-IV-1Qd"/>
                 <constraint firstAttribute="trailing" secondItem="Nly-mk-VPa" secondAttribute="trailing" constant="20" id="yNl-bm-kKx"/>
             </constraints>
-            <point key="canvasLocation" x="24.5" y="51.5"/>
+            <point key="canvasLocation" x="24" y="51"/>
         </view>
     </objects>
     <resources>

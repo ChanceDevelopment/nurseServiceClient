@@ -8,6 +8,7 @@
 
 #import "HeLoginVC.h"
 #import "HeEnrollVC.h"
+#import "HeForGetPasswordVC.h"
 
 @interface HeLoginVC ()<UITextFieldDelegate>
 @property(strong,nonatomic)IBOutlet UITextField *accountField;
@@ -141,6 +142,11 @@
     }];
 }
 
+- (IBAction)forgetPasswordButtonClick:(id)sender
+{
+    
+}
+
 - (IBAction)enrollButtonClick:(id)sender
 {
     HeEnrollVC *enrollVC = [[HeEnrollVC alloc] init];
@@ -160,6 +166,13 @@
         [textField resignFirstResponder];
     }
     return YES;
+}
+
+- (IBAction)forgetPassword:(id)sender
+{
+    HeForGetPasswordVC *forgetPasswordVC = [[HeForGetPasswordVC alloc] init];
+    forgetPasswordVC.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:forgetPasswordVC animated:YES];
 }
 
 - (void)didReceiveMemoryWarning {

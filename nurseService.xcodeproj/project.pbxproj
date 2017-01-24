@@ -137,6 +137,8 @@
 		EA45677B1E2FB86400480A95 /* HeBalanceDetailCell.m in Sources */ = {isa = PBXBuildFile; fileRef = EA45677A1E2FB86400480A95 /* HeBalanceDetailCell.m */; };
 		EA45677F1E2FDDF600480A95 /* HeBalanceEditVC.m in Sources */ = {isa = PBXBuildFile; fileRef = EA45677D1E2FDDF600480A95 /* HeBalanceEditVC.m */; };
 		EA4567801E2FDDF600480A95 /* HeBalanceEditVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = EA45677E1E2FDDF600480A95 /* HeBalanceEditVC.xib */; };
+		EA51C26F1E36F7020031ABC2 /* HeModifyPasswordVC.m in Sources */ = {isa = PBXBuildFile; fileRef = EA51C26D1E36F7020031ABC2 /* HeModifyPasswordVC.m */; };
+		EA51C2701E36F7020031ABC2 /* HeModifyPasswordVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = EA51C26E1E36F7020031ABC2 /* HeModifyPasswordVC.xib */; };
 		EA51EE2E1E2D10B80002D2BC /* icon_checkboxNormal.png in Resources */ = {isa = PBXBuildFile; fileRef = EA51EE2D1E2D10B80002D2BC /* icon_checkboxNormal.png */; };
 		EA51EE321E2D224C0002D2BC /* HeSelectProtectedUserInfoVC.m in Sources */ = {isa = PBXBuildFile; fileRef = EA51EE301E2D224C0002D2BC /* HeSelectProtectedUserInfoVC.m */; };
 		EA51EE331E2D224C0002D2BC /* HeSelectProtectedUserInfoVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = EA51EE311E2D224C0002D2BC /* HeSelectProtectedUserInfoVC.xib */; };
@@ -164,6 +166,8 @@
 		EA8A7F751E2F437A007CEC56 /* icon_elect_onic_report.png in Resources */ = {isa = PBXBuildFile; fileRef = EA8A7F741E2F437A007CEC56 /* icon_elect_onic_report.png */; };
 		EA8A7F771E2F58A1007CEC56 /* icon_white_down_gray.png in Resources */ = {isa = PBXBuildFile; fileRef = EA8A7F761E2F58A1007CEC56 /* icon_white_down_gray.png */; };
 		EA8A7F7A1E2F5C33007CEC56 /* ReportCell.m in Sources */ = {isa = PBXBuildFile; fileRef = EA8A7F791E2F5C33007CEC56 /* ReportCell.m */; };
+		EA8B9D1C1E36709400BAF0BA /* HeForGetPasswordVC.m in Sources */ = {isa = PBXBuildFile; fileRef = EA8B9D1A1E36709300BAF0BA /* HeForGetPasswordVC.m */; };
+		EA8B9D1D1E36709400BAF0BA /* HeForGetPasswordVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = EA8B9D1B1E36709400BAF0BA /* HeForGetPasswordVC.xib */; };
 		EA8C89431E21CAB30093657B /* BaiduMapAPI_Base.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA8C89371E21CAB30093657B /* BaiduMapAPI_Base.framework */; };
 		EA8C89441E21CAB30093657B /* BaiduMapAPI_Cloud.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA8C89381E21CAB30093657B /* BaiduMapAPI_Cloud.framework */; };
 		EA8C89451E21CAB30093657B /* BaiduMapAPI_Location.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA8C89391E21CAB30093657B /* BaiduMapAPI_Location.framework */; };
@@ -1018,6 +1022,9 @@
 		EA45677C1E2FDDF600480A95 /* HeBalanceEditVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HeBalanceEditVC.h; sourceTree = "<group>"; };
 		EA45677D1E2FDDF600480A95 /* HeBalanceEditVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HeBalanceEditVC.m; sourceTree = "<group>"; };
 		EA45677E1E2FDDF600480A95 /* HeBalanceEditVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HeBalanceEditVC.xib; sourceTree = "<group>"; };
+		EA51C26C1E36F7020031ABC2 /* HeModifyPasswordVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HeModifyPasswordVC.h; sourceTree = "<group>"; };
+		EA51C26D1E36F7020031ABC2 /* HeModifyPasswordVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HeModifyPasswordVC.m; sourceTree = "<group>"; };
+		EA51C26E1E36F7020031ABC2 /* HeModifyPasswordVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HeModifyPasswordVC.xib; sourceTree = "<group>"; };
 		EA51EE2D1E2D10B80002D2BC /* icon_checkboxNormal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_checkboxNormal.png; sourceTree = "<group>"; };
 		EA51EE2F1E2D224C0002D2BC /* HeSelectProtectedUserInfoVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HeSelectProtectedUserInfoVC.h; sourceTree = "<group>"; };
 		EA51EE301E2D224C0002D2BC /* HeSelectProtectedUserInfoVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HeSelectProtectedUserInfoVC.m; sourceTree = "<group>"; };
@@ -1054,6 +1061,9 @@
 		EA8A7F761E2F58A1007CEC56 /* icon_white_down_gray.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_white_down_gray.png; sourceTree = "<group>"; };
 		EA8A7F781E2F5C33007CEC56 /* ReportCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReportCell.h; sourceTree = "<group>"; };
 		EA8A7F791E2F5C33007CEC56 /* ReportCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReportCell.m; sourceTree = "<group>"; };
+		EA8B9D191E36709300BAF0BA /* HeForGetPasswordVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HeForGetPasswordVC.h; sourceTree = "<group>"; };
+		EA8B9D1A1E36709300BAF0BA /* HeForGetPasswordVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HeForGetPasswordVC.m; sourceTree = "<group>"; };
+		EA8B9D1B1E36709400BAF0BA /* HeForGetPasswordVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HeForGetPasswordVC.xib; sourceTree = "<group>"; };
 		EA8C89371E21CAB30093657B /* BaiduMapAPI_Base.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = BaiduMapAPI_Base.framework; sourceTree = "<group>"; };
 		EA8C89381E21CAB30093657B /* BaiduMapAPI_Cloud.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = BaiduMapAPI_Cloud.framework; sourceTree = "<group>"; };
 		EA8C89391E21CAB30093657B /* BaiduMapAPI_Location.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = BaiduMapAPI_Location.framework; sourceTree = "<group>"; };
@@ -2803,6 +2813,12 @@
 				EA8C89531E21CB310093657B /* HeEnrollVC.h */,
 				EA8C89541E21CB310093657B /* HeEnrollVC.m */,
 				EA8C89551E21CB310093657B /* HeEnrollVC.xib */,
+				EA8B9D191E36709300BAF0BA /* HeForGetPasswordVC.h */,
+				EA8B9D1A1E36709300BAF0BA /* HeForGetPasswordVC.m */,
+				EA8B9D1B1E36709400BAF0BA /* HeForGetPasswordVC.xib */,
+				EA51C26C1E36F7020031ABC2 /* HeModifyPasswordVC.h */,
+				EA51C26D1E36F7020031ABC2 /* HeModifyPasswordVC.m */,
+				EA51C26E1E36F7020031ABC2 /* HeModifyPasswordVC.xib */,
 			);
 			path = LoginEnroll;
 			sourceTree = "<group>";
@@ -5031,6 +5047,7 @@
 				ADCC62431DFA9EB30065866C /* icon_advice.png in Resources */,
 				EAC2D87B1D4B063B00E282A8 /* grayArrow@2x.png in Resources */,
 				EA51EE2E1E2D10B80002D2BC /* icon_checkboxNormal.png in Resources */,
+				EA51C2701E36F7020031ABC2 /* HeModifyPasswordVC.xib in Resources */,
 				EAC2D9561D4B063B00E282A8 /* btn_021@2x.png in Resources */,
 				EACA0F071E26767A009B4516 /* HeUserFavouriteVC.xib in Resources */,
 				EA70F9BB1E2BEB7E004E3D1C /* choose_item_right.png in Resources */,
@@ -5078,6 +5095,7 @@
 				EAC2D8D61D4B063B00E282A8 /* README.textile in Resources */,
 				ADCC621A1DFA851B0065866C /* down_blue@2x.png in Resources */,
 				EAD0AE051E2DF9D1002893F4 /* icon_gray_address.png in Resources */,
+				EA8B9D1D1E36709400BAF0BA /* HeForGetPasswordVC.xib in Resources */,
 				EAC2D4331D4B031500E282A8 /* Main.storyboard in Resources */,
 				EA899E311E23EE3F0008AA01 /* icon_phone.png in Resources */,
 				ADCC62451DFA9EB30065866C /* icon_integral_mall.png in Resources */,
@@ -5484,6 +5502,7 @@
 				EAC2D8A51D4B063B00E282A8 /* MJRefreshComponent.m in Sources */,
 				EAC2D96A1D4B063B00E282A8 /* UIResponder+Router.m in Sources */,
 				EAC2D8471D4B063B00E282A8 /* DFBaseDataService.m in Sources */,
+				EA51C26F1E36F7020031ABC2 /* HeModifyPasswordVC.m in Sources */,
 				EAC2D8251D4B063B00E282A8 /* UIActivityIndicatorView+AFNetworking.m in Sources */,
 				EAC2D9761D4B063B00E282A8 /* YLImageView.m in Sources */,
 				EA8C89771E21CC330093657B /* HeInstructionView.m in Sources */,
@@ -5511,6 +5530,7 @@
 				EA45677F1E2FDDF600480A95 /* HeBalanceEditVC.m in Sources */,
 				EA9F72771E22799200FED4A3 /* HeUserLocatiVC.m in Sources */,
 				EAC2D88C1D4B063B00E282A8 /* IQTitleBarButtonItem.m in Sources */,
+				EA8B9D1C1E36709400BAF0BA /* HeForGetPasswordVC.m in Sources */,
 				ADCC62361DFA93990065866C /* Tools.m in Sources */,
 				EA8C89FE1E2267E50093657B /* HeNurseDetailVC.m in Sources */,
 				EAC2D8351D4B063B00E282A8 /* AsynImageView.m in Sources */,

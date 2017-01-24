@@ -1311,7 +1311,7 @@
         return;
     }
     CGFloat viewX = 10;
-    CGFloat viewY = 100;
+    CGFloat viewY = 50;
     CGFloat viewW = SCREENWIDTH - 2 * viewX;
     CGFloat viewH = 150;
     UIView *shareAlert = [[UIView alloc] init];
@@ -1348,6 +1348,7 @@
     textview.tag = 10;
     textview.secureTextEntry = YES;
     textview.backgroundColor = [UIColor whiteColor];
+    textview.tintColor= [UIColor blueColor];
     textview.placeholder = @"请输入6位数的密码";
     textview.font = shareFont;
     textview.delegate = self;
@@ -1414,6 +1415,7 @@
     if ([subview isMemberOfClass:[UITextField class]]) {
         textview = (UITextField *)subview;
     }
+    textview.keyboardType = UIKeyboardTypeNumbersAndPunctuation;
     NSString *password = textview.text;
     [alertview removeFromSuperview];
     if (password == nil || [password isEqualToString:@""]) {
@@ -1507,6 +1509,12 @@
 - (void)backToLastView
 {
     [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (void)textFieldDidBeginEditing:(UITextField *)textField{
+    if (!textField.window.isKeyWindow) {
+        [textField.window makeKeyAndVisible];
+    }
 }
 
 #pragma mark - SelectProtectUserInfoProtocol
