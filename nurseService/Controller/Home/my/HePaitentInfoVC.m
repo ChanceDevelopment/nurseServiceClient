@@ -54,8 +54,8 @@
 - (void)initializaiton
 {
     [super initializaiton];
-    dataSource = @[@"姓名",@"性别",@"身份证号",@"年龄",@"监护人",@"联系电话",@"关系",@"地址",@"病史备注"];
-    keyDataSource = @[@"protectedPersonName",@"protectedPersonSex",@"protectedPersonCard",@"protectedPersonAge",@"protectedPersonGuardian",@"protectedPersonPhone",@"protectedPersonNexus",@"protectedAddress",@"protectedPersonNote"];
+    dataSource = @[@"姓名",@"性别",@"身份证号",@"年龄",@"联系电话",@"关系",@"地址",@"病史备注"];
+    keyDataSource = @[@"protectedPersonName",@"protectedPersonSex",@"protectedPersonCard",@"protectedPersonAge",@"protectedPersonPhone",@"protectedPersonNexus",@"protectedAddress",@"protectedPersonNote"];
 }
 
 - (void)initView
@@ -151,7 +151,7 @@
     
     NSString *contentKey = keyDataSource[row];
     id content = userInfoDetailDict[contentKey];
-    if ([content isMemberOfClass:[NSNull class]] || content == nil) {
+    if ([content isMemberOfClass:[NSNull class]] || content == nil || [content isEqualToString:@"(null)"]) {
         content = @"";
     }
     if ([contentKey isEqualToString:@"protectedPersonSex"]) {

@@ -74,6 +74,14 @@
     _mapView.zoomLevel = 10;
     _mapView.showsUserLocation = YES;//显示定位图层
     _geoSearch.delegate = self;
+    
+    self.navigationItem.titleView = searchBar;
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:YES];
+    self.navigationItem.titleView = searchBar;
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -100,6 +108,7 @@
     NSDictionary *dict = @{@"subAddress":@"[当前]",@"address":[HeSysbsModel getSysModel].addressResult.address};
     [dataSource addObject:dict];
 }
+
 
 - (void)initView
 {
@@ -305,8 +314,6 @@
     addressLabel.textColor = [UIColor grayColor];
     [cell addSubview:addressLabel];
     
-
-    
     return  cell;
 }
 
@@ -332,7 +339,6 @@
     } @finally {
         
     }
-    
     [_addressDelegate addProtectUserAddressWithAddressInfo:dict];
    
 }

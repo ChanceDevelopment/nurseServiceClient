@@ -375,7 +375,7 @@
             
             if (isEdit) {
                 NSString *protectedPersonNote = [userInfoDict objectForKey:@"protectedPersonNote"];
-                if ([protectedPersonNote isMemberOfClass:[NSNull class]] || protectedPersonNote == nil) {
+                if ([protectedPersonNote isMemberOfClass:[NSNull class]] || protectedPersonNote == nil || [protectedPersonNote isEqualToString:@"(null)"]) {
                     protectedPersonNote = @"";
                 }
                 contentField.text  = protectedPersonNote;

@@ -127,7 +127,23 @@
     }
     NSDictionary *addressDict = @{@"address":protectedAddress};
     [_addressDeleage selectAddressWithAddressInfo:addressDict];
-    [self.navigationController popViewControllerAnimated:YES];
+    
+    NSArray *viewControllers =  self.navigationController.viewControllers;
+    UIViewController *popVC = nil;
+    NSInteger targetIndex = [viewControllers count] - 1;
+    for (NSInteger index = 0; index < [viewControllers count]; index++) {
+        UIViewController *vc = viewControllers[index];
+        if ([vc isKindOfClass:[HeSelectProtectUserAddressVC class]]) {
+            targetIndex = index;
+            break;
+        }
+    }
+    if (targetIndex > 0) {
+        targetIndex = targetIndex - 1;
+    }
+    popVC = viewControllers[targetIndex];
+    
+    [self.navigationController popToViewController:popVC animated:YES];
 }
 
 - (IBAction)addUserAddress:(id)sender
