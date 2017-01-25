@@ -29,6 +29,7 @@
 #import "UWDatePickerView.h"
 #import "HeOrderCommitVC.h"
 #import "HeSelectProtectedUserInfoVC.h"
+#import "DVYearMonthDatePicker.h"
 
 #define MAXUPLOADIMAGE 8
 #define MAX_column  4
@@ -37,7 +38,7 @@
 
 #define ALERTTAG 500
 
-@interface HeServiceDetailVC ()<DeleteImageProtocol,UITableViewDelegate,UITableViewDataSource,LBBannerDelegate,UIWebViewDelegate,UIAlertViewDelegate,UWDatePickerViewDelegate,SelectProtectUserInfoProtocol,TZImagePickerControllerDelegate,UINavigationControllerDelegate,UIImagePickerControllerDelegate,UIAlertViewDelegate,UIActionSheetDelegate,UITextFieldDelegate>
+@interface HeServiceDetailVC ()<DeleteImageProtocol,UITableViewDelegate,UITableViewDataSource,LBBannerDelegate,UIWebViewDelegate,UIAlertViewDelegate,UWDatePickerViewDelegate,SelectProtectUserInfoProtocol,TZImagePickerControllerDelegate,UINavigationControllerDelegate,UIImagePickerControllerDelegate,UIAlertViewDelegate,UIActionSheetDelegate,UITextFieldDelegate,DVYearMonthDatePickerDelegate>
 {
     BOOL currentSelectBanner;
     BOOL isBook;// YES:加入预约框 No:立即预约
@@ -53,6 +54,9 @@
 @property(strong,nonatomic)UILabel *headLab;
 @property(strong,nonatomic)UIWebView *webView;
 @property(strong,nonatomic)UIView *webContentView;
+
+@property(strong,nonatomic)DVYearMonthDatePicker *yearMonth;
+
 //服务时间
 @property(strong,nonatomic)NSString *tmpDateString;
 
@@ -103,6 +107,8 @@
 @synthesize dismissView;
 @synthesize remarKString;
 @synthesize remarKStringArray;
+
+@synthesize yearMonth;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -1238,7 +1244,7 @@
             }
             [self showHint:data];
             [self.navigationController popViewControllerAnimated:YES];
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"updateOrder" object:nil];
+            [[NSNotificationCenter defaultCenter] postNotificationName:kUpdateOrderNotification object:nil];
         }
         else{
             NSString *data = [respondDict objectForKey:@"data"];
@@ -1566,16 +1572,17 @@
                 case 0:
                 {
                     //服务时间
-                    NSDate *nowDate = [NSDate date];
-                    if (!([self.tmpDateString isMemberOfClass:[NSNull class]] || self.tmpDateString == nil || [self.tmpDateString isEqualToString:@""])) {
-                        
-                        //设置转换格式
-                        NSDateFormatter *formatter = [[NSDateFormatter alloc] init] ;
-                        [formatter setDateFormat:@"yyyy-MM-dd HH:mm"];
-                        //NSString转NSDate
-                        nowDate = [formatter dateFromString:self.tmpDateString];
-                    }
-                    [self setupDateView:DateTypeOfStart minDate:nowDate];
+                    [self selectDate];
+//                    NSDate *nowDate = [NSDate date];
+//                    if (!([self.tmpDateString isMemberOfClass:[NSNull class]] || self.tmpDateString == nil || [self.tmpDateString isEqualToString:@""])) {
+//                        
+//                        //设置转换格式
+//                        NSDateFormatter *formatter = [[NSDateFormatter alloc] init] ;
+//                        [formatter setDateFormat:@"yyyy-MM-dd HH:mm"];
+//                        //NSString转NSDate
+//                        nowDate = [formatter dateFromString:self.tmpDateString];
+//                    }
+//                    [self setupDateView:DateTypeOfStart minDate:nowDate];
                     break;
                 }
                 case 1:{
@@ -1594,6 +1601,82 @@
         }
         default:
             break;
+    }
+}
+
+- (void)selectDate
+{
+    UIView *myview = [self.view viewWithTag:1000];
+    if (myview) {
+        myview.hidden = NO;
+        [self.view viewWithTag:2000].hidden = NO;
+        return;
+    }
+    UIView *bgView1 = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, SCREENHEIGH)];
+    bgView1.tag = 1000;
+    bgView1.backgroundColor = [UIColor colorWithWhite:0.5 alpha:0.8];
+    [self.view addSubview:bgView1];
+    
+    UIView *bgView = [[UIView alloc] initWithFrame:CGRectMake(0, SCREENHEIGH - 64 - 240, SCREENWIDTH, 240)];
+    bgView.tag = 2000;
+    bgView.backgroundColor = [UIColor whiteColor];
+    [self.view addSubview:bgView];
+    
+    
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissMyView:)];
+    [bgView1 addGestureRecognizer:tap];
+    
+    yearMonth = [[DVYearMonthDatePicker alloc] initWithFrame:CGRectMake(0, 50, SCREENWIDTH, 200)];
+    
+    yearMonth.dvDelegate = self;
+    
+    [yearMonth selectToday];
+    
+    UIView *buttonBGView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, 40)];
+    
+    
+    UIButton *cancelButton = [[UIButton alloc] initWithFrame:CGRectMake(5, 0, 50, 40)];
+    [cancelButton setTitle:@"取消" forState:UIControlStateNormal];
+    [cancelButton.titleLabel setFont:[UIFont systemFontOfSize:17.0]];
+    [cancelButton setTitleColor:APPDEFAULTORANGE forState:UIControlStateNormal];
+    [buttonBGView addSubview:cancelButton];
+    cancelButton.tag = 1;
+    [cancelButton addTarget:self action:@selector(buttonClick:) forControlEvents:UIControlEventTouchUpInside];
+    
+    UIButton *commitButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREENWIDTH - 50 - 5, 0, 50, 40)];
+    [commitButton.titleLabel setFont:[UIFont systemFontOfSize:17.0]];
+    [commitButton setTitle:@"确定" forState:UIControlStateNormal];
+    [commitButton setTitleColor:APPDEFAULTORANGE forState:UIControlStateNormal];
+    commitButton.tag = 2;
+    [buttonBGView addSubview:commitButton];
+    [commitButton addTarget:self action:@selector(buttonClick:) forControlEvents:UIControlEventTouchUpInside];
+    
+    [bgView addSubview:yearMonth];
+    [bgView addSubview:buttonBGView];
+}
+
+- (void)dismissMyView:(UITapGestureRecognizer *)tap
+{
+    UIView *myview = [self.view viewWithTag:1000];
+    myview.hidden = YES;
+    [self.view viewWithTag:2000].hidden = YES;
+}
+
+
+- (void)buttonClick:(UIButton *)button
+{
+    UIView *myview = [self.view viewWithTag:1000];
+    myview.hidden = YES;
+    [self.view viewWithTag:2000].hidden = YES;
+    
+    if (button.tag == 2) {
+        NSString *tempString = self.yearMonth.dateStr;
+        NSLog(@"tempString = %@",tempString);
+        tempString = [tempString stringByReplacingOccurrencesOfString:@"年" withString:@"-"];
+        tempString = [tempString stringByReplacingOccurrencesOfString:@"月" withString:@"-"];
+        tempString = [tempString stringByReplacingOccurrencesOfString:@"日" withString:@""];
+        self.tmpDateString = tempString;
+        [tableview reloadData];
     }
 }
 
@@ -2190,10 +2273,12 @@
     field.text = password;
 }
 
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
 
 - (void)dealloc
 {

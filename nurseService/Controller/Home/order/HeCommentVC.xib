@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11762" systemVersion="16C67" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11762" systemVersion="16D32" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -11,7 +11,6 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="HeCommentVC">
             <connections>
-                <outlet property="filterBgView" destination="Xru-PP-TEX" id="3in-Pd-cQM"/>
                 <outlet property="tableview" destination="wcD-qZ-4Ab" id="maI-H8-fhw"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
@@ -22,28 +21,20 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="wcD-qZ-4Ab">
-                    <rect key="frame" x="0.0" y="44" width="375" height="623"/>
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     <connections>
                         <outlet property="dataSource" destination="-1" id="bZ4-Pz-hOB"/>
                         <outlet property="delegate" destination="-1" id="sJ1-Uq-6P5"/>
                     </connections>
                 </tableView>
-                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Xru-PP-TEX">
-                    <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
-                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                </view>
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
-                <constraint firstItem="Xru-PP-TEX" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="1K4-sV-iHU"/>
-                <constraint firstItem="wcD-qZ-4Ab" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="44" id="2Kz-Bp-kC0"/>
+                <constraint firstItem="wcD-qZ-4Ab" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="2Kz-Bp-kC0"/>
                 <constraint firstAttribute="trailing" secondItem="wcD-qZ-4Ab" secondAttribute="trailing" id="KBb-rw-lcz"/>
-                <constraint firstItem="Xru-PP-TEX" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="QL3-l1-U88"/>
                 <constraint firstAttribute="bottom" secondItem="wcD-qZ-4Ab" secondAttribute="bottom" id="QnQ-dM-WbI"/>
-                <constraint firstAttribute="trailing" secondItem="Xru-PP-TEX" secondAttribute="trailing" id="Ud8-Tb-aGA"/>
                 <constraint firstItem="wcD-qZ-4Ab" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="sgf-eA-JQ8"/>
-                <constraint firstItem="wcD-qZ-4Ab" firstAttribute="top" secondItem="Xru-PP-TEX" secondAttribute="bottom" id="t3d-KH-KRH"/>
             </constraints>
             <point key="canvasLocation" x="32.5" y="100.5"/>
         </view>

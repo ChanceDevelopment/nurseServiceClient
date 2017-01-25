@@ -50,5 +50,53 @@
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "nurseService/Controller/UserInfo/HeEditProtectUserInfoVC.m"
+            timestampString = "507005501.359092"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "583"
+            endingLineNumber = "583"
+            landmarkName = "-editProtectedUserInfo"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "-[HeEditProtectUserInfoVC editProtectedUserInfo]"
+                  moduleName = "&#x5b89;&#x5fc3;&#x62a4;"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/administrator/WorkSpace/CRO%20Project/ChanceStudio/%E6%8A%A4%E5%A3%AB%E4%B8%8A%E9%97%A8/%E6%BA%90%E7%A0%81/nurseServiceClient/nurseService/Controller/UserInfo/HeEditProtectUserInfoVC.m"
+                  timestampString = "507005501.367949"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "583"
+                  endingLineNumber = "583"
+                  offsetFromSymbolStart = "3152">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__48-[HeEditProtectUserInfoVC editProtectedUserInfo]_block_invoke"
+                  moduleName = "&#x5b89;&#x5fc3;&#x62a4;"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/administrator/WorkSpace/CRO%20Project/ChanceStudio/%E6%8A%A4%E5%A3%AB%E4%B8%8A%E9%97%A8/%E6%BA%90%E7%A0%81/nurseServiceClient/nurseService/Controller/UserInfo/HeEditProtectUserInfoVC.m"
+                  timestampString = "507005501.374787"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "584"
+                  endingLineNumber = "584"
+                  offsetFromSymbolStart = "88">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
    </Breakpoints>
 </Bucket>

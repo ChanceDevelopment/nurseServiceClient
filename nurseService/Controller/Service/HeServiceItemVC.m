@@ -140,19 +140,41 @@
                 CGFloat scale = noImage.size.height / noImage.size.width;
                 CGFloat imageW = 120;
                 CGFloat imageH = imageW * scale;
+                CGFloat imageX = (SCREENWIDTH - imageW) / 2.0;
+                CGFloat imageY = 30;
+                
                 UIImageView *imageview = [[UIImageView alloc] initWithImage:noImage];
-                imageview.frame = CGRectMake(100, 100, imageW, imageH);
-                imageview.center = bgView.center;
+                imageview.frame = CGRectMake(imageX, imageY, imageW, imageH);
+                [bgView addSubview:imageview];
                 [bgView addSubview:imageview];
                 tableview.backgroundView = bgView;
             }
             else{
                 tableview.backgroundView = nil;
             }
-            
             [tableview reloadData];
         }
         else{
+            if ([dataSource count] == 0) {
+                UIView *bgView = [[UIView alloc] initWithFrame:self.view.bounds];
+                UIImage *noImage = [UIImage imageNamed:@"img_no_data_refresh"];
+                CGFloat scale = noImage.size.height / noImage.size.width;
+                CGFloat imageW = 120;
+                CGFloat imageH = imageW * scale;
+                CGFloat imageX = (SCREENWIDTH - imageW) / 2.0;
+                CGFloat imageY = 50;
+                
+                UIImageView *imageview = [[UIImageView alloc] initWithImage:noImage];
+                imageview.frame = CGRectMake(imageX, imageY, imageW, imageH);
+                [bgView addSubview:imageview];
+                [bgView addSubview:imageview];
+                tableview.backgroundView = bgView;
+            }
+            else{
+                tableview.backgroundView = nil;
+            }
+            [tableview reloadData];
+            
             NSString *data = respondDict[@"data"];
             if ([data isMemberOfClass:[NSNull class]] || data == nil) {
                 data = ERRORREQUESTTIP;

@@ -105,7 +105,7 @@
     [dataSource addObject:nowOrderArray];
     [dataSource addObject:finishOrderArray];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateOrder:) name:@"updateOrder" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateOrder:) name:kUpdateOrderNotification object:nil];
 }
 
 - (void)initView
@@ -347,7 +347,7 @@
         if ([[respondDict valueForKey:@"errorCode"] integerValue] == REQUESTCODE_SUCCEED){
             
             [self showHint:@"成功删除服务"];
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"updateOrder" object:nil];
+            [[NSNotificationCenter defaultCenter] postNotificationName:kUpdateOrderNotification object:nil];
             
         }
         else{
@@ -387,7 +387,7 @@
         if ([[respondDict valueForKey:@"errorCode"] integerValue] == REQUESTCODE_SUCCEED){
             
             [self showHint:@"成功取消服务"];
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"updateOrder" object:nil];
+            [[NSNotificationCenter defaultCenter] postNotificationName:kUpdateOrderNotification object:nil];
             
         }
         else{
@@ -1231,7 +1231,7 @@
 
 - (void)dealloc
 {
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"updateOrder" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kUpdateOrderNotification object:nil];
 }
 /*
 #pragma mark - Navigation

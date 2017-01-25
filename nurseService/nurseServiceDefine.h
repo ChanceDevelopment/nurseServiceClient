@@ -92,6 +92,9 @@
 //支付余额
 #define kPayBalance @"userBalance"
 
+//更新订单信息
+#define kUpdateOrderNotification @"updateOrderNotification"
+
 //用户支付信息更新通知
 #define kUpdateUserPayInfoNotificaiton @"updateUserPayInfoNotificaiton"
 //用户的支付信息

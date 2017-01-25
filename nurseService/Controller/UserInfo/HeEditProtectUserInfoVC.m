@@ -109,15 +109,8 @@
     }
 }
 
-- (BOOL)textFieldShouldReturn:(UITextField *)textField
+- (void)updateWithTextField:(UITextField *)textField
 {
-    if ([textField isFocused]) {
-        [textField resignFirstResponder];
-    }
-    return YES;
-}
-- (void)textFieldDidEndEditing:(UITextField *)textField{
-    NSLog(@"textField.text:%@",textField.text);
     NSString *temp = textField.text;
     if (isEdit) {
         switch (textField.tag) {
@@ -133,9 +126,9 @@
             case 103:
                 [userInfoDict setObject:temp forKey:@"protectedPersonAge"];
                 break;
-//            case 104:
-//                [userInfoDict setObject:temp forKey:@"personGuardian"];
-//                break;
+                //            case 104:
+                //                [userInfoDict setObject:temp forKey:@"personGuardian"];
+                //                break;
             case 104:
                 [userInfoDict setObject:temp forKey:@"protectedPersonPhone"];
                 break;
@@ -156,6 +149,19 @@
         NSString *infoKey = [NSString stringWithFormat:@"key%ld",textField.tag];
         [postUserInfo setObject:temp forKey:infoKey];
     }
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    if ([textField isFocused]) {
+        [textField resignFirstResponder];
+    }
+    [self updateWithTextField:textField];
+    return YES;
+}
+- (void)textFieldDidEndEditing:(UITextField *)textField{
+    NSLog(@"textField.text:%@",textField.text);
+    [self updateWithTextField:textField];
 }
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -395,7 +401,7 @@
 
 - (void)selectRelation:(id)sender
 {
-    NSArray *menuArray = @[@"自己",@"爸爸",@"妈妈",@"亲戚",@"朋友",@"孩子",@"其他"];
+    NSArray *menuArray = @[@"自己",@"妻子",@"爸爸",@"妈妈",@"亲戚",@"朋友",@"孩子",@"其他"];
     [FTPopOverMenu showForSender:sender
                         withMenu:menuArray
                   imageNameArray:nil

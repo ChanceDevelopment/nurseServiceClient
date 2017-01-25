@@ -72,7 +72,10 @@
 
 - (void)addFooterView
 {
-    footerScrollview = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, 300)];
+    tableview.showsVerticalScrollIndicator = NO;
+    tableview.showsHorizontalScrollIndicator = NO;
+    
+    footerScrollview = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, SCREENHEIGH)];
     footerScrollview.showsVerticalScrollIndicator = NO;
     footerScrollview.showsHorizontalScrollIndicator = NO;
     tableview.tableFooterView = footerScrollview;
@@ -91,7 +94,7 @@
     
     CGFloat titleLabelX = CGRectGetMaxX(line.frame) + 10;
     CGFloat titleLabelY = 0;
-    CGFloat titleLabelW = SCREENWIDTH - 10 - titleLabelX;
+    CGFloat titleLabelW = headerViewW - 10 - titleLabelX;
     CGFloat titleLabelH = headerViewH;
     
     UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(titleLabelX, titleLabelY, titleLabelW, titleLabelH)];
@@ -338,6 +341,11 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return 50;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 - (void)didReceiveMemoryWarning {

@@ -16,12 +16,14 @@
 @property (nonatomic, strong) RPRingedPages *pages;
 @property (nonatomic, strong) NSMutableArray *dataSource;
 @property (nonatomic,strong) NSMutableArray *reportViewDataSource;
+@property (nonatomic,strong) NSCache *subViewCache;
 
 @end
 
 @implementation HeOrderReportVC
 @synthesize dataSource;
 @synthesize reportViewDataSource;
+@synthesize subViewCache;
 
 - (RPRingedPages *)pages {
     if (_pages == nil) {
@@ -76,6 +78,7 @@
     [super initializaiton];
     dataSource = [[NSMutableArray alloc] initWithCapacity:0];
     reportViewDataSource = [[NSMutableArray alloc] initWithCapacity:0];
+    subViewCache = [[NSCache alloc] init];
 }
 
 - (void)initView
@@ -83,7 +86,6 @@
     [super initView];
     self.view.backgroundColor = [UIColor colorWithWhite:237.0 / 255.0 alpha:1.0];
     [self.view addSubview:self.pages];
-    
 }
 
 - (void)getOrderReportData
@@ -169,6 +171,7 @@
     }
     protectedPersonName = [NSString stringWithFormat:@"%@的健康档案",protectedPersonName];
     nameLabel.text = protectedPersonName;
+    nameLabel.tag = 100;
     
     CGFloat timeLabelX = 10;
     CGFloat timeLabelY = footerViewY - 10 - 30;
@@ -195,6 +198,7 @@
     NSString *time = [Tool convertTimespToString:[zoneCreatetime longLongValue] dateFormate:@"MM-dd HH:mm"];
     timeLabel.text = [NSString stringWithFormat:@"最后更新时间：%@",time];
     timeLabel.textAlignment = NSTextAlignmentRight;
+    timeLabel.tag = 200;
     
     UIView *footerView = [[UIView alloc] initWithFrame:CGRectMake(footerViewX, footerViewY, footerViewW, footerViewH)];
     footerView.backgroundColor = [UIColor whiteColor];
@@ -277,8 +281,18 @@
 {
     NSDictionary *dict = dataSource[index];
     NSString *title = [NSString stringWithFormat:@"%ld/%ld",index + 1,[dataSource count]];
-    return [self getReportViewWithReportInfo:dict title:title];
+    
+    NSString *subViewKey = [NSString stringWithFormat:@"subViewKey_%ld",index];
+    
+    UIView *pageSubView = [self getReportViewWithReportInfo:dict title:title];
+    [subViewCache setObject:pageSubView forKey:subViewKey];
+//    if (!pageSubView) {
+//        pageSubView = [self getReportViewWithReportInfo:dict title:title];
+//    }
+//    [subViewCache setObject:pageSubView forKey:subViewKey];
+    return pageSubView;
 }
+
 - (void)didSelectedCurrentPageInPages:(RPRingedPages *)pages
 {
     NSLog(@"pages selected, the current index is %zd", pages.currentIndex);
@@ -292,6 +306,39 @@
 - (void)pages:(RPRingedPages *)pages didScrollToIndex:(NSInteger)index
 {
     NSLog(@"pages scrolled to index: %zd", index);
+    
+//    [pages dequeueReusablePage];
+    NSLog(@"%@",pages);
+    //刷新视图
+//    [self performSelector:@selector(updateFrameWithIndex:) withObject:[NSNumber numberWithInteger:index] afterDelay:2.0];
+}
+
+- (void)updateFrameWithIndex:(NSNumber *)indexObj
+{
+    NSInteger index = [indexObj integerValue];
+    CGFloat footerViewX = 0;
+    CGFloat footerViewY = CGRectGetHeight(_pages.frame) / 2.0 - 20;
+    CGFloat footerViewW = CGRectGetWidth(_pages.frame);
+    CGFloat footerViewH = CGRectGetHeight(_pages.frame) - footerViewY;
+    
+    CGFloat nameLabelX = 10;
+    CGFloat nameLabelY = footerViewY - 10 - 65;
+    CGFloat nameLabelW = footerViewW - 2 * nameLabelX;
+    CGFloat nameLabelH = 30;
+    
+    CGFloat timeLabelX = 10;
+    CGFloat timeLabelY = footerViewY - 10 - 30;
+    CGFloat timeLabelW = nameLabelW;
+    CGFloat timeLabelH = 30;
+    
+    NSString *subViewKey = [NSString stringWithFormat:@"subViewKey_%ld",index];
+    UIView *pageSubView = [subViewCache objectForKey:subViewKey];
+    
+    UILabel *nameLabel = [pageSubView viewWithTag:100];
+    nameLabel.frame = CGRectMake(nameLabelX, nameLabelY, nameLabelW, nameLabelH);
+    
+    UILabel *titleLabel = [pageSubView viewWithTag:200];
+    titleLabel.frame = CGRectMake(timeLabelX, timeLabelY, timeLabelW, timeLabelH);
 }
 
 

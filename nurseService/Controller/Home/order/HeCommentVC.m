@@ -13,6 +13,7 @@
 #import "MLLabel+Size.h"
 #import "MJRefreshAutoNormalFooter.h"
 #import "MJRefreshNormalHeader.h"
+#import "HeServiceCommentCell.h"
 
 @interface HeCommentVC ()<UITableViewDataSource,UITableViewDelegate>
 {
@@ -125,7 +126,7 @@
 - (void)initView
 {
     [super initView];
-    [self.view addSubview:self.navigationTabBar];
+//    [self.view addSubview:self.navigationTabBar];
     [Tool setExtraCellLineHidden:tableview];
     tableview.backgroundView = nil;
     tableview.backgroundColor = [UIColor colorWithWhite:237.0 / 255.0 alpha:1.0];
@@ -136,7 +137,17 @@
     self.tableview.header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
         // 进入刷新状态后会自动调用这个block,刷新
         [weakSelf.tableview.header performSelector:@selector(endRefreshing) withObject:nil afterDelay:1.0];
-        
+        currentCommentType = index;
+        //初始化分页
+        pageNum = 0;
+        NSString *contentId = serviceInfoDict[@"manageNursingContentId"];
+        if ([contentId isMemberOfClass:[NSNull class]] || contentId == nil) {
+            contentId = serviceInfoDict[@"contentId"];
+            if ([contentId isMemberOfClass:[NSNull class]] || contentId == nil) {
+                contentId = @"";
+            }
+        }
+        [self loadCommentDataWihtContentId:contentId];
         
     }];
     
@@ -237,10 +248,10 @@
     NSInteger row = indexPath.row;
     NSInteger section = indexPath.section;
     CGSize cellsize = [tableView rectForRowAtIndexPath:indexPath].size;
-    static NSString *cellIndentifier = @"HeCommentCell";
-    HeCommentCell *cell  = [tableView cellForRowAtIndexPath:indexPath];
+    static NSString *cellIndentifier = @"HeServiceCommentCell";
+    HeServiceCommentCell *cell  = [tableView cellForRowAtIndexPath:indexPath];
     if (!cell) {
-        cell = [[HeCommentCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIndentifier cellSize:cellsize];
+        cell = [[HeServiceCommentCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIndentifier cellSize:cellsize];
         
     }
     NSDictionary *dict = nil;
@@ -251,7 +262,6 @@
     } @finally {
         
     }
-    
     
     NSString *contentImgurl = dict[@"userHeader"];
     if ([contentImgurl isMemberOfClass:[NSNull class]] || contentImgurl == nil) {
@@ -273,6 +283,16 @@
         userNike = @"";
     }
     cell.phoneLabel.text = userNike;
+    
+    NSString *manageNursingContenName = dict[@"manageNursingContentName"];
+    if ([manageNursingContenName isMemberOfClass:[NSNull class]] || manageNursingContenName == nil) {
+        manageNursingContenName = @"";
+        manageNursingContenName = serviceInfoDict[@"manageNursingContentName"];
+        if ([manageNursingContenName isMemberOfClass:[NSNull class]] || manageNursingContenName == nil) {
+            manageNursingContenName = @"";
+        }
+    }
+    cell.serviceLabel.text = [NSString stringWithFormat:@"%@",manageNursingContenName];
     
     NSString *commentContent = dict[@"evaluateContent"];
     if ([commentContent isMemberOfClass:[NSNull class]] || commentContent == nil) {
@@ -308,7 +328,7 @@
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 100;
+    return 140;
 }
 
 

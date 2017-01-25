@@ -55,7 +55,7 @@
 - (void)initializaiton
 {
     [super initializaiton];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateOrder:) name:@"updateOrder" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateOrder:) name:kUpdateOrderNotification object:nil];
     dataSource = [[NSMutableArray alloc] initWithCapacity:0];
     pageNum = 0;
 }
@@ -345,7 +345,7 @@
 
 - (void)dealloc
 {
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"updateOrder" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kUpdateOrderNotification object:nil];
 }
 
 /*

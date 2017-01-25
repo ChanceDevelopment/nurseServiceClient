@@ -30,6 +30,7 @@
 #import "FTPopOverMenu.h"
 #import "SSPopup.h"
 #import "HeUserCouponVC.h"
+#import "DVYearMonthDatePicker.h"
 
 #define ALERTTAG 200
 #define MinLocationSucceedNum 1   //要求最少成功定位的次数
@@ -40,7 +41,7 @@
 #define MAX_row 3
 #define IMAGEWIDTH 70
 
-@interface HeOrderCommitVC ()<DeleteImageProtocol,UITableViewDataSource,UITableViewDelegate,UIActionSheetDelegate,UINavigationControllerDelegate,UIImagePickerControllerDelegate,UIAlertViewDelegate,TZImagePickerControllerDelegate,UWDatePickerViewDelegate,UITextFieldDelegate,SelectProtectUserInfoProtocol,SSPopupDelegate,SelectCouponDelegate>
+@interface HeOrderCommitVC ()<DeleteImageProtocol,UITableViewDataSource,UITableViewDelegate,UIActionSheetDelegate,UINavigationControllerDelegate,UIImagePickerControllerDelegate,UIAlertViewDelegate,TZImagePickerControllerDelegate,UWDatePickerViewDelegate,UITextFieldDelegate,SelectProtectUserInfoProtocol,SSPopupDelegate,SelectCouponDelegate,DVYearMonthDatePickerDelegate>
 {
     BOOL currentSelectBanner;
     NSInteger payType; //支付方式 0：在线 1：支付宝
@@ -66,6 +67,8 @@
 @property(strong,nonatomic)UIScrollView *myScrollView;
 @property(strong,nonatomic)NSArray *subServiceArray;
 
+@property(strong,nonatomic)DVYearMonthDatePicker *yearMonth;
+
 @end
 
 @implementation HeOrderCommitVC
@@ -85,6 +88,8 @@
 @synthesize myScrollView;
 @synthesize orderDict;
 @synthesize subServiceArray;
+
+@synthesize yearMonth;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -966,6 +971,8 @@
         case 0:
         {
             //服务时间
+            [self selectDate];
+            return;
             NSDate *nowDate = [NSDate date];
             if (!([self.tmpDateString isMemberOfClass:[NSNull class]] || self.tmpDateString == nil || [self.tmpDateString isEqualToString:@""])) {
                 
@@ -1022,14 +1029,94 @@
     NSLog(@"row = %ld, section = %ld",row,section);
 }
 
+
+- (void)selectDate
+{
+    UIView *myview = [self.view viewWithTag:1000];
+    if (myview) {
+        myview.hidden = NO;
+        [self.view viewWithTag:2000].hidden = NO;
+        return;
+    }
+    UIView *bgView1 = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, SCREENHEIGH)];
+    bgView1.tag = 1000;
+    bgView1.backgroundColor = [UIColor colorWithWhite:0.5 alpha:0.8];
+    [self.view addSubview:bgView1];
+    
+    UIView *bgView = [[UIView alloc] initWithFrame:CGRectMake(0, SCREENHEIGH - 64 - 240, SCREENWIDTH, 240)];
+    bgView.tag = 2000;
+    bgView.backgroundColor = [UIColor whiteColor];
+    [self.view addSubview:bgView];
+    
+    
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissMyView:)];
+    [bgView1 addGestureRecognizer:tap];
+    
+    yearMonth = [[DVYearMonthDatePicker alloc] initWithFrame:CGRectMake(0, 50, SCREENWIDTH, 200)];
+    
+    yearMonth.dvDelegate = self;
+    
+    [yearMonth selectToday];
+    
+    UIView *buttonBGView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, 40)];
+    
+    
+    UIButton *cancelButton = [[UIButton alloc] initWithFrame:CGRectMake(5, 0, 50, 40)];
+    [cancelButton setTitle:@"取消" forState:UIControlStateNormal];
+    [cancelButton.titleLabel setFont:[UIFont systemFontOfSize:17.0]];
+    [cancelButton setTitleColor:APPDEFAULTORANGE forState:UIControlStateNormal];
+    [buttonBGView addSubview:cancelButton];
+    cancelButton.tag = 1;
+    [cancelButton addTarget:self action:@selector(buttonClick:) forControlEvents:UIControlEventTouchUpInside];
+    
+    UIButton *commitButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREENWIDTH - 50 - 5, 0, 50, 40)];
+    [commitButton.titleLabel setFont:[UIFont systemFontOfSize:17.0]];
+    [commitButton setTitle:@"确定" forState:UIControlStateNormal];
+    [commitButton setTitleColor:APPDEFAULTORANGE forState:UIControlStateNormal];
+    commitButton.tag = 2;
+    [buttonBGView addSubview:commitButton];
+    [commitButton addTarget:self action:@selector(buttonClick:) forControlEvents:UIControlEventTouchUpInside];
+    
+    [bgView addSubview:yearMonth];
+    [bgView addSubview:buttonBGView];
+}
+
+- (void)dismissMyView:(UITapGestureRecognizer *)tap
+{
+    UIView *myview = [self.view viewWithTag:1000];
+    myview.hidden = YES;
+    [self.view viewWithTag:2000].hidden = YES;
+}
+
+
+- (void)buttonClick:(UIButton *)button
+{
+    UIView *myview = [self.view viewWithTag:1000];
+    myview.hidden = YES;
+    [self.view viewWithTag:2000].hidden = YES;
+    
+    if (button.tag == 2) {
+        NSString *tempString = self.yearMonth.dateStr;
+        NSLog(@"tempString = %@",tempString);
+        tempString = [tempString stringByReplacingOccurrencesOfString:@"年" withString:@"-"];
+        tempString = [tempString stringByReplacingOccurrencesOfString:@"月" withString:@"-"];
+        tempString = [tempString stringByReplacingOccurrencesOfString:@"日" withString:@""];
+        
+        [self selectWithDate:tempString];
+        
+    }
+}
+
+
 - (void)getSelectDate:(NSString *)date type:(DateType)type {
     
     NSLog(@"时间 : %@",date);
     switch (type) {
         case DateTypeOfStart:
             // TODO 日期确定选择
-            self.tmpDateString = date;
-            [tableview reloadData];
+            
+            [self selectWithDate:date];
+            
             break;
             
         case DateTypeOfEnd:
@@ -1038,6 +1125,39 @@
         default:
             break;
     }
+}
+
+- (void)selectWithDate:(NSString *)date
+{
+    //更新订单信息
+    long long timeSp = [Tool convertStringToTimesp:date dateFormate:@"yyyy-MM-dd HH:mm"];
+    NSString *orderSendBegintime = [NSString stringWithFormat:@"%lld",timeSp];
+    if (orderSendBegintime.length < 13) {
+        NSInteger length = 13 - orderSendBegintime.length;
+        for (NSInteger index = 0; index < length; index++) {
+            orderSendBegintime = [NSString stringWithFormat:@"%@0",orderSendBegintime];
+        }
+    }
+    
+    NSString *orderSendId = [NSString stringWithFormat:@"%@",_orderId];
+    if ([orderSendId isMemberOfClass:[NSNull class]] || orderSendId == nil) {
+        orderSendId = @"";
+    }
+    NSString *personId = @"";
+    if ([personId isMemberOfClass:[NSNull class]] || personId == nil) {
+        personId = @"";
+    }
+    NSString *goodId = @"";
+    NSString *orderSendTrafficmoney = orderDetailDict[@"orderSendTrafficmoney"];
+    if ([orderSendTrafficmoney isMemberOfClass:[NSNull class]] || orderSendTrafficmoney == nil) {
+        orderSendTrafficmoney = @"";
+    }
+    NSString *orderSendSavemoney = orderDetailDict[@"orderSendSavemoney"];
+    if ([orderSendSavemoney isMemberOfClass:[NSNull class]] || orderSendSavemoney == nil) {
+        orderSendSavemoney = @"";
+    }
+    NSDictionary *paramDict = @{@"orderSendId":orderSendId,@"orderSendBegintime":orderSendBegintime,@"personId":personId,@"goodId":goodId,@"orderSendTrafficmoney":orderSendTrafficmoney,@"orderSendSavemoney":orderSendSavemoney};
+    [self updateOrderInfoWithParam:paramDict];
 }
 
 - (void)setupDateView:(DateType)type minDate:(NSDate *)minDate{
@@ -1488,7 +1608,7 @@
         if (errorCode == REQUESTCODE_SUCCEED) {
             //验证密码成功，发布
             [self showHint:@"支付成功"];
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"updateOrder" object:nil];
+            [[NSNotificationCenter defaultCenter] postNotificationName:kUpdateOrderNotification object:nil];
             [self performSelector:@selector(backToLastView) withObject:nil afterDelay:0.8];
         }
         else{
@@ -1556,6 +1676,12 @@
         NSInteger statueCode = [[respondDict objectForKey:@"errorCode"] integerValue];
         
         if (statueCode == REQUESTCODE_SUCCEED){
+            NSString *orderSendBegintime = param[@"orderSendBegintime"];
+            if (![orderSendBegintime isEqualToString:@""] && orderSendBegintime != nil) {
+                self.tmpDateString = orderSendBegintime;
+            }
+            //发出通知，更新订单信息
+            [[NSNotificationCenter defaultCenter] postNotificationName:kUpdateOrderNotification object:nil];
             [weakSelf loadOrderDetail];
         }
         else{
