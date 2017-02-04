@@ -85,6 +85,9 @@
     getCodeButton.layer.borderColor = APPDEFAULTORANGE.CGColor;
     getCodeButton.layer.masksToBounds = YES;
     
+    myScrollView.showsVerticalScrollIndicator = NO;
+    myScrollView.showsHorizontalScrollIndicator = NO;
+    
 }
 
 //获取验证码
