@@ -183,7 +183,7 @@
 - (IBAction)commitButtonClick:(id)sender
 {
     if ([passwordField isFirstResponder]) {
-        [accountField resignFirstResponder];
+        [passwordField resignFirstResponder];
     }
     NSString *passWord = passwordField.text;
     if ([passWord isEqualToString:@""] || passWord == nil) {
