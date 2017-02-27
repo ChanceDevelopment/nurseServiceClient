@@ -207,7 +207,7 @@
                 protectedPersonId = @"";
             }
             
-            NSString *url = [NSString stringWithFormat:@"http://118.178.186.59:8080/nurseDoor/selectReportdetails.action?orderSendId=%@&protectedPersonId=%@",nursingReportOrderid,protectedPersonId];
+            NSString *url = [NSString stringWithFormat:@"%@selectReportdetails.action?orderSendId=%@&protectedPersonId=%@",BASEURL,nursingReportOrderid,protectedPersonId];
             NSString *title = @"护理报告";
             BrowserView *scanReportDetailVC = [[BrowserView alloc] initWithURL:url title:title];
             scanReportDetailVC.hidesBottomBarWhenPushed = YES;

@@ -22,6 +22,7 @@
 #import "HePointMarketVC.h"
 #import "HeMessageVC.h"
 #import "HeModifyPasswordVC.h"
+#import "RDVTabBarItem.h"
 
 #define InviteLabelTag 100
 #define SignButtonTag 200
@@ -82,6 +83,7 @@
     [super viewWillAppear:YES];
     //本界面导航栏隐藏
     self.navigationController.navigationBarHidden = YES;
+    [self loadOrderData];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -95,9 +97,9 @@
 {
     [super initializaiton];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUserBalanceInfo:) name:kUpdateUserPayInfoNotificaiton object:nil];
-    iconArr = @[@"icon_protected_person_gray",@"icon_report_gray",@"icon_order_center_gray",@"icon_favorites_gray",@"icon_myinvite_gray",@"icon_advice_gray",@"icon_aboutus_gray",@"icon_advice_gray"];
-    tableItemArr = @[@"被受护人信息",@"护理报告",@"订单中心",@"收藏夹",@"我的邀请",@"修改密码",@"关于我们",@"投诉建议"];
-    viewControllerArray = @[@"HeProtectedUserInfoVC",@"HeOrderReportVC",@"HeUserOrderVC",@"HeUserFavouriteVC",@"HeUserInviteVC",@"HeModifyPasswordVC",@"HeAboutUsVC",@"HeReportVC"];
+    iconArr = @[@"icon_protected_person_gray",@"icon_report_gray",@"icon_favorites_gray",@"icon_myinvite_gray",@"icon_advice_gray",@"icon_aboutus_gray",@"icon_advice_gray"];
+    tableItemArr = @[@"被受护人信息",@"护理报告",@"收藏夹",@"我的邀请",@"修改密码",@"关于我们",@"投诉建议"];
+    viewControllerArray = @[@"HeProtectedUserInfoVC",@"HeOrderReportVC",@"HeUserFavouriteVC",@"HeUserInviteVC",@"HeModifyPasswordVC",@"HeAboutUsVC",@"HeReportVC"];
     userInfoModel = [HeSysbsModel getSysModel].user;
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUserInfo:) name:kUpdateUserInfoNotification object:nil];
@@ -288,11 +290,12 @@
     pointLabel.userInteractionEnabled = YES;
     [otherInfoLabelBG addSubview:pointLabel];
     
-    NSInteger point = [userInfoModel.userMark integerValue];
+//    NSInteger point = [userInfoModel.userMark integerValue];
     
     pointNumLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, commonlabelW, otherInfoLabelBGH / 2.0)];
     pointNumLabel.backgroundColor = [UIColor clearColor];
-    pointNumLabel.text = [NSString stringWithFormat:@"%ld分",point];
+//    pointNumLabel.text = [NSString stringWithFormat:@"%ld单",point];
+    pointNumLabel.text = @"0单";
     pointNumLabel.font = [UIFont systemFontOfSize:17.0];
     pointNumLabel.textAlignment = NSTextAlignmentCenter;
     pointNumLabel.textColor = [UIColor colorWithRed:69.0 / 255.0 green:139.0 / 255.0 blue:84.0 / 255.0 alpha:1.0];
@@ -300,7 +303,7 @@
     
     titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, otherInfoLabelBGH / 2.0, commonlabelW, otherInfoLabelBGH / 2.0)];
     titleLabel.backgroundColor = [UIColor clearColor];
-    titleLabel.text = @"我的积分";
+    titleLabel.text = @"我的待支付";
     titleLabel.font = [UIFont systemFontOfSize:15.0];
     titleLabel.textAlignment = NSTextAlignmentCenter;
     titleLabel.textColor = [UIColor whiteColor];
@@ -446,11 +449,12 @@
 
 - (void)scanUserPoint:(UITapGestureRecognizer *)tap
 {
-    [self showHint:@"该功能尚未开通"];
-    return;
-    HeUserPointVC *userPointVC = [[HeUserPointVC alloc] init];
-    userPointVC.hidesBottomBarWhenPushed = YES;
-    [self.navigationController pushViewController:userPointVC animated:YES];
+
+    //跳转到订单界面
+    
+    
+    
+    
 }
 
 - (void)scanUserInfo:(UITapGestureRecognizer *)tap
@@ -655,26 +659,21 @@
             break;
         }
         case 2:{
-            //订单中心
-            break;
-        }
-        case 3:{
             //收藏夹
             break;
         }
-        case 4:{
+        case 3:{
             //我的邀请
             break;
         }
-        case 5:{
+        case 4:{
             //关于我们
             break;
         }
-        case 6:{
+        case 5:{
             //投诉建议
             break;
         }
-        
         default:
             break;
     }
@@ -814,6 +813,35 @@
 {
     return UIStatusBarStyleLightContent;
 }
+
+- (void)loadOrderData
+{
+    NSString *requestUrl = [NSString stringWithFormat:@"%@/orderSend/OrderSendDescription.action",BASEURL];
+    NSString *userId = [[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY];
+    NSString *orderStateStr = [NSString stringWithFormat:@"%d",0];
+    NSDictionary * params  = @{@"userId":userId,@"orderState":orderStateStr};
+    [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
+        NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
+        NSDictionary *respondDict = [NSDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
+        if ([[respondDict valueForKey:@"errorCode"] integerValue] == REQUESTCODE_SUCCEED){
+            NSArray *jsonArray = [respondDict valueForKey:@"json"];
+            if ([jsonArray isMemberOfClass:[NSNull class]] || jsonArray == nil || [jsonArray count] == 0) {
+                jsonArray = [NSArray array];
+            }
+            pointNumLabel.text = [NSString stringWithFormat:@"%ld单",jsonArray.count];
+        }
+        else{
+            NSString *data = respondDict[@"data"];
+            if ([data isMemberOfClass:[NSNull class]] || data == nil) {
+                data = ERRORREQUESTTIP;
+            }
+            [self showHint:data];
+        }
+    } failure:^(NSError* err){
+        NSLog(@"errorInfo = %@",err);
+    }];
+}
+
 
 
 - (void)didReceiveMemoryWarning {

@@ -10,10 +10,9 @@
 #import "UIButton+countDown.h"
 #import <SMS_SDK/SMSSDK.h>
 #import "BrowserView.h"
-
+#import "EnrollTipVC.h"
 @interface HeEnrollVC ()<UITextFieldDelegate,UINavigationControllerDelegate,UIImagePickerControllerDelegate,UIActionSheetDelegate>{
     NSString *encodedImageStr;
-    BOOL agreeProtocol;
 }
 @property(strong,nonatomic)IBOutlet UITextField *accountField;
 @property(strong,nonatomic)IBOutlet UITextField *codeField;
@@ -26,7 +25,6 @@
 @property(strong,nonatomic)IBOutlet UIButton *agreeButton;
 @property(strong,nonatomic)IBOutlet UIButton *finishButton;
 @property(strong,nonatomic)UIImage *userImage;
-@property(strong,nonatomic)IBOutlet UIScrollView *myScrollView;
 
 @end
 
@@ -42,7 +40,6 @@
 @synthesize agreeButton;
 @synthesize finishButton;
 @synthesize userImage;
-@synthesize myScrollView;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -72,21 +69,19 @@
 - (void)initializaiton
 {
     [super initializaiton];
-    agreeProtocol = NO;
 }
 
 - (void)initView
 {
     [super initView];
+    
+    
     self.view.backgroundColor = [UIColor colorWithWhite:237.0 /255.0 alpha:1.0];
-    getCodeButton.layer.cornerRadius = 5.0;
+    
     getCodeButton.layer.borderWidth = 1.0;
-    getCodeButton.layer.backgroundColor = [UIColor whiteColor].CGColor;
+    getCodeButton.layer.cornerRadius = 5.0;
     getCodeButton.layer.borderColor = APPDEFAULTORANGE.CGColor;
     getCodeButton.layer.masksToBounds = YES;
-    
-    myScrollView.showsVerticalScrollIndicator = NO;
-    myScrollView.showsHorizontalScrollIndicator = NO;
     
 }
 
@@ -103,7 +98,9 @@
         [self showHint:@"请输入正确的手机号"];
         return;
     }
+    
     [sender startWithTime:60 title:@"获取验证码" countDownTitle:@"s" mainColor:[UIColor whiteColor] countColor:[UIColor whiteColor]];
+
     
     NSString *requestUrl = [NSString stringWithFormat:@"%@/nurseAnduser/sendSmsCode.action",BASEURL];
     NSDictionary * params  = @{@"Phone": userPhone};
@@ -135,7 +132,6 @@
 - (IBAction)agreeButtonClick:(UIButton *)sender
 {
     sender.selected = !sender.selected;
-    agreeProtocol = sender.selected;
 }
 
 //完成
@@ -144,8 +140,8 @@
     NSString *userPhone = accountField.text;
     NSString *code = codeField.text;
     NSString *password = passwordField.text;
-    NSString *nick = nickField.text;
-    
+    NSString *inviteCode = inviteCodeField.text;
+        
     if ((userPhone == nil || [userPhone isEqualToString:@""])) {
         [self showHint:@"请输入手机号"];
         return;
@@ -154,7 +150,7 @@
         [self showHint:@"请输入正确的手机号"];
         return;
     }
-    if ((code == nil || [code isEqualToString:@""])) {
+    if ((code == nil || [code isEqualToString:@""] || code.length != 6)) {
         [self showHint:@"请输入验证码"];
         return;
     }
@@ -162,46 +158,57 @@
         [self showHint:@"请输入密码"];
         return;
     }
-    if (nick == nil || [nick isEqualToString:@""]) {
-        [self showHint:@"请输入昵称"];
-        return;
+    if (inviteCode == nil) {
+        inviteCode = @"";
     }
-    if (agreeButton.selected == NO) {
-        [self showHint:@"请阅读《护士上门用户协议》"];
-        return;
-    }
-//    if (userImage == nil) {
-//        [self showHint:@"请设置头像"];
-//        return;
-//    }
     
-    NSString *headImageStr = @"";
-    if (userImage != nil) {
-        headImageStr = encodedImageStr;
+    if (agreeButton.selected == NO) {
+        [self showHint:@"请阅读《安心护免责条款》"]; //安心护免责条款
+        return;
     }
-    NSString *invitationcode = inviteCodeField.text;
-    if (invitationcode == nil) {
-        invitationcode = @"";
-    }
+    
     NSDictionary * params  = @{@"UserName": userPhone,
                                @"UserPwd" : password,
-                               @"UserNick" : nick,
-                               @"UserHeader" : headImageStr,
-                               @"invitationcode" : invitationcode,
+                               @"UserNick" : @"",
+                               @"UserHeader" : @"",
+                               @"invitationcode" : inviteCode,
                                @"code" : code};
+//    [self showHudInView:self.view hint:@"注册中..."];
+//    [AFHttpTool requestWihtMethod:RequestMethodTypePost url:REGISTERURL params:params success:^(AFHTTPRequestOperation* operation,id response){
+//        [self hideHud];
+//        NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
+//        NSLog(@"respondString:%@",respondString);
+//        NSMutableDictionary *respondDict = [NSMutableDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
+//    
+//        if ([[[respondDict valueForKey:@"errorCode"] stringValue] isEqualToString:@"200"]) {
+//            NSLog(@"success");
+//            [self performSelector:@selector(backToLoginView) withObject:nil afterDelay:1.2];
+//            
+//        }else if ([[[respondDict valueForKey:@"errorCode"] stringValue] isEqualToString:@"400"]){
+//            [self.view makeToast:[NSString stringWithFormat:@"%@",[respondDict valueForKey:@"data"]] duration:1.2 position:@"center"];
+//            NSLog(@"faile");
+//        }
+//
+//        
+//    } failure:^(NSError* err){
+//        [self hideHud];
+//        NSLog(@"err:%@",err);
+//        [self.view makeToast:ERRORREQUESTTIP duration:2.0 position:@"center"];
+//    }];
+//    
     NSString *requestUrl = [NSString stringWithFormat:@"%@/nurseAnduser/UserRegistered.action",BASEURL];
-    [self showHudInView:myScrollView hint:@"注册中..."];
+    [self showHudInView:self.view hint:@"注册中..."];
     [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
         [self hideHud];
         NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
         NSLog(@"respondString:%@",respondString);
         NSDictionary *respondDict = [NSDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
         
-//        [self.view makeToast:[NSString stringWithFormat:@"%@",[respondDict valueForKey:@"data"]] duration:1.2 position:@"center"];
+        //        [self.view makeToast:[NSString stringWithFormat:@"%@",[respondDict valueForKey:@"data"]] duration:1.2 position:@"center"];
         if ([[[respondDict valueForKey:@"errorCode"] stringValue] isEqualToString:@"200"]) {
             NSLog(@"success");
             [self showHint:@"注册成功"];
-            [self performSelector:@selector(backPreView) withObject:nil afterDelay:0.5];
+            [self performSelector:@selector(backToLoginView) withObject:nil afterDelay:0.5];
         }else {
             NSString *errorInfo = respondDict[@"data"];
             if ([errorInfo isMemberOfClass:[NSNull class]]) {
@@ -210,7 +217,7 @@
             [self showHint:errorInfo];
             NSLog(@"faile");
         }
-
+        
         
     } failure:^(NSError* err){
         NSLog(@"err:%@",err);
@@ -220,17 +227,8 @@
 
 }
 
-- (void)backPreView
-{
-    [self.navigationController popToRootViewControllerAnimated:YES];
-}
-
-//选择上传头像
-- (IBAction)uploadButtonClick:(id)sender
-{
-    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"来自相册",@"来自拍照", nil];
-    sheet.tag = 2;
-    [sheet showInView:sender];
+- (void)backToLoginView{
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (IBAction)scanNurseProtocol:(id)sender
@@ -243,7 +241,7 @@
 - (IBAction)securityButtonClick:(UIButton *)sender
 {
     sender.selected = !sender.selected;
-    passwordField.secureTextEntry = !sender.selected;
+    passwordField.secureTextEntry = sender.selected;
 }
 
 -(BOOL)textFieldShouldReturn:(UITextField *)textField
@@ -272,6 +270,19 @@
     if ([inviteCodeField isFirstResponder]) {
         [inviteCodeField resignFirstResponder];
     }
+}
+
+
+
+
+
+
+//选择上传头像
+- (IBAction)uploadButtonClick:(id)sender
+{
+    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"来自相册",@"来自拍照", nil];
+    sheet.tag = 2;
+    [sheet showInView:sender];
 }
 
 #pragma mark UIActionSheetDelegate
@@ -364,14 +375,12 @@
             data = UIImagePNGRepresentation(userImage);
         }
         
-        NSData *base64Data = [GTMBase64 encodeData:data];
-        encodedImageStr = [[NSString alloc] initWithData:base64Data encoding:NSUTF8StringEncoding];
-        
-//        encodedImageStr = [data base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength];
+        encodedImageStr = [data base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength];
 
+        
         [self dismissViewControllerAnimated:YES completion:^{
-            [uploadButton setImage:userImage forState:UIControlStateNormal];
-            [uploadButton setImage:userImage forState:UIControlStateHighlighted];
+            [uploadButton setBackgroundImage:userImage forState:UIControlStateNormal];
+            [uploadButton setBackgroundImage:userImage forState:UIControlStateHighlighted];
         }];
     }
 }
@@ -406,6 +415,11 @@
 {
     
     [self dismissViewControllerAnimated:YES completion:nil];
+}
+- (IBAction)tipAction:(id)sender {
+    EnrollTipVC *enrollTipVC = [[EnrollTipVC alloc] init];
+    enrollTipVC.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:enrollTipVC animated:YES];
 }
 
 - (void)didReceiveMemoryWarning {

@@ -185,13 +185,13 @@
     NSString *webViewUrl = @"http://www.hao123.com/?tn=29065018_265_hao_pg";
     switch (index) {
         case 0:
-            webViewUrl = [NSString stringWithFormat:@"http://118.178.186.59:8080/nurseDoor/nurseAnduser/contentPackaAge.action?contentId=%@",contentId];
+            webViewUrl = [NSString stringWithFormat:@"%@nurseAnduser/contentPackaAge.action?contentId=%@",BASEURL,contentId];
             break;
         case 1:
-            webViewUrl = [NSString stringWithFormat:@"http://118.178.186.59:8080/nurseDoor/nurseAnduser/contentForPeopleInfo.action?contentId=%@",contentId];
+            webViewUrl = [NSString stringWithFormat:@"%@nurseAnduser/contentForPeopleInfo.action?contentId=%@",BASEURL,contentId];
             break;
         case 2:
-            webViewUrl = [NSString stringWithFormat:@"http://118.178.186.59:8080/nurseDoor/nurseAnduser/contentLook.action?contentId=%@",contentId];
+            webViewUrl = [NSString stringWithFormat:@"%@nurseAnduser/contentLook.action?contentId=%@",BASEURL,contentId];
             break;
         default:
             break;
@@ -852,7 +852,7 @@
         if (contentId == nil) {
             contentId = serviceInfoDict[@"manageNursingContentId"];
         }
-        [_webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://118.178.186.59:8080/nurseDoor/nurseAnduser/contentPackaAge.action?contentId=%@",contentId]]]];
+        [_webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@nurseAnduser/contentPackaAge.action?contentId=%@",BASEURL,contentId]]]];
     }
     
     return _webView;

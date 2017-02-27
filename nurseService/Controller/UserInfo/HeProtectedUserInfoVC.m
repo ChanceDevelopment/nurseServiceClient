@@ -121,7 +121,7 @@
         protectedPersonSex = @"";
     }
     NSString *sex = ([protectedPersonSex integerValue] == ENUM_SEX_Boy) ? @"男" : @"女";
-    NSString *phone = [dict valueForKey:@"protectedPersonPhone"];
+//    NSString *phone = [dict valueForKey:@"protectedPersonPhone"];
     
     id protectedDefault = dict[@"protectedDefault"];
     if ([protectedDefault isMemberOfClass:[NSNull class]]) {
@@ -141,7 +141,7 @@
     else{
         cell.selectBt.selected = NO;
     }
-    cell.baseInfoLabel.text = [NSString stringWithFormat:@"%@  %@  %@",name,sex,phone];
+    cell.baseInfoLabel.text = [NSString stringWithFormat:@"%@  %@",name,sex];
     
     NSString *protectedAddress = dict[@"protectedAddress"];
     if ([protectedAddress isMemberOfClass:[NSNull class]]) {
@@ -169,7 +169,7 @@
         HeEditProtectUserInfoVC *editProtectUserInfoVC = [[HeEditProtectUserInfoVC alloc] init];
         editProtectUserInfoVC.isEdit = YES;
         editProtectUserInfoVC.hidesBottomBarWhenPushed = YES;
-        editProtectUserInfoVC.userInfoDict = [[NSMutableDictionary alloc] initWithDictionary:dict];
+        editProtectUserInfoVC.userInfoDict = [Tools deleteNullFromDic:[[NSMutableDictionary alloc] initWithDictionary:dict]];
         [self.navigationController pushViewController:editProtectUserInfoVC animated:YES];
         
     };
@@ -201,7 +201,7 @@
     }
     HeEditProtectUserInfoVC *heEditProtectUserInfoVC = [[HeEditProtectUserInfoVC alloc] init];
     heEditProtectUserInfoVC.hidesBottomBarWhenPushed = YES;
-    heEditProtectUserInfoVC.userInfoDict = [[NSMutableDictionary alloc] initWithDictionary:dict];
+    heEditProtectUserInfoVC.userInfoDict = [Tools deleteNullFromDic:[[NSMutableDictionary alloc] initWithDictionary:dict]];
     [self.navigationController pushViewController:heEditProtectUserInfoVC animated:YES];
 //    [_selectDelegate selectUserInfoWithDict:dict];
 //    [self.navigationController popViewControllerAnimated:YES];

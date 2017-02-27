@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AD6596751E64534F002D7E56 /* EnrollTipVC.m in Sources */ = {isa = PBXBuildFile; fileRef = AD6596731E64534F002D7E56 /* EnrollTipVC.m */; };
+		AD6596761E64534F002D7E56 /* EnrollTipVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = AD6596741E64534F002D7E56 /* EnrollTipVC.xib */; };
 		AD6C8EED1DF9C7C100C44A8A /* HomeTabbarController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD6C8EDE1DF9C7C100C44A8A /* HomeTabbarController.m */; };
 		AD6C8EEE1DF9C7C100C44A8A /* LeftViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD6C8EE41DF9C7C100C44A8A /* LeftViewController.m */; };
 		AD6C8EFE1DF9C90700C44A8A /* MyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD6C8EFD1DF9C90700C44A8A /* MyViewController.m */; };
@@ -759,6 +761,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		AD6596721E64534F002D7E56 /* EnrollTipVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EnrollTipVC.h; sourceTree = "<group>"; };
+		AD6596731E64534F002D7E56 /* EnrollTipVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EnrollTipVC.m; sourceTree = "<group>"; };
+		AD6596741E64534F002D7E56 /* EnrollTipVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EnrollTipVC.xib; sourceTree = "<group>"; };
 		AD6C8EDD1DF9C7C100C44A8A /* HomeTabbarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HomeTabbarController.h; sourceTree = "<group>"; };
 		AD6C8EDE1DF9C7C100C44A8A /* HomeTabbarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HomeTabbarController.m; sourceTree = "<group>"; };
 		AD6C8EE31DF9C7C100C44A8A /* LeftViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LeftViewController.h; sourceTree = "<group>"; };
@@ -2810,6 +2815,9 @@
 		EA8C894D1E21CB140093657B /* LoginEnroll */ = {
 			isa = PBXGroup;
 			children = (
+				AD6596721E64534F002D7E56 /* EnrollTipVC.h */,
+				AD6596731E64534F002D7E56 /* EnrollTipVC.m */,
+				AD6596741E64534F002D7E56 /* EnrollTipVC.xib */,
 				EA8C894E1E21CB210093657B /* HeLoginVC.h */,
 				EA8C894F1E21CB210093657B /* HeLoginVC.m */,
 				EA8C89501E21CB210093657B /* HeLoginVC.xib */,
@@ -5094,6 +5102,7 @@
 				EA0EC7D61E24704F00E5440D /* img_no_data.png in Resources */,
 				EAC2D89B1D4B063B00E282A8 /* MJPhotoBrowser.bundle in Resources */,
 				ADCC61CE1DFA4E240065866C /* index1.png in Resources */,
+				AD6596761E64534F002D7E56 /* EnrollTipVC.xib in Resources */,
 				EAC2D87D1D4B063B00E282A8 /* whiteArrow@2x.png in Resources */,
 				EAC2D9541D4B063B00E282A8 /* btn_021.disable@2x.png in Resources */,
 				AD6C8F2D1DF9CFE200C44A8A /* icon_escort.png in Resources */,
@@ -5417,6 +5426,7 @@
 				EAC2D8721D4B063B00E282A8 /* i2KEPCSingleComponentPickerView.m in Sources */,
 				EA45677B1E2FB86400480A95 /* HeBalanceDetailCell.m in Sources */,
 				EAC2D8A11D4B063B00E282A8 /* README.md in Sources */,
+				AD6596751E64534F002D7E56 /* EnrollTipVC.m in Sources */,
 				EAC2D8201D4B063B00E282A8 /* AFURLResponseSerialization.m in Sources */,
 				EAC2D8CC1D4B063B00E282A8 /* SIMenuConfiguration.m in Sources */,
 				EACA0F011E267653009B4516 /* HeUserOrderVC.m in Sources */,

@@ -80,4 +80,7 @@
 + (NSString *)replaceUnicode:(NSString *)unicodeStr;
 + (void)callPhoneWithPhone:(NSString *)phone;
 
+//删除<null>字段
++ (NSMutableDictionary *)deleteNullFromDic:(NSDictionary *)dic;
+
 @end

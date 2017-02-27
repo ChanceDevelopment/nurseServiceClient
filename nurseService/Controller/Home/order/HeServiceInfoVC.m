@@ -67,7 +67,7 @@
     if ([contentId isMemberOfClass:[NSNull class]] || contentId == nil) {
         contentId = serviceInfoDict[@"contentId"];
     }
-    NSString *detailStr = [NSString stringWithFormat:@"http://118.178.186.59:8080/nurseDoor/nurseAnduser/contentDetails.action?contentId=%@",contentId];
+    NSString *detailStr = [NSString stringWithFormat:@"%@nurseAnduser/contentDetails.action?contentId=%@",BASEURL,contentId];
     webURL = [NSURL URLWithString:detailStr];
     NSURLRequest *request = [[NSURLRequest alloc] initWithURL:webURL];
     [webView loadRequest:request];

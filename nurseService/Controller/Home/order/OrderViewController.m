@@ -66,7 +66,7 @@
 -(DLNavigationTabBar *)navigationTabBar
 {
     if (!_navigationTabBar) {
-        self.navigationTabBar = [[DLNavigationTabBar alloc] initWithTitles:@[@"预约框",@"已预约",@"进行中",@"已完成"]];
+        self.navigationTabBar = [[DLNavigationTabBar alloc] initWithTitles:@[@"待支付",@"已预约",@"进行中",@"已完成"]];
         self.navigationTabBar.backgroundColor = [UIColor whiteColor];
         self.navigationTabBar.frame = CGRectMake(0, 0, SCREENWIDTH, 44);
         self.navigationTabBar.sliderBackgroundColor = APPDEFAULTORANGE;
