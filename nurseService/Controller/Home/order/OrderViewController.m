@@ -607,6 +607,163 @@
     } @finally {
         
     }
+    
+    HeOrderTableViewCell *cell  = [tableView cellForRowAtIndexPath:indexPath];
+    if (!cell) {
+        cell = [[HeOrderTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIndentifier cellSize:cellSize orderType:currentOrderType];
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    }
+    cell.backgroundColor = [UIColor colorWithWhite:237.0 / 255.0 alpha:1.0];
+    
+    //            __weak typeof(self) weakSelf = self;
+    
+    //            cell.showOrderDetailBlock = ^(){
+    //                NSLog(@"showOrderDetail");
+    //                [weakSelf showOrderDetailWithOrder:dict];
+    //            };
+    //            cell.cancleOrderBlock = ^(){
+    //                NSLog(@"删除服务");
+    //                [weakSelf deleteServiceWithDict:dict];
+    //            };
+    //            cell.payMoneyBlock = ^(){
+    //                NSLog(@"立即付款");
+    //                [weakSelf payMoneyWithDict:dict];
+    //            };
+    //            cell.locationBlock = ^(){
+    //                NSLog(@"locationBlock");
+    //                NSString *orderSendAddree = dict[@"orderSendAddree"];
+    //                if ([orderSendAddree isMemberOfClass:[NSNull class]]) {
+    //                    orderSendAddree = @"";
+    //                }
+    //                NSArray *orderSendAddreeArray = [orderSendAddree componentsSeparatedByString:@","];
+    //                NSString *zoneLocationY = nil;
+    //                NSString *zoneLocationX = nil;
+    //                @try {
+    //                    zoneLocationX= orderSendAddreeArray[0];
+    //                    zoneLocationY = orderSendAddreeArray[1];
+    //                } @catch (NSException *exception) {
+    //
+    //                } @finally {
+    //
+    //                }
+    //                NSDictionary *userLocationDic = @{@"zoneLocationY":zoneLocationY,@"zoneLocationX":zoneLocationX};
+    //                [weakSelf goLocationWithLocation:userLocationDic];
+    //            };
+    //            cell.showUserInfoBlock = ^(){
+    //                NSLog(@"showUserInfoBlock");
+    //                [weakSelf showPaitentInfoWith:dict];
+    //            };
+    NSString *serviceName = dict[@"orderSendServicecontent"];
+    if ([serviceName isMemberOfClass:[NSNull class]] || serviceName == nil) {
+        serviceName = @"";
+    }
+    NSArray *serviceArray = [serviceName componentsSeparatedByString:@":"];
+    NSString *serviceInfoStr = @"";
+    @try {
+        serviceName = serviceArray[0];
+        serviceInfoStr = serviceArray[1];
+    } @catch (NSException *exception) {
+        
+    } @finally {
+        
+    }
+    cell.serviceContentL.text = serviceName;
+    
+    cell.serviceInfoL.text = serviceInfoStr;
+    
+    id orderSendTotalmoney = dict[@"orderSendTotalmoney"];
+    if ([orderSendTotalmoney isMemberOfClass:[NSNull class]] || orderSendTotalmoney == nil) {
+        orderSendTotalmoney = @"";
+    }
+    cell.orderMoney.text = [NSString stringWithFormat:@"￥%@",orderSendTotalmoney];
+    
+    
+    id zoneCreatetimeObj = [dict objectForKey:@"orderSendBegintime"];
+    if ([zoneCreatetimeObj isMemberOfClass:[NSNull class]] || zoneCreatetimeObj == nil) {
+        NSTimeInterval  timeInterval = [[NSDate date] timeIntervalSince1970];
+        zoneCreatetimeObj = [NSString stringWithFormat:@"%.0f000",timeInterval];
+    }
+    long long timestamp = [zoneCreatetimeObj longLongValue];
+    NSString *zoneCreatetime = [NSString stringWithFormat:@"%lld",timestamp];
+    if ([zoneCreatetime length] > 3) {
+        //时间戳
+        zoneCreatetime = [zoneCreatetime substringToIndex:[zoneCreatetime length] - 3];
+    }
+    
+    NSString *time = [Tool convertTimespToString:[zoneCreatetime longLongValue] dateFormate:@"MM-dd EEEE HH:mm"];
+    cell.stopTimeL.text = time;
+    
+    
+    
+    
+    //            NSString *addresStr = dict[@"orderSendAddree"];
+    //            if ([addresStr isMemberOfClass:[NSNull class]]) {
+    //                addresStr = @"";
+    //            }
+    //            NSArray *addressArray = [addresStr componentsSeparatedByString:@","];
+    //            NSString *addressDetail = nil;
+    //            @try {
+    //                addressDetail = addressArray[2];
+    //            } @catch (NSException *exception) {
+    //
+    //            } @finally {
+    //
+    //            }
+    //            cell.addressL.text = addressDetail;
+    
+    id protectedPersonNexus = dict[@"protectedPersonNexus"];
+    if ([protectedPersonNexus isMemberOfClass:[NSNull class]]) {
+        protectedPersonNexus = @"";
+    }
+    NSString *protectedPersonNexusStr = [NSString stringWithFormat:@"%@",protectedPersonNexus];
+    
+    NSString *username = dict[@"orderSendUsername"];
+    NSArray *userArray = [username componentsSeparatedByString:@","];
+    NSString *nickname = nil;
+    @try {
+        nickname = userArray[1];
+    } @catch (NSException *exception) {
+        
+    } @finally {
+        
+    }
+    
+    id orderSendSex = dict[@"orderSendSex"];
+    NSString *sexStr = @"女";
+    if ([orderSendSex isMemberOfClass:[NSNull class]]) {
+        orderSendSex = @"";
+    }
+    if ([orderSendSex integerValue] == ENUM_SEX_Boy) {
+        sexStr = @"男";
+    }
+    
+    id orderSendAge = dict[@"orderSendAge"];
+    if ([orderSendAge isMemberOfClass:[NSNull class]]) {
+        orderSendAge = @"";
+    }
+    NSString *ageStr = [NSString stringWithFormat:@"%@",orderSendAge];
+    
+    id protectedPersonHeight = dict[@"protectedPersonHeight"];
+    if ([protectedPersonHeight isMemberOfClass:[NSNull class]]) {
+        protectedPersonHeight = @"";
+    }
+    NSString *protectedPersonHeightStr = [NSString stringWithFormat:@"%@",protectedPersonHeight];
+    
+    id protectedPersonWeight = dict[@"protectedPersonWeight"];
+    if ([protectedPersonWeight isMemberOfClass:[NSNull class]]) {
+        protectedPersonWeight = @"";
+    }
+    NSString *protectedPersonWeightStr = [NSString stringWithFormat:@"%@",protectedPersonWeight];
+    
+    
+    
+    cell.userInfoL.text = [NSString stringWithFormat:@"为%@（%@,%@,%@岁,身高%@cm,体重%@kg）预约",protectedPersonNexus,nickname,sexStr,ageStr,protectedPersonHeightStr,protectedPersonWeightStr];
+    
+    
+    return cell;
+    
+    
+    /*
     switch (currentOrderType) {
         case 0:
         {
@@ -617,44 +774,44 @@
             }
             cell.backgroundColor = [UIColor colorWithWhite:237.0 / 255.0 alpha:1.0];
             
-            __weak typeof(self) weakSelf = self;
+//            __weak typeof(self) weakSelf = self;
             
-            cell.showOrderDetailBlock = ^(){
-                NSLog(@"showOrderDetail");
-                [weakSelf showOrderDetailWithOrder:dict];
-            };
-            cell.cancleOrderBlock = ^(){
-                NSLog(@"删除服务");
-                [weakSelf deleteServiceWithDict:dict];
-            };
-            cell.payMoneyBlock = ^(){
-                NSLog(@"立即付款");
-                [weakSelf payMoneyWithDict:dict];
-            };
-            cell.locationBlock = ^(){
-                NSLog(@"locationBlock");
-                NSString *orderSendAddree = dict[@"orderSendAddree"];
-                if ([orderSendAddree isMemberOfClass:[NSNull class]]) {
-                    orderSendAddree = @"";
-                }
-                NSArray *orderSendAddreeArray = [orderSendAddree componentsSeparatedByString:@","];
-                NSString *zoneLocationY = nil;
-                NSString *zoneLocationX = nil;
-                @try {
-                    zoneLocationX= orderSendAddreeArray[0];
-                    zoneLocationY = orderSendAddreeArray[1];
-                } @catch (NSException *exception) {
-                    
-                } @finally {
-                    
-                }
-                NSDictionary *userLocationDic = @{@"zoneLocationY":zoneLocationY,@"zoneLocationX":zoneLocationX};
-                [weakSelf goLocationWithLocation:userLocationDic];
-            };
-            cell.showUserInfoBlock = ^(){
-                NSLog(@"showUserInfoBlock");
-                [weakSelf showPaitentInfoWith:dict];
-            };
+//            cell.showOrderDetailBlock = ^(){
+//                NSLog(@"showOrderDetail");
+//                [weakSelf showOrderDetailWithOrder:dict];
+//            };
+//            cell.cancleOrderBlock = ^(){
+//                NSLog(@"删除服务");
+//                [weakSelf deleteServiceWithDict:dict];
+//            };
+//            cell.payMoneyBlock = ^(){
+//                NSLog(@"立即付款");
+//                [weakSelf payMoneyWithDict:dict];
+//            };
+//            cell.locationBlock = ^(){
+//                NSLog(@"locationBlock");
+//                NSString *orderSendAddree = dict[@"orderSendAddree"];
+//                if ([orderSendAddree isMemberOfClass:[NSNull class]]) {
+//                    orderSendAddree = @"";
+//                }
+//                NSArray *orderSendAddreeArray = [orderSendAddree componentsSeparatedByString:@","];
+//                NSString *zoneLocationY = nil;
+//                NSString *zoneLocationX = nil;
+//                @try {
+//                    zoneLocationX= orderSendAddreeArray[0];
+//                    zoneLocationY = orderSendAddreeArray[1];
+//                } @catch (NSException *exception) {
+//                    
+//                } @finally {
+//                    
+//                }
+//                NSDictionary *userLocationDic = @{@"zoneLocationY":zoneLocationY,@"zoneLocationX":zoneLocationX};
+//                [weakSelf goLocationWithLocation:userLocationDic];
+//            };
+//            cell.showUserInfoBlock = ^(){
+//                NSLog(@"showUserInfoBlock");
+//                [weakSelf showPaitentInfoWith:dict];
+//            };
             NSString *serviceName = dict[@"orderSendServicecontent"];
             if ([serviceName isMemberOfClass:[NSNull class]] || serviceName == nil) {
                 serviceName = @"";
@@ -669,6 +826,21 @@
             }
             cell.serviceContentL.text = serviceName;
             
+            id orderSendServicecontent = dict[@"orderSendServicecontent"];
+            if ([orderSendServicecontent isMemberOfClass:[NSNull class]]) {
+                orderSendServicecontent = @"";
+            }
+            NSString *orderSendServicecontentStr = [NSString stringWithFormat:@"%@",orderSendServicecontent];
+            
+            cell.serviceInfoL.text = orderSendServicecontentStr;
+            
+            id orderSendTotalmoney = dict[@"orderSendTotalmoney"];
+            if ([orderSendTotalmoney isMemberOfClass:[NSNull class]] || orderSendTotalmoney == nil) {
+                orderSendTotalmoney = @"";
+            }
+            cell.orderMoney.text = [NSString stringWithFormat:@"￥%@",orderSendTotalmoney];
+
+            
             id zoneCreatetimeObj = [dict objectForKey:@"orderSendBegintime"];
             if ([zoneCreatetimeObj isMemberOfClass:[NSNull class]] || zoneCreatetimeObj == nil) {
                 NSTimeInterval  timeInterval = [[NSDate date] timeIntervalSince1970];
@@ -681,23 +853,32 @@
                 zoneCreatetime = [zoneCreatetime substringToIndex:[zoneCreatetime length] - 3];
             }
             
-            NSString *time = [Tool convertTimespToString:[zoneCreatetime longLongValue] dateFormate:@"MM-dd HH:mm"];
+            NSString *time = [Tool convertTimespToString:[zoneCreatetime longLongValue] dateFormate:@"MM-dd EEEE HH:mm"];
             cell.stopTimeL.text = time;
 
-            NSString *addresStr = dict[@"orderSendAddree"];
-            if ([addresStr isMemberOfClass:[NSNull class]]) {
-                addresStr = @"";
+            
+            
+            
+//            NSString *addresStr = dict[@"orderSendAddree"];
+//            if ([addresStr isMemberOfClass:[NSNull class]]) {
+//                addresStr = @"";
+//            }
+//            NSArray *addressArray = [addresStr componentsSeparatedByString:@","];
+//            NSString *addressDetail = nil;
+//            @try {
+//                addressDetail = addressArray[2];
+//            } @catch (NSException *exception) {
+//                
+//            } @finally {
+//                
+//            }
+//            cell.addressL.text = addressDetail;
+            
+            id protectedPersonNexus = dict[@"protectedPersonNexus"];
+            if ([protectedPersonNexus isMemberOfClass:[NSNull class]]) {
+                protectedPersonNexus = @"";
             }
-            NSArray *addressArray = [addresStr componentsSeparatedByString:@","];
-            NSString *addressDetail = nil;
-            @try {
-                addressDetail = addressArray[2];
-            } @catch (NSException *exception) {
-                
-            } @finally {
-                
-            }
-            cell.addressL.text = addressDetail;
+            NSString *protectedPersonNexusStr = [NSString stringWithFormat:@"%@",protectedPersonNexus];
             
             NSString *username = dict[@"orderSendUsername"];
             NSArray *userArray = [username componentsSeparatedByString:@","];
@@ -709,6 +890,7 @@
             } @finally {
                 
             }
+            
             id orderSendSex = dict[@"orderSendSex"];
             NSString *sexStr = @"女";
             if ([orderSendSex isMemberOfClass:[NSNull class]]) {
@@ -724,13 +906,22 @@
             }
             NSString *ageStr = [NSString stringWithFormat:@"%@",orderSendAge];
             
-            cell.userInfoL.text = [NSString stringWithFormat:@"%@  %@  %@",nickname,sexStr,ageStr];
-            
-            id orderSendTotalmoney = dict[@"orderSendTotalmoney"];
-            if ([orderSendTotalmoney isMemberOfClass:[NSNull class]] || orderSendTotalmoney == nil) {
-                orderSendTotalmoney = @"";
+            id protectedPersonHeight = dict[@"protectedPersonHeight"];
+            if ([protectedPersonHeight isMemberOfClass:[NSNull class]]) {
+                protectedPersonHeight = @"";
             }
-            cell.orderMoney.text = [NSString stringWithFormat:@"￥%@",orderSendTotalmoney];
+            NSString *protectedPersonHeightStr = [NSString stringWithFormat:@"%@",protectedPersonHeight];
+            
+            id protectedPersonWeight = dict[@"protectedPersonWeight"];
+            if ([protectedPersonWeight isMemberOfClass:[NSNull class]]) {
+                protectedPersonWeight = @"";
+            }
+            NSString *protectedPersonWeightStr = [NSString stringWithFormat:@"%@",protectedPersonWeight];
+            
+            
+            
+            cell.userInfoL.text = [NSString stringWithFormat:@"为%@（%@,%@,%@岁,身高%@cm,体重%@kg）预约",protectedPersonNexus,nickname,sexStr,ageStr,protectedPersonHeightStr,protectedPersonWeightStr];
+            
             
             return cell;
             break;
@@ -1170,7 +1361,7 @@
         default:
             break;
     }
-    
+    */
     
 //    cell.serviceContentL.text = [NSString stringWithFormat:@"%@",[dict valueForKey:@"orderSendServicecontent"]];
 //
@@ -1214,10 +1405,10 @@
     NSInteger section = indexPath.section;
     NSInteger row = indexPath.row;
     
-    if (currentOrderType == 2 || currentOrderType == 3) {
-        return 240;
-    }
-    return 200;
+//    if (currentOrderType == 2 || currentOrderType == 3) {
+//        return 240;
+//    }
+    return 180;
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
@@ -1236,6 +1427,17 @@
         
     }
     NSLog(@"order = %@",dict);
+    [self showOrderDetailWithOrder:dict];
+//    switch (currentOrderType) {
+//        case 0:
+//        {
+//            [self showOrderDetailWithOrder:dict];
+//        }
+//            break;
+//            
+//        default:
+//            break;
+//    }
 }
 
 - (void)didReceiveMemoryWarning {

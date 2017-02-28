@@ -10,6 +10,7 @@
 
 @implementation HeOrderTableViewCell
 @synthesize serviceContentL;
+@synthesize serviceInfoL;
 @synthesize stopTimeL;
 @synthesize orderMoney;
 @synthesize addressL;
@@ -39,7 +40,7 @@
         CGFloat orderViewX = 10;
         CGFloat orderViewY = 0;
         CGFloat orderViewW = bgView_W - 2 * orderViewX;
-        CGFloat orderViewH = 54;
+        CGFloat orderViewH = 44;
         
         UIView *orderView = [[UIView alloc] initWithFrame:CGRectMake(orderViewX, orderViewY, orderViewW, orderViewH)];
         orderView.backgroundColor = [UIColor whiteColor];
@@ -58,30 +59,37 @@
         serviceContentL.font = [UIFont systemFontOfSize:15.0];
         serviceContentL.backgroundColor = [UIColor clearColor];
         [orderView addSubview:serviceContentL];
+
+        CGFloat orderMoneyY = 0;
+        CGFloat orderMoneyW = 100;
+        CGFloat orderMoneyX = orderViewW - orderMoneyW;
+        CGFloat orderMoneyH = serviceContentLH;
         
+        orderMoney = [[UILabel alloc] initWithFrame:CGRectMake(orderMoneyX, orderMoneyY, orderMoneyW, orderMoneyH)];
+        orderMoney.text = @"￥335";
+        orderMoney.textColor = [UIColor redColor];
+        orderMoney.textAlignment = NSTextAlignmentRight;
+        orderMoney.font = [UIFont systemFontOfSize:14.0];
+        orderMoney.backgroundColor = [UIColor clearColor];
+        [orderView addSubview:orderMoney];
         
-        CGFloat payStatusLabelY = 0;
-        CGFloat payStatusLabelW = 100;
-        CGFloat payStatusLabelH = serviceContentLH;
-        CGFloat payStatusLabelX = orderViewW - payStatusLabelW - 25;
+//        CGFloat payStatusLabelY = 0;
+//        CGFloat payStatusLabelW = 100;
+//        CGFloat payStatusLabelH = serviceContentLH;
+//        CGFloat payStatusLabelX = orderViewW - payStatusLabelW - 25;
         
-        payStatusLabel = [[UILabel alloc] initWithFrame:CGRectMake(payStatusLabelX, payStatusLabelY, payStatusLabelW, payStatusLabelH)];
-        payStatusLabel.text = @"待付款";
-        payStatusLabel.textAlignment = NSTextAlignmentRight;
-        payStatusLabel.userInteractionEnabled = YES;
-        payStatusLabel.textColor = [UIColor blackColor];
-        payStatusLabel.font = [UIFont systemFontOfSize:15.0];
-        payStatusLabel.backgroundColor = [UIColor clearColor];
-        [orderView addSubview:payStatusLabel];
+//        payStatusLabel = [[UILabel alloc] initWithFrame:CGRectMake(payStatusLabelX, payStatusLabelY, payStatusLabelW, payStatusLabelH)];
+//        payStatusLabel.text = @"待付款";
+//        payStatusLabel.textAlignment = NSTextAlignmentRight;
+//        payStatusLabel.userInteractionEnabled = YES;
+//        payStatusLabel.textColor = [UIColor blackColor];
+//        payStatusLabel.font = [UIFont systemFontOfSize:15.0];
+//        payStatusLabel.backgroundColor = [UIColor clearColor];
+//        [orderView addSubview:payStatusLabel];
         
-        UIImageView *rightV = [[UIImageView alloc] initWithFrame:CGRectMake(orderViewW - 20, (orderViewH - 20) / 2.0, 20, 20)];
-        rightV.backgroundColor = [UIColor clearColor];
-        rightV.image = [UIImage imageNamed:@"icon_into_right"];
-        rightV.userInteractionEnabled = YES;
-        [orderView addSubview:rightV];
-        
-        UITapGestureRecognizer *showOrderDetailTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showOrderDetail)];
-        [orderView addGestureRecognizer:showOrderDetailTap];
+//
+//        UITapGestureRecognizer *showOrderDetailTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showOrderDetail)];
+//        [orderView addGestureRecognizer:showOrderDetailTap];
         
         CGFloat lineX = 5;
         CGFloat lineY = CGRectGetMaxY(orderView.frame);
@@ -92,40 +100,74 @@
         [bgView addSubview:line];
         line.backgroundColor = [UIColor colorWithWhite:237.0 / 255.0 alpha:1.0];
         
-        CGFloat timeAddressViewX = 0;
-        CGFloat timeAddressViewY = CGRectGetMaxY(line.frame);
-        CGFloat timeAddressViewW = bgView_W;
-        CGFloat timeAddressViewH = 50;
-        UIView *timeAddressView = [[UIView alloc] initWithFrame:CGRectMake(timeAddressViewX, timeAddressViewY, timeAddressViewW, timeAddressViewH)];
-        timeAddressView.backgroundColor = [UIColor whiteColor];
-        [bgView addSubview:timeAddressView];
+        CGFloat serviceInfoLX = 10;
+        CGFloat serviceInfoLY = CGRectGetMaxY(orderView.frame);
+        CGFloat serviceInfoLW = SCREENHEIGH-20;
+        CGFloat serviceInfoLH = orderViewH;
         
-        CGFloat stopTimeLX = 10;
-        CGFloat stopTimeLY = 0;
-        CGFloat stopTimeLW = 200;
-        CGFloat stopTimeLH = timeAddressViewH / 2.0;
+        serviceInfoL = [[UILabel alloc] initWithFrame:CGRectMake(serviceInfoLX, serviceInfoLY, serviceInfoLW, serviceInfoLH)];
+        serviceInfoL.text = @"产妇护理套餐,产妇护理套餐,";
+        serviceInfoL.userInteractionEnabled = YES;
+        serviceInfoL.textColor = [UIColor blackColor];
+        serviceInfoL.font = [UIFont systemFontOfSize:15.0];
+        serviceInfoL.backgroundColor = [UIColor clearColor];
+        [bgView addSubview:serviceInfoL];
+        
+//        CGFloat timeW = SCREENWIDTH-70;
+        UIView *line1 = [[UIView alloc] initWithFrame:CGRectMake(lineX, CGRectGetMaxY(serviceInfoL.frame), lineW, lineH)];
+        [bgView addSubview:line1];
+        line1.backgroundColor = [UIColor colorWithWhite:237.0 / 255.0 alpha:1.0];
+        
+        UILabel *timeTipL = [[UILabel alloc] initWithFrame:CGRectMake(10, CGRectGetMaxY(line1.frame), 40, 44)];
+        timeTipL.text = @"时间";
+        timeTipL.userInteractionEnabled = YES;
+        timeTipL.textColor = [UIColor grayColor];
+        timeTipL.font = [UIFont systemFontOfSize:14.0];
+        timeTipL.backgroundColor = [UIColor clearColor];
+        [bgView addSubview:timeTipL];
+        
+        CGFloat stopTimeLX = CGRectGetMaxX(timeTipL.frame);
+        CGFloat stopTimeLY = CGRectGetMaxY(line1.frame);
+        CGFloat stopTimeLW = SCREENWIDTH-100;
+        CGFloat stopTimeLH = 44;
         
         stopTimeL = [[UILabel alloc] initWithFrame:CGRectMake(stopTimeLX, stopTimeLY, stopTimeLW, stopTimeLH)];
         stopTimeL.text = @"01/10 周二 08:00";
         stopTimeL.textColor = [UIColor blackColor];
         stopTimeL.font = [UIFont systemFontOfSize:14.0];
         stopTimeL.backgroundColor = [UIColor clearColor];
-        [timeAddressView addSubview:stopTimeL];
+        [bgView addSubview:stopTimeL];
         
+        stopTimeLY = CGRectGetMaxY(stopTimeL.frame);
+        stopTimeLH = 80;
+        userInfoL = [[UILabel alloc] initWithFrame:CGRectMake(stopTimeLX, stopTimeLY-30, stopTimeLW, stopTimeLH)];
+        userInfoL.text = @"01/10 周二 08:00";
+        userInfoL.numberOfLines = 2;
+        userInfoL.textColor = [UIColor blackColor];
+        userInfoL.font = [UIFont systemFontOfSize:14.0];
+        userInfoL.backgroundColor = [UIColor clearColor];
+        [bgView addSubview:userInfoL];
         
-        CGFloat orderMoneyY = 0;
-        CGFloat orderMoneyW = 100;
-        CGFloat orderMoneyX = timeAddressViewW - orderMoneyW - 20;
-        CGFloat orderMoneyH = stopTimeLH;
+        UIImageView *rightV = [[UIImageView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(userInfoL.frame), stopTimeLY-10, 20, 20)];
+        rightV.backgroundColor = [UIColor clearColor];
+        rightV.image = [UIImage imageNamed:@"icon_into_right"];
+        rightV.userInteractionEnabled = YES;
+        [bgView addSubview:rightV];
+
         
-        orderMoney = [[UILabel alloc] initWithFrame:CGRectMake(orderMoneyX, orderMoneyY, orderMoneyW, orderMoneyH)];
-        orderMoney.text = @"￥335";
-        orderMoney.textColor = [UIColor redColor];
-        orderMoney.textAlignment = NSTextAlignmentRight;
-        orderMoney.font = [UIFont systemFontOfSize:14.0];
-        orderMoney.backgroundColor = [UIColor clearColor];
-        [timeAddressView addSubview:orderMoney];
-        
+//        CGFloat orderMoneyY = 0;
+//        CGFloat orderMoneyW = 100;
+//        CGFloat orderMoneyX = timeAddressViewW - orderMoneyW - 20;
+//        CGFloat orderMoneyH = stopTimeLH;
+//        
+//        orderMoney = [[UILabel alloc] initWithFrame:CGRectMake(orderMoneyX, orderMoneyY, orderMoneyW, orderMoneyH)];
+//        orderMoney.text = @"￥335";
+//        orderMoney.textColor = [UIColor redColor];
+//        orderMoney.textAlignment = NSTextAlignmentRight;
+//        orderMoney.font = [UIFont systemFontOfSize:14.0];
+//        orderMoney.backgroundColor = [UIColor clearColor];
+//        [timeAddressView addSubview:orderMoney];
+        /*
         CGFloat addressLX = 10;
         CGFloat addressLY = CGRectGetMaxY(stopTimeL.frame);
         CGFloat addressLW = timeAddressViewW - 2 *addressLX;
@@ -260,6 +302,7 @@
         
         UITapGestureRecognizer *nextStepTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(payMoney)];
         [nextStepL addGestureRecognizer:nextStepTap];
+         */
     }
     return self;
 }

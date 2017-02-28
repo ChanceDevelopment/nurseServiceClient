@@ -11,6 +11,7 @@
 @interface HeOrderTableViewCell : HeBaseTableViewCell
 @property (nonatomic,strong)UILabel *serviceContentL;
 @property (nonatomic,strong)UILabel *stopTimeL;
+@property (nonatomic,strong)UILabel *serviceInfoL;
 @property (nonatomic,strong)UILabel *orderMoney;
 @property (nonatomic,strong)UILabel *addressL;
 @property (nonatomic,strong)UILabel *userInfoL;

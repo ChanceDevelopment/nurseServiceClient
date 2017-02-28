@@ -270,7 +270,7 @@
         UIButton *commitButton = [[UIButton alloc] initWithFrame:CGRectMake(commitButtonX, commitButtonY, commitButtonW, commitButtonH)];
         [commitButton addTarget:self action:@selector(commitButtonClick:) forControlEvents:UIControlEventTouchUpInside];
         [commitButton setBackgroundImage:[Tool buttonImageFromColor:APPDEFAULTORANGE withImageSize:commitButton.frame.size] forState:UIControlStateNormal];
-        [commitButton setTitle:@"确定" forState:UIControlStateNormal];
+        [commitButton setTitle:@"下一步" forState:UIControlStateNormal];
         [commitButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         [commitButton.titleLabel setFont:[UIFont systemFontOfSize:15.0]];
         [_selectMenuBgView addSubview:commitButton];
@@ -414,7 +414,7 @@
         UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(inputReamrk)];
         [tipLabel2 addGestureRecognizer:tap];
         
-        id firstService = subServiceArray[0];
+        id firstService ;//= subServiceArray[0]
         @try {
             firstService = subServiceArray[0];
         } @catch (NSException *exception) {

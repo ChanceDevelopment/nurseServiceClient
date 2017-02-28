@@ -140,9 +140,7 @@
 - (void)navigationDidSelectedControllerIndex:(NSInteger)index {
     NSLog(@"index = %ld",index);
     currentType = index;
-    if (dataSource) {
-        [dataSource removeAllObjects];
-    }
+    
     [self loadMessageWithType:currentType];
 }
 
@@ -162,6 +160,9 @@
     
     [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestWorkingTaskPath params:requestMessageParams success:^(AFHTTPRequestOperation* operation,id response){
         [self hideHud];
+        if (dataSource) {
+            [dataSource removeAllObjects];
+        }
         NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
         NSDictionary *respondDict = [respondString objectFromJSONString];
         NSInteger statueCode = [[respondDict objectForKey:@"errorCode"] integerValue];
@@ -172,31 +173,8 @@
             if ([resultArray isMemberOfClass:[NSNull class]]) {
                 resultArray = [NSArray array];
             }
-//            if (pageNum == 0) {
-//                [dataSource removeAllObjects];
-//            }
-//            if (pageNum != 0 && [resultArray count] == 0) {
-//                pageNum--;
-//            }
+
             [dataSource addObjectsFromArray:resultArray];
-            
-            if ([dataSource count] == 0) {
-                UIView *bgView = [[UIView alloc] initWithFrame:self.view.bounds];
-                UIImage *noImage = [UIImage imageNamed:@"img_no_data_refresh"];
-                CGFloat scale = noImage.size.height / noImage.size.width;
-                CGFloat imageW = 120;
-                CGFloat imageH = imageW * scale;
-                UIImageView *imageview = [[UIImageView alloc] initWithImage:noImage];
-                imageview.frame = CGRectMake(100, 100, imageW, imageH);
-                imageview.center = bgView.center;
-                [bgView addSubview:imageview];
-                tableview.backgroundView = bgView;
-            }
-            else{
-                tableview.backgroundView = nil;
-            }
-            
-            [self.tableview reloadData];
         }
         else{
             NSString *data = respondDict[@"data"];
@@ -205,6 +183,23 @@
             }
             [self showHint:data];
         }
+        if ([dataSource count] == 0) {
+            UIView *bgView = [[UIView alloc] initWithFrame:self.view.bounds];
+            UIImage *noImage = [UIImage imageNamed:@"img_no_data_refresh"];
+            CGFloat scale = noImage.size.height / noImage.size.width;
+            CGFloat imageW = 120;
+            CGFloat imageH = imageW * scale;
+            UIImageView *imageview = [[UIImageView alloc] initWithImage:noImage];
+            imageview.frame = CGRectMake(100, 100, imageW, imageH);
+            imageview.center = bgView.center;
+            [bgView addSubview:imageview];
+            tableview.backgroundView = bgView;
+        }
+        else{
+            tableview.backgroundView = nil;
+        }
+        [self.tableview reloadData];
+
     } failure:^(NSError *error){
         [self hideHud];
         [self showHint:ERRORREQUESTTIP];

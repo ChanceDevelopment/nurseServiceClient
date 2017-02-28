@@ -105,6 +105,19 @@
         label.text = @"订单确认";
         [label sizeToFit];
         self.title = @"订单确认";
+        
+        NSMutableArray *buttons = [[NSMutableArray alloc] init];
+        UIButton *saveBt = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 60, 25)];
+        [saveBt setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        [saveBt setTitle:@"删除" forState:UIControlStateNormal];
+        saveBt.titleLabel.adjustsFontSizeToFitWidth = YES;
+        saveBt.titleLabel.font = [UIFont systemFontOfSize:13.0];
+        [saveBt addTarget:self action:@selector(deleteAction) forControlEvents:UIControlEventTouchUpInside];
+        saveBt.backgroundColor = [UIColor clearColor];
+        
+        UIBarButtonItem *searchItem = [[UIBarButtonItem alloc] initWithCustomView:saveBt];
+        [buttons addObject:searchItem];
+        self.navigationItem.rightBarButtonItems = buttons;
     }
     return self;
 }
@@ -376,7 +389,7 @@
                 zoneCreatetime = [zoneCreatetime substringToIndex:[zoneCreatetime length] - 3];
             }
             
-            NSString *time = [Tool convertTimespToString:[zoneCreatetime longLongValue] dateFormate:@"yyyy/MM/dd HH:mm"];
+            NSString *time = [Tool convertTimespToString:[zoneCreatetime longLongValue] dateFormate:@"MM-dd EEEE HH:mm"];
             self.tmpDateString = time;
             //所有数据重新刷新一次
             [self initializaiton];
@@ -1849,6 +1862,75 @@
     }
     [self updateImageBG];
     [tableview reloadData];
+}
+
+- (void)deleteAction{
+    if (ISIOS7) {
+        
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"删除服务" message:@"确定删除这笔订单吗？" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确认", nil];
+        alertView.tag = 100;
+        [alertView show];
+        return;
+    }
+    else{
+        __weak HeOrderCommitVC *weakSelf = self;
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"删除服务" message:@"确定删除这笔订单吗？"  preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action){
+//            _currentHandleOrderInfo = nil;
+        }];
+        UIAlertAction *sureAction = [UIAlertAction actionWithTitle:@"确认" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){
+            [weakSelf requestDeleteOrder:orderDetailDict];
+        }];
+        [alertController addAction:cancelAction];
+        [alertController addAction:sureAction];
+        [self presentViewController:alertController animated:YES completion:nil];
+        return;
+    }
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (alertView.tag == 100 && buttonIndex == 1) {
+        //删除订单
+        [self requestDeleteOrder:orderDetailDict];
+    }
+}
+- (void)requestDeleteOrder:(NSDictionary *)orderInfo
+{
+    NSLog(@"cancelService");
+    NSString *orderSendId = orderInfo[@"orderSendId"];
+    if ([orderSendId isMemberOfClass:[NSNull class]] || orderSendId == nil) {
+        orderSendId = @"";
+    }
+    NSDictionary * params  = @{@"orderSendId":orderSendId};
+    [self showHudInView:tableview hint:@"删除中..."];
+    NSString *requestUrl = [NSString stringWithFormat:@"%@/orderSend/delOrderSend.action",BASEURL];
+    [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
+        [self hideHud];
+        NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
+        NSDictionary *respondDict = [NSDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
+        if ([[respondDict valueForKey:@"errorCode"] integerValue] == REQUESTCODE_SUCCEED){
+            
+            [self showHint:@"成功删除服务"];
+            [[NSNotificationCenter defaultCenter] postNotificationName:kUpdateOrderNotification object:nil];
+            [self performSelector:@selector(backToRootView) withObject:nil afterDelay:1.2];
+        }
+        else{
+            NSString *data = respondDict[@"data"];
+            if ([data isMemberOfClass:[NSNull class]] || data == nil) {
+                data = ERRORREQUESTTIP;
+            }
+            [self showHint:data];
+        }
+    } failure:^(NSError* err){
+        [self hideHud];
+        NSLog(@"errorInfo = %@",err);
+        [self showHint:ERRORREQUESTTIP];
+    }];
+}
+
+- (void)backToRootView{
+    [self.navigationController popViewControllerAnimated:YES];
 }
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

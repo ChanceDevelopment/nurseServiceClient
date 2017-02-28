@@ -107,7 +107,7 @@
     tableview.backgroundColor = [UIColor colorWithWhite:237.0 / 255.0 alpha:1.0];
     [Tool setExtraCellLineHidden:tableview];
     
-    statusView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, 55)];
+    statusView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, 85)];
     tableview.tableHeaderView = statusView;
     
     id orderSendTypeObj = orderDetailDict[@"orderSendType"];
@@ -302,7 +302,7 @@
 }
 
 - (void)addStatueViewWithStatus:(NSInteger)statusType
-{
+{    
     CGFloat statusLabelX = 5;
     CGFloat statusLabelY = 10;
     CGFloat statusLabelH = 20;
@@ -361,8 +361,54 @@
     }
     [statusView addSubview:sepLine];
     
+    //30
+    CGFloat pointY = CGRectGetMaxY(sepLine.frame)+10;
+    CGFloat pointX = 10;
+    UIImageView *headImageView = [[UIImageView alloc] initWithFrame:CGRectMake(pointX, pointY, 40, 40)];
+    headImageView.backgroundColor = [UIColor clearColor];
+    headImageView.layer.masksToBounds = YES;
+    headImageView.image = [UIImage imageNamed:@"defalut_icon"];
+    headImageView.contentMode = UIViewContentModeScaleAspectFill;
+    headImageView.layer.borderWidth = 0.0;
+    headImageView.layer.cornerRadius = 40 / 2.0;
+    headImageView.layer.masksToBounds = YES;
+    [statusView addSubview:headImageView];
+//    [headImageView sd_setImageWithURL:[NSURL URLWithString:userHeader] placeholderImage:[UIImage imageNamed:@"defalut_icon"]];
+
+    pointX = CGRectGetMaxX(headImageView.frame);
+    UILabel *nameL = [[UILabel alloc] initWithFrame:CGRectMake(pointX, pointY, 180, 20)];
+    nameL.textColor = [UIColor blackColor];
+    nameL.font = [UIFont systemFontOfSize:13.0];
+    nameL.backgroundColor = [UIColor clearColor];
+    [statusView addSubview:nameL];
+    nameL.text = @"李 护士 ";
+    
+    pointY = CGRectGetMaxY(nameL.frame);
+    UILabel *hospitalL = [[UILabel alloc] initWithFrame:CGRectMake(pointX, pointY, 180, 20)];
+    hospitalL.textColor = [UIColor blackColor];
+    hospitalL.font = [UIFont systemFontOfSize:13.0];
+    hospitalL.backgroundColor = [UIColor clearColor];
+    [statusView addSubview:hospitalL];
+    hospitalL.text = @"该护士未选定医院";
+    
+    pointY = CGRectGetMaxY(sepLine.frame)+20;
+    pointX = SCREENWIDTH-35;
+    UIImageView *telephone = [[UIImageView alloc] initWithFrame:CGRectMake(pointX, pointY, 20, 20)];
+    telephone.backgroundColor = [UIColor clearColor];
+    telephone.image = [UIImage imageNamed:@"icon_phone"];
+    telephone.userInteractionEnabled = YES;
+    [statusView addSubview:telephone];
+    
+    UITapGestureRecognizer *userInfoTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(callCustomer)];
+    [telephone addGestureRecognizer:userInfoTap];
+
+    
 }
 
+- (void)callCustomer{
+//    NSDictionary *dict = [NSDictionary dictionaryWithDictionary:infoDic];
+//    [Tool callPhoneWithPhone:[dict valueForKey:@"userNameNew"]];
+}
 - (void)addPhotoScrollView
 {
     CGFloat imageX = 0;
