@@ -80,7 +80,7 @@
     // Do any additional setup after loading the view from its nib.
     [self initializaiton];
     [self initView];
-    [self loadMessage];
+    [self loadMessageWithType:0];
 }
 
 - (void)initializaiton
@@ -103,61 +103,61 @@
     [self.view addSubview:self.navigationTabBar];
 
     
-    __weak HeMessageVC *weakSelf = self;
-    self.tableview.header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
-        // 进入刷新状态后会自动调用这个block,刷新
-        [weakSelf.tableview.header performSelector:@selector(endRefreshing) withObject:nil afterDelay:1.0];
-        pageNum = 0;
-        [weakSelf loadMessage];
-    }];
-    
-    self.tableview.footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
-        self.tableview.footer.automaticallyHidden = YES;
-        self.tableview.footer.hidden = NO;
-        // 进入刷新状态后会自动调用这个block，加载更多
-        [weakSelf performSelector:@selector(endRefreshing) withObject:nil afterDelay:1.0];
-        pageNum++;
-        [weakSelf loadMessage];
-        
-    }];
-    
+//    __weak HeMessageVC *weakSelf = self;
+//    self.tableview.header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
+//        // 进入刷新状态后会自动调用这个block,刷新
+//        [weakSelf.tableview.header performSelector:@selector(endRefreshing) withObject:nil afterDelay:1.0];
+//        pageNum = 0;
+//        [weakSelf loadMessage];
+//    }];
+//    
+//    self.tableview.footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
+//        self.tableview.footer.automaticallyHidden = YES;
+//        self.tableview.footer.hidden = NO;
+//        // 进入刷新状态后会自动调用这个block，加载更多
+//        [weakSelf performSelector:@selector(endRefreshing) withObject:nil afterDelay:1.0];
+//        pageNum++;
+//        [weakSelf loadMessage];
+//        
+//    }];
+//    
 }
 
-- (void)endRefreshing
-{
-    [self.tableview.footer endRefreshing];
-    self.tableview.footer.hidden = YES;
-    self.tableview.footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
-        self.tableview.footer.automaticallyHidden = YES;
-        self.tableview.footer.hidden = NO;
-        // 进入刷新状态后会自动调用这个block，加载更多
-        [self performSelector:@selector(endRefreshing) withObject:nil afterDelay:1.0];
-    }];
-    NSLog(@"endRefreshing");
-}
+//- (void)endRefreshing
+//{
+//    [self.tableview.footer endRefreshing];
+//    self.tableview.footer.hidden = YES;
+//    self.tableview.footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
+//        self.tableview.footer.automaticallyHidden = YES;
+//        self.tableview.footer.hidden = NO;
+//        // 进入刷新状态后会自动调用这个block，加载更多
+//        [self performSelector:@selector(endRefreshing) withObject:nil afterDelay:1.0];
+//    }];
+//    NSLog(@"endRefreshing");
+//}
 
 #pragma mark - PrivateMethod
 - (void)navigationDidSelectedControllerIndex:(NSInteger)index {
     NSLog(@"index = %ld",index);
     currentType = index;
-//    currentPage = 0;
-//    if (dataArr) {
-//        [dataArr removeAllObjects];
-//    }
-//    [self getDataWithType:currentType];
+    if (dataSource) {
+        [dataSource removeAllObjects];
+    }
+    [self loadMessageWithType:currentType];
 }
 
-- (void)loadMessage
+- (void)loadMessageWithType:(NSInteger)type
 {
-    NSString *requestWorkingTaskPath = [NSString stringWithFormat:@"%@/nurseAnduser/standInnerLetter.action",BASEURL];
+    NSString *requestWorkingTaskPath = [NSString stringWithFormat:@"%@/nurseAnduser/selectStandInnerLetterInfo.action",BASEURL];
     
     NSString *userId = [[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY];
     if (!userId) {
         userId = @"";
     }
-    NSString *state = @"0";
-    NSString *pageNumStr = [NSString stringWithFormat:@"%ld",pageNum];
-    NSDictionary *requestMessageParams = @{@"nurseId":userId,@"pageNum":pageNumStr,@"state":state};
+//    NSString *pageNumStr = [NSString stringWithFormat:@"%ld",pageNum];
+    NSDictionary *requestMessageParams = @{@"roleId":userId,
+                                           @"identity":@"0",
+                                           @"type":[NSString stringWithFormat:@"%ld",type]};
     [self showHudInView:self.view hint:@"正在获取..."];
     
     [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestWorkingTaskPath params:requestMessageParams success:^(AFHTTPRequestOperation* operation,id response){
@@ -172,12 +172,12 @@
             if ([resultArray isMemberOfClass:[NSNull class]]) {
                 resultArray = [NSArray array];
             }
-            if (pageNum == 0) {
-                [dataSource removeAllObjects];
-            }
-            if (pageNum != 0 && [resultArray count] == 0) {
-                pageNum--;
-            }
+//            if (pageNum == 0) {
+//                [dataSource removeAllObjects];
+//            }
+//            if (pageNum != 0 && [resultArray count] == 0) {
+//                pageNum--;
+//            }
             [dataSource addObjectsFromArray:resultArray];
             
             if ([dataSource count] == 0) {
@@ -297,6 +297,38 @@
 }
 
 - (void)cleanAction{
+    
+    NSString *requestWorkingTaskPath = [NSString stringWithFormat:@"%@/nurseAnduser/deleteStandInnerLetterInfo.action",BASEURL];
+    
+    NSString *userId = [[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY];
+    if (!userId) {
+        userId = @"";
+    }
+    NSDictionary *requestMessageParams = @{@"roleId":userId,
+                                           @"identity":@"0",
+                                           @"type":[NSString stringWithFormat:@"%ld",currentType]};
+    [self showHudInView:self.view hint:@"正在获取..."];
+    
+    [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestWorkingTaskPath params:requestMessageParams success:^(AFHTTPRequestOperation* operation,id response){
+        [self hideHud];
+        NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
+        NSDictionary *respondDict = [respondString objectFromJSONString];
+        NSInteger statueCode = [[respondDict objectForKey:@"errorCode"] integerValue];
+        
+        if (statueCode == REQUESTCODE_SUCCEED){
+            [self loadMessageWithType:currentType];
+        }
+        else{
+            NSString *data = respondDict[@"data"];
+            if ([data isMemberOfClass:[NSNull class]] || data == nil) {
+                data = @"";
+            }
+            [self showHint:data];
+        }
+    } failure:^(NSError *error){
+        [self hideHud];
+        [self showHint:ERRORREQUESTTIP];
+    }];
     
 }
 - (void)didReceiveMemoryWarning {
