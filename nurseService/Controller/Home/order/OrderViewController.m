@@ -757,7 +757,7 @@
     
     
     
-    cell.userInfoL.text = [NSString stringWithFormat:@"为%@（%@,%@,%@岁,身高%@cm,体重%@kg）预约",protectedPersonNexus,nickname,sexStr,ageStr,protectedPersonHeightStr,protectedPersonWeightStr];
+    cell.userInfoL.text = [NSString stringWithFormat:@"为%@（%@,%@,%@岁,身高%@cm,体重%@kg）预约",protectedPersonNexusStr,nickname,sexStr,ageStr,protectedPersonHeightStr,protectedPersonWeightStr];
     
     
     return cell;

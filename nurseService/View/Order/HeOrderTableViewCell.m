@@ -102,11 +102,10 @@
         
         CGFloat serviceInfoLX = 10;
         CGFloat serviceInfoLY = CGRectGetMaxY(orderView.frame);
-        CGFloat serviceInfoLW = SCREENHEIGH-20;
+        CGFloat serviceInfoLW = bgView_W-20;
         CGFloat serviceInfoLH = orderViewH;
         
         serviceInfoL = [[UILabel alloc] initWithFrame:CGRectMake(serviceInfoLX, serviceInfoLY, serviceInfoLW, serviceInfoLH)];
-        serviceInfoL.text = @"产妇护理套餐,产妇护理套餐,";
         serviceInfoL.userInteractionEnabled = YES;
         serviceInfoL.textColor = [UIColor blackColor];
         serviceInfoL.font = [UIFont systemFontOfSize:15.0];
