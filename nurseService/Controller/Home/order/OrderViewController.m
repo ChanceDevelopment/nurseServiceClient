@@ -91,6 +91,12 @@
     [self loadOrderDataWithOrderState:3];
 }
 
+- (void)selectOrderIndex:(NSInteger)orderIndex
+{
+    //跳转到待支付
+    [self navigationDidSelectedControllerIndex:orderIndex];
+}
+
 - (void)initializaiton
 {
     [super initializaiton];
@@ -106,6 +112,7 @@
     [dataSource addObject:finishOrderArray];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateOrder:) name:kUpdateOrderNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(selectOrder:) name:@"selectOrderNotification" object:nil];
 }
 
 - (void)initView
@@ -130,6 +137,13 @@
 //        [self performSelector:@selector(endRefreshing) withObject:nil afterDelay:1.0];
 //        
 //    }];
+}
+
+- (void)selectOrder:(NSNotification *)notification
+{
+    NSInteger orderIndex = [notification.userInfo[@"index"] integerValue];
+    [self.navigationTabBar scrollToIndex:orderIndex];
+    [self selectOrderIndex:orderIndex];
 }
 
 - (void)endRefreshing

@@ -11,4 +11,6 @@
 
 @interface OrderViewController : HeBaseViewController
 
+- (void)selectOrderIndex:(NSInteger)orderIndex;
+
 @end

@@ -23,6 +23,9 @@
 #import "HeMessageVC.h"
 #import "HeModifyPasswordVC.h"
 #import "RDVTabBarItem.h"
+#import "AppDelegate.h"
+#import "HeTabBarVC.h"
+#import "RESideMenu.h"
 
 #define InviteLabelTag 100
 #define SignButtonTag 200
@@ -449,12 +452,13 @@
 
 - (void)scanUserPoint:(UITapGestureRecognizer *)tap
 {
-
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"selectOrderNotification" object:@[@"index",@0]];
+    NSInteger orderTabbarIndex = 2;
     //跳转到订单界面
-    
-    
-    
-    
+    AppDelegate *delegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
+    RESideMenu *rootVC =  (RESideMenu *)delegate.window.rootViewController;
+    HeTabBarVC *tabbarVC = (HeTabBarVC *)rootVC.mainController;
+    [tabbarVC setSelectedIndex:orderTabbarIndex];
 }
 
 - (void)scanUserInfo:(UITapGestureRecognizer *)tap
