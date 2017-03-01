@@ -17,6 +17,8 @@
 #import "HeNurseDetailVC.h"
 #import "HeReportVC.h"
 #import "HeCommentNurseVC.h"
+#import "HYPageView.h"
+#import "HeBookServiceVC.h"
 
 @interface HeOrderDetailVC ()<UITableViewDelegate,UITableViewDataSource>
 {
@@ -80,6 +82,9 @@
     imageScrollViewHeigh = 80;
     paperArray = [[NSMutableArray alloc] initWithCapacity:0];
     nurseArray = [[NSMutableArray alloc] initWithCapacity:0];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadOrderDetail) name:@"kUpdateOrderDetailNotification" object:nil];
+
 }
 
 - (void)initView
@@ -460,7 +465,10 @@
         [self callServicerPhone];
         return;
     }else if(button.tag == 10){
+        //前往评价
+        [self commentOrder];
     }else if(button.tag == 11){
+        [self bookServiceWithDict:orderDetailDict];
     }
 }
 
@@ -1277,6 +1285,13 @@
                     }
                     NSInteger orderSendState = [orderSendStateObj integerValue];
                     
+                    
+                    id isEvaluateObj = orderDetailDict[@"isEvaluate"];
+                    if ([orderSendStateObj isMemberOfClass:[NSNull class]] || isEvaluateObj == nil) {
+                        isEvaluateObj = @"";
+                    }
+                    NSInteger isEvaluate = [isEvaluateObj integerValue];
+                    
                     CGFloat buttonX = 0;
                     CGFloat buttonY = 0;
                     CGFloat buttonW = SCREENWIDTH / 2.0;
@@ -1287,12 +1302,19 @@
                     [cancelButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
                     [cancelButton addTarget:self action:@selector(buttonClick:) forControlEvents:UIControlEventTouchUpInside];
                     [cell addSubview:cancelButton];
-                    if (orderSendState == 1 || orderSendState == 2) {
+                    if (orderSendState == 0 || orderSendState == 1 || orderSendState == 2) {
                         [cancelButton setTitle:@"取消服务" forState:UIControlStateNormal];
                         cancelButton.tag = 0;
-                    }else if (orderSendState == 1){
-                        [cancelButton setTitle:@"进行评价" forState:UIControlStateNormal];
-                        cancelButton.tag = 10;
+                    }else if (orderSendState == 3){
+                        if (isEvaluate == 1) {
+                            [cancelButton setTitle:@"已完成" forState:UIControlStateNormal];
+//                            cancelButton.tag = 10;
+                            cancelButton.enabled = NO;
+                        }else{
+                            [cancelButton setTitle:@"前往评价" forState:UIControlStateNormal];
+                            cancelButton.tag = 10;
+                        }
+ 
                     }
 
                     buttonX = CGRectGetMaxX(cancelButton.frame);
@@ -1303,12 +1325,13 @@
                     [nextButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
                     [nextButton addTarget:self action:@selector(buttonClick:) forControlEvents:UIControlEventTouchUpInside];
                     [cell addSubview:nextButton];
-                    if (orderSendState == 1 || orderSendState == 2) {
+                    if (orderSendState == 0 || orderSendState == 1 || orderSendState == 2) {
                         nextButton.tag = 1;
                         [nextButton setTitle:@"联系客服" forState:UIControlStateNormal];
-                    }else if (orderSendState == 1){
+                    }else if (orderSendState == 3){
                         nextButton.tag = 11;
-                        [nextButton setTitle:@"联系客服" forState:UIControlStateNormal];
+                        [nextButton setTitle:@"再次预约" forState:UIControlStateNormal];
+                        
                     }
 
                     
@@ -1628,6 +1651,39 @@
     commentNurseVC.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:commentNurseVC animated:YES];
     
+}
+
+- (void)bookServiceWithDict:(NSDictionary *)dict
+{
+    //总控制器，控制商品、详情、评论三个子控制器
+    HeBookServiceVC *serviceDetailVC = [[HeBookServiceVC alloc] init];
+    [self.navigationController setNavigationBarHidden:YES animated:YES];
+    [serviceDetailVC.view addSubview:[self getPageViewWithParam:dict]];
+    [self showViewController:serviceDetailVC sender:nil];
+}
+
+- (HYPageView *)getPageViewWithParam:(NSDictionary *)dict
+{
+    
+    NSDictionary *paramDict = @{@"service":dict};
+    NSString *nurseId = dict[@"nurseId"];
+    NSDictionary *nurseDict = @{@"nurseId":nurseId};
+    paramDict = @{@"service":dict,@"nurse":nurseDict};
+    
+    HYPageView *pageView = [[HYPageView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, SCREENHEIGH) withTitles:@[@"商品",@"详情",@"评论"] withViewControllers:@[@"HeServiceDetailVC",@"HeServiceInfoVC",@"HeCommentVC"] withParameters:@[paramDict,dict,dict]];
+    pageView.isTranslucent = NO;
+    pageView.topTabBottomLineColor = [UIColor whiteColor];
+    pageView.selectedColor = [UIColor whiteColor];
+    pageView.unselectedColor = [UIColor whiteColor];
+    UIButton *backImage = [[UIButton alloc] init];
+    [backImage setBackgroundImage:[UIImage imageNamed:@"navigationBar_back_icon"] forState:UIControlStateNormal];
+    [backImage addTarget:self action:@selector(backToRootView) forControlEvents:UIControlEventTouchUpInside];
+    
+    backImage.frame = CGRectMake(0, 0, 25, 25);
+    
+    pageView.leftButton = backImage;
+    
+    return pageView;
 }
 
 - (void)didReceiveMemoryWarning {

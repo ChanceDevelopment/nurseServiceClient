@@ -1127,6 +1127,12 @@
         [self showHint:@"请选择服务时间"];
         return;
     }
+    if (subServiceArray.count == 0) {
+        [self showHint:@"暂无服务类产品"];
+        return;
+    }
+    //
+    NSLog(@"serviceDetailInfoDict");
     //立即预约
     isBook = NO;
     [self.view addSubview:self.selectMenuBgView];
@@ -1588,10 +1594,12 @@
                 case 1:{
                     //被受保护人信息
                     NSLog(@"被受保护人信息");
-                    HeSelectProtectedUserInfoVC *protectedUserInfoVC = [[HeSelectProtectedUserInfoVC alloc] init];
+                    HeProtectedUserInfoVC *protectedUserInfoVC = [[HeProtectedUserInfoVC alloc] init];
                     protectedUserInfoVC.selectDelegate = self;
                     protectedUserInfoVC.hidesBottomBarWhenPushed = YES;
+                    protectedUserInfoVC.isFromOrder = YES;
                     [self.navigationController pushViewController:protectedUserInfoVC animated:YES];
+                    
                     break;
                 }
                 default:

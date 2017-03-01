@@ -16,5 +16,5 @@
 
 @interface HeProtectedUserInfoVC : HeBaseViewController
 @property(assign,nonatomic)id<SelectProtectUserInfoProtocol>selectDelegate;
-
+@property(assign,nonatomic) BOOL isFromOrder;
 @end

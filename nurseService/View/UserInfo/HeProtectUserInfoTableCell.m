@@ -83,16 +83,16 @@
         editImageView.userInteractionEnabled = YES;
 //        [bgView addSubview:editImageView];
         
-        labelX = bgView_W - 155;
-        UILabel *editLabel = [[UILabel alloc] initWithFrame:CGRectMake(labelX, labelY, 50, labelH)];
-//        [bgView addSubview:editLabel];
-        editLabel.backgroundColor = [UIColor clearColor];
-        editLabel.userInteractionEnabled = YES;
-        editLabel.text = @"编辑";
-        [editLabel setFont:font];
-        [editLabel setTextColor:[UIColor blackColor]];
+//        labelX = bgView_W - 155;
+//        UILabel *editLabel = [[UILabel alloc] initWithFrame:CGRectMake(labelX, labelY, 50, labelH)];
+////        [bgView addSubview:editLabel];
+//        editLabel.backgroundColor = [UIColor clearColor];
+//        editLabel.userInteractionEnabled = YES;
+//        editLabel.text = @"编辑";
+//        [editLabel setFont:font];
+//        [editLabel setTextColor:[UIColor blackColor]];
         
-        editeRect   = CGRectMake(bgView_W - 180, labelY, 75, labelH);
+//        editeRect   = CGRectMake(bgView_W - 180, labelY, 75, labelH);
         
         labelX = bgView_W - 95;
         UIImageView *deleteImageView = [[UIImageView alloc] initWithFrame:CGRectMake( labelX, labelY+(labelH-30)/2.0, 30, 30)];
@@ -101,6 +101,8 @@
         deleteImageView.userInteractionEnabled = YES;
         [bgView addSubview:deleteImageView];
         
+        editeRect   = CGRectMake(labelX, labelY+(labelH-30)/2.0, 30, 30);
+
         labelX = bgView_W - 70;
         UILabel *deleteLabel = [[UILabel alloc] initWithFrame:CGRectMake(labelX, labelY, 50, labelH)];
         deleteLabel.backgroundColor = [UIColor clearColor];
@@ -110,7 +112,7 @@
         [deleteLabel setFont:font];
         [deleteLabel setTextColor:[UIColor blackColor]];
         
-        deleteRect  = CGRectMake(bgView_W - 90, labelY, 80, 40);
+        deleteRect  = CGRectMake(labelX, labelY, 50, labelH);
         
     }
     return self;

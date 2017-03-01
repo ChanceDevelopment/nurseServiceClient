@@ -23,6 +23,7 @@
 @synthesize tableview;
 @synthesize dataSource;
 @synthesize selectedProtectedPersonId;
+@synthesize isFromOrder;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -160,10 +161,10 @@
         }
         
     };
-    cell.deleteBlock = ^(){
-        NSLog(@"deleteBlock");
-        [self deletProtectedUserInfoWithId:[dict valueForKey:@"protectedPersonId"]];
-    };
+//    cell.deleteBlock = ^(){
+//        NSLog(@"deleteBlock");
+//        [self deletProtectedUserInfoWithId:[dict valueForKey:@"protectedPersonId"]];
+//    };
     cell.editBlock = ^(){
         NSLog(@"edit");
         HeEditProtectUserInfoVC *editProtectUserInfoVC = [[HeEditProtectUserInfoVC alloc] init];
@@ -199,12 +200,15 @@
     } @finally {
         
     }
-    HeEditProtectUserInfoVC *heEditProtectUserInfoVC = [[HeEditProtectUserInfoVC alloc] init];
-    heEditProtectUserInfoVC.hidesBottomBarWhenPushed = YES;
-    heEditProtectUserInfoVC.userInfoDict = [Tools deleteNullFromDic:[[NSMutableDictionary alloc] initWithDictionary:dict]];
-    [self.navigationController pushViewController:heEditProtectUserInfoVC animated:YES];
-//    [_selectDelegate selectUserInfoWithDict:dict];
-//    [self.navigationController popViewControllerAnimated:YES];
+    if (!isFromOrder) {
+        HeEditProtectUserInfoVC *heEditProtectUserInfoVC = [[HeEditProtectUserInfoVC alloc] init];
+        heEditProtectUserInfoVC.hidesBottomBarWhenPushed = YES;
+        heEditProtectUserInfoVC.userInfoDict = [Tools deleteNullFromDic:[[NSMutableDictionary alloc] initWithDictionary:dict]];
+        [self.navigationController pushViewController:heEditProtectUserInfoVC animated:YES];
+    }else{
+        [_selectDelegate selectUserInfoWithDict:dict];
+        [self.navigationController popViewControllerAnimated:YES];
+    }
 }
 
 - (void)getDataSource{

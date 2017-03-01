@@ -155,7 +155,7 @@
         if ([[respondDict valueForKey:@"errorCode"] integerValue] == REQUESTCODE_SUCCEED){
             
             [self showHint:@"评价成功"];
-            [[NSNotificationCenter defaultCenter] postNotificationName:kUpdateOrderNotification object:nil];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"kUpdateOrderDetailNotification" object:nil];
             [self performSelector:@selector(backToLastView) withObject:nil afterDelay:0.8];
         }
         else{

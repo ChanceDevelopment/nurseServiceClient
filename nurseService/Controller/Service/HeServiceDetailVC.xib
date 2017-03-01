@@ -31,7 +31,7 @@
                             <constraints>
                                 <constraint firstAttribute="height" constant="50" id="bzB-22-Emi"/>
                             </constraints>
-                            <state key="normal" title="立即预约">
+                            <state key="normal" title="下一步">
                                 <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </state>
                             <connections>
