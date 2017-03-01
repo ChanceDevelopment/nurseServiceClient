@@ -10,8 +10,8 @@
 #define appAPIDefine_h
 
 #define FL_URL @"http://118.178.186.59:8080/nurseDoor/"
-#define BASEURL @"http://118.178.186.59:8080/nurseDoorText/"  
-
+#define BASEURL @"http://118.178.186.59:8080/nurseDoor/"
+//nurseDoorText
 #define WEBBASEURL @"http://118.178.186.59:8080/nurseDoor/"
 //华幼通图片服务器
 #define HYTIMAGEURL @"http://118.178.186.59:8080/"
