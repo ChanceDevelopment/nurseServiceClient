@@ -9,10 +9,12 @@
 #import "EnrollTipVC.h"
 
 @interface EnrollTipVC ()
+@property (strong, nonatomic) IBOutlet UIWebView *webview;
 
 @end
 
 @implementation EnrollTipVC
+@synthesize webview;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -49,6 +51,49 @@
 {
     [super initView];
     self.view.backgroundColor = [UIColor colorWithWhite:237.0 /255.0 alpha:1.0];
+    
+    [webview setScalesPageToFit:YES];
+    webview.userInteractionEnabled = YES;
+    webview.scrollView.bounces = NO;
+    
+    NSString *urlString = [NSString stringWithFormat:@"%@agreement/userExemptionAgreement.html",BASEURL];
+    [webview loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:urlString]]];
+
+}
+
+#pragma mark webViewdelegate
+
+-(void)webViewDidFinishLoad:(UIWebView *)webViewTmp{
+    
+}
+
+- (BOOL)webView:(UIWebView *)webViewTmp shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
+    
+    static BOOL isRequestWeb = YES;
+    
+    if (isRequestWeb) {
+        NSHTTPURLResponse *response = nil;
+        NSError *error = nil;
+        NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+        if (response.statusCode == 404 || response.statusCode == 403 || error) {
+            // code for 404 or 403
+            UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"noData"]];
+            imageView.frame = CGRectMake((SCREENWIDTH - 100)/2.0, 200, 100, 100);
+            imageView.center = self.view.center;
+            [self.view addSubview:imageView];
+            [webview stopLoading];
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"温馨提示" message:@"亲，目前页面有点问题，请稍后再试" delegate:self cancelButtonTitle:@"知道了" otherButtonTitles:nil, nil];
+            alert.tag = 404;
+            [alert show];
+            return NO;
+        }
+        
+        [webview loadData:data MIMEType:@"text/html" textEncodingName:@"UTF-8" baseURL:[request URL]];
+        isRequestWeb = NO;
+        return NO;
+    }
+    
+    return YES;
 }
 
 - (void)didReceiveMemoryWarning {
