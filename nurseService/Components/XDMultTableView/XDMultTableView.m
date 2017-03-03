@@ -24,7 +24,6 @@ static const CGFloat CELLHEIGHT = 44.0f;
     if ([super initWithFrame:frame]) {
         _multopenSectionArray = [NSMutableArray arrayWithCapacity:10];
         _autoAdjustOpenAndClose = YES;
-        
         _tableView = [[UITableView alloc] initWithFrame:self.bounds];
         _tableView.delegate = self;
         _tableView.dataSource = self;
