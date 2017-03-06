@@ -368,7 +368,28 @@
             [[NSUserDefaults standardUserDefaults] synchronize];
             
             User *userModel = [[User alloc] init];
-            [userModel setValuesForKeysWithDictionary:infoDict];
+            for (NSString *keyString in infoDict.allKeys) {
+                NSString *firstString = [keyString substringWithRange:NSMakeRange(0, 1)];
+                firstString = [firstString uppercaseString];
+                NSString *secondString = nil;
+                @try {
+                    secondString = [keyString substringFromIndex:1];
+                } @catch (NSException *exception) {
+                    secondString = @"";
+                } @finally {
+                    
+                }
+                NSString *methodString = [NSString stringWithFormat:@"set%@%@:",firstString,secondString];
+                SEL selector = NSSelectorFromString(methodString);
+                if ([userModel respondsToSelector:selector]) {
+                    id object = infoDict[keyString];
+                    if ([object isMemberOfClass:[NSNull class]]) {
+                        object = @"";
+                    }
+                    [userModel performSelector:selector withObject:object];
+                }
+            }
+//            [userModel setValuesForKeysWithDictionary:infoDict];
             NSLog(@"userModel = %@",userModel);
             NSDictionary *dict = [[NSUserDefaults standardUserDefaults] objectForKey:kUserDetailDataKey];
             [HeSysbsModel getSysModel].user = userModel;;

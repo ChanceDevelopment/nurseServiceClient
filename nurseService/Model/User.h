@@ -12,8 +12,10 @@
 @interface User : NSObject
 
 @property(strong,nonatomic)NSString *couponCount; //用户名
+@property(strong,nonatomic)NSString *orderCounts;
 @property(strong,nonatomic)NSString *userAddress;  //用户密码
 @property(strong,nonatomic)NSString *userAge; //昵称
+@property(strong,nonatomic)NSString *userAllExpenditure;
 @property(strong,nonatomic)NSString *userBalance; //真实姓名
 @property(strong,nonatomic)NSString *userCard; //判断是否单独的手机用户
 @property(strong,nonatomic)NSString *userCardpic;
