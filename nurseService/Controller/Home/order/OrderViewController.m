@@ -691,7 +691,7 @@
         zoneCreatetime = [zoneCreatetime substringToIndex:[zoneCreatetime length] - 3];
     }
     
-    NSString *time = [Tool convertTimespToString:[zoneCreatetime longLongValue] dateFormate:@"MM-dd EEEE HH:mm"];
+    NSString *time = [Tool convertTimespToString:[zoneCreatetime longLongValue] dateFormate:@"MM-dd EEE HH:mm"];
     cell.stopTimeL.text = time;
     
     
@@ -854,7 +854,7 @@
                 zoneCreatetime = [zoneCreatetime substringToIndex:[zoneCreatetime length] - 3];
             }
             
-            NSString *time = [Tool convertTimespToString:[zoneCreatetime longLongValue] dateFormate:@"MM-dd EEEE HH:mm"];
+            NSString *time = [Tool convertTimespToString:[zoneCreatetime longLongValue] dateFormate:@"MM-dd EEE HH:mm"];
             cell.stopTimeL.text = time;
 
             

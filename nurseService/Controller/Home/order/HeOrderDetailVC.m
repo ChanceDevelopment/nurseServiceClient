@@ -546,7 +546,7 @@
                 zoneCreatetime = [zoneCreatetime substringToIndex:[zoneCreatetime length] - 3];
             }
             
-            NSString *time = [Tool convertTimespToString:[zoneCreatetime longLongValue] dateFormate:@"MM/dd EEEE HH:MM"];
+            NSString *time = [Tool convertTimespToString:[zoneCreatetime longLongValue] dateFormate:@"MM/dd EEE HH:mm"];
             if (_currentOrderType == 1) {
                 time = [Tool convertTimespToString:[zoneCreatetime longLongValue] dateFormate:@"yyyy/MM/dd HH:mm"];
             }
