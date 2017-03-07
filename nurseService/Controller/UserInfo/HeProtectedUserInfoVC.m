@@ -36,9 +36,9 @@
         label.textColor = APPDEFAULTTITLECOLOR;
         label.textAlignment = NSTextAlignmentCenter;
         self.navigationItem.titleView = label;
-        label.text = @"被受护人信息";
+        label.text = @"受护人信息";
         [label sizeToFit];
-        self.title = @"被受护人信息";
+        self.title = @"受护人信息";
         
     }
     return self;
@@ -73,6 +73,36 @@
 {
     NSLog(@"addUserInfo");
     [self getDataSource];
+}
+
+- (void)setDefaultProtectByProtectedPersonId:(NSString *)personId
+{
+    NSString *userid = [[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY];
+    
+    NSString *requestUrl = [NSString stringWithFormat:@"%@/protected/personisdefault.action",BASEURL];
+    NSDictionary * params  = @{@"userId": userid,@"personId":personId,@"isdefault":@"1"};
+    [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
+        [self hideHud];
+        NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
+        
+        NSDictionary *respondDict = [NSDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
+        if ([[[respondDict valueForKey:@"errorCode"] stringValue] isEqualToString:@"200"]) {
+            NSLog(@"success");
+            
+            
+            
+        }else{
+            NSString *errorInfo = [respondDict valueForKey:@"data"];
+            if ([errorInfo isMemberOfClass:[NSNull class]] || errorInfo == nil) {
+                errorInfo = ERRORREQUESTTIP;
+            }
+            [self showHint:errorInfo];
+            NSLog(@"faile");
+        }
+    } failure:^(NSError* err){
+        NSLog(@"err:%@",err);
+        
+    }];
 }
 
 - (IBAction)addProtectUserInfo:(id)sender
@@ -153,11 +183,16 @@
 //    cell.selectBt.selected = isDefault ? YES : NO;
     
     
+    __weak HeProtectedUserInfoVC *weakSelf = self;
     cell.selectBlock = ^(){
         NSString *protectedPersonId = dict[@"protectedPersonId"];
         if (![selectedProtectedPersonId isEqualToString:protectedPersonId]) {
             selectedProtectedPersonId = protectedPersonId;
             [tableview reloadData];
+            if (protectedPersonId == nil) {
+                protectedPersonId = @"";
+            }
+            [weakSelf setDefaultProtectByProtectedPersonId:protectedPersonId];
         }
         
     };

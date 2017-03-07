@@ -332,6 +332,7 @@
             orderSendId = @"";
         }
         HeOrderDetailVC *orderDetailVC = [[HeOrderDetailVC alloc] init];
+        orderDetailVC.currentOrderType = currentOrderType;
         orderDetailVC.orderId = orderSendId;
         orderDetailVC.hidesBottomBarWhenPushed = YES;
         [self.navigationController pushViewController:orderDetailVC animated:YES];

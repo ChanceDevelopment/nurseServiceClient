@@ -122,7 +122,8 @@
             if ([balance isMemberOfClass:[NSNull class]]) {
                 balance = @"";
             }
-            balanceLabel.text = [NSString stringWithFormat:@"%@元",balance];
+            CGFloat balanceMoney = [balance floatValue];
+            balanceLabel.text = [NSString stringWithFormat:@"%.2f元",balanceMoney];
             [[NSUserDefaults standardUserDefaults] setObject:payInfo forKey:kUserPayInfoKey];
             [[NSUserDefaults standardUserDefaults] synchronize];
         }

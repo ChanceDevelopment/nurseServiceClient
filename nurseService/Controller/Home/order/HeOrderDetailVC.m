@@ -123,17 +123,26 @@
     
     NSInteger orderSendType = [orderSendTypeObj integerValue];
     orderSendState = [orderSendStateObj integerValue];
-    if (orderSendType == 1 && orderSendState == 0) {
+    
+    if (_currentOrderType == 1) {
+        //已预约状态
         [self addStatueViewWithStatus:0];
     }
     else{
-        if (orderSendState >= 3) {
-            if (self.isEvaluate) {
-                orderSendState = orderSendState + 1;
-            }
+        if (orderSendType == 1 && orderSendState == 0) {
+            
+            [self addStatueViewWithStatus:0];
         }
-        [self addStatueViewWithStatus:orderSendState];
+        else{
+            if (orderSendState >= 3) {
+                if (self.isEvaluate) {
+                    orderSendState = orderSendState + 1;
+                }
+            }
+            [self addStatueViewWithStatus:orderSendState];
+        }
     }
+    
     
 //    UIView *footerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, 70)];
 //    footerView.backgroundColor = tableview.backgroundColor;
@@ -473,7 +482,7 @@
 }
 
 - (void)callServicerPhone{
-    NSString *requestUrl = [NSString stringWithFormat:@"%@/orderSend/selectUseCustomerServicePhone.action",BASEURL];
+    NSString *requestUrl = [NSString stringWithFormat:@"%@/orderReceiver/selectUseCustomerServicePhone.action",BASEURL];
     [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:nil success:^(AFHTTPRequestOperation* operation,id response){
         NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
         NSDictionary *respondDict = [NSDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
@@ -481,8 +490,9 @@
             
             NSString *nursePhone = respondDict[@"customerServicePhone"];
             if ([nursePhone isMemberOfClass:[NSNull class]] || nursePhone == nil) {
-                [self showHint:@"暂无客服的联系方式"];
-                return;
+                nursePhone = @"15098013787";
+//                [self showHint:@"暂无客服的联系方式"];
+//                return;
             }
             NSString *phoneStr = [NSString stringWithFormat:@"tel://%@",nursePhone];
             [[UIApplication sharedApplication] openURL:[NSURL URLWithString:phoneStr]];
@@ -496,6 +506,7 @@
         }
     } failure:^(NSError* err){
         NSLog(@"errorInfo = %@",err);
+        [self showHint:ERRORREQUESTTIP];
     }];
 }
 - (void)loadOrderDetail
@@ -520,6 +531,10 @@
             orderDetailDict = [[NSDictionary alloc] initWithDictionary:respondDict[@"json"]];
             
             id zoneCreatetimeObj = [orderDetailDict objectForKey:@"orderSendBegintime"];
+            if (_currentOrderType == 1) {
+                zoneCreatetimeObj = orderDetailDict[@"orderSendCreatetime"];
+            }
+            
             if ([zoneCreatetimeObj isMemberOfClass:[NSNull class]] || zoneCreatetimeObj == nil) {
                 NSTimeInterval  timeInterval = [[NSDate date] timeIntervalSince1970];
                 zoneCreatetimeObj = [NSString stringWithFormat:@"%.0f000",timeInterval];
@@ -532,6 +547,9 @@
             }
             
             NSString *time = [Tool convertTimespToString:[zoneCreatetime longLongValue] dateFormate:@"MM/dd EEEE HH:MM"];
+            if (_currentOrderType == 1) {
+                time = [Tool convertTimespToString:[zoneCreatetime longLongValue] dateFormate:@"yyyy/MM/dd HH:mm"];
+            }
             self.tmpDateString = time;
             
             
@@ -617,6 +635,33 @@
         }
         case 3:
         {
+            //订单状态（0正在发布/1已被接取/2已服务/3已完成/4被取消/为空为待预约
+            id orderSendStateObj = orderDetailDict[@"orderSendState"];
+            if ([orderSendStateObj isMemberOfClass:[NSNull class]] || orderSendStateObj == nil) {
+                orderSendStateObj = @"";
+            }
+            NSInteger orderSendState = [orderSendStateObj integerValue];
+            
+            id orderSendTypeObj = orderDetailDict[@"orderSendType"];
+            if ([orderSendTypeObj isMemberOfClass:[NSNull class]]) {
+                orderSendTypeObj = @"";
+            }
+            
+            NSInteger orderSendType = [orderSendTypeObj integerValue];
+            orderSendState = [orderSendStateObj integerValue];
+            if (orderSendType == 1 && orderSendState == 0) {
+                
+            }
+            else{
+                if (orderSendState >= 3) {
+                    if (self.isEvaluate) {
+                        orderSendState = orderSendState + 1;
+                    }
+                }
+                if (orderSendState == 4) {
+                    return 1;
+                }
+            }
             return 2;
             break;
         }
@@ -1261,7 +1306,14 @@
                     CGFloat timeLabelY = 0;
                     UILabel *timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(timeLabelX, timeLabelY, timeLabelW, timeLabelH)];
                     timeLabel.font = [UIFont fontWithName:@"Helvetica" size:13.0];
-                    timeLabel.text = [NSString stringWithFormat:@"接单时间：%@",self.tmpDateString];
+                    if (_currentOrderType == 1) {
+                        //已预约
+                        timeLabel.text = [NSString stringWithFormat:@"下单时间：%@",self.tmpDateString];
+                    }
+                    else{
+                        timeLabel.text = [NSString stringWithFormat:@"接单时间：%@",self.tmpDateString];
+                    }
+                    
                     [cell addSubview:timeLabel];
                     
                     CGFloat orderNoLabelX = 10;
@@ -1316,7 +1368,7 @@
                         }
  
                     }
-
+                    
                     buttonX = CGRectGetMaxX(cancelButton.frame);
                     buttonW = SCREENWIDTH - buttonX;
                     UIButton *nextButton = [[UIButton alloc] initWithFrame:CGRectMake(buttonX, buttonY, buttonW, buttonH)];
@@ -1333,7 +1385,14 @@
                         [nextButton setTitle:@"再次预约" forState:UIControlStateNormal];
                         
                     }
-
+                    
+                    if (_currentOrderType == 1) {
+                        [cancelButton setTitle:@"取消服务" forState:UIControlStateNormal];
+                        cancelButton.tag = 0;
+                        
+                        nextButton.tag = 1;
+                        [nextButton setTitle:@"联系客服" forState:UIControlStateNormal];
+                    }
                     
                     CGFloat sepLineX = buttonX;
                     CGFloat sepLineY = 3;
@@ -1604,7 +1663,7 @@
     NSString *identity = @"0";
     [self showHudInView:tableview hint:@"取消中..."];
     NSDictionary * params  = @{@"orderSendId":orderSendId,@"userId":userId,@"identity":identity};
-    NSString *requestUrl = [NSString stringWithFormat:@"%@/orderSend/cancelOrder.action",BASEURL];
+    NSString *requestUrl = [NSString stringWithFormat:@"%@orderSend/cancelOrder.action",BASEURL];
     [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
         [self hideHud];
         NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];

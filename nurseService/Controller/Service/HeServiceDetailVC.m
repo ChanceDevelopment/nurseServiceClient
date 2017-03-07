@@ -1434,7 +1434,7 @@
                     
                     UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(titleLabelX, titleLabelY, titleLabelW, titleLabelH)];
                     titleLabel.font = [UIFont systemFontOfSize:15.0];
-                    titleLabel.text = @"被保护人信息";
+                    titleLabel.text = @"受护人信息";
                     [cell addSubview:titleLabel];
                     
                     NSString *infoString = @"小明 男 15768580734";

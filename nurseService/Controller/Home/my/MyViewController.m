@@ -101,7 +101,7 @@
     [super initializaiton];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUserBalanceInfo:) name:kUpdateUserPayInfoNotificaiton object:nil];
     iconArr = @[@"icon_protected_person_gray",@"icon_report_gray",@"icon_favorites_gray",@"icon_myinvite_gray",@"icon_advice_gray",@"icon_aboutus_gray",@"icon_advice_gray"];
-    tableItemArr = @[@"被受护人信息",@"护理报告",@"收藏夹",@"我的邀请",@"修改密码",@"关于我们",@"投诉建议"];
+    tableItemArr = @[@"受护人信息",@"护理报告",@"收藏夹",@"我的邀请",@"修改密码",@"关于我们",@"投诉建议"];
     viewControllerArray = @[@"HeProtectedUserInfoVC",@"HeOrderReportVC",@"HeUserFavouriteVC",@"HeUserInviteVC",@"HeModifyPasswordVC",@"HeAboutUsVC",@"HeReportVC"];
     userInfoModel = [HeSysbsModel getSysModel].user;
     
@@ -119,6 +119,8 @@
     [Tools setExtraCellLineHidden:myTableView];
     myTableView.delegate = self;
     myTableView.dataSource = self;
+    myTableView.showsVerticalScrollIndicator = NO;
+    myTableView.showsHorizontalScrollIndicator = NO;
     [self.view addSubview:myTableView];
 
     
@@ -168,8 +170,8 @@
     NSString *userHeader = [NSString stringWithFormat:@"%@/%@",HYTIMAGEURL,userInfoModel.userHeader];
     [portrait sd_setImageWithURL:[NSURL URLWithString:userHeader] placeholderImage:[UIImage imageNamed:@"defalut_icon"]];
     
-    
-    myTableView.tableHeaderView = headerView;
+    [self.view addSubview:headerView];
+//    myTableView.tableHeaderView = headerView;
     
     
     //用户名
@@ -675,7 +677,7 @@
     switch (row) {
         case 0:
         {
-            //被受护人信息
+            //受护人信息
             
             break;
         }
@@ -689,6 +691,9 @@
         }
         case 3:{
             //我的邀请
+            NSString *inviteCode = userInfoModel.userInvitationcode;
+            HeUserInviteVC *inviteVC = (HeUserInviteVC *)myVC;
+            inviteVC.invitationcode = inviteCode;
             break;
         }
         case 4:{

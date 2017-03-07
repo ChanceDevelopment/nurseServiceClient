@@ -741,6 +741,7 @@
 		EAD0AE051E2DF9D1002893F4 /* icon_gray_address.png in Resources */ = {isa = PBXBuildFile; fileRef = EAD0AE041E2DF9D1002893F4 /* icon_gray_address.png */; };
 		EADCD5F41E2F358E009A3AA0 /* HeOrderReportDetailVC.m in Sources */ = {isa = PBXBuildFile; fileRef = EADCD5F21E2F358D009A3AA0 /* HeOrderReportDetailVC.m */; };
 		EADCD5F51E2F358E009A3AA0 /* HeOrderReportDetailVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = EADCD5F31E2F358D009A3AA0 /* HeOrderReportDetailVC.xib */; };
+		EADEBFE01E6E512900803F93 /* YLButton.m in Sources */ = {isa = PBXBuildFile; fileRef = EADEBFDF1E6E512900803F93 /* YLButton.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -2074,6 +2075,8 @@
 		EADCD5F11E2F358D009A3AA0 /* HeOrderReportDetailVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HeOrderReportDetailVC.h; sourceTree = "<group>"; };
 		EADCD5F21E2F358D009A3AA0 /* HeOrderReportDetailVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HeOrderReportDetailVC.m; sourceTree = "<group>"; };
 		EADCD5F31E2F358D009A3AA0 /* HeOrderReportDetailVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HeOrderReportDetailVC.xib; sourceTree = "<group>"; };
+		EADEBFDE1E6E512900803F93 /* YLButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YLButton.h; sourceTree = "<group>"; };
+		EADEBFDF1E6E512900803F93 /* YLButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YLButton.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -3280,6 +3283,7 @@
 		EAC2D4B61D4B063900E282A8 /* Custom */ = {
 			isa = PBXGroup;
 			children = (
+				EADEBFDD1E6E512900803F93 /* YLButton */,
 				EA8CE3721E388954009FCCC6 /* DVYearMonthDatePicker */,
 				EA1D6FB11E34EB0E006DEEF7 /* SSPopup */,
 				EA195CF51E2F0D7000D545C6 /* RPRingedPages */,
@@ -4840,6 +4844,15 @@
 			path = Message;
 			sourceTree = "<group>";
 		};
+		EADEBFDD1E6E512900803F93 /* YLButton */ = {
+			isa = PBXGroup;
+			children = (
+				EADEBFDE1E6E512900803F93 /* YLButton.h */,
+				EADEBFDF1E6E512900803F93 /* YLButton.m */,
+			);
+			path = YLButton;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -5228,6 +5241,7 @@
 				EAC2D8F81D4B063B00E282A8 /* RACDynamicSequence.m in Sources */,
 				EAC2D8401D4B063B00E282A8 /* UILabel+Corner.m in Sources */,
 				EAC2D8451D4B063B00E282A8 /* DFBaseViewController.m in Sources */,
+				EADEBFE01E6E512900803F93 /* YLButton.m in Sources */,
 				EAC2D9371D4B063B00E282A8 /* MKAnnotationView+WebCache.m in Sources */,
 				EAC2D9321D4B063B00E282A8 /* UITextView+RACSignalSupport.m in Sources */,
 				EA3CBD721E32401C00F3CB6F /* MD5DataSigner.m in Sources */,

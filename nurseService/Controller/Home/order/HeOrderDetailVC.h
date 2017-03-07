@@ -14,4 +14,6 @@
 @property(strong,nonatomic)NSString *orderId;
 @property(assign,nonatomic)BOOL isEvaluate;
 
+@property(assign,nonatomic)NSInteger currentOrderType;
+
 @end

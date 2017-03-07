@@ -7,6 +7,8 @@
 //
 
 #import "HeProtectUserInfoTableCell.h"
+#import "YLButton.h"
+
 @interface HeProtectUserInfoTableCell()
 {
     CGRect editeRect;
@@ -19,6 +21,7 @@
 @synthesize addressLabel;
 @synthesize defaultLabel;
 @synthesize selectBt;
+@synthesize editButton;
 
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier cellSize:(CGSize)cellsize
@@ -60,16 +63,36 @@
         
         labelY = CGRectGetMaxY(line1.frame) + 10;
         labelH = bgView_H - labelY;
-        selectBt = [[UIButton alloc] initWithFrame:CGRectMake(10, labelY+(labelH-30)/2.0, 30, 30)];
+        selectBt = [[YLButton alloc] init];
         [bgView addSubview:selectBt];
+        [selectBt setTitle:@"默认信息" forState:UIControlStateNormal];
+        [selectBt setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
         selectBt.backgroundColor = [UIColor clearColor];
         [selectBt setImage:[UIImage imageNamed:@"icon_nocircle"] forState:UIControlStateNormal];
         [selectBt setImage:[UIImage imageNamed:@"icon_circleclick"] forState:UIControlStateSelected];
         [selectBt addTarget:self action:@selector(selectedAction:) forControlEvents:UIControlEventTouchUpInside];
+        selectBt.imageRect = CGRectMake(0, 2.5, 25, 25);
+        selectBt.titleRect = CGRectMake(30, 0, 60, 30);
+        selectBt.titleLabel.font = [UIFont systemFontOfSize:13];
+        selectBt.frame = CGRectMake(10, labelY+(labelH-30)/2.0, 90, 30);
     
+        
+        editButton = [[YLButton alloc] init];
+        [bgView addSubview:editButton];
+        [editButton setTitle:@"编辑" forState:UIControlStateNormal];
+        [editButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        editButton.backgroundColor = [UIColor clearColor];
+        [editButton setImage:[UIImage imageNamed:@"icon_edit"] forState:UIControlStateNormal];
+        [editButton setImage:[UIImage imageNamed:@"icon_edit"] forState:UIControlStateSelected];
+        [editButton addTarget:self action:@selector(editButtonClick:) forControlEvents:UIControlEventTouchUpInside];
+        editButton.imageRect = CGRectMake(0, 2.5, 25, 25);
+        editButton.titleRect = CGRectMake(30, 0, 30, 30);
+        editButton.titleLabel.font = [UIFont systemFontOfSize:13];
+        editButton.frame = CGRectMake(SCREENWIDTH - 70, labelY+(labelH-30)/2.0, 60, 30);
+        
         labelX = CGRectGetMaxX(selectBt.frame);
         defaultLabel = [[UILabel alloc] initWithFrame:CGRectMake(labelX, labelY, 80, labelH)];
-        [bgView addSubview:defaultLabel];
+//        [bgView addSubview:defaultLabel];
         defaultLabel.backgroundColor = [UIColor clearColor];
         defaultLabel.userInteractionEnabled = YES;
         
@@ -99,7 +122,7 @@
         deleteImageView.backgroundColor = [UIColor clearColor];
         deleteImageView.image = [UIImage imageNamed:@"icon_edit"];
         deleteImageView.userInteractionEnabled = YES;
-        [bgView addSubview:deleteImageView];
+//        [bgView addSubview:deleteImageView];
         
         editeRect   = CGRectMake(labelX, labelY+(labelH-30)/2.0, 30, 30);
 
@@ -108,7 +131,7 @@
         deleteLabel.backgroundColor = [UIColor clearColor];
         deleteLabel.userInteractionEnabled = YES;
         deleteLabel.text = @"编辑";
-        [bgView addSubview:deleteLabel];
+//        [bgView addSubview:deleteLabel];
         [deleteLabel setFont:font];
         [deleteLabel setTextColor:[UIColor blackColor]];
         
@@ -118,23 +141,30 @@
     return self;
 }
 
-- (void)selectedAction:(UIButton *)sender{
+- (void)selectedAction:(YLButton *)sender{
     if (self.selectBlock){
         self.selectBlock();
     }
     
 }
 
-- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event{
-    CGPoint point = [[touches anyObject] locationInView:self];
-    if (CGRectContainsPoint(editeRect, point)) {
-        if (self.editBlock)
-            self.editBlock();
-    }else if (CGRectContainsPoint(deleteRect, point)){
-        if (self.editBlock)
-            self.editBlock();
+- (void)editButtonClick:(YLButton *)sender
+{
+    if (self.self.editBlock){
+        self.self.editBlock();
     }
 }
+
+//- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event{
+//    CGPoint point = [[touches anyObject] locationInView:self];
+//    if (CGRectContainsPoint(editeRect, point)) {
+//        if (self.editBlock)
+//            self.editBlock();
+//    }else if (CGRectContainsPoint(deleteRect, point)){
+//        if (self.editBlock)
+//            self.editBlock();
+//    }
+//}
 
 - (void)drawRect:(CGRect)rect
 {

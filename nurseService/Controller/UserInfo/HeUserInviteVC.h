@@ -9,5 +9,6 @@
 #import "HeBaseViewController.h"
 
 @interface HeUserInviteVC : HeBaseViewController
+@property(strong,nonatomic)NSString *invitationcode;
 
 @end

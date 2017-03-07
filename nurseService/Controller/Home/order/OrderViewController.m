@@ -285,6 +285,7 @@
             isEvaluate = @"";
         }
         HeOrderDetailVC *orderDetailVC = [[HeOrderDetailVC alloc] init];
+        orderDetailVC.currentOrderType = currentOrderType;
         orderDetailVC.isEvaluate = [isEvaluate boolValue];
         orderDetailVC.orderId = orderSendId;
         orderDetailVC.hidesBottomBarWhenPushed = YES;

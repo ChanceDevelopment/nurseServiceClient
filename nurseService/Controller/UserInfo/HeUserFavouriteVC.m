@@ -203,6 +203,7 @@
                 data = ERRORREQUESTTIP;
             }
             [self showHint:data];
+            [tableview reloadData];
         }
     } failure:^(NSError* err){
         [self hideHud];
@@ -259,8 +260,10 @@
                 data = ERRORREQUESTTIP;
             }
             [self showHint:data];
+            [tableview reloadData];
         }
     } failure:^(NSError* err){
+        [tableview reloadData];
         [self hideHud];
         [self showHint:ERRORREQUESTTIP];
     }];
@@ -530,6 +533,119 @@
     pageView.leftButton = backImage;
     
     return pageView;
+}
+
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
+
+{
+    
+    return TRUE;
+    
+}
+
+- (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
+
+{
+    
+    return UITableViewCellEditingStyleDelete;
+    
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath{
+    
+    if (editingStyle ==UITableViewCellEditingStyleDelete) {//如果编辑样式为删除样式
+        
+        if (currentIndex == 0) {
+            UIAlertController *alertContrller = [UIAlertController alertControllerWithTitle:@"温馨提示" message:@"是否取消对该护士的关注？" preferredStyle:UIAlertControllerStyleAlert];
+            
+            UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action){
+            
+            }];
+            UIAlertAction *commitAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){
+                
+                NSDictionary *dict = dataSource[indexPath.row];
+                [self showHudInView:tableview hint:@"取消中..."];
+                NSString *requestUrl = [NSString stringWithFormat:@"%@/follow/delectfollowbyid.action",BASEURL];
+                NSString *followId = dict[@"followId"];
+                if ([followId isMemberOfClass:[NSNull class]] || followId == nil) {
+                    followId = @"";
+                }
+                NSDictionary * params  = @{@"followId":followId};
+                [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
+                    [self hideHud];
+                    NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
+                    NSDictionary *respondDict = [NSDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
+                    if ([[respondDict valueForKey:@"errorCode"] integerValue] == REQUESTCODE_SUCCEED){
+//                        [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationLeft];//移除tableView中的数据
+                        [dataSource removeObjectAtIndex:indexPath.row];
+                        [tableView reloadData];
+                    }
+                    else{
+                        NSString *data = respondDict[@"data"];
+                        if ([data isMemberOfClass:[NSNull class]] || data == nil) {
+                            data = ERRORREQUESTTIP;
+                        }
+                        [self showHint:data];
+                    }
+                } failure:^(NSError* err){
+                    [self hideHud];
+                    [self showHint:ERRORREQUESTTIP];
+                }];
+                
+                
+            }];
+            [alertContrller addAction:cancelAction];
+            [alertContrller addAction:commitAction];
+            [self presentViewController:alertContrller animated:YES completion:nil];
+            return;
+        }
+        else{
+            UIAlertController *alertContrller = [UIAlertController alertControllerWithTitle:@"温馨提示" message:@"是否取消对该服务的收藏？" preferredStyle:UIAlertControllerStyleAlert];
+            
+            UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action){
+                
+            }];
+            UIAlertAction *commitAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){
+                
+                [self showHudInView:tableview hint:@"取消中..."];
+                NSString *requestUrl = [NSString stringWithFormat:@"%@/follow/delectcollectsbyid.action",BASEURL];
+                NSDictionary *dict = _serviceItemArray[indexPath.row];
+                
+                NSString *collectionId = dict[@"collectionId"];
+                if ([collectionId isMemberOfClass:[NSNull class]] || collectionId == nil) {
+                    collectionId = @"";
+                }
+                NSDictionary * params  = @{@"collectId":collectionId};
+                [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
+                    [self hideHud];
+                    NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
+                    NSDictionary *respondDict = [NSDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
+                    if ([[respondDict valueForKey:@"errorCode"] integerValue] == REQUESTCODE_SUCCEED){
+//                        [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationLeft];//移除tableView中的数据
+                        [_serviceItemArray removeObjectAtIndex:indexPath.row];
+                        [tableView reloadData];
+                    }
+                    else{
+                        NSString *data = respondDict[@"data"];
+                        if ([data isMemberOfClass:[NSNull class]] || data == nil) {
+                            data = ERRORREQUESTTIP;
+                        }
+                        [self showHint:data];
+                    }
+                } failure:^(NSError* err){
+                    [self hideHud];
+                    [self showHint:ERRORREQUESTTIP];
+                }];
+                
+                
+            }];
+            [alertContrller addAction:cancelAction];
+            [alertContrller addAction:commitAction];
+            [self presentViewController:alertContrller animated:YES completion:nil];
+        }
+        
+    }
+    
 }
 
 - (void)backItemClick:(id)sender

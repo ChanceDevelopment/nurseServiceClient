@@ -57,6 +57,7 @@ BMKMapManager* _mapManager;
     [self launchBaiduMap];
     [self initAPServiceWithOptions:launchOptions];
     [self umengTrack];
+    [self initshareSDK];
     [self performSelector:@selector(getCancelOrder) withObject:nil afterDelay:1.0];
     self.window.rootViewController = self.viewController;
     //清除缓存
@@ -412,6 +413,50 @@ BMKMapManager* _mapManager;
     //    [MobClick ];  //在线参数配置
     //    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onlineConfigCallBack:) name:UMOnlineConfigDidFinishedNotification object:nil];
     
+}
+
+//初始化shareSDK
+- (void)initshareSDK
+{
+    [ShareSDK registerApp:SHARESDKKEY
+          activePlatforms:@[
+                            @(SSDKPlatformSubTypeQZone),
+                            @(SSDKPlatformTypeQQ),
+                            @(SSDKPlatformTypeWechat)
+                            ]
+                 onImport:^(SSDKPlatformType platformType) {
+                     
+                     switch (platformType)
+                     {
+                         case SSDKPlatformTypeWechat:
+                             [ShareSDKConnector connectWeChat:[WXApi class] delegate:self];
+                             break;
+                         case SSDKPlatformTypeQQ:
+                             [ShareSDKConnector connectQQ:[QQApiInterface class]
+                                        tencentOAuthClass:[TencentOAuth class]];
+                             break;
+                         default:
+                             break;
+                     }
+                     
+                 }
+          onConfiguration:^(SSDKPlatformType platformType, NSMutableDictionary *appInfo) {
+              
+              switch (platformType)
+              {
+                  case SSDKPlatformTypeWechat:
+                      [appInfo SSDKSetupWeChatByAppId:@"wxeb71d3d324b829f7"
+                                            appSecret:@"e02faf49615c6c9208cd3510604e1599"];
+                      break;
+                  case SSDKPlatformTypeQQ:
+                      [appInfo SSDKSetupQQByAppId:@"1105867459"
+                                           appKey:@"o5DiIa7E8KR9OJn8"
+                                         authType:SSDKAuthTypeBoth];
+                      break;
+                  default:
+                      break;
+              }
+          }];
 }
 
 - (void)onlineConfigCallBack:(NSNotification *)note {
