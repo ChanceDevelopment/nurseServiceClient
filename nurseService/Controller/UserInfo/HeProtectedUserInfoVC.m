@@ -236,10 +236,11 @@
         
     }
     if (!isFromOrder) {
-        HeEditProtectUserInfoVC *heEditProtectUserInfoVC = [[HeEditProtectUserInfoVC alloc] init];
-        heEditProtectUserInfoVC.hidesBottomBarWhenPushed = YES;
-        heEditProtectUserInfoVC.userInfoDict = [Tools deleteNullFromDic:[[NSMutableDictionary alloc] initWithDictionary:dict]];
-        [self.navigationController pushViewController:heEditProtectUserInfoVC animated:YES];
+        HeEditProtectUserInfoVC *editProtectUserInfoVC = [[HeEditProtectUserInfoVC alloc] init];
+        editProtectUserInfoVC.isEdit = YES;
+        editProtectUserInfoVC.hidesBottomBarWhenPushed = YES;
+        editProtectUserInfoVC.userInfoDict = [Tools deleteNullFromDic:[[NSMutableDictionary alloc] initWithDictionary:dict]];
+        [self.navigationController pushViewController:editProtectUserInfoVC animated:YES];
     }else{
         [_selectDelegate selectUserInfoWithDict:dict];
         [self.navigationController popViewControllerAnimated:YES];

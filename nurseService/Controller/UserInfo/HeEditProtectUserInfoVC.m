@@ -23,6 +23,7 @@
 }
 @property(strong,nonatomic)IBOutlet UITableView *tableview;
 @property(strong,nonatomic)NSArray *dataSource;
+@property(strong,nonatomic)UITextField *addressTextField;
 
 @end
 
@@ -31,6 +32,7 @@
 @synthesize dataSource;
 @synthesize userInfoDict;
 @synthesize isEdit;
+@synthesize addressTextField;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -89,6 +91,21 @@
     
     tableview.separatorStyle = UITableViewCellSeparatorStyleNone;
     
+    CGFloat addressTextFieldX = 10;
+    CGFloat addressTextFieldY = 0;
+    CGFloat addressTextFieldW = SCREENWIDTH - 2 * addressTextFieldX;
+    CGFloat addressTextFieldH = 50;
+    
+    addressTextField = [[UITextField alloc] initWithFrame:CGRectMake(addressTextFieldX, addressTextFieldY, addressTextFieldW, addressTextFieldH)];
+    addressTextField.delegate = self;
+    addressTextField.textAlignment = NSTextAlignmentRight;
+    addressTextField.placeholder = @"请输入详细地址";
+    
+    NSString *protectedPersonOverone = userInfoDict[@"protectedPersonOverone"];
+    if ([protectedPersonOverone isMemberOfClass:[NSNull class]] || [protectedPersonOverone isEqualToString:@""]) {
+        protectedPersonOverone = nil;
+    }
+    addressTextField.text = protectedPersonOverone;
 //    UIView *footerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, 50)];
 //    tableview.tableFooterView = footerView;
 //    tableview.showsVerticalScrollIndicator = NO;
@@ -169,12 +186,15 @@
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return [dataSource count];
+    if (section == 4) {
+        return 2;
+    }
+    return 1;
 }
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return 1;
+    return [dataSource count];
 }
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -192,14 +212,14 @@
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
     UIFont *textFont = [UIFont systemFontOfSize:15.0];
-    NSString *title = dataSource[row];
+    NSString *title = dataSource[section];
     
     CGFloat titleX = 10;
     CGFloat titleY = 0;
     CGFloat titleH = cellSize.height;
-    if (row == [dataSource count] - 1) {
-        titleH = 30;
-    }
+//    if (section == [dataSource count] - 1) {
+//        titleH = 30;
+//    }
     CGFloat titleW = 80;
     UILabel *topicLabel = [[UILabel alloc] init];
     topicLabel.textAlignment = NSTextAlignmentLeft;
@@ -231,7 +251,7 @@
     
     NSString *placeholder = @"";
     UIFont *contentFont = [UIFont systemFontOfSize:16.0];
-    switch (row) {
+    switch (section) {
         case 0:
         {
             //姓名
@@ -316,32 +336,51 @@
         case 4:
         {
             //地址
-            CGFloat contentLabelX = 50;
-            CGFloat contentLabelW = SCREENWIDTH - contentLabelX - 10;
-            CGFloat contentLabelY = 0;
-            CGFloat contentLabelH = cellSize.height;
-            
-            UILabel *contentLabel = [[UILabel alloc] initWithFrame:CGRectMake(contentLabelX, contentLabelY, contentLabelW, contentLabelH)];
-            contentLabel.textAlignment = NSTextAlignmentRight;
-            contentLabel.textColor = [UIColor blackColor];
-            contentLabel.font = contentFont;
-            [cell addSubview:contentLabel];
-            
-            contentField.hidden = YES;
-            //地址不可编辑，取到专门的页面编辑
-            contentField.enabled = NO;
-            if (isEdit) {
-                contentField.hidden = NO;
-                contentField.text  = [userInfoDict objectForKey:@"protectedAddress"];
-            }
-            else{
-                if (!userAddress) {
-                    userAddress = [HeSysbsModel getSysModel].addressResult.address;
+            switch (row) {
+                case 0:
+                {
+                    CGFloat contentLabelX = 50;
+                    CGFloat contentLabelW = SCREENWIDTH - contentLabelX - 10;
+                    CGFloat contentLabelY = 0;
+                    CGFloat contentLabelH = cellSize.height;
+                    
+                    UILabel *contentLabel = [[UILabel alloc] initWithFrame:CGRectMake(contentLabelX, contentLabelY, contentLabelW, contentLabelH)];
+                    contentLabel.textAlignment = NSTextAlignmentRight;
+                    contentLabel.textColor = [UIColor blackColor];
+                    contentLabel.font = contentFont;
+                    [cell addSubview:contentLabel];
+                    
+                    contentField.hidden = YES;
+                    //地址不可编辑，取到专门的页面编辑
+                    contentField.enabled = NO;
+                    if (isEdit) {
+                        contentField.hidden = NO;
+                        contentField.text  = [userInfoDict objectForKey:@"protectedAddress"];
+                    }
+                    else{
+                        if (!userAddress) {
+                            userAddress = [HeSysbsModel getSysModel].addressResult.address;
+                        }
+                        contentLabel.text = userAddress;
+                        contentField.text = userAddress;
+                        [postUserInfo setObject:userAddress forKey:@"key104"];
+                    }
+                    break;
                 }
-                contentLabel.text = userAddress;
-                contentField.text = userAddress;
-                [postUserInfo setObject:userAddress forKey:@"key104"];
+                case 1:
+                {
+                    topicLabel.hidden = YES;
+                    contentField.hidden = YES;
+                    
+                    addressTextField.font = contentFont;
+                    
+                    [cell addSubview:addressTextField];
+                    break;
+                }
+                default:
+                    break;
             }
+            
 
             
             //联系电话
@@ -380,7 +419,7 @@
         }
         case 6:
         {
-                       break;
+            break;
         }
         case 7:
         {
@@ -411,26 +450,7 @@
     return cell;
 }
 
-- (void)selectRelation:(id)sender
-{
-    NSArray *menuArray = @[@"自己",@"妻子",@"爸爸",@"妈妈",@"亲戚",@"朋友",@"孩子",@"其他"];
-    [FTPopOverMenu showForSender:sender
-                        withMenu:menuArray
-                  imageNameArray:nil
-                       doneBlock:^(NSInteger selectedIndex) {
-                           releation = menuArray[selectedIndex];
-                           if (!releation) {
-                               releation = @"自己";
-                           }
-                           [userInfoDict setObject:releation forKey:@"protectedPersonNexus"];
-                           [tableview reloadData];
-                           
-                       } dismissBlock:^{
-                           
-                           NSLog(@"user canceled. do nothing.");
-                           
-                       }];
-}
+
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -443,12 +463,16 @@
 }
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    
-    return 30;
+    if (section == 0) {
+        return 30;
+    }
+    if (section == 4) {
+        return 10;
+    }
+    return 0;
 
 }
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
-    
     UIView *v = nil;
     v = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 30)];
     v.userInteractionEnabled = YES;
@@ -461,7 +485,18 @@
     labelTitle.font = [UIFont systemFontOfSize:12.0];
     labelTitle.textColor = [UIColor redColor];
     [v addSubview:labelTitle];
-    return v;
+    if (section == 0) {
+        return v;
+    }
+    if (section == 4) {
+        UIView *v = nil;
+        v = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 10)];
+        v.userInteractionEnabled = YES;
+        [v setBackgroundColor:[UIColor colorWithWhite:244.0 / 255.0 alpha:1.0]];
+        return v;
+    }
+    return nil;
+    
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
@@ -469,7 +504,7 @@
     NSInteger row = indexPath.row;
     NSInteger section = indexPath.section;
     HeBaseTableViewCell *cell  = [tableView cellForRowAtIndexPath:indexPath];
-    switch (row) {
+    switch (section) {
 //        case 1:{
 //            UIActionSheet *actionsheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"男",@"女", nil];
 //            actionsheet.tag = 100;
@@ -609,6 +644,10 @@
 //        }
 //    }
 //    @"personGuardian": protectedPersonGuardian,
+    NSString *detailedAddress = addressTextField.text;
+    if (detailedAddress == nil) {
+        detailedAddress = @"";
+    }
     NSDictionary * params  = @{@"userId": userid,
                                @"personId": [userInfoDict objectForKey:@"protectedPersonId"],
                                @"personName": [userInfoDict objectForKey:@"protectedPersonName"],
@@ -625,7 +664,8 @@
                                @"address": [userInfoDict objectForKey:@"protectedAddress"],
                                @"isdefault": [userInfoDict objectForKey:@"protectedDefault"],
                                @"longitude": [[[HeSysbsModel getSysModel] userLocationDict] objectForKey:@"longitude"],
-                               @"latitude": [[[HeSysbsModel getSysModel] userLocationDict] objectForKey:@"latitude"]};
+                               @"latitude": [[[HeSysbsModel getSysModel] userLocationDict] objectForKey:@"latitude"],
+                               @"detailedAddress":detailedAddress};
 
     [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
         NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
@@ -721,6 +761,10 @@
         return;
     }
 //    @"personGuardian": dian,
+    NSString *detailedAddress = addressTextField.text;
+    if (detailedAddress == nil) {
+        detailedAddress = @"";
+    }
     NSDictionary * params  = @{@"personName": name,
                                @"personSex": @"2",
                                @"personCard": card,
@@ -736,7 +780,8 @@
                                @"isdefault": @"0",
                                @"userId": userid,
                                @"longitude": longitude,
-                               @"latitude": latitude};
+                               @"latitude": latitude,
+                               @"detailedAddress":detailedAddress};
     [self showHudInView:tableview hint:@"添加中..."];
     [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
         [self hideHud];
@@ -763,6 +808,27 @@
         NSLog(@"err:%@",err);
         [self showHint:ERRORREQUESTTIP];
     }];
+}
+
+- (void)selectRelation:(id)sender
+{
+    NSArray *menuArray = @[@"自己",@"妻子",@"爸爸",@"妈妈",@"亲戚",@"朋友",@"孩子",@"其他"];
+    [FTPopOverMenu showForSender:sender
+                        withMenu:menuArray
+                  imageNameArray:nil
+                       doneBlock:^(NSInteger selectedIndex) {
+                           releation = menuArray[selectedIndex];
+                           if (!releation) {
+                               releation = @"自己";
+                           }
+                           [userInfoDict setObject:releation forKey:@"protectedPersonNexus"];
+                           [tableview reloadData];
+                           
+                       } dismissBlock:^{
+                           
+                           NSLog(@"user canceled. do nothing.");
+                           
+                       }];
 }
 
 - (void)backToRootView{

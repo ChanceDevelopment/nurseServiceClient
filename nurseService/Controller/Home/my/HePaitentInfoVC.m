@@ -132,7 +132,7 @@
     CGFloat titleX = 10;
     CGFloat titleY = 0;
     CGFloat titleH = cellSize.height;
-    CGFloat titleW = 80;
+    CGFloat titleW = 70;
     UILabel *topicLabel = [[UILabel alloc] init];
     topicLabel.textAlignment = NSTextAlignmentLeft;
     topicLabel.backgroundColor = [UIColor clearColor];

@@ -57,11 +57,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "nurseService/Controller/UserInfo/HeEditProtectUserInfoVC.m"
-            timestampString = "507005501.359092"
+            timestampString = "511166961.923696"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "583"
-            endingLineNumber = "583"
+            startingLineNumber = "618"
+            endingLineNumber = "618"
             landmarkName = "-editProtectedUserInfo"
             landmarkType = "7">
             <Locations>
