@@ -216,10 +216,13 @@
     
     CGFloat titleX = 10;
     CGFloat titleY = 0;
+    
     CGFloat titleH = cellSize.height;
-//    if (section == [dataSource count] - 1) {
-//        titleH = 30;
-//    }
+    if (section == 4 && row == 0) {
+        titleY = 10;
+        titleH= titleH - titleY;
+    }
+
     CGFloat titleW = 80;
     UILabel *topicLabel = [[UILabel alloc] init];
     topicLabel.textAlignment = NSTextAlignmentLeft;
@@ -234,10 +237,14 @@
     textFont = [UIFont systemFontOfSize:16.0];
     
     CGFloat contentFieldY = 0;
+    
     CGFloat contentFieldX = 80;
     CGFloat contentFieldW = cellSize.width - contentFieldX - 10;
     CGFloat contentFieldH = cellSize.height;
-    
+    if (row == 0 && section == 4) {
+        contentFieldY = 10;
+        contentFieldH = contentFieldH - contentFieldY;
+    }
     
     UITextField *contentField = [[UITextField alloc] initWithFrame:CGRectMake(contentFieldX, contentFieldY, contentFieldW, contentFieldH)];
     contentField.delegate = self;
@@ -339,10 +346,19 @@
             switch (row) {
                 case 0:
                 {
+                    UIView *bgview = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, 10)];
+                    bgview.backgroundColor = [UIColor colorWithWhite:237.0 / 255.0 alpha:1.0];
+                    [cell addSubview:bgview];
+                    
+                    UIView *line = [[UIView alloc] initWithFrame:CGRectMake(0, 9.5, SCREENWIDTH, 0.5)];
+                    line.backgroundColor = [UIColor colorWithWhite:200.0 / 255.0 alpha:1.0];
+                    [bgview addSubview:line];
+                    
+//                    [UIColor colorWithWhite:237.0 /255.0 alpha:1.0];
                     CGFloat contentLabelX = 50;
                     CGFloat contentLabelW = SCREENWIDTH - contentLabelX - 10;
-                    CGFloat contentLabelY = 0;
-                    CGFloat contentLabelH = cellSize.height;
+                    CGFloat contentLabelY = 10;
+                    CGFloat contentLabelH = cellSize.height - contentLabelY;
                     
                     UILabel *contentLabel = [[UILabel alloc] initWithFrame:CGRectMake(contentLabelX, contentLabelY, contentLabelW, contentLabelH)];
                     contentLabel.textAlignment = NSTextAlignmentRight;
@@ -456,9 +472,9 @@
 {
     NSInteger section = indexPath.section;
     NSInteger row = indexPath.row;
-//    if (row == [dataSource count] - 1) {
-//        return 100;
-//    }
+    if (row == 0 && section == 4) {
+        return 60;
+    }
     return 50;
 }
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
@@ -466,14 +482,15 @@
     if (section == 0) {
         return 30;
     }
-    if (section == 4) {
-        return 10;
-    }
     return 0;
 
 }
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
     UIView *v = nil;
+    if (section != 0) {
+        return v;
+    }
+    
     v = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 30)];
     v.userInteractionEnabled = YES;
     [v setBackgroundColor:[UIColor colorWithWhite:244.0 / 255.0 alpha:1.0]];
@@ -485,18 +502,7 @@
     labelTitle.font = [UIFont systemFontOfSize:12.0];
     labelTitle.textColor = [UIColor redColor];
     [v addSubview:labelTitle];
-    if (section == 0) {
-        return v;
-    }
-    if (section == 4) {
-        UIView *v = nil;
-        v = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 10)];
-        v.userInteractionEnabled = YES;
-        [v setBackgroundColor:[UIColor colorWithWhite:244.0 / 255.0 alpha:1.0]];
-        return v;
-    }
-    return nil;
-    
+    return v;
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
