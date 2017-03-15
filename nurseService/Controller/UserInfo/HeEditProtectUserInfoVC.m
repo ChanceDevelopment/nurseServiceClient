@@ -134,25 +134,31 @@
     if (isEdit) {
         switch (textField.tag) {
             case 100:
+                //受保护人姓名
                 [userInfoDict setObject:temp forKey:@"protectedPersonName"];
                 break;
             case 101:
+                //受保护人身份证号
                 [userInfoDict setObject:temp forKey:@"protectedPersonCard"];
 //                [userInfoDict setObject:temp forKey:@"protectedPersonSex"];
                 break;
             case 102:
+                //身高
                 [userInfoDict setObject:temp forKey:@"protectedPersonHeight"];
                 break;
             case 103:
+                //体重
                 [userInfoDict setObject:temp forKey:@"protectedPersonWeight"];
                 break;
                 //            case 104:
                 //                [userInfoDict setObject:temp forKey:@"personGuardian"];
                 //                break;
             case 104:
+                //地址
                 [userInfoDict setObject:temp forKey:@"protectedAddress"];
                 break;
             case 105:
+                //关系
                 [userInfoDict setObject:temp forKey:@"protectedPersonNexus"];
                 break;
 //            case 106:
@@ -250,7 +256,7 @@
     contentField.delegate = self;
     contentField.font = textFont;
     contentField.textAlignment = NSTextAlignmentRight;
-    contentField.tag = row + 100;
+    contentField.tag = section + 100;
     
     NSString *infoKey = [NSString stringWithFormat:@"key%ld",contentField.tag];
     NSString *temp = [postUserInfo objectForKey:infoKey];
@@ -266,7 +272,7 @@
             if (isEdit) {
                 contentField.text  = [userInfoDict objectForKey:@"protectedPersonName"];
             }
-            
+            contentField.tag = 100;
             break;
         }
         case 1:
@@ -276,6 +282,7 @@
             if (isEdit) {
                 contentField.text  = [userInfoDict objectForKey:@"protectedPersonCard"];
             }
+            contentField.tag = 101;
             contentField.keyboardType = UIKeyboardTypeNumbersAndPunctuation;
             //性别
 //            CGFloat contentLabelX = 90;
@@ -304,6 +311,7 @@
         case 2:
         {
             //身高
+            contentField.tag = 102;
             placeholder = @"单位（cm）";
             if (isEdit) {
                 contentField.text  = [userInfoDict objectForKey:@"protectedPersonHeight"];
@@ -315,6 +323,7 @@
         case 3:
         {
             //体重
+            contentField.tag = 103;
             placeholder = @"单位（kg）";
             if (isEdit) {
                 contentField.text  = [userInfoDict objectForKey:@"protectedPersonWeight"];
@@ -346,6 +355,7 @@
             switch (row) {
                 case 0:
                 {
+                    contentField.tag = 104;
                     UIView *bgview = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, 10)];
                     bgview.backgroundColor = [UIColor colorWithWhite:237.0 / 255.0 alpha:1.0];
                     [cell addSubview:bgview];
@@ -410,6 +420,7 @@
         case 5:
         {
             //关系
+            contentField.tag = 105;
             CGFloat contentLabelX = 90;
             CGFloat contentLabelW = SCREENWIDTH - contentLabelX - 10;
             CGFloat contentLabelY = 0;
