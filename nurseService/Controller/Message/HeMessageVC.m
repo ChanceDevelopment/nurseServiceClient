@@ -181,7 +181,7 @@
             if ([data isMemberOfClass:[NSNull class]] || data == nil) {
                 data = @"";
             }
-            [self showHint:data];
+//            [self showHint:data];
         }
         if ([dataSource count] == 0) {
             UIView *bgView = [[UIView alloc] initWithFrame:self.view.bounds];
@@ -241,11 +241,12 @@
     }
     CGFloat contentLabelX = 10;
     CGFloat contentLabelY = 0;
-    CGFloat contentLabelH = 30;
+    CGFloat contentLabelH = 40;
     CGFloat contentLabelW = SCREENWIDTH - 2 * contentLabelX;
     UILabel *contentLabel = [[UILabel alloc] initWithFrame:CGRectMake(contentLabelX, contentLabelY, contentLabelW, contentLabelH)];
     contentLabel.backgroundColor = [UIColor clearColor];
     contentLabel.font = [UIFont systemFontOfSize:16.0];
+    contentLabel.numberOfLines=2;
     contentLabel.textColor = [UIColor blackColor];
     [cell addSubview:contentLabel];
     
@@ -280,7 +281,7 @@
         zoneCreatetime = [zoneCreatetime substringToIndex:[zoneCreatetime length] - 3];
     }
     
-    NSString *time = [Tool convertTimespToString:[zoneCreatetime longLongValue] dateFormate:@"YYYY-MM-dd"];
+    NSString *time = [Tool convertTimespToString:[zoneCreatetime longLongValue] dateFormate:@"YYYY-MM-dd HH:mm:ss"];
     timeLabel.text = time;
     
     return cell;
@@ -288,7 +289,7 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 60.0;
+    return 70.0;
 }
 
 - (void)cleanAction{
