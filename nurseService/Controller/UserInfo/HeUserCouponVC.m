@@ -198,27 +198,38 @@
         
     }
     
+    NSString *userHeader = [NSString stringWithFormat:@"%@%@",PIC_URL,[dict valueForKey:@"couponUserPic"]];
+    [cell.headImageView sd_setImageWithURL:[NSURL URLWithString:userHeader] placeholderImage:[UIImage imageNamed:@"icon_coupon"]];
+    
     NSString *couponUserSperak = dict[@"couponUserSperak"];
     if ([couponUserSperak isMemberOfClass:[NSNull class]]) {
         couponUserSperak = @"";
     }
     cell.contentLabel.text = couponUserSperak;
-    
-    
-    id zoneCreatetimeObj = [dict objectForKey:@"standInnerLetterCreatetime"];
+    NSString *time;
+    id couponUserFullGiveObj = dict[@"couponUserFullGive"];
+    if ([couponUserFullGiveObj isMemberOfClass:[NSNull class]] || couponUserFullGiveObj == nil) {
+        couponUserFullGiveObj = @"";
+    }
+    CGFloat couponUserFullGive = [couponUserFullGiveObj floatValue];
+
+    id zoneCreatetimeObj = [dict objectForKey:@"couponUserExpirationTime"];
     if ([zoneCreatetimeObj isMemberOfClass:[NSNull class]] || zoneCreatetimeObj == nil) {
         NSTimeInterval  timeInterval = [[NSDate date] timeIntervalSince1970];
         zoneCreatetimeObj = [NSString stringWithFormat:@"%.0f000",timeInterval];
+        time = @"无期限限制";
+    }else{
+        long long timestamp = [zoneCreatetimeObj longLongValue];
+        NSString *zoneCreatetime = [NSString stringWithFormat:@"%lld",timestamp];
+        if ([zoneCreatetime length] > 3) {
+            //时间戳
+            zoneCreatetime = [zoneCreatetime substringToIndex:[zoneCreatetime length] - 3];
+        }
+        
+        time = [NSString stringWithFormat:@"有效期至: %@",[Tool convertTimespToString:[zoneCreatetime longLongValue] dateFormate:@"YYYY-MM-dd"]];
     }
-    long long timestamp = [zoneCreatetimeObj longLongValue];
-    NSString *zoneCreatetime = [NSString stringWithFormat:@"%lld",timestamp];
-    if ([zoneCreatetime length] > 3) {
-        //时间戳
-        zoneCreatetime = [zoneCreatetime substringToIndex:[zoneCreatetime length] - 3];
-    }
-    
-    NSString *time = [Tool convertTimespToString:[zoneCreatetime longLongValue] dateFormate:@"YYYY-MM-dd"];
-    cell.timeLabel.text = [NSString stringWithFormat:@"有效期至: %@",time];
+
+    cell.timeLabel.text = [NSString stringWithFormat:@"单笔满%.2f元使用(仅限当前用户)\n%@",couponUserFullGive,time];
     
     id couponUserMoneyObj = dict[@"couponUserMoney"];
     if ([couponUserMoneyObj isMemberOfClass:[NSNull class]] || couponUserMoneyObj == nil) {
@@ -227,12 +238,11 @@
     CGFloat couponUserMoney = [couponUserMoneyObj floatValue];
     cell.priceLabel.text = [NSString stringWithFormat:@"￥%.2f",couponUserMoney];
     
-    id couponUserFullGiveObj = dict[@"couponUserFullGive"];
-    if ([couponUserFullGiveObj isMemberOfClass:[NSNull class]] || couponUserFullGiveObj == nil) {
-        couponUserFullGiveObj = @"";
-    }
-    CGFloat couponUserFullGive = [couponUserFullGiveObj floatValue];
-    cell.conditionLabel.text = [NSString stringWithFormat:@"满%.2f可用",couponUserFullGive];
+//    id couponUserFullGiveObj = dict[@"couponUserFullGive"];
+//    if ([couponUserFullGiveObj isMemberOfClass:[NSNull class]] || couponUserFullGiveObj == nil) {
+//        couponUserFullGiveObj = @"";
+//    }
+//    cell.conditionLabel.text = [NSString stringWithFormat:@"满%.2f可用",couponUserFullGive];
     return cell;
 }
 

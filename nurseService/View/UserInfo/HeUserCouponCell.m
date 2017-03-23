@@ -13,6 +13,7 @@
 @synthesize timeLabel;
 @synthesize priceLabel;
 @synthesize conditionLabel;
+@synthesize headImageView;
 
 /*
 // Only override drawRect: if you perform custom drawing.
@@ -30,41 +31,60 @@
         CGFloat bgViewX = 10;
         CGFloat bgViewY = 5;
         CGFloat bgViewW = cellsize.width - 2 * bgViewX;
-        CGFloat bgViewH = cellsize.height - 2 * bgViewY;
+        CGFloat bgViewH = cellsize.height;
         
-        UIView *bgView = [[UIView alloc] initWithFrame:CGRectMake(bgViewX, bgViewY, bgViewW, bgViewH)];
-        bgView.backgroundColor = [UIColor whiteColor];
-        bgView.layer.cornerRadius = 5.0;
-        bgView.layer.masksToBounds = YES;
+        UIImageView *bgView = [[UIImageView alloc] initWithFrame:CGRectMake(bgViewX, bgViewY, bgViewW, bgViewH)];
+        bgView.backgroundColor = [UIColor clearColor];
         [self addSubview:bgView];
+        [bgView setImage:[UIImage imageNamed:@"icon_coupon_bg"]];
         
-        CGFloat contentLabelX = 10;
+        
+        CGFloat itemX = 10;
+        CGFloat itemY = 15;
+        CGFloat itemW = 50;
+        headImageView = [[UIImageView alloc] initWithFrame:CGRectMake(itemX, itemY, itemW, itemW)];
+        headImageView.backgroundColor = [UIColor clearColor];
+        headImageView.layer.masksToBounds = YES;
+        headImageView.image = [UIImage imageNamed:@"icon_coupon"];
+        headImageView.contentMode = UIViewContentModeScaleAspectFill;
+        headImageView.layer.borderWidth = 0.0;
+        headImageView.layer.cornerRadius = 40 / 2.0;
+        headImageView.layer.masksToBounds = YES;
+        [bgView addSubview:headImageView];
+
+        
+        CGFloat contentLabelX = CGRectGetMaxX(headImageView.frame);
         CGFloat contentLabelY = 10;
-        CGFloat contentLabelW = (bgViewW - 2 * contentLabelX) / 2.0;
-        CGFloat contentLabelH = (bgViewH - 2 * contentLabelY) / 2.0;
+        CGFloat contentLabelW = 200;
+        CGFloat contentLabelH = 25;
         
         contentLabel = [[UILabel alloc] initWithFrame:CGRectMake(contentLabelX, contentLabelY, contentLabelW, contentLabelH)];
         contentLabel.backgroundColor = [UIColor clearColor];
         contentLabel.font = [UIFont systemFontOfSize:17.0];
-        contentLabel.textColor = [UIColor blackColor];
+        contentLabel.textColor = [UIColor redColor];
         contentLabel.text = @"11";
         [bgView addSubview:contentLabel];
         
-        CGFloat timeLabelX = 10;
+        CGFloat timeLabelX = CGRectGetMaxX(headImageView.frame);
         CGFloat timeLabelY = CGRectGetMaxY(contentLabel.frame);
-        CGFloat timeLabelW = (bgViewW - 2 * contentLabelX) / 2.0;
-        CGFloat timeLabelH = contentLabelH;
+        CGFloat timeLabelW = bgViewW-timeLabelX-5;
+        CGFloat timeLabelH = 50;
+        
+        UILabel *line = [[UILabel alloc] initWithFrame:CGRectMake(timeLabelX, timeLabelY, timeLabelW+5, 1)];
+        line.backgroundColor = [UIColor lightGrayColor];
+        [bgView addSubview:line];
         
         timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(timeLabelX, timeLabelY, timeLabelW, timeLabelH)];
+        timeLabel.numberOfLines = 2;
         timeLabel.backgroundColor = [UIColor clearColor];
         timeLabel.font = [UIFont systemFontOfSize:12.0];
         timeLabel.textColor = [UIColor grayColor];
         timeLabel.text = @"11";
         [bgView addSubview:timeLabel];
         
-        CGFloat priceLabelX = CGRectGetMaxX(contentLabel.frame);
+        CGFloat priceLabelX = bgViewW-110;
         CGFloat priceLabelY = 10;
-        CGFloat priceLabelW = (bgViewW - 2 * contentLabelX) / 2.0;
+        CGFloat priceLabelW = 100;
         CGFloat priceLabelH = contentLabelH;
         
         priceLabel = [[UILabel alloc] initWithFrame:CGRectMake(priceLabelX, priceLabelY, priceLabelW, priceLabelH)];
@@ -75,18 +95,18 @@
         priceLabel.textAlignment = NSTextAlignmentRight;
         [bgView addSubview:priceLabel];
         
-        CGFloat conditionLabelX = CGRectGetMaxX(contentLabel.frame);
-        CGFloat conditionLabelY = CGRectGetMaxY(priceLabel.frame);
-        CGFloat conditionLabelW = (bgViewW - 2 * contentLabelX) / 2.0;
-        CGFloat conditionLabelH = contentLabelH;
-        
-        conditionLabel = [[UILabel alloc] initWithFrame:CGRectMake(conditionLabelX, conditionLabelY, conditionLabelW, conditionLabelH)];
-        conditionLabel.backgroundColor = [UIColor clearColor];
-        conditionLabel.font = [UIFont systemFontOfSize:15.0];
-        conditionLabel.textColor = [UIColor redColor];
-        conditionLabel.text = @"11";
-        conditionLabel.textAlignment = NSTextAlignmentRight;
-        [bgView addSubview:conditionLabel];
+//        CGFloat conditionLabelX = CGRectGetMaxX(contentLabel.frame);
+//        CGFloat conditionLabelY = CGRectGetMaxY(priceLabel.frame);
+//        CGFloat conditionLabelW = (bgViewW - 2 * contentLabelX) / 2.0;
+//        CGFloat conditionLabelH = contentLabelH;
+//        
+//        conditionLabel = [[UILabel alloc] initWithFrame:CGRectMake(conditionLabelX, conditionLabelY, conditionLabelW, conditionLabelH)];
+//        conditionLabel.backgroundColor = [UIColor clearColor];
+//        conditionLabel.font = [UIFont systemFontOfSize:15.0];
+//        conditionLabel.textColor = [UIColor redColor];
+//        conditionLabel.text = @"11";
+//        conditionLabel.textAlignment = NSTextAlignmentRight;
+//        [bgView addSubview:conditionLabel];
     }
     return self;
 }

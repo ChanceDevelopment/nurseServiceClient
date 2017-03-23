@@ -529,7 +529,6 @@
         if ([[respondDict valueForKey:@"errorCode"] integerValue] == REQUESTCODE_SUCCEED){
             
             orderDetailDict = [[NSDictionary alloc] initWithDictionary:respondDict[@"json"]];
-            
             id zoneCreatetimeObj = [orderDetailDict objectForKey:@"orderSendBegintime"];
             if (_currentOrderType == 1) {
                 zoneCreatetimeObj = orderDetailDict[@"orderSendCreatetime"];
@@ -685,6 +684,7 @@
     static NSString *cellIndentifier = @"OrderFinishedTableViewCell";
     CGSize cellSize = [tableView rectForRowAtIndexPath:indexPath].size;
     //    NSDictionary *dict = [NSDictionary dictionaryWithDictionary:[dataArr objectAtIndex:row]];
+    orderDetailDict = [Tool deleteNullFromDic:orderDetailDict];
     
     HeBaseTableViewCell *cell  = [tableView cellForRowAtIndexPath:indexPath];
     if (!cell) {
@@ -875,23 +875,24 @@
                     CGFloat addressLabelH = cellSize.height / 2.0;
                     CGFloat addressLabelY = CGRectGetMaxY(timeLabel.frame);
                     
-                    UILabel *addressTipL = [[UILabel alloc] initWithFrame:CGRectMake(addressLabelX, addressLabelY, 30, addressLabelH)];
+                    UILabel *addressTipL = [[UILabel alloc] initWithFrame:CGRectMake(addressLabelX, addressLabelY-5, 30, addressLabelH)];
                     addressTipL.font = [UIFont fontWithName:@"Helvetica" size:13.0];
                     addressTipL.text = @"地址";
                     addressTipL.backgroundColor = [UIColor clearColor];
                     addressTipL.textColor = [UIColor grayColor];
                     [cell addSubview:addressTipL];
                     
-                    UILabel *addressLabel = [[UILabel alloc] initWithFrame:CGRectMake(addressLabelX+35, addressLabelY, addressLabelW, addressLabelH)];
+                    UILabel *addressLabel = [[UILabel alloc] initWithFrame:CGRectMake(addressLabelX+35, addressLabelY-10, addressLabelW, addressLabelH+10)];
                     addressLabel.font = [UIFont fontWithName:@"Helvetica" size:13.0];
-                    addressLabel.text = orderSendAddree;
+                    addressLabel.numberOfLines = 2;
+                    addressLabel.text = [NSString stringWithFormat:@"%@ %@",orderSendAddree,[orderDetailDict valueForKey:@"detailedAddress"]];
                     addressLabel.backgroundColor = [UIColor clearColor];
                     [cell addSubview:addressLabel];
                     
                     CGFloat locationIconH = 25;
                     CGFloat locationIconW = 65;
                     CGFloat locationIconX = CGRectGetMaxX(addressLabel.frame)+5;
-                    CGFloat locationIconY = addressLabelY;
+                    CGFloat locationIconY = addressLabelY-10;
                     
                     UIButton *locationButton = [[UIButton alloc] initWithFrame:CGRectMake(locationIconX, locationIconY, locationIconW, locationIconH)];
                     locationButton.backgroundColor = APPDEFAULTORANGE;

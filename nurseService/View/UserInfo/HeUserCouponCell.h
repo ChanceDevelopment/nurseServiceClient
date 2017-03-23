@@ -9,6 +9,7 @@
 #import "HeBaseTableViewCell.h"
 
 @interface HeUserCouponCell : HeBaseTableViewCell
+@property(strong,nonatomic)UIImageView *headImageView;
 @property(strong,nonatomic)UILabel *contentLabel;
 @property(strong,nonatomic)UILabel *timeLabel;
 @property(strong,nonatomic)UILabel *priceLabel;

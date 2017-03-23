@@ -11,6 +11,7 @@
 #import "MJRefreshAutoNormalFooter.h"
 #import "MJRefreshNormalHeader.h"
 #import "DLNavigationTabBar.h"
+#import "MLLabel+Size.h"
 
 @interface HeMessageVC ()<UITableViewDelegate,UITableViewDataSource>
 {
@@ -239,26 +240,29 @@
     } @finally {
         
     }
-    CGFloat contentLabelX = 10;
-    CGFloat contentLabelY = 0;
-    CGFloat contentLabelH = 40;
-    CGFloat contentLabelW = SCREENWIDTH - 2 * contentLabelX;
-    UILabel *contentLabel = [[UILabel alloc] initWithFrame:CGRectMake(contentLabelX, contentLabelY, contentLabelW, contentLabelH)];
-    contentLabel.backgroundColor = [UIColor clearColor];
-    contentLabel.font = [UIFont systemFontOfSize:16.0];
-    contentLabel.numberOfLines=2;
-    contentLabel.textColor = [UIColor blackColor];
-    [cell addSubview:contentLabel];
     
+    CGFloat contentLabelX = 10;
+    CGFloat contentLabelW = SCREENWIDTH - 2 * contentLabelX;
+    UIFont *textFont = [UIFont systemFontOfSize:16.0];
     NSString *standInnerLetterContent = dict[@"standInnerLetterContent"];
     if ([standInnerLetterContent isMemberOfClass:[NSNull class]] || standInnerLetterContent == nil) {
         standInnerLetterContent = @"";
     }
+    CGSize size = [MLLabel getViewSizeByString:standInnerLetterContent maxWidth:contentLabelW font:textFont lineHeight:1.2f lines:0];
+    CGFloat contentLabelY = 0;
+    CGFloat contentLabelH = size.height;
+    
+    UILabel *contentLabel = [[UILabel alloc] initWithFrame:CGRectMake(contentLabelX, contentLabelY, contentLabelW, contentLabelH)];
+    contentLabel.backgroundColor = [UIColor clearColor];
+    contentLabel.font = textFont;
+    contentLabel.numberOfLines=0;
+    contentLabel.textColor = [UIColor blackColor];
+    [cell addSubview:contentLabel];
     contentLabel.text = standInnerLetterContent;
     
     
     CGFloat timeLabelX = 10;
-    CGFloat timeLabelY = CGRectGetMaxY(contentLabel.frame);
+    CGFloat timeLabelY = CGRectGetMaxY(contentLabel.frame)-5;
     CGFloat timeLabelH = 30;
     CGFloat timeLabelW = SCREENWIDTH - 2 * timeLabelX;
     UILabel *timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(timeLabelX, timeLabelY, timeLabelW, timeLabelH)];
@@ -289,7 +293,25 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 70.0;
+    NSInteger row = indexPath.row;
+
+    NSDictionary *dict = nil;
+    @try {
+        dict = dataSource[row];
+    } @catch (NSException *exception) {
+        
+    } @finally {
+        
+    }
+    CGFloat contentLabelX = 10;
+    CGFloat contentLabelW = SCREENWIDTH - 2 * contentLabelX;
+    UIFont *textFont = [UIFont systemFontOfSize:16.0];
+    NSString *standInnerLetterContent = dict[@"standInnerLetterContent"];
+    if ([standInnerLetterContent isMemberOfClass:[NSNull class]] || standInnerLetterContent == nil) {
+        standInnerLetterContent = @"";
+    }
+    CGSize size = [MLLabel getViewSizeByString:standInnerLetterContent maxWidth:contentLabelW font:textFont lineHeight:1.2f lines:0];
+    return 25.0+size.height;
 }
 
 - (void)cleanAction{

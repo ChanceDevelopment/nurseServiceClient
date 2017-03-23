@@ -230,6 +230,8 @@ BMKMapManager* _mapManager;
         sideMenuVC.contentViewShadowOffset = CGSizeMake(0, 0);
         sideMenuVC.contentViewShadowOpacity = 0.6;
         sideMenuVC.contentViewShadowRadius = 12;
+        sideMenuVC.panGestureEnabled = NO;
+//        sideMenuVC.panFromEdge = NO;
         sideMenuVC.contentViewShadowEnabled = YES;
         //是否缩小
         sideMenuVC.scaleContentView = NO;
