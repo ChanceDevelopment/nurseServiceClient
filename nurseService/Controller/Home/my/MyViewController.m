@@ -300,7 +300,7 @@
     pointNumLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, commonlabelW, otherInfoLabelBGH / 2.0)];
     pointNumLabel.backgroundColor = [UIColor clearColor];
 //    pointNumLabel.text = [NSString stringWithFormat:@"%ld单",point];
-    pointNumLabel.text = @"0单";
+    pointNumLabel.text = @" 单";
     pointNumLabel.font = [UIFont systemFontOfSize:17.0];
     pointNumLabel.textAlignment = NSTextAlignmentCenter;
     pointNumLabel.textColor = [UIColor colorWithRed:69.0 / 255.0 green:139.0 / 255.0 blue:84.0 / 255.0 alpha:1.0];
@@ -504,7 +504,7 @@
     if (button.selected) {
         balanceNumLabel.text = @"***元";
         couponNumLabel.text = @"***张";
-        pointNumLabel.text = @"***分";
+        pointNumLabel.text = @"***单";
     }
     else{
         CGFloat balance = [userInfoModel.userBalance floatValue];
@@ -522,7 +522,13 @@
         }
         
         couponNumLabel.text = [NSString stringWithFormat:@"%ld张",couponNum];
-        pointNumLabel.text = [NSString stringWithFormat:@"%ld分",point];
+        NSLog(@"%ld",(long)point);
+//        NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
+//            NSString *passWord = [ user objectForKey:@"userPassWord"];
+        NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
+        NSString *PointNumLabel = [user objectForKey:@"pointNumLabel"];
+        pointNumLabel.text = [NSString stringWithFormat:@"%@",PointNumLabel];
+        
     }
 }
 
@@ -858,7 +864,11 @@
             if ([jsonArray isMemberOfClass:[NSNull class]] || jsonArray == nil || [jsonArray count] == 0) {
                 jsonArray = [NSArray array];
             }
+            NSLog(@"%lu",(unsigned long)jsonArray.count);
             pointNumLabel.text = [NSString stringWithFormat:@"%ld单",jsonArray.count];
+            
+            NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
+            [user setObject:pointNumLabel.text forKey:@"pointNumLabel"];
         }
         else{
             NSString *data = respondDict[@"data"];

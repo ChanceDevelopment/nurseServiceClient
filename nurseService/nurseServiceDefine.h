@@ -19,7 +19,7 @@
 
 //百度地图的key
 #define BAIDUMAPKEY @"wahybut4ENzt0edEW9GWvxGGQU0z6dt5"
-
+#define kRemarKString @"kRemarKString"
 
 //自己服务器的通信模块
 #define EASEMOBKEY @"godchance#aishangfuyang"

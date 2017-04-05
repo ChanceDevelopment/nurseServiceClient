@@ -123,6 +123,22 @@
     NSString *userEmail = userInfoModel.userEmail;
     BOOL email = [RegularTool checkEmailStr:userEmail];
     
+    if (userNick.length == 0){
+        [self showHint:@"昵称不能为空"];
+        return;
+    }
+    
+    if (userNick.length > 16){
+        [self showHint:@"昵称长度超出"];
+        return;
+    }
+    
+    BOOL isPhoneNum = [RegularTool checkTelephoneNumber:userPhone];
+    if (!(isPhoneNum)) {
+        [self showHint:@"手机号错误"];
+        return;
+    }
+    
     if (email) {
         [self showHudInView:tableview hint:@"修改中..."];
     NSDictionary *params = @{@"userId":userId,@"userHeader":userHeader,@"userNick":userNick,@"userPhone":userPhone,@"userSex":userSex,@"userEmail":userEmail};

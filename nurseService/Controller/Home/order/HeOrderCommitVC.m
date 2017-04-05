@@ -778,6 +778,22 @@
             [cell addSubview:serviceBG];
             break;
         }
+        case 4: {
+            CGFloat endLabelY = 0;
+            CGFloat endLabelW = 350;
+            CGFloat endLabelH = cellSize.height;
+            CGFloat endLabelX = SCREENWIDTH - endLabelW - 30;
+            
+            UILabel *endLabel = [[UILabel alloc] initWithFrame:CGRectMake(endLabelX, endLabelY, endLabelW, endLabelH)];
+            endLabel.font = [UIFont systemFontOfSize:15.0];
+            NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
+            NSString *remark = [user objectForKey:kRemarKString];
+            endLabel.text = remark;
+            endLabel.textAlignment = NSTextAlignmentRight;
+            endLabel.textColor = [UIColor redColor];
+            [cell addSubview:endLabel];
+            break;
+        }
         case 5:{
             //图片资料
             cell.textLabel.text = nil;

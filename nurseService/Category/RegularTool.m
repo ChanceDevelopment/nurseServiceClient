@@ -131,6 +131,7 @@ const static NSString *emailPattern = @"^1+[3578]+\\d{9}";
         return NO;
 }
 
+
 +(NSMutableDictionary *)VEComponentsStringToDic:(NSString*)AllString withSeparateString:(NSString *)FirstSeparateString AndSeparateString:(NSString *)SecondSeparateString{
     
     NSMutableDictionary *dic=[NSMutableDictionary dictionary];
@@ -147,4 +148,31 @@ const static NSString *emailPattern = @"^1+[3578]+\\d{9}";
     return dic;
 }
 
+#pragma 正则匹配用户姓名, 20 位的中文或英文
++ (BOOL)checkUserName : (NSString *) userName
+{
+    NSString *pattern = @"^[a-zA-Z一-龥]{1,20}";
+    NSPredicate *pred = [NSPredicate predicateWithFormat: @"SELF MATCHES %@", pattern];
+    BOOL isMatch = [pred evaluateWithObject:userName];
+    return isMatch;
+    
+}
++(BOOL)isIncludeSpecialCharact: (NSString *)str {
+    //***需要过滤的特殊字符：~￥#&*<>《》()[]{}【】^@/￡¤￥|§¨「」『』￠￢￣~@#￥&*（）——+|《》$_€。
+    NSString * regex = @"(?![0-9A-Z]+$)(?![0-9a-z]+$)(?![a-zA-Z]+$)[0-9A-Za-z]$";
+    NSRange urgentRange = [str rangeOfCharacterFromSet: [NSCharacterSet characterSetWithCharactersInString:regex]];
+    if (urgentRange.location == NSNotFound)
+    {
+        return NO;
+    }
+    return YES;
+}
+
++ (BOOL)isNum:(NSString *)checkedNumString {
+    checkedNumString = [checkedNumString stringByTrimmingCharactersInSet:[NSCharacterSet decimalDigitCharacterSet]];
+    if(checkedNumString.length > 0) {
+        return NO;
+    }
+    return YES;
+}
 @end

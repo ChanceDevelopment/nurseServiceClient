@@ -382,6 +382,12 @@
                 followButton.enabled = YES;
                 [followButton setTitle:@"关注" forState:UIControlStateNormal];
             }
+            //加载该护士的详细信息
+            NSString *nurseId = nurseDictInfo[@"nurseId"];
+            if ([nurseId isMemberOfClass:[NSNull class]] || nurseId == nil) {
+                nurseId = @"";
+            }
+            [self loadNurserDetailInfo:nurseId];
             [self showHint:@"关注成功"];
         }
         else{

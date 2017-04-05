@@ -21,6 +21,11 @@ typedef enum {
 + (BOOL)checkEmailStr:(NSString *)emailStr;
 + (BOOL)verifyIDCardNumber:(NSString *)IDCardNumber;
 + (BOOL)checkCardNo:(NSString*)cardNo;
++(BOOL)isIncludeSpecialCharact: (NSString *)str;
++ (BOOL)checkUserName : (NSString *) userName;
++ (BOOL)isNum:(NSString *)checkedNumString;
+
+
 /**
  *  支付宝返回字段解析
  *

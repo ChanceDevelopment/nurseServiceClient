@@ -154,7 +154,13 @@
         [self showHint:@"请输入验证码"];
         return;
     }
-    if (password == nil || [password isEqualToString:@""]) {
+
+    BOOL ok= [RegularTool isIncludeSpecialCharact:passwordField.text];
+    if (ok == YES) {
+        [self showHint:@"不能加入特殊符号"];
+        return;
+    }
+    if (password == nil || [password isEqualToString:@""] || password.length < 6) {
         [self showHint:@"请输入密码"];
         return;
     }

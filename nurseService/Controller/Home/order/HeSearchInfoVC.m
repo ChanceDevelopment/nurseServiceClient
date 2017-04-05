@@ -213,6 +213,12 @@
         [searchbar resignFirstResponder];
     }
     NSString *searchKey = searchBar.text;
+    NSRange _range = [searchKey rangeOfString:@" "];
+    if (_range.location != NSNotFound) {
+        //有空格
+        [self showHint:@"不能加空格"];
+        return;
+    }
     if (searchKey == nil || [searchKey isEqualToString:@""]) {
         [self showHint:@"请输入搜索关键字"];
         return;

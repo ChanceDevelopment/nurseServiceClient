@@ -73,10 +73,17 @@
     
      NSString *localPassword = [[NSUserDefaults standardUserDefaults] objectForKey:USERPASSWORDKEY];
     
+    BOOL ok= [RegularTool isIncludeSpecialCharact:commitPassword];
+    if (ok == YES) {
+        [self showHint:@"不能加入特殊符号"];
+        return;
+    }
+    
     if ([oldPassword isEqualToString:@""] || oldPassword == nil ) {
         [self showHint:@"请输入原始密码"];
         return;
     }
+
     if ([newPassword isEqualToString:@""] || newPassword == nil ) {
         [self showHint:@"请输入新密码"];
         return;
@@ -101,6 +108,9 @@
 //        [self showHint:@"原始密码有误"];
 //        return;
 //    }
+    
+
+    
     if ([oldPassword isEqualToString:newPassword]) {
         [self showHint:@"原始密码跟新密码不能一致"];
         return;
@@ -110,6 +120,7 @@
         return;
     }
     
+
     NSString *userId = [[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY];
     if (!userId) {
         userId = @"";

@@ -186,10 +186,17 @@
         [passwordField resignFirstResponder];
     }
     NSString *passWord = passwordField.text;
-    if ([passWord isEqualToString:@""] || passWord == nil) {
+    BOOL ok= [RegularTool isIncludeSpecialCharact:passWord];
+    if (ok == YES) {
+        [self showHint:@"不能加入特殊符号"];
+        return;
+    }
+    
+    if ([passWord isEqualToString:@""] || passWord == nil || passWord.length < 6) {
         [self showHint:@"请输入密码"];
         return;
     }
+
     NSString *userId = [[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY];
     if (!userId) {
         userId = @"";

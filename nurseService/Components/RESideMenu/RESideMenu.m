@@ -91,7 +91,7 @@
     
     _scaleContentView = YES;
     _scaleBackgroundImageView = YES;
-    _scaleMenuView = YES;
+    _scaleMenuView = NO;
     _fadeMenuView = YES;
     
     _parallaxEnabled = YES;

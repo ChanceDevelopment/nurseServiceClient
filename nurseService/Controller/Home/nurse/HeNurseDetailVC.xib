@@ -1,11 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11762" systemVersion="16D32" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
-    <device id="retina4_7" orientation="portrait">
-        <adaptation id="fullscreen"/>
-    </device>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11201" systemVersion="15G1212" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11161"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -30,13 +27,11 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="img_bg.png" translatesAutoresizingMaskIntoConstraints="NO" id="Kr7-ip-6Mk">
-                    <rect key="frame" x="0.0" y="0.0" width="375" height="310"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="310" id="Ujq-mn-wu2"/>
                     </constraints>
                 </imageView>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="right" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zru-4a-wFP">
-                    <rect key="frame" x="234" y="171" width="90" height="30"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="30" id="aao-cW-NkR"/>
                         <constraint firstAttribute="width" constant="90" id="i8i-nA-oQC"/>
@@ -47,7 +42,6 @@
                     </state>
                 </button>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uRk-x9-jc0">
-                    <rect key="frame" x="142" y="171" width="90" height="30"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="30" id="3Eo-tb-qoU"/>
                         <constraint firstAttribute="width" constant="90" id="HaK-D0-CVv"/>
@@ -58,7 +52,6 @@
                     </state>
                 </button>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qVC-Wp-Xg5">
-                    <rect key="frame" x="16" y="23" width="25" height="25"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="25" id="8mf-zw-tqU"/>
                         <constraint firstAttribute="width" constant="25" id="v5E-hI-rIU"/>
@@ -69,7 +62,6 @@
                     </connections>
                 </button>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="A1J-R5-K75">
-                    <rect key="frame" x="309" y="23" width="50" height="25"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="50" id="Vlu-ik-FrV"/>
                         <constraint firstAttribute="height" constant="25" id="bxL-q1-rvC"/>
@@ -83,14 +75,12 @@
                     </connections>
                 </button>
                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="defalut_icon.png" translatesAutoresizingMaskIntoConstraints="NO" id="ffo-bl-mU5">
-                    <rect key="frame" x="157" y="60" width="60" height="60"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="60" id="UdW-0v-Uif"/>
                         <constraint firstAttribute="height" constant="60" id="c51-TD-Wee"/>
                     </constraints>
                 </imageView>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="大师  女" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DxU-WO-bqr">
-                    <rect key="frame" x="0.0" y="127" width="375" height="21"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="21" id="ese-3l-cex"/>
                     </constraints>
@@ -99,7 +89,6 @@
                     <nil key="highlightedColor"/>
                 </label>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="该护士未选定医院" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kAq-1M-cqQ">
-                    <rect key="frame" x="0.0" y="154" width="375" height="21"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="21" id="SNd-FK-YwV"/>
                     </constraints>
@@ -108,7 +97,6 @@
                     <nil key="highlightedColor"/>
                 </label>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Y5C-eZ-0XO">
-                    <rect key="frame" x="50" y="171" width="90" height="30"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="90" id="82l-UL-zuA"/>
                         <constraint firstAttribute="height" constant="30" id="uId-OB-V0t"/>
@@ -119,14 +107,12 @@
                     </state>
                 </button>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="QOf-vK-rL2">
-                    <rect key="frame" x="0.0" y="230" width="375" height="80"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="80" id="3dc-Ke-v8B"/>
                     </constraints>
                 </view>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qF8-kR-YVZ">
-                    <rect key="frame" x="0.0" y="310" width="375" height="357"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                 </view>
             </subviews>

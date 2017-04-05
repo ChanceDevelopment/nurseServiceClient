@@ -947,6 +947,9 @@
     }
     remarKString = [NSString stringWithFormat:@"%@",tempString];
     NSLog(@"remarKString = %@",remarKString);
+    
+    NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
+    [user setObject:remarKString forKey:kRemarKString];
 }
 
 // 进入详情的动画
@@ -1455,7 +1458,7 @@
                     
                     id protectedPersonSex = serviceDetailInfoDict[@"protectedPersonSex"];
                     if ([protectedPersonSex isMemberOfClass:[NSNull class]]) {
-                        protectedPersonSex = @"";
+                        protectedPersonSex = @" ";
                     }
                     
                     NSString *sexStr = @"女";
@@ -1463,9 +1466,11 @@
                         sexStr = @"男";
                     }
                     id protectedPersonAge = serviceDetailInfoDict[@"protectedPersonAge"];
+                    NSLog(@"%@",protectedPersonAge);
                     if ([protectedPersonAge isMemberOfClass:[NSNull class]]) {
                         protectedPersonAge = @"";
                     }
+                    NSLog(@"%@",protectedPersonAge);
                     nameLabel.text = [NSString stringWithFormat:@"%@  %@  %@",protectedPersonName,sexStr,protectedPersonAge];
                     
                     nameLabel.textColor = [UIColor  grayColor];
