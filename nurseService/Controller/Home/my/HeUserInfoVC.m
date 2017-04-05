@@ -106,7 +106,7 @@
 - (IBAction)commitUserInfo:(id)sender
 {
     //判断用户是否已经签到
-    [self showHudInView:tableview hint:@"修改中..."];
+    
     NSString *userId = [[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY];
     NSString *requestUrl = [NSString stringWithFormat:@"%@/nurseAnduser/updateUserInfo.action",BASEURL];
     
@@ -121,6 +121,10 @@
     NSString *userPhone = userInfoModel.userPhone;
     NSString *userSex = userInfoModel.userSex;
     NSString *userEmail = userInfoModel.userEmail;
+    BOOL email = [RegularTool checkEmailStr:userEmail];
+    
+    if (email) {
+        [self showHudInView:tableview hint:@"修改中..."];
     NSDictionary *params = @{@"userId":userId,@"userHeader":userHeader,@"userNick":userNick,@"userPhone":userPhone,@"userSex":userSex,@"userEmail":userEmail};
     
     [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
@@ -149,6 +153,10 @@
         [self hideHud];
         [self showHint:ERRORREQUESTTIP];
     }];
+    }else {
+        [self showHint:@"邮箱错误"];
+        return;
+    }
 }
 
 - (void)backToLastView

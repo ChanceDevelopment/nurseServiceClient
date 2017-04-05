@@ -40,7 +40,7 @@
 #import "UIImageView+WebCache.h"
 #import "MLLinkLabel.h"
 #import "UIView+Toast.h"
-
+#import "RegularTool.h"
 #endif
 
 

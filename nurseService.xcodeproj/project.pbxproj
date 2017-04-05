@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		893EEBA71E94A630002B653D /* RegularTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 893EEBA61E94A630002B653D /* RegularTool.m */; };
 		AD6596751E64534F002D7E56 /* EnrollTipVC.m in Sources */ = {isa = PBXBuildFile; fileRef = AD6596731E64534F002D7E56 /* EnrollTipVC.m */; };
 		AD6596761E64534F002D7E56 /* EnrollTipVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = AD6596741E64534F002D7E56 /* EnrollTipVC.xib */; };
 		AD6C8EED1DF9C7C100C44A8A /* HomeTabbarController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD6C8EDE1DF9C7C100C44A8A /* HomeTabbarController.m */; };
@@ -764,6 +765,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		893EEBA51E94A630002B653D /* RegularTool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RegularTool.h; sourceTree = "<group>"; };
+		893EEBA61E94A630002B653D /* RegularTool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RegularTool.m; sourceTree = "<group>"; };
 		AD6596721E64534F002D7E56 /* EnrollTipVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EnrollTipVC.h; sourceTree = "<group>"; };
 		AD6596731E64534F002D7E56 /* EnrollTipVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EnrollTipVC.m; sourceTree = "<group>"; };
 		AD6596741E64534F002D7E56 /* EnrollTipVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EnrollTipVC.xib; sourceTree = "<group>"; };
@@ -3229,6 +3232,8 @@
 		EAC2D4961D4B063900E282A8 /* Category */ = {
 			isa = PBXGroup;
 			children = (
+				893EEBA51E94A630002B653D /* RegularTool.h */,
+				893EEBA61E94A630002B653D /* RegularTool.m */,
 				EA34D7A01E233F0300CD8BC5 /* UIView+Genie.h */,
 				EA34D7A11E233F0300CD8BC5 /* UIView+Genie.m */,
 				EA8C89E41E2215700093657B /* ImageScale.h */,
@@ -5345,6 +5350,7 @@
 				EAC2D92A1D4B063B00E282A8 /* UIRefreshControl+RACCommandSupport.m in Sources */,
 				EAC2D9071D4B063B00E282A8 /* RACPassthroughSubscriber.m in Sources */,
 				EAC2D80B1D4B063B00E282A8 /* NSString+change.m in Sources */,
+				893EEBA71E94A630002B653D /* RegularTool.m in Sources */,
 				EAC2D8911D4B063B00E282A8 /* UIWindow+Hierarchy.m in Sources */,
 				EAC2D9831D4B063B00E282A8 /* qrinput.c in Sources */,
 				EA8C89C31E21EA470093657B /* HeBaseIconTitleTableCell.m in Sources */,
