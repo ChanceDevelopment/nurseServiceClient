@@ -121,14 +121,14 @@
     UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] initWithCustomView:addressButton];
     self.navigationItem.rightBarButtonItem = rightItem;
     
-    CGFloat headerHeight = 300;
+    CGFloat headerHeight = 330;
     UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, headerHeight)];
     headerView.tag = HeadTag;
     headerView.backgroundColor = [UIColor colorWithWhite:237.0 / 255.0 alpha:1.0];
     
     
     
-    CGFloat bannerHeight = 230;
+    CGFloat bannerHeight = 220;
     NSArray * imageNames = @[@"index1", @"index2"];
     LBBanner * banner = [[LBBanner alloc] initWithImageNames:imageNames andFrame:CGRectMake(0, 0, SCREENWIDTH, bannerHeight)];
     banner.tag = LBBannerTag;
