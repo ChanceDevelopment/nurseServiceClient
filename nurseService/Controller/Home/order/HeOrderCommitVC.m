@@ -31,6 +31,9 @@
 #import "SSPopup.h"
 #import "HeUserCouponVC.h"
 #import "DVYearMonthDatePicker.h"
+#import "HeTabBarVC.h"
+#import "AppDelegate.h"
+#import "RESideMenu.h"
 
 #define ALERTTAG 200
 #define MinLocationSucceedNum 1   //要求最少成功定位的次数
@@ -1638,6 +1641,8 @@
             //验证密码成功，发布
             [self showHint:@"支付成功"];
             [[NSNotificationCenter defaultCenter] postNotificationName:kUpdateOrderNotification object:nil];
+            
+            
             [self performSelector:@selector(backToLastView) withObject:nil afterDelay:0.8];
         }
         else{
@@ -1657,6 +1662,15 @@
 
 - (void)backToLastView
 {
+    AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
+    RESideMenu *menuVC = (RESideMenu *)appDelegate.viewController;
+    HeTabBarVC *tabbarVC = (HeTabBarVC *)menuVC.mainController;
+    
+    tabbarVC.selectedIndex = 2;
+    NSNotification *notification = [[NSNotification alloc] initWithName:@"selectOrderNotification" object:nil userInfo:@{@"index":@1}];
+    
+    [[NSNotificationCenter defaultCenter] postNotification:notification];
+    
     [self.navigationController popViewControllerAnimated:YES];
 }
 

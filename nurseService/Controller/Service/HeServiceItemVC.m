@@ -258,6 +258,10 @@
     if ([contentImgurl isMemberOfClass:[NSNull class]] || contentImgurl == nil) {
         contentImgurl = @"";
     }
+    NSArray *contentImgurlArray = [contentImgurl componentsSeparatedByString:@","];
+    if ([contentImgurlArray count] > 0) {
+        contentImgurl = contentImgurlArray[0];
+    }
     contentImgurl = [NSString stringWithFormat:@"%@/%@",HYTIMAGEURL,contentImgurl];
     NSString *imageKey = [NSString stringWithFormat:@"%ld_%@",row,contentImgurl];
     UIImageView *imageview = [imageCache objectForKey:imageKey];
@@ -281,7 +285,7 @@
     }
     cell.peopleLabel.text = manageNursingContentContent;
     
-    id contentRequired = dict[@"contentRequired"];
+    id contentRequired = dict[@"contentOrder"];
     if ([contentRequired isMemberOfClass:[NSNull class]]) {
         contentRequired = @"";
     }

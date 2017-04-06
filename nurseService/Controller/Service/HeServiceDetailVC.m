@@ -593,6 +593,11 @@
             }
             
             cellViewY = cellViewY + cellHeight;
+            
+            if ([subSelectArray count] == 0 && index == 0) {
+                //默认选择第一个服务
+                [self selectButtonClick:selectButton];
+            }
         }
     
     }
@@ -646,12 +651,12 @@
     
     tableview.tableFooterView = tipView;
     
-    CGFloat headerHeight = 180;
+    CGFloat headerHeight = 230;
     UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, headerHeight)];
     headerView.backgroundColor = [UIColor colorWithWhite:237.0 / 255.0 alpha:1.0];
     tableview.tableHeaderView = headerView;
     
-    CGFloat bannerHeight = 180;
+    CGFloat bannerHeight = 230;
     NSArray * imageNames = @[@"index1", @"index2"];
     LBBanner * banner = [[LBBanner alloc] initWithImageNames:imageNames andFrame:CGRectMake(0, 0, SCREENWIDTH, bannerHeight)];
     banner.tag = 100;
@@ -754,7 +759,7 @@
                 [imageUrlArray addObject:rollPicUrl];
                 
             }
-            CGFloat bannerHeight = 180;
+            CGFloat bannerHeight = 230;
             LBBanner *banner1 = [tableview.tableHeaderView viewWithTag:100];
             LBBanner *banner = nil;
             if ([imageUrlArray count] == 0) {
@@ -1928,11 +1933,22 @@
 
 - (void)handleSelectPhoto
 {
-    for (AsynImageView *imageview in bannerImageDataSource) {
+    NSMutableArray *tempArray = [[NSMutableArray alloc] initWithCapacity:0];
+    for (NSInteger index = 0; index < bannerImageDataSource.count; index++) {
+        AsynImageView *imageview = bannerImageDataSource[index];
         if (imageview.imageTag != -1) {
-            [bannerImageDataSource removeObject:imageview];
+            
+        }
+        else{
+            [tempArray addObject:imageview];
         }
     }
+    bannerImageDataSource = [[NSMutableArray alloc] initWithArray:tempArray];
+//    for (AsynImageView *imageview in bannerImageDataSource) {
+//        if (imageview.imageTag != -1) {
+//            [bannerImageDataSource removeObject:imageview];
+//        }
+//    }
     
     for (UIImage *image in _selectedPhotos) {
         AsynImageView *asyncImage = [[AsynImageView alloc] init];

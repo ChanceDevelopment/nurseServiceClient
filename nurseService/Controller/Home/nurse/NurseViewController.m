@@ -744,6 +744,10 @@
         if ([contentImgurl isMemberOfClass:[NSNull class]] || contentImgurl == nil) {
             contentImgurl = @"";
         }
+        NSArray *contentImgurlArray = [contentImgurl componentsSeparatedByString:@","];
+        if ([contentImgurlArray count] > 0) {
+            contentImgurl = contentImgurlArray[0];
+        }
         contentImgurl = [NSString stringWithFormat:@"%@/%@",HYTIMAGEURL,contentImgurl];
         NSString *imageKey = [NSString stringWithFormat:@"%ld%ld_%@_service",section,row,contentImgurl];
         UIImageView *imageview = [_imageCache objectForKey:imageKey];
@@ -752,6 +756,7 @@
             imageview = cell.userImage;
             [_imageCache setObject:imageview forKey:imageKey];
         }
+        cell.userImage.layer.cornerRadius = 5.0;
         [cell.userImage removeFromSuperview];
         cell.userImage = imageview;
         [cell addSubview:cell.userImage];
@@ -768,7 +773,7 @@
         }
         cell.peopleLabel.text = manageNursingContentContent;
         
-        id contentRequired = dict[@"contentRequired"];
+        id contentRequired = dict[@"contentOrder"];
         if ([contentRequired isMemberOfClass:[NSNull class]]) {
             contentRequired = @"";
         }

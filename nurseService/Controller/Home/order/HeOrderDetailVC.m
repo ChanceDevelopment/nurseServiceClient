@@ -529,9 +529,12 @@
         if ([[respondDict valueForKey:@"errorCode"] integerValue] == REQUESTCODE_SUCCEED){
             
             orderDetailDict = [[NSDictionary alloc] initWithDictionary:respondDict[@"json"]];
-            id zoneCreatetimeObj = [orderDetailDict objectForKey:@"orderSendBegintime"];
+            id zoneCreatetimeObj = [orderDetailDict objectForKey:@"orderSendGetOrderTime"];
             if (_currentOrderType == 1) {
                 zoneCreatetimeObj = orderDetailDict[@"orderSendCreatetime"];
+//                orderSendBegintime
+//                orderSendGetOrderTime
+//                orderDetailDict[@"orderSendCreatetime"];
             }
             
             if ([zoneCreatetimeObj isMemberOfClass:[NSNull class]] || zoneCreatetimeObj == nil) {
@@ -546,9 +549,10 @@
             }
             
             NSString *time = [Tool convertTimespToString:[zoneCreatetime longLongValue] dateFormate:@"MM/dd EEE HH:mm"];
-            if (_currentOrderType == 1) {
-                time = [Tool convertTimespToString:[zoneCreatetime longLongValue] dateFormate:@"yyyy/MM/dd HH:mm"];
-            }
+            time = [Tool convertTimespToString:[zoneCreatetime longLongValue] dateFormate:@"yyyy/MM/dd HH:mm:ss"];
+//            if (_currentOrderType == 1) {
+//                time = [Tool convertTimespToString:[zoneCreatetime longLongValue] dateFormate:@"yyyy/MM/dd HH:mm"];
+//            }
             self.tmpDateString = time;
             
             
@@ -658,7 +662,7 @@
                     }
                 }
                 if (orderSendState == 4) {
-                    return 1;
+                    return 2;
                 }
             }
             return 2;
@@ -702,7 +706,7 @@
                         nurseHeader = nil;
                     }
                     if (nurseHeader != nil) {
-                        nurseHeader = [NSString stringWithFormat:@"%@/%@",BASEURL,nurseHeader];
+                        nurseHeader = [NSString stringWithFormat:@"%@/%@",HYTIMAGEURL,nurseHeader];
                         [nurseArray addObject:nurseHeader];
                     }
                     
@@ -983,6 +987,13 @@
                     NSString *orderSendNote = orderDetailDict[@"orderSendNote"];
                     if ([orderSendNote isMemberOfClass:[NSNull class]]) {
                         orderSendNote = @"";
+                    }
+                    NSArray *orderSendNoteArray = [orderSendNote componentsSeparatedByString:@","];
+                    if ([orderSendNoteArray count] >= 2) {
+                        orderSendNote = orderSendNoteArray[1];
+                    }
+                    if ([orderSendNote isEqualToString:@""] || orderSendNote == nil) {
+                        orderSendNote = @"暂无备注信息";
                     }
                     subTitleLabel.text = orderSendNote;
                     subTitleLabel.font = [UIFont systemFontOfSize:13.0];
@@ -1301,9 +1312,13 @@
             switch (row) {
                 case 0:
                 {
+                    CGFloat number = 2.0;
+                    if (cellSize.height > 70) {
+                        number = 3.0;
+                    }
                     CGFloat timeLabelX = 10;
                     CGFloat timeLabelW = SCREENWIDTH - 2 * timeLabelX;
-                    CGFloat timeLabelH = cellSize.height / 2.0;
+                    CGFloat timeLabelH = cellSize.height / number;
                     CGFloat timeLabelY = 0;
                     UILabel *timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(timeLabelX, timeLabelY, timeLabelW, timeLabelH)];
                     timeLabel.font = [UIFont fontWithName:@"Helvetica" size:13.0];
@@ -1317,15 +1332,74 @@
                     
                     [cell addSubview:timeLabel];
                     
+                    CGFloat offset = CGRectGetMaxY(timeLabel.frame);
+                    
+                    id orderSendStateObj = orderDetailDict[@"orderSendState"];
+                    if ([orderSendStateObj isMemberOfClass:[NSNull class]] || orderSendStateObj == nil) {
+                        orderSendStateObj = @"";
+                    }
+                    NSInteger orderSendState = [orderSendStateObj integerValue];
+                    
+                    id orderSendTypeObj = orderDetailDict[@"orderSendType"];
+                    if ([orderSendTypeObj isMemberOfClass:[NSNull class]]) {
+                        orderSendTypeObj = @"";
+                    }
+                    
+                    NSInteger orderSendType = [orderSendTypeObj integerValue];
+                    orderSendState = [orderSendStateObj integerValue];
+                    
+                    if (_currentOrderType != 1) {
+                        if (!(orderSendType == 1 && orderSendState == 0)) {
+                            if (orderSendState >= 3) {
+                                if (self.isEvaluate) {
+                                    orderSendState = orderSendState + 1;
+                                }
+                            }
+                            if (orderSendState == 4) {
+                                
+                                
+                                id zoneCreatetimeObj = [orderDetailDict objectForKey:@"orderSendFinishOrderTime"];
+                    
+                                
+                                if ([zoneCreatetimeObj isMemberOfClass:[NSNull class]] || zoneCreatetimeObj == nil) {
+                                    NSTimeInterval  timeInterval = [[NSDate date] timeIntervalSince1970];
+                                    zoneCreatetimeObj = [NSString stringWithFormat:@"%.0f000",timeInterval];
+                                }
+                                long long timestamp = [zoneCreatetimeObj longLongValue];
+                                NSString *zoneCreatetime = [NSString stringWithFormat:@"%lld",timestamp];
+                                if ([zoneCreatetime length] > 3) {
+                                    //时间戳
+                                    zoneCreatetime = [zoneCreatetime substringToIndex:[zoneCreatetime length] - 3];
+                                }
+                                
+                                NSString *time = [Tool convertTimespToString:[zoneCreatetime longLongValue] dateFormate:@"yyyy-MM-dd hh:mm:ss"];
+                                
+                                CGFloat timeLabelX = 10;
+                                CGFloat timeLabelW = SCREENWIDTH - 2 * timeLabelX;
+                                CGFloat timeLabelH = cellSize.height / number;
+                                CGFloat timeLabelY = offset;
+                                UILabel *timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(timeLabelX, timeLabelY, timeLabelW, timeLabelH)];
+                                timeLabel.font = [UIFont fontWithName:@"Helvetica" size:13.0];
+                                timeLabel.text = [NSString stringWithFormat:@"完成时间：%@",time];
+                                
+                                [cell addSubview:timeLabel];
+                                
+                                offset = CGRectGetMaxY(timeLabel.frame);
+                            }
+                        }
+                    }
+                    
                     CGFloat orderNoLabelX = 10;
                     CGFloat orderNoLabelW = SCREENWIDTH - 2 * orderNoLabelX;
-                    CGFloat orderNoLabelH = cellSize.height/2.0;
-                    CGFloat orderNoLabelY = CGRectGetMaxY(timeLabel.frame)-5;
+                    CGFloat orderNoLabelH = cellSize.height/number;
+                    CGFloat orderNoLabelY = offset;
                     UILabel *orderNoLabel = [[UILabel alloc] initWithFrame:CGRectMake(orderNoLabelX, orderNoLabelY, orderNoLabelW, orderNoLabelH)];
                     orderNoLabel.font = [UIFont fontWithName:@"Helvetica" size:13.0];
                     id orderSendNumbers = orderDetailDict[@"orderSendNumbers"];
-                    orderNoLabel.text = [NSString stringWithFormat:@"订单编号: %@",orderSendNumbers];
+                    orderNoLabel.text = [NSString stringWithFormat:@"订单编号：%@",orderSendNumbers];
                     [cell addSubview:orderNoLabel];
+                    
+                    
                     
                 }
                     break;
@@ -1473,6 +1547,34 @@
             switch (row) {
                 case 0:
                 {
+                    id orderSendStateObj = orderDetailDict[@"orderSendState"];
+                    if ([orderSendStateObj isMemberOfClass:[NSNull class]] || orderSendStateObj == nil) {
+                        orderSendStateObj = @"";
+                    }
+                    NSInteger orderSendState = [orderSendStateObj integerValue];
+                    
+                    id orderSendTypeObj = orderDetailDict[@"orderSendType"];
+                    if ([orderSendTypeObj isMemberOfClass:[NSNull class]]) {
+                        orderSendTypeObj = @"";
+                    }
+                    
+                    NSInteger orderSendType = [orderSendTypeObj integerValue];
+                    orderSendState = [orderSendStateObj integerValue];
+                    
+                    if (_currentOrderType != 1) {
+                        if (!(orderSendType == 1 && orderSendState == 0)) {
+                            if (orderSendState >= 3) {
+                                if (self.isEvaluate) {
+                                    orderSendState = orderSendState + 1;
+                                }
+                            }
+                            if (orderSendState == 4) {
+                                return 90.0;
+                            }
+                        }
+                    }
+                    
+                    
                     return 60;
                 }
                     break;
@@ -1521,7 +1623,30 @@
         case 0:
         {
             switch (row) {
-                
+                case 0:{
+                    id orderSendTypeObj = orderDetailDict[@"orderSendType"];
+                    if ([orderSendTypeObj isMemberOfClass:[NSNull class]]) {
+                        orderSendTypeObj = @"";
+                    }
+                    id orderSendStateObj = orderDetailDict[@"orderSendState"];
+                    if ([orderSendStateObj isMemberOfClass:[NSNull class]]) {
+                        orderSendStateObj = @"";
+                    }
+                    NSInteger orderSendType = [orderSendTypeObj integerValue];
+                    NSInteger orderSendState = [orderSendStateObj integerValue];
+                    
+                    if (orderSendState == 0) {
+                        //还没接单
+                        return;
+                    }
+                    
+                    HeNurseDetailVC *nurseDetailVC = [[HeNurseDetailVC alloc] init];
+                    nurseDetailVC.nurseDictInfo = [[NSDictionary alloc] initWithDictionary:orderDetailDict];
+                    nurseDetailVC.hidesBottomBarWhenPushed = YES;
+                    [self.navigationController pushViewController:nurseDetailVC animated:YES];
+                    
+                    break;
+                }
                 case 4:
                 {
                     //患者信息

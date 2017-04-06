@@ -22,7 +22,7 @@
 #import "BrowserView.h"
 
 #define LBBannerTag 100
-#define HeadTag  200
+#define HeadTag  250
 
 
 @interface FirstViewController ()<LBBannerDelegate,UITableViewDelegate,UITableViewDataSource>
@@ -128,7 +128,7 @@
     
     
     
-    CGFloat bannerHeight = 180;
+    CGFloat bannerHeight = 230;
     NSArray * imageNames = @[@"index1", @"index2"];
     LBBanner * banner = [[LBBanner alloc] initWithImageNames:imageNames andFrame:CGRectMake(0, 0, SCREENWIDTH, bannerHeight)];
     banner.tag = LBBannerTag;
@@ -221,7 +221,7 @@
                 [imageUrlArray addObject:rollPicUrl];
                 
             }
-            CGFloat bannerHeight = 180;
+            CGFloat bannerHeight = 230;
             LBBanner *banner1 = [tableview.tableHeaderView viewWithTag:LBBannerTag];
             LBBanner *banner = [[LBBanner alloc] initWithImageURLArray:imageUrlArray andFrame:CGRectMake(0, 0, SCREENWIDTH, bannerHeight)];
             banner.tag = LBBannerTag;
@@ -457,7 +457,7 @@
     NSInteger row = indexPath.row;
     
     
-    return 200;
+    return 250;
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath

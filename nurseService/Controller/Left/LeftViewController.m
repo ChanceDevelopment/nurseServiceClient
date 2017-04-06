@@ -162,6 +162,7 @@
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     NSLog(@"###%ld:%ld",indexPath.row,currentSection);
     cell.textLabel.text =[NSString stringWithFormat:@"%@",[sectionArr[currentSection] objectAtIndex:indexPath.row]];
+    cell.textLabel.font = [UIFont systemFontOfSize:14.0];
     cell.textLabel.textColor = [UIColor whiteColor];
     cell.textLabel.textAlignment = NSTextAlignmentCenter;
     return cell;

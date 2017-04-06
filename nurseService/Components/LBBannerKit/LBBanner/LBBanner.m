@@ -134,6 +134,8 @@
     for (int i = 0; i < imageURLArray.count; i ++) {
         NSString *imageURL = imageURLArray[i];
         UIImageView *imageview = [[UIImageView alloc] init];
+        imageview.layer.masksToBounds = YES;
+        imageview.backgroundColor = [UIColor whiteColor];
         imageview.frame = CGRectMake(i * self.width, 0, self.width, self.height);
         imageview.tag = i + 100;
         [imageview sd_setImageWithURL:[NSURL URLWithString:imageURL] placeholderImage:[UIImage imageNamed:@"index2"]];

@@ -23,7 +23,7 @@
         bgImage.frame = CGRectMake(bgImageX, bgImageY, bgImageW, bgImageH);
         bgImage.layer.masksToBounds = YES;
         bgImage.layer.cornerRadius = 5.0;
-        bgImage.contentMode = UIViewContentModeScaleAspectFill;
+        bgImage.contentMode = UIViewContentModeScaleToFill;
         bgImage.layer.borderColor = [UIColor clearColor].CGColor;
         [self.contentView addSubview:bgImage];
         

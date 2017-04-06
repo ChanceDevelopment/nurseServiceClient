@@ -26,6 +26,8 @@
 #import "AppDelegate.h"
 #import "HeTabBarVC.h"
 #import "RESideMenu.h"
+#import "MJRefreshNormalHeader.h"
+
 
 #define InviteLabelTag 100
 #define SignButtonTag 200
@@ -124,7 +126,7 @@
     [self.view addSubview:myTableView];
 
     
-    CGFloat viewHeight = 280;
+    CGFloat viewHeight = 300;
     
     UIView *headerView = [[UIView alloc] init];
     headerView.frame = CGRectMake(0, 0, SCREENWIDTH, viewHeight);
@@ -149,6 +151,7 @@
     [securityButton setImage:securityImage forState:UIControlStateNormal];
     [securityButton setImage:[UIImage imageNamed:@"icon_eye_close_white"] forState:UIControlStateSelected];
     [headerView addSubview:securityButton];
+    securityButton.tag = 3000;
     [securityButton addTarget:self action:@selector(securityButtonClick:) forControlEvents:UIControlEventTouchUpInside];
 
     //头像
@@ -341,6 +344,17 @@
     [signOutButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [signOutButton addTarget:self action:@selector(signOutButtonClick:) forControlEvents:UIControlEventTouchUpInside];
     [footerView addSubview:signOutButton];
+    
+    __weak MyViewController *weakSelf = self;
+    self.myTableView.header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
+        // 进入刷新状态后会自动调用这个block,刷新
+        [weakSelf.myTableView.header performSelector:@selector(endRefreshing) withObject:nil afterDelay:1.0];
+        
+        [weakSelf getUserInfoWithUserID:[[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY]];
+        [weakSelf getUserPayInfo];
+    }];
+    
+    
 }
 
 - (void)updateUserInfo:(NSNotification *)notification
@@ -350,8 +364,78 @@
 
 - (void)updateUserBalanceInfo:(NSNotification *)notification
 {
-
+    [self getUserPayInfo];
 }
+
+- (void)getUserPayInfo
+{
+    NSString *userId = [[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY];
+    if (!userId) {
+        userId = @"";
+    }
+    NSDictionary * params  = @{@"userId":userId};
+    NSString *requestUrl = [NSString stringWithFormat:@"%@/nurseAnduser/selectUserThreeInfo.action",BASEURL];
+    [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
+        [self hideHud];
+        NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
+        NSDictionary *respondDict = [NSDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
+        if ([[respondDict valueForKey:@"errorCode"] integerValue] == REQUESTCODE_SUCCEED){
+            NSDictionary *payInfo = respondDict[@"json"];
+            NSMutableDictionary *dict = [[NSMutableDictionary alloc] initWithDictionary:payInfo];
+            NSArray *keyArray = dict.allKeys;
+            for (NSString *key in keyArray) {
+                id obj = dict[key];
+                if ([obj isMemberOfClass:[NSNull class]] || obj == nil) {
+                    obj = @"";
+                }
+                [dict setObject:obj forKey:key];
+            }
+            payInfo = [[NSDictionary alloc] initWithDictionary:dict];
+            NSString *balance = [payInfo objectForKey:kPayBalance];
+            if ([balance isMemberOfClass:[NSNull class]]) {
+                balance = @"";
+            }
+            CGFloat balanceMoney = [balance floatValue];
+//            _balanceLabel.text = [NSString stringWithFormat:@"%@元",balance];
+            [[NSUserDefaults standardUserDefaults] setObject:payInfo forKey:kUserPayInfoKey];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+            
+            UIButton *securityButton = [self.view viewWithTag:3000];
+            
+            if (securityButton.selected) {
+                balanceNumLabel.text = @"***元";
+                couponNumLabel.text = @"***张";
+                pointNumLabel.text = @"***单";
+            }
+            else{
+                CGFloat balance = [userInfoModel.userBalance floatValue];
+                NSInteger couponNum = [userInfoModel.couponCount integerValue];
+                NSInteger point = [userInfoModel.userMark integerValue];
+                
+                balanceNumLabel.text = [NSString stringWithFormat:@"%.2f元",balance];
+                if (balance > 100000000) {
+                    balance = balance / 100000000.0;
+                    balanceNumLabel.text = [NSString stringWithFormat:@"%.2f亿元",balance];
+                }
+                else if (balance > 10000){
+                    balance = balance / 10000.0;
+                    balanceNumLabel.text = [NSString stringWithFormat:@"%.2f万元",balance];
+                }
+                
+                couponNumLabel.text = [NSString stringWithFormat:@"%ld张",couponNum];
+                NSLog(@"%ld",(long)point);
+                NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
+                NSString *PointNumLabel = [user objectForKey:@"pointNumLabel"];
+                pointNumLabel.text = [NSString stringWithFormat:@"%@",PointNumLabel];
+                
+            }
+        }
+        
+    } failure:^(NSError* err){
+        
+    }];
+}
+
 
 //获取用户的信息
 - (void)getUserInfoWithUserID:(NSString *)userid
@@ -418,6 +502,37 @@
             NSString *nickName = userInfoModel.userNick;
             userNameL.text = nickName;
             [myTableView reloadData];
+            
+            //刷新数据
+            UIButton *securityButton = [self.view viewWithTag:3000];
+            
+            if (securityButton.selected) {
+                balanceNumLabel.text = @"***元";
+                couponNumLabel.text = @"***张";
+                pointNumLabel.text = @"***单";
+            }
+            else{
+                CGFloat balance = [userInfoModel.userBalance floatValue];
+                NSInteger couponNum = [userInfoModel.couponCount integerValue];
+                NSInteger point = [userInfoModel.userMark integerValue];
+                
+                balanceNumLabel.text = [NSString stringWithFormat:@"%.2f元",balance];
+                if (balance > 100000000) {
+                    balance = balance / 100000000.0;
+                    balanceNumLabel.text = [NSString stringWithFormat:@"%.2f亿元",balance];
+                }
+                else if (balance > 10000){
+                    balance = balance / 10000.0;
+                    balanceNumLabel.text = [NSString stringWithFormat:@"%.2f万元",balance];
+                }
+                
+                couponNumLabel.text = [NSString stringWithFormat:@"%ld张",couponNum];
+                NSLog(@"%ld",(long)point);
+                NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
+                NSString *PointNumLabel = [user objectForKey:@"pointNumLabel"];
+                pointNumLabel.text = [NSString stringWithFormat:@"%@",PointNumLabel];
+                
+            }
             
         }
     } failure:^(NSError* err){

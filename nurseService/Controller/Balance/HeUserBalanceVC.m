@@ -123,7 +123,7 @@
                 balance = @"";
             }
             CGFloat balanceMoney = [balance floatValue];
-            balanceLabel.text = [NSString stringWithFormat:@"%.2f元",balanceMoney];
+            balanceLabel.text = [NSString stringWithFormat:@"%@元",balance];
             [[NSUserDefaults standardUserDefaults] setObject:payInfo forKey:kUserPayInfoKey];
             [[NSUserDefaults standardUserDefaults] synchronize];
         }
