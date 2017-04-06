@@ -64,6 +64,10 @@
 @property(strong,nonatomic)NSMutableArray *selectNurseIdArray;
 
 @property(strong,nonatomic)NSMutableArray *serviceItemArray;
+
+@property(strong,nonatomic)NSString *lastHospitalNameID;
+@property(strong,nonatomic)NSString *lastMajorNameID;
+
 @end
 
 @implementation NurseViewController
@@ -380,8 +384,16 @@
                 tableview.backgroundView = nil;
             }
             
+            if (!([hospitalNameID isEqualToString:self.lastHospitalNameID] &&
+                  [majorNameID isEqualToString:self.lastMajorNameID])) {
+                
+                [_selectNurseIdArray removeAllObjects];
+                [self loadNurseService];
+                self.lastHospitalNameID = hospitalNameID;
+                self.lastMajorNameID = majorNameID;
+            }
+            
             [tableview reloadData];
-        
         }
         else{
             [self hideHud];
@@ -577,6 +589,7 @@
 {
     if ([_selectNurseIdArray count] == 0) {
         servicetableview.hidden = YES;
+        self.tableview.contentInset = UIEdgeInsetsMake(0, 0, 0, 0);
         [_serviceItemArray removeAllObjects];
         [servicetableview reloadData];
         return;
@@ -606,9 +619,11 @@
             _serviceItemArray = [[NSMutableArray alloc] initWithArray:jsonArray];
             if ([_serviceItemArray count] == 0) {
                 servicetableview.hidden = YES;
+                self.tableview.contentInset = UIEdgeInsetsMake(0, 0, 0, 0);
             }
             else{
                 servicetableview.hidden = NO;
+                self.tableview.contentInset = UIEdgeInsetsMake(0, 0, 240, 0);
             }
             
             if ([_serviceItemArray count] == 0) {
