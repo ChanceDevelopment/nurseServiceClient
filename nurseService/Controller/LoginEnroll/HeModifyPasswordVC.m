@@ -84,6 +84,8 @@
         return;
     }
 
+
+    
     if ([newPassword isEqualToString:@""] || newPassword == nil ) {
         [self showHint:@"请输入新密码"];
         return;

@@ -169,6 +169,7 @@
                 imageview.center = bgView.center;
                 [bgView addSubview:imageview];
                 tableview.backgroundView = bgView;
+                
             }
             else{
                 tableview.backgroundView = nil;
@@ -179,9 +180,12 @@
             NSString *data = respondDict[@"data"];
             if ([data isMemberOfClass:[NSNull class]] || data == nil) {
                 data = ERRORREQUESTTIP;
+                
             }
-            [self showHint:data];
+            [self showHint:@"没有该护士"];
+            [dataSource removeAllObjects];
         }
+        [tableview reloadData];
     } failure:^(NSError* err){
         
     }];

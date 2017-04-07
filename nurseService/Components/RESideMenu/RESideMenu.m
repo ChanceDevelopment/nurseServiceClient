@@ -51,6 +51,7 @@
     self = [super init];
     if (self) {
         [self commonInit];
+        
     }
     return self;
 }
@@ -60,6 +61,7 @@
     self = [super initWithCoder:decoder];
     if (self) {
         [self commonInit];
+        
     }
     return self;
 }
@@ -184,7 +186,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
+
     self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     self.backgroundImageView = ({
         UIImageView *imageView = [[UIImageView alloc] initWithFrame:self.view.bounds];

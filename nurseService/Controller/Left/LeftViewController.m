@@ -114,7 +114,8 @@
     _tableView.openSectionArray = [NSArray arrayWithObjects:@0, nil];
     _tableView.delegate = self;
     _tableView.datasource = self;
-    _tableView.backgroundColor = [UIColor clearColor];
+//    _tableView.backgroundColor = [UIColor clearColor];
+    _tableView.backgroundColor = APPDEFAULTORANGE;
     _tableView.autoAdjustOpenAndClose = YES;
     [self.view addSubview:_tableView];
 }
@@ -155,8 +156,8 @@
     UIView *view = [[UIView alloc] initWithFrame:cell.bounds] ;
     view.layer.backgroundColor  = APPDEFAULTORANGE.CGColor;
     view.layer.masksToBounds    = YES;
-    view.layer.borderWidth      = 0.1;
-    view.layer.borderColor      = [UIColor lightGrayColor].CGColor;
+//    view.layer.borderWidth      = 0.1;
+//    view.layer.borderColor      = [UIColor lightGrayColor].CGColor;
     
     cell.backgroundView = view;
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
@@ -165,6 +166,7 @@
     cell.textLabel.font = [UIFont systemFontOfSize:14.0];
     cell.textLabel.textColor = [UIColor whiteColor];
     cell.textLabel.textAlignment = NSTextAlignmentCenter;
+    cell.backgroundColor = APPDEFAULTORANGE;
     return cell;
 }
 

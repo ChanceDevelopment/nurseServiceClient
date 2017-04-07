@@ -1235,7 +1235,21 @@
     }
     
     NSString *orderSendStoptime = @"";
-    NSDictionary *paramsDict = @{@"userId":userId,@"specifyNurseId":specifyNurseId,@"goodId":goodId,@"personId":personId,@"orderSendUserpic":orderSendUserpic,@"orderSendNote":orderSendNote,@"orderSendCoupon":orderSendCoupon,@"orderSendTrafficmoney":orderSendTrafficmoney,@"orderSendSavemoney":orderSendSavemoney,@"orderSendIspayment":orderSendIspayment,@"orderSendIssafe":orderSendIssafe,@"orderSendBegintime":orderSendBegintime,@"orderSendStoptime":orderSendStoptime};
+    NSDictionary *paramsDict = @{
+                                 @"userId":userId,
+                                 @"specifyNurseId":specifyNurseId,
+                                 @"goodId":goodId,
+                                 @"personId":personId,
+                                 @"orderSendUserpic":orderSendUserpic,
+                                 @"orderSendNote":remarKString,
+                                 @"orderSendCoupon":orderSendCoupon,
+                                 @"orderSendTrafficmoney":orderSendTrafficmoney,
+                                 @"orderSendSavemoney":orderSendSavemoney,
+                                 @"orderSendIspayment":orderSendIspayment,
+                                 @"orderSendIssafe":orderSendIssafe,
+                                 @"orderSendBegintime":orderSendBegintime,
+                                 @"orderSendStoptime":orderSendStoptime
+                                 };
     
     NSString *requestUrl = [NSString stringWithFormat:@"%@/orderSend/orderSend.action",BASEURL];
     [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:paramsDict success:^(AFHTTPRequestOperation* operation,id response){

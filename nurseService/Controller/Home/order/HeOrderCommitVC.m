@@ -782,16 +782,23 @@
             break;
         }
         case 4: {
+
             CGFloat endLabelY = 0;
-            CGFloat endLabelW = 350;
+            CGFloat endLabelW = SCREENWIDTH - 110;
             CGFloat endLabelH = cellSize.height;
             CGFloat endLabelX = SCREENWIDTH - endLabelW - 30;
             
             UILabel *endLabel = [[UILabel alloc] initWithFrame:CGRectMake(endLabelX, endLabelY, endLabelW, endLabelH)];
             endLabel.font = [UIFont systemFontOfSize:15.0];
-            NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
-            NSString *remark = [user objectForKey:kRemarKString];
-            endLabel.text = remark;
+//            NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
+//            NSString *remark = [user objectForKey:kRemarKString];
+//            endLabel.text = remark;
+            id orderSendCostmoney = orderDetailDict[@"orderSendNote"];
+            if ([orderSendCostmoney isMemberOfClass:[NSNull class]]) {
+                orderSendCostmoney = @"";
+            }
+            endLabel.text = orderSendCostmoney;
+            endLabel.font = [UIFont systemFontOfSize:13];
             endLabel.textAlignment = NSTextAlignmentRight;
             endLabel.textColor = [UIColor redColor];
             [cell addSubview:endLabel];
