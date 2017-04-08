@@ -651,12 +651,12 @@
     
     tableview.tableFooterView = tipView;
     
-    CGFloat headerHeight = 230;
+    CGFloat headerHeight = 220;
     UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, headerHeight)];
     headerView.backgroundColor = [UIColor colorWithWhite:237.0 / 255.0 alpha:1.0];
     tableview.tableHeaderView = headerView;
     
-    CGFloat bannerHeight = 230;
+    CGFloat bannerHeight = 220;
     NSArray * imageNames = @[@"index1", @"index2"];
     LBBanner * banner = [[LBBanner alloc] initWithImageNames:imageNames andFrame:CGRectMake(0, 0, SCREENWIDTH, bannerHeight)];
     banner.tag = 100;
@@ -759,7 +759,7 @@
                 [imageUrlArray addObject:rollPicUrl];
                 
             }
-            CGFloat bannerHeight = 230;
+            CGFloat bannerHeight = 220;
             LBBanner *banner1 = [tableview.tableHeaderView viewWithTag:100];
             LBBanner *banner = nil;
             if ([imageUrlArray count] == 0) {

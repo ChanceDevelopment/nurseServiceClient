@@ -22,7 +22,7 @@
 #import "BrowserView.h"
 
 #define LBBannerTag 100
-#define HeadTag  250
+#define HeadTag  240
 
 
 @interface FirstViewController ()<LBBannerDelegate,UITableViewDelegate,UITableViewDataSource>
@@ -121,14 +121,14 @@
     UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] initWithCustomView:addressButton];
     self.navigationItem.rightBarButtonItem = rightItem;
     
-    CGFloat headerHeight = 330;
+    CGFloat headerHeight = 320;
     UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, headerHeight)];
     headerView.tag = HeadTag;
     headerView.backgroundColor = [UIColor colorWithWhite:237.0 / 255.0 alpha:1.0];
     
     
     
-    CGFloat bannerHeight = 220;
+    CGFloat bannerHeight = 200;
     NSArray * imageNames = @[@"index1", @"index2"];
     LBBanner * banner = [[LBBanner alloc] initWithImageNames:imageNames andFrame:CGRectMake(0, 0, SCREENWIDTH, bannerHeight)];
     banner.tag = LBBannerTag;
@@ -136,7 +136,7 @@
     
     [headerView addSubview:banner];
     
-    CGFloat buttonBGHeight = 110;
+    CGFloat buttonBGHeight = 120;
     UIView *buttonBG = [[UIView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(banner.frame), SCREENWIDTH, buttonBGHeight)];
     NSArray *iconArray = @[@[@"icon_nurse_door",@"icon_personal"]];
     NSArray *titleArray = @[@[@"护士上门",@"私人定制"]];
@@ -221,7 +221,7 @@
                 [imageUrlArray addObject:rollPicUrl];
                 
             }
-            CGFloat bannerHeight = 230;
+            CGFloat bannerHeight = 200;
             LBBanner *banner1 = [tableview.tableHeaderView viewWithTag:LBBannerTag];
             LBBanner *banner = [[LBBanner alloc] initWithImageURLArray:imageUrlArray andFrame:CGRectMake(0, 0, SCREENWIDTH, bannerHeight)];
             banner.tag = LBBannerTag;
@@ -457,7 +457,7 @@
     NSInteger row = indexPath.row;
     
     
-    return 250;
+    return 220;
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
