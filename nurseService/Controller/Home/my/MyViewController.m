@@ -531,10 +531,11 @@
                 NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
                 NSString *PointNumLabel = [user objectForKey:@"pointNumLabel"];
                 pointNumLabel.text = [NSString stringWithFormat:@"%@",PointNumLabel];
-                
+                [self.myTableView reloadData];
             }
-            
+            [self.myTableView reloadData];
         }
+        [self.myTableView reloadData];
     } failure:^(NSError* err){
         
     }];

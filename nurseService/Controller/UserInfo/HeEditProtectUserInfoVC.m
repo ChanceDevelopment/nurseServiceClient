@@ -620,9 +620,8 @@
         [self showHint:@"请输入正确的身份证号"];
         return;
     }
+
     
-    //
-    //
     
     NSString *height = [userInfoDict objectForKey:@"protectedPersonHeight"];
     NSString *he = [NSString stringWithFormat:@"200"];
@@ -779,6 +778,8 @@
         [self showHint:@"请填写受护人身份证"];
         return;
     }
+    [self birthdayStrFromIdentityCard:card];
+    [self getIdentityCardSex:card];
     if ([card length] > 18) {
         [self showHint:@"请输入正确的身份证号"];
         return;
@@ -793,6 +794,7 @@
         [self showHint:@"请将信息填写完整"];//请将信息填写完整
         return;
     }
+    
     
 //    if ([age isEqualToString:@""] || age == nil) {
 //        [self showHint:@"请输入受护人年龄"];
@@ -825,10 +827,29 @@
     if (detailedAddress == nil) {
         detailedAddress = @"";
     }
+    
+    NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
+    NSString *sex = [user objectForKey:@"sex"];
+    
+    
+    
+    NSDate *currentDate = [NSDate date];//获取当前时间，日期
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"yyyy"];
+    NSString *dateString = [dateFormatter stringFromDate:currentDate];
+    NSLog(@"dateString:%@",dateString);
+    NSUserDefaults *yearr = [NSUserDefaults standardUserDefaults];
+    NSString *ager = [yearr objectForKey:@"year"];
+    
+    NSInteger y = [ager integerValue];
+    NSInteger x = [dateString integerValue];
+    NSInteger res = x - y;
+    NSString *ress = [NSString stringWithFormat:@"%ld",(long)res];
+    
     NSDictionary * params  = @{@"personName": name,
-                               @"personSex": @"2",
+                               @"personSex": sex,
                                @"personCard": card,
-                               @"personAge": @"0",
+                               @"personAge": ress,
                                @"personGuardian":@"",
                                @"personHeight": [postUserInfo objectForKey:@"key102"],
                                @"personWeight": [postUserInfo objectForKey:@"key103"],
@@ -900,15 +921,75 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+//根据省份证号获取年龄
 
-/*
- #pragma mark - Navigation
- 
- // In a storyboard-based application, you will often want to do a little preparation before navigation
- - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
- // Get the new view controller using [segue destinationViewController].
- // Pass the selected object to the new view controller.
- }
- */
+
+
+
+//根据身份证号性别
+-(NSString *)getIdentityCardSex:(NSString *)numberStr
+{
+    int sexInt=[[numberStr substringWithRange:NSMakeRange(16,1)] intValue];
+    
+    NSString *sex;
+    if(sexInt%2!=0)
+    {
+        sex = @"1";
+        NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
+        [user setObject:sex forKey:@"sex"];
+        return sex;
+        
+    }
+    else
+    {
+        sex = @"2";
+        NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
+        [user setObject:sex forKey:@"sex"];
+        return sex;
+    }
+    
+
+    
+}
+
+//根据身份证号获取生日
+-(NSString *)birthdayStrFromIdentityCard:(NSString *)numberStr
+{
+    NSMutableString *result = [NSMutableString stringWithCapacity:0];
+    NSString *year = nil;
+    NSString *month = nil;
+    
+    BOOL isAllNumber = YES;
+    NSString *day = nil;
+    if([numberStr length]<14)
+        return result;
+    
+    //**截取前14位
+    NSString *fontNumer = [numberStr substringWithRange:NSMakeRange(0, 13)];
+    
+    //**检测前14位否全都是数字;
+    const char *str = [fontNumer UTF8String];
+    const char *p = str;
+    while (*p!='\0') {
+        if(!(*p>='0'&&*p<='9'))
+            isAllNumber = NO;
+        p++;
+    }
+    if(!isAllNumber)
+        return result;
+    
+    year = [numberStr substringWithRange:NSMakeRange(6, 4)];
+    NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
+    [user setObject:year forKey:@"year"];
+    month = [numberStr substringWithRange:NSMakeRange(10, 2)];
+    day = [numberStr substringWithRange:NSMakeRange(12,2)];
+    
+    [result appendString:year];
+    [result appendString:@"-"];
+    [result appendString:month];
+    [result appendString:@"-"];
+    [result appendString:day];
+    return result;
+}
 
 @end

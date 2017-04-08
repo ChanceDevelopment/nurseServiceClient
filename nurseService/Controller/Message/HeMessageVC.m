@@ -341,7 +341,7 @@
             if ([data isMemberOfClass:[NSNull class]] || data == nil) {
                 data = @"";
             }
-            [self showHint:data];
+//            [self showHint:data];
         }
     } failure:^(NSError *error){
         [self hideHud];
