@@ -13,6 +13,7 @@
 @property (nonatomic,strong)UILabel *stopTimeL;
 @property (nonatomic,strong)UILabel *serviceInfoL;
 @property (nonatomic,strong)UILabel *orderMoney;
+@property (nonatomic,strong)UILabel *orderState;
 @property (nonatomic,strong)UILabel *addressL;
 @property (nonatomic,strong)UILabel *userInfoL;
 @property (nonatomic,strong)UILabel *payStatusLabel;
