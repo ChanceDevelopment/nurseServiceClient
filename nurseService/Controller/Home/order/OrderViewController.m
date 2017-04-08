@@ -275,7 +275,10 @@
         [self.navigationController pushViewController:orderCommitVC animated:YES];
         return;
     }
-    else{
+    else if((currentOrderType == 3 && [orderDict[@"orderSendState"] isEqualToString:@"3"]) || currentOrderType == 1 || currentOrderType == 2){
+        //已完成->  已完成订单才能查看订单详情
+        
+        
         NSString *orderSendId = orderDict[@"orderSendId"];
         if ([orderSendId isMemberOfClass:[NSNull class]]) {
             orderSendId = @"";
@@ -677,7 +680,33 @@
         orderSendTotalmoney = @"";
     }
     cell.orderMoney.text = [NSString stringWithFormat:@"￥%@",orderSendTotalmoney];
-    
+    if (currentOrderType == 3) {
+        NSString *stateStr = @"";
+        switch ([dict[@"orderSendState"] integerValue]) {
+            case 0:
+                stateStr = @"";
+                break;
+            case 1:
+                stateStr = @"";
+                break;
+            case 2:
+                stateStr = @"";
+                break;
+            case 3:
+                stateStr = @"完成";
+                break;
+            case 4:
+                stateStr = @"待退款";
+                break;
+            case 8:
+                stateStr = @"待客服介入";
+                break;
+            default:
+                break;
+        }
+        cell.orderState.text = stateStr;
+    }
+
     
     id zoneCreatetimeObj = [dict objectForKey:@"orderSendBegintime"];
     if ([zoneCreatetimeObj isMemberOfClass:[NSNull class]] || zoneCreatetimeObj == nil) {

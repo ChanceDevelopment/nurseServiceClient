@@ -13,6 +13,7 @@
 @synthesize serviceInfoL;
 @synthesize stopTimeL;
 @synthesize orderMoney;
+@synthesize orderState;
 @synthesize addressL;
 @synthesize userInfoL;
 @synthesize payStatusLabel;
@@ -49,7 +50,7 @@
         
         CGFloat serviceContentLX = 0;
         CGFloat serviceContentLY = 0;
-        CGFloat serviceContentLW = orderViewW;
+        CGFloat serviceContentLW = orderViewW-120;
         CGFloat serviceContentLH = orderViewH;
         
         serviceContentL = [[UILabel alloc] initWithFrame:CGRectMake(serviceContentLX, serviceContentLY, serviceContentLW, serviceContentLH)];
@@ -61,14 +62,22 @@
         [orderView addSubview:serviceContentL];
 
         CGFloat orderMoneyY = 0;
-        CGFloat orderMoneyW = 100;
-        CGFloat orderMoneyX = orderViewW - orderMoneyW;
+        CGFloat orderMoneyW = 90;
+        CGFloat orderMoneyX = orderViewW - orderMoneyW-10;
         CGFloat orderMoneyH = serviceContentLH;
         
-        orderMoney = [[UILabel alloc] initWithFrame:CGRectMake(orderMoneyX, orderMoneyY, orderMoneyW, orderMoneyH)];
+        orderState = [[UILabel alloc] initWithFrame:CGRectMake(orderMoneyX-50, orderMoneyY, 80, orderMoneyH)];
+//        orderState.text = @"待客服接入";
+        orderState.textColor = [UIColor grayColor];
+        orderState.textAlignment = NSTextAlignmentRight;
+        orderState.font = [UIFont systemFontOfSize:14.0];
+        orderState.backgroundColor = [UIColor clearColor];
+        [orderView addSubview:orderState];
+        
+        orderMoney = [[UILabel alloc] initWithFrame:CGRectMake(orderMoneyX+30, orderMoneyY, orderMoneyW, orderMoneyH)];
         orderMoney.text = @"￥335";
         orderMoney.textColor = [UIColor redColor];
-        orderMoney.textAlignment = NSTextAlignmentRight;
+//        orderMoney.textAlignment = NSTextAlignmentRight;
         orderMoney.font = [UIFont systemFontOfSize:14.0];
         orderMoney.backgroundColor = [UIColor clearColor];
         [orderView addSubview:orderMoney];
