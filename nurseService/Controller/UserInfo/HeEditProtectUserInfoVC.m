@@ -790,7 +790,7 @@
         [self showHint:@"请输入正确的身份证号"];
         return;
     }
-    NSString *height = [userInfoDict objectForKey:@"protectedPersonHeight"];
+    NSString *height = [postUserInfo objectForKey:@"key102"];
     NSString *he = [NSString stringWithFormat:@"200"];
     BOOL Height = [RegularTool isNum:height];
     if (height < he) {
@@ -802,7 +802,7 @@
         return;
     }
     
-    NSString *weight = [userInfoDict objectForKey:@"protectedPersonWeight"];
+    NSString *weight = [postUserInfo objectForKey:@"key103"];
     BOOL Weight = [RegularTool isNum:weight];
     if (!Weight) {
         [self showHint:@"请输入正确的体重"];
