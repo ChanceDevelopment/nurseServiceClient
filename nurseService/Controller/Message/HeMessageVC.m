@@ -62,7 +62,7 @@
 -(DLNavigationTabBar *)navigationTabBar
 {
     if (!_navigationTabBar) {
-        self.navigationTabBar = [[DLNavigationTabBar alloc] initWithTitles:@[@"全部",@"系统消息",@"订单消息",@"资金消息"]];
+        self.navigationTabBar = [[DLNavigationTabBar alloc] initWithTitles:@[@"全部",@"系统消息",@"资金消息",@"订单消息"]];
         self.navigationTabBar.backgroundColor = [UIColor colorWithWhite:237.0 / 255.0 alpha:1.0];
         self.navigationTabBar.frame = CGRectMake(0, 0, SCREENWIDTH, 44);
         self.navigationTabBar.sliderBackgroundColor = APPDEFAULTORANGE;
@@ -160,6 +160,8 @@
     [self showHudInView:self.view hint:@"正在获取..."];
     
     [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestWorkingTaskPath params:requestMessageParams success:^(AFHTTPRequestOperation* operation,id response){
+        NSData *jsonData = [NSJSONSerialization dataWithJSONObject:response options:NSJSONWritingPrettyPrinted error:nil];
+        NSLog(@"---%@",[[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding]);
         [self hideHud];
         if (dataSource) {
             [dataSource removeAllObjects];

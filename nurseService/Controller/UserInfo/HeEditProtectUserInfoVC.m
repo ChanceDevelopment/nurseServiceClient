@@ -774,14 +774,43 @@
         [self showHint:@"请填写受护人姓名"];
         return;
     }
+    BOOL Name = [RegularTool checkUserName:name];
+    if(!Name) {
+        [self showHint:@"请输入正确的名字"];
+        return;
+    }
     if ([card isEqualToString:@""] || card == nil) {
         [self showHint:@"请填写受护人身份证"];
         return;
     }
+    
     [self birthdayStrFromIdentityCard:card];
     [self getIdentityCardSex:card];
     if ([card length] > 18) {
         [self showHint:@"请输入正确的身份证号"];
+        return;
+    }
+    NSString *height = [userInfoDict objectForKey:@"protectedPersonHeight"];
+    NSString *he = [NSString stringWithFormat:@"200"];
+    BOOL Height = [RegularTool isNum:height];
+    if (height < he) {
+        [self showHint:@"您太高了"];
+        return;
+    }
+    if (!Height) {
+        [self showHint:@"请输入正确的身高"];
+        return;
+    }
+    
+    NSString *weight = [userInfoDict objectForKey:@"protectedPersonWeight"];
+    BOOL Weight = [RegularTool isNum:weight];
+    if (!Weight) {
+        [self showHint:@"请输入正确的体重"];
+        return;
+    }
+    BOOL Address = [RegularTool isNum:addressTextField.text];
+    if (Address) {
+        [self showHint:@"请正确输入详细地址"];
         return;
     }
     NSString *protectedPersonHeight = [postUserInfo objectForKey:@"key102"];
