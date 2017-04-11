@@ -9,13 +9,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "nurseService/Controller/Service/HeServiceDetailVC.m"
-            timestampString = "513153086.499389"
+            filePath = "nurseService/Controller/UserInfo/HeEditProtectUserInfoVC.m"
+            timestampString = "513613029.886586"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1945"
-            endingLineNumber = "1945"
-            landmarkName = "-handleSelectPhoto"
+            startingLineNumber = "889"
+            endingLineNumber = "889"
+            landmarkName = "-addProtectedUserInfo"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -25,13 +25,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "nurseService/Controller/Service/HeServiceDetailVC.m"
-            timestampString = "513153087.202312"
+            filePath = "nurseService/Controller/UserInfo/HeEditProtectUserInfoVC.m"
+            timestampString = "513613029.886586"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1944"
-            endingLineNumber = "1944"
-            landmarkName = "-handleSelectPhoto"
+            startingLineNumber = "906"
+            endingLineNumber = "906"
+            landmarkName = "-addProtectedUserInfo"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -41,91 +41,59 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "nurseService/Controller/Service/HeServiceDetailVC.m"
-            timestampString = "513153088.131781"
+            filePath = "nurseService/Controller/UserInfo/HeEditProtectUserInfoVC.m"
+            timestampString = "513613029.886586"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1937"
-            endingLineNumber = "1937"
-            landmarkName = "-handleSelectPhoto"
+            startingLineNumber = "726"
+            endingLineNumber = "726"
+            landmarkName = "-editProtectedUserInfo"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "nurseService/Controller/UserInfo/HeEditProtectUserInfoVC.m"
+            timestampString = "513613029.886586"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "745"
+            endingLineNumber = "745"
+            landmarkName = "-editProtectedUserInfo"
             landmarkType = "7">
             <Locations>
                <Location
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "-[HeServiceDetailVC handleSelectPhoto]"
+                  symbolName = "-[HeEditProtectUserInfoVC editProtectedUserInfo]"
                   moduleName = "&#x5b89;&#x5fc3;&#x62a4;"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/Itanotomomi/Desktop/nurseServiceClient/nurseService/Controller/Service/HeServiceDetailVC.m"
-                  timestampString = "513153552.33589"
+                  urlString = "file:///Users/Itanotomomi/Documents/nurseServiceClient/nurseService/Controller/UserInfo/HeEditProtectUserInfoVC.m"
+                  timestampString = "513613030.124745"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "1937"
-                  endingLineNumber = "1937"
-                  offsetFromSymbolStart = "529">
+                  startingLineNumber = "745"
+                  endingLineNumber = "745"
+                  offsetFromSymbolStart = "4039">
                </Location>
                <Location
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "-[HeServiceDetailVC handleSelectPhoto]"
+                  symbolName = "__48-[HeEditProtectUserInfoVC editProtectedUserInfo]_block_invoke"
                   moduleName = "&#x5b89;&#x5fc3;&#x62a4;"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/Itanotomomi/Desktop/nurseServiceClient/nurseService/Controller/Service/HeServiceDetailVC.m"
-                  timestampString = "513153552.339157"
+                  urlString = "file:///Users/Itanotomomi/Documents/nurseServiceClient/nurseService/Controller/UserInfo/HeEditProtectUserInfoVC.m"
+                  timestampString = "513613030.127367"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "1937"
-                  endingLineNumber = "1937"
-                  offsetFromSymbolStart = "544">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "nurseService/Controller/Service/HeServiceDetailVC.m"
-            timestampString = "513153089.176686"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1931"
-            endingLineNumber = "1931"
-            landmarkName = "-handleSelectPhoto"
-            landmarkType = "7">
-            <Locations>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "-[HeServiceDetailVC handleSelectPhoto]"
-                  moduleName = "&#x5b89;&#x5fc3;&#x62a4;"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/Itanotomomi/Desktop/nurseServiceClient/nurseService/Controller/Service/HeServiceDetailVC.m"
-                  timestampString = "513153552.355464"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "1931"
-                  endingLineNumber = "1931"
-                  offsetFromSymbolStart = "55">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "-[HeServiceDetailVC handleSelectPhoto]"
-                  moduleName = "&#x5b89;&#x5fc3;&#x62a4;"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/Itanotomomi/Desktop/nurseServiceClient/nurseService/Controller/Service/HeServiceDetailVC.m"
-                  timestampString = "513153552.359587"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "1931"
-                  endingLineNumber = "1931"
+                  startingLineNumber = "746"
+                  endingLineNumber = "746"
                   offsetFromSymbolStart = "72">
                </Location>
             </Locations>
@@ -137,13 +105,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "nurseService/Controller/Service/HeServiceDetailVC.m"
-            timestampString = "513153098.399831"
+            filePath = "nurseService/Controller/UserInfo/HeEditProtectUserInfoVC.m"
+            timestampString = "513613029.886586"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2002"
-            endingLineNumber = "2002"
-            landmarkName = "-imagePickerController:didFinishPickingPhotos:sourceAssets:isSelectOriginalPhoto:"
+            startingLineNumber = "974"
+            endingLineNumber = "974"
+            landmarkName = "-getIdentityCardSex:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -153,29 +121,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "nurseService/Controller/Service/HeServiceDetailVC.m"
-            timestampString = "513153541.766145"
+            filePath = "nurseService/Controller/UserInfo/HeEditProtectUserInfoVC.m"
+            timestampString = "513613029.886586"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2085"
-            endingLineNumber = "2085"
-            landmarkName = "-imagePickerController:didFinishPickingMediaWithInfo:"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "nurseService/Controller/Service/HeServiceDetailVC.m"
-            timestampString = "513153542.629342"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2086"
-            endingLineNumber = "2086"
-            landmarkName = "-imagePickerController:didFinishPickingMediaWithInfo:"
+            startingLineNumber = "985"
+            endingLineNumber = "985"
+            landmarkName = "-getIdentityCardSex:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
