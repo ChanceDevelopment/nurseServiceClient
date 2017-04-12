@@ -91,7 +91,7 @@
 {
     [super initView];
     //订单状态（0正在发布/1已被接取/2已服务/3已完成/4被取消/为空为待预约
-    id orderSendStateObj = orderDetailDict[@"orderSendState"];
+    id orderSendStateObj = orderDetailDict[@"orderReceivestate"];
     if ([orderSendStateObj isMemberOfClass:[NSNull class]] || orderSendStateObj == nil) {
         orderSendStateObj = @"";
     }
@@ -116,7 +116,7 @@
     statusView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, 55)];
     tableview.tableHeaderView = statusView;
     
-    id orderSendTypeObj = orderDetailDict[@"orderSendType"];
+    id orderSendTypeObj = orderDetailDict[@"orderReceivestate"];
     if ([orderSendTypeObj isMemberOfClass:[NSNull class]]) {
         orderSendTypeObj = @"";
     }

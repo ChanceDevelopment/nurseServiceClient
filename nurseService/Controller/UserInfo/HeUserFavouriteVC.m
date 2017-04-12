@@ -312,6 +312,7 @@
             [weakSelf bookServiceWithDict:dict];
         };
         
+        
         NSString *contentImgurl = dict[@"imgUrl"];
         if ([contentImgurl isMemberOfClass:[NSNull class]] || contentImgurl == nil) {
             contentImgurl = @"";
