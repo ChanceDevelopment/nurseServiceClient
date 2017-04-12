@@ -289,6 +289,8 @@
             [dataSource removeAllObjects];
             [dataSource addObjectsFromArray:jsonArray];
             
+            NSLog(@"%@",jsonArray);
+            
             if ([dataSource count] == 0) {
                 UIView *bgView = [[UIView alloc] initWithFrame:self.view.bounds];
                 UIImage *noImage = [UIImage imageNamed:@"img_no_data_refresh"];

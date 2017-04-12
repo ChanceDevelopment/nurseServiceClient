@@ -707,12 +707,28 @@
     if (detailedAddress == nil) {
         detailedAddress = @"";
     }
+    
+    NSString *sex = [self getIdentityCardSex:card];
+    
+    NSDate *currentDate = [NSDate date];//获取当前时间，日期
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"yyyy"];
+    NSString *dateString = [dateFormatter stringFromDate:currentDate];
+    NSLog(@"dateString:%@",dateString);
+    
+    NSString *birthdayYear = [self birthdayStrFromIdentityCard:card];
+    
+    NSInteger y = [birthdayYear integerValue];
+    NSInteger x = [dateString integerValue];
+    NSInteger res = x - y;
+    NSString *ress = [NSString stringWithFormat:@"%ld",(long)res];
+    
     NSDictionary * params  = @{@"userId": userid,
                                @"personId": [userInfoDict objectForKey:@"protectedPersonId"],
                                @"personName": [userInfoDict objectForKey:@"protectedPersonName"],
-                               @"personSex": [userInfoDict objectForKey:@"protectedPersonSex"],
+                               @"personSex": sex,
                                @"personCard": [userInfoDict objectForKey:@"protectedPersonCard"],
-                               @"personAge": [userInfoDict objectForKey:@"protectedPersonAge"],
+                               @"personAge": ress,
                                @"personGuardian": [userInfoDict objectForKey:@"protectedPersonGuardian"],
                                @"personHeight": [userInfoDict objectForKey:@"protectedPersonHeight"],
                                @"personWeight": [userInfoDict objectForKey:@"protectedPersonWeight"],
@@ -784,8 +800,6 @@
         return;
     }
     
-    [self birthdayStrFromIdentityCard:card];
-    [self getIdentityCardSex:card];
     if ([card length] > 18) {
         [self showHint:@"请输入正确的身份证号"];
         return;
@@ -857,20 +871,17 @@
         detailedAddress = @"";
     }
     
-    NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
-    NSString *sex = [user objectForKey:@"sex"];
-    
-    
+    NSString *sex = [self getIdentityCardSex:card];
     
     NSDate *currentDate = [NSDate date];//获取当前时间，日期
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:@"yyyy"];
     NSString *dateString = [dateFormatter stringFromDate:currentDate];
     NSLog(@"dateString:%@",dateString);
-    NSUserDefaults *yearr = [NSUserDefaults standardUserDefaults];
-    NSString *ager = [yearr objectForKey:@"year"];
     
-    NSInteger y = [ager integerValue];
+    NSString *birthdayYear = [self birthdayStrFromIdentityCard:card];
+    
+    NSInteger y = [birthdayYear integerValue];
     NSInteger x = [dateString integerValue];
     NSInteger res = x - y;
     NSString *ress = [NSString stringWithFormat:@"%ld",(long)res];
@@ -1018,7 +1029,7 @@
     [result appendString:month];
     [result appendString:@"-"];
     [result appendString:day];
-    return result;
+    return year;
 }
 
 @end
