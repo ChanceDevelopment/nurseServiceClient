@@ -624,9 +624,9 @@
     
     
     NSString *height = [userInfoDict objectForKey:@"protectedPersonHeight"];
-    NSString *he = [NSString stringWithFormat:@"200"];
+    NSString *he = [NSString stringWithFormat:@"300"];
     BOOL Height = [RegularTool isNum:height];
-    if (height < he) {
+    if ([height floatValue] > [he floatValue]) {
         [self showHint:@"您太高了"];
         return;
     }
@@ -804,10 +804,17 @@
         [self showHint:@"请输入正确的身份证号"];
         return;
     }
+    
+    BOOL Card = [RegularTool verifyIDCardNumber:card];
+    if(!Card) {
+        [self showHint:@"请输入正确的身份证号"];
+        return;
+    }
+    
     NSString *height = [postUserInfo objectForKey:@"key102"];
-    NSString *he = [NSString stringWithFormat:@"200"];
+    NSString *he = [NSString stringWithFormat:@"300"];
     BOOL Height = [RegularTool isNum:height];
-    if (height < he) {
+    if ([height floatValue] > [he floatValue]) {
         [self showHint:@"您太高了"];
         return;
     }
