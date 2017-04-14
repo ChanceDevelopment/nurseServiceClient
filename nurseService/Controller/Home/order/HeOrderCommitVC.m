@@ -1677,7 +1677,7 @@
     NSNotification *notification = [[NSNotification alloc] initWithName:@"selectOrderNotification" object:nil userInfo:@{@"index":@1}];
     
     [[NSNotificationCenter defaultCenter] postNotification:notification];
-    
+    [tabbarVC.orderVC selectOrderIndex:1];
     [self.navigationController popViewControllerAnimated:YES];
 }
 

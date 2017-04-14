@@ -26,7 +26,8 @@
         CGFloat userImageH = cellsize.height - 2 * userImageY;
         CGFloat userImageW = userImageH;
         userImage = [[UIImageView alloc] initWithFrame:CGRectMake(userImageX, userImageY, userImageW, userImageH)];
-        userImage.layer.cornerRadius = userImageW / 2.0;
+//        userImage.layer.cornerRadius = userImageW / 2.0;
+        userImage.layer.cornerRadius = 5;
         userImage.layer.masksToBounds = YES;
         userImage.layer.borderWidth = 0;
         userImage.layer.borderColor = [UIColor clearColor].CGColor;

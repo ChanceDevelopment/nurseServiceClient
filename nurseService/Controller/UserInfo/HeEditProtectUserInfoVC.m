@@ -587,7 +587,7 @@
 - (void)editProtectedUserInfo{
 
     
-    NSString *requestUrl = [NSString stringWithFormat:@"%@/protected/updateprotectedbyid.action",BASEURL];
+    NSString *requestUrl = [NSString stringWithFormat:@"%@protected/updateprotectedbyid.action",BASEURL];
     NSString *userid = [[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY];
 //    NSString *sex = @"";
 //    if (userSex == ENUM_SEX_Boy) {

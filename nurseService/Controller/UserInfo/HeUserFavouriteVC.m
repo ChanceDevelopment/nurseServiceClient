@@ -312,11 +312,14 @@
             [weakSelf bookServiceWithDict:dict];
         };
         
+        
         NSString *contentImgurl = dict[@"imgUrl"];
         if ([contentImgurl isMemberOfClass:[NSNull class]] || contentImgurl == nil) {
             contentImgurl = @"";
         }
-        contentImgurl = [NSString stringWithFormat:@"%@/%@",HYTIMAGEURL,contentImgurl];
+        NSRange range = [contentImgurl rangeOfString:@","];
+        NSString *str = [contentImgurl substringToIndex:range.location];
+        contentImgurl = [NSString stringWithFormat:@"%@/%@",HYTIMAGEURL,str];
         NSString *imageKey = [NSString stringWithFormat:@"%ld%ld_%@_service",section,row,contentImgurl];
         UIImageView *imageview = [_imageCache objectForKey:imageKey];
         if (!imageview) {

@@ -91,7 +91,7 @@
 {
     [super initView];
     //订单状态（0正在发布/1已被接取/2已服务/3已完成/4被取消/为空为待预约
-    id orderSendStateObj = orderDetailDict[@"orderSendState"];
+    id orderSendStateObj = orderDetailDict[@"orderReceivestate"];
     if ([orderSendStateObj isMemberOfClass:[NSNull class]] || orderSendStateObj == nil) {
         orderSendStateObj = @"";
     }
@@ -116,7 +116,7 @@
     statusView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, 55)];
     tableview.tableHeaderView = statusView;
     
-    id orderSendTypeObj = orderDetailDict[@"orderSendType"];
+    id orderSendTypeObj = orderDetailDict[@"orderReceivestate"];
     if ([orderSendTypeObj isMemberOfClass:[NSNull class]]) {
         orderSendTypeObj = @"";
     }
@@ -368,7 +368,7 @@
         sepLineX = CGRectGetMaxX(circleIcon.frame) + 2;
     }
     
-    sepLineW = SCREENWIDTH - sepLineX;
+    sepLineW = SCREENWIDTH +SCREENWIDTH;
     UIView *sepLine = [[UIView alloc] initWithFrame:CGRectMake(sepLineX, sepLineY, sepLineW, sepLineH)];
     sepLine.backgroundColor = [UIColor colorWithWhite:237.0 / 255.0 alpha:1.0];
     if (statusType == [statusArray count]) {
@@ -713,6 +713,7 @@
                     //30
                     CGFloat pointY = 0;
                     CGFloat pointX = 10;
+                    CGFloat pointx = 0;
                     UIImageView *headImageView = [[UIImageView alloc] initWithFrame:CGRectMake(pointX, pointY, 40, 40)];
                     headImageView.backgroundColor = [UIColor clearColor];
                     headImageView.layer.masksToBounds = YES;
@@ -754,16 +755,25 @@
                     [cell addSubview:hospitalL];
                     hospitalL.text = nurseWorkNnit;
                     
-                    pointY = 10;
+                    pointY = 0;
                     pointX = SCREENWIDTH-35;
-                    UIImageView *telephone = [[UIImageView alloc] initWithFrame:CGRectMake(pointX, pointY, 20, 20)];
+                    pointx = SCREENWIDTH-50;
+                    
+                    UIView *neww = [UIView new];
+                    neww.frame = CGRectMake(pointx, pointY, 50, 50);
+                    neww.backgroundColor = [UIColor clearColor];
+                    neww.userInteractionEnabled = YES;
+                    [cell addSubview:neww];
+                    
+                    UIImageView *telephone = [[UIImageView alloc] initWithFrame:CGRectMake(pointX, 10, 20, 20)];
                     telephone.backgroundColor = [UIColor clearColor];
                     telephone.image = [UIImage imageNamed:@"icon_phone"];
-                    telephone.userInteractionEnabled = YES;
+                    
                     [cell addSubview:telephone];
                     
+                    
                     UITapGestureRecognizer *userInfoTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(callCustomer)];
-                    [telephone addGestureRecognizer:userInfoTap];
+                    [neww addGestureRecognizer:userInfoTap];
                     break;
                 }
                 case 1:
@@ -1706,6 +1716,7 @@
 }
 
 - (void)callCustomer{
+    NSLog(@"点击了打电话");
     NSString *nursePhone = orderDetailDict[@"nursePhone"];
     if ([nursePhone isMemberOfClass:[NSNull class]] || nursePhone == nil) {
         [self showHint:@"暂无护士的联系方式"];

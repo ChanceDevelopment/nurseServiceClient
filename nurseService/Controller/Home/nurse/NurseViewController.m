@@ -669,9 +669,19 @@
 {
     
     NSDictionary *paramDict = @{@"service":dict};
-    NSString *nurseId = @"";
-    if ([_selectNurseIdArray count] == 1) {
-        nurseId = _selectNurseIdArray[0];
+    NSMutableString *nurseId = [[NSMutableString alloc] initWithString:@""];
+    if ([_selectNurseIdArray count] >= 1) {
+        for (NSInteger index = 0; index < [_selectNurseIdArray count]; index++) {
+            NSString *tempid = _selectNurseIdArray[index];
+            if (index == [_selectNurseIdArray count] - 1) {
+                [nurseId appendFormat:@"%@",tempid];
+            }
+            else{
+                [nurseId appendFormat:@"%@,",tempid];
+            }
+            
+        }
+//        nurseId = _selectNurseIdArray[0];
         NSDictionary *nurseDict = @{@"nurseId":nurseId};
         paramDict = @{@"service":dict,@"nurse":nurseDict};
     }
