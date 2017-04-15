@@ -190,7 +190,7 @@
 {
     NSInteger row = indexPath.row;
     NSInteger section = indexPath.section;
-
+    
     
     
     CGSize cellSize = [tableView rectForRowAtIndexPath:indexPath].size;
@@ -265,7 +265,7 @@
             addressBt.layer.borderColor = APPDEFAULTORANGE.CGColor;
             addressBt.backgroundColor = [UIColor clearColor];
             [cell addSubview:addressBt];
-
+            
             return cell;
         }
             break;
@@ -329,7 +329,7 @@
         default:
             break;
     }
-
+    
     return nil;
 }
 
@@ -364,7 +364,7 @@
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
     
     UIView *v = nil;
-
+    
     v = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 40)];
     v.userInteractionEnabled = YES;
     [v setBackgroundColor:[UIColor colorWithWhite:244.0 / 255.0 alpha:1.0]];
