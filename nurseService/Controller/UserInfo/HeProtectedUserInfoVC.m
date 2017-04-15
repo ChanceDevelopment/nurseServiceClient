@@ -11,6 +11,8 @@
 #import "HeEditProtectUserInfoVC.h"
 #import "AFHttpTool.h"
 #import "HeEditProtectUserInfoVC.h"
+#import "MJRefreshHeader.h"
+#import "MJRefreshNormalHeader.h"
 
 @interface HeProtectedUserInfoVC ()
 @property(strong,nonatomic)IBOutlet UITableView *tableview;
@@ -67,6 +69,19 @@
     tableview.backgroundColor = [UIColor colorWithWhite:237.0 / 255.0 alpha:1.0];
     [Tool setExtraCellLineHidden:tableview];
     tableview.separatorStyle = UITableViewCellSeparatorStyleNone;
+    
+    __weak HeProtectedUserInfoVC *weakSelf = self;
+    self.tableview.header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
+        // 进入刷新状态后会自动调用这个block
+        [weakSelf.tableview.header performSelector:@selector(endRefreshing) withObject:nil afterDelay:0.5];
+        [weakSelf getDataSource];
+        
+    }];
+}
+
+- (void)endRefreshing
+{
+    NSLog(@"endRefreshing");
 }
 
 - (void)addUserInfo:(NSNotification *)notification
@@ -161,10 +176,15 @@
     BOOL isDefault = ([protectedDefault integerValue] == 1) ? YES : NO;
     if (isDefault) {
         //第一次默认选中默认受护人
+        selectedProtectedPersonId = dict[@"protectedPersonId"];
+        if ([selectedProtectedPersonId isMemberOfClass:[NSNull class]]) {
+            selectedProtectedPersonId = nil;
+        }
         if (!selectedProtectedPersonId) {
-            selectedProtectedPersonId = dict[@"protectedPersonId"];
-            [self.dataSource exchangeObjectAtIndex:0 withObjectAtIndex:indexPath.row];
-            [self.tableview reloadData];
+            
+            //这部分代码先注释，遇安卓保持一致
+            //[self.dataSource exchangeObjectAtIndex:0 withObjectAtIndex:indexPath.row];
+            //[self.tableview reloadData];
         }
     }
     NSString *protectedPersonId = dict[@"protectedPersonId"];
@@ -190,7 +210,7 @@
         NSString *protectedPersonId = dict[@"protectedPersonId"];
         if (![selectedProtectedPersonId isEqualToString:protectedPersonId]) {
             selectedProtectedPersonId = protectedPersonId;
-            [self.dataSource exchangeObjectAtIndex:0 withObjectAtIndex:indexPath.row];
+//            [self.dataSource exchangeObjectAtIndex:0 withObjectAtIndex:indexPath.row];
             [tableview reloadData];
             if (protectedPersonId == nil) {
                 protectedPersonId = @"";
@@ -306,8 +326,12 @@
             else{
                 tableview.backgroundView = nil;
             }
+            dispatch_async(dispatch_get_main_queue(), ^{
+                //回调或者说是通知主线程刷新
+                [tableview performSelector:@selector(reloadData) withObject:nil afterDelay:0.5];
+                [tableview performSelector:@selector(reloadData) withObject:nil afterDelay:0.6];
+            });
             
-            [tableview reloadData];
         }else{
             NSString *errorInfo = [respondDict valueForKey:@"data"];
             if ([errorInfo isMemberOfClass:[NSNull class]] || errorInfo == nil) {

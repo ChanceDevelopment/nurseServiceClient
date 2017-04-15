@@ -20,6 +20,7 @@
     NSMutableDictionary *postUserInfo;
     NSString *releation;
     NSString *userAddress;
+    NSString *userAddressId;
 }
 @property(strong,nonatomic)IBOutlet UITableView *tableview;
 @property(strong,nonatomic)NSArray *dataSource;
@@ -551,11 +552,20 @@
 - (void)selectAddressWithAddressInfo:(NSDictionary *)addressDcit
 {
     NSString *address = addressDcit[@"address"];
+    if ([address isMemberOfClass:[NSNull class]] || address == nil) {
+        address = @"";
+    }
+    NSString *addressId = addressDcit[@"addressId"];
+    if ([addressId isMemberOfClass:[NSNull class]] || addressId == nil) {
+        addressId = @"";
+    }
     if (isEdit) {
         [userInfoDict setObject:address forKey:@"protectedAddress"];
+        [userInfoDict setObject:addressId forKey:@"protectedAddressId"];
     }
     else{
-        userAddress = address;
+        userAddress = [NSString stringWithFormat:@"%@",address];
+        userAddressId = [NSString stringWithFormat:@"%@",addressId];
     }
     [tableview reloadData];
 }
@@ -893,6 +903,10 @@
     NSInteger res = x - y;
     NSString *ress = [NSString stringWithFormat:@"%ld",(long)res];
     
+    if (!userAddressId) {
+        userAddressId = @"";
+    }
+    
     NSDictionary * params  = @{@"personName": name,
                                @"personSex": sex,
                                @"personCard": card,
@@ -904,7 +918,7 @@
                                @"personnexus": nexus,
                                @"address": address,
                                @"personNote": @"",
-                               @"addressId": @"",
+                               @"addressId": userAddressId,
                                @"isdefault": @"0",
                                @"userId": userid,
                                @"longitude": longitude,

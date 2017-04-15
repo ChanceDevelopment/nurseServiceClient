@@ -396,10 +396,15 @@
             
         }
         NSString *protectedAddress = dict[@"protectedAddress"];
-        if ([protectedAddress isMemberOfClass:[NSNull class]]) {
+        if ([protectedAddress isMemberOfClass:[NSNull class]] || protectedAddress == nil) {
             protectedAddress = @"";
         }
-        NSDictionary *addressDict = @{@"address":protectedAddress};
+        NSString *protectedAddressId = dict[@"protectedAddressId"];
+        if ([protectedAddressId isMemberOfClass:[NSNull class]] || protectedAddressId == nil) {
+            protectedAddressId = @"";
+        }
+        
+        NSDictionary *addressDict = @{@"address":protectedAddress,@"addressId":protectedAddressId};
         [_addressDeleage selectAddressWithAddressInfo:addressDict];
         [self.navigationController popViewControllerAnimated:YES];
     }
