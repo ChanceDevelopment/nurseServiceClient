@@ -196,7 +196,20 @@
     if ([receiveMoney isMemberOfClass:[NSNull class]]) {
         receiveMoney = @"";
     }
-    cell.moneyLabel.text = [NSString stringWithFormat:@"-%.2f元", [receiveMoney floatValue]];
+    id capitalUserPoolPeopleIdentity = dict[@"capitalUserPoolPeopleIdentity"];
+    if ([capitalUserPoolPeopleIdentity isMemberOfClass:[NSNull class]] || capitalUserPoolPeopleIdentity == nil) {
+        capitalUserPoolPeopleIdentity = @"";
+    }
+    if ([capitalUserPoolPeopleIdentity integerValue] == 0) {
+        //发布
+        cell.moneyLabel.text = [NSString stringWithFormat:@"-%.2f元", [receiveMoney floatValue]];
+    }
+    else{
+        //领取
+        cell.moneyLabel.textColor = [UIColor greenColor];
+        cell.moneyLabel.text = [NSString stringWithFormat:@"+%.2f元", [receiveMoney floatValue]];
+    }
+    
     
     return cell;
 }
