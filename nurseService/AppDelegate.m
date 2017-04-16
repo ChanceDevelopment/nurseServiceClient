@@ -210,7 +210,8 @@ BMKMapManager* _mapManager;
 {
     NSString *userAccount = [[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY];
     BOOL haveLogin = (userAccount == nil) ? NO : YES;
-    
+    NSString *ss = [[NSUserDefaults standardUserDefaults] objectForKey:@"userAccountKey"];
+//    18606519253 13136170275
     if (haveLogin) {//登陆成功加载主窗口控制器
         [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
         

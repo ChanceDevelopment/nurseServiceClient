@@ -208,10 +208,28 @@
     __weak HeProtectedUserInfoVC *weakSelf = self;
     cell.selectBlock = ^(){
         NSString *protectedPersonId = dict[@"protectedPersonId"];
+        
+        
+        
         if (![selectedProtectedPersonId isEqualToString:protectedPersonId]) {
             selectedProtectedPersonId = protectedPersonId;
+            
 //            [self.dataSource exchangeObjectAtIndex:0 withObjectAtIndex:indexPath.row];
-            [tableview reloadData];
+            NSMutableArray *tempArray = [[NSMutableArray alloc] initWithCapacity:0];
+            for (NSDictionary *mydict in dataSource) {
+                id protectedDefault = mydict[@"protectedDefault"];
+                NSMutableDictionary *tempDict = [[NSMutableDictionary alloc] initWithDictionary:mydict];
+                if ([protectedDefault integerValue] == 1) {
+                    [tempDict setObject:@"0" forKey:@"protectedDefault"];
+                }
+                NSString *tempId = [mydict objectForKey:@"protectedPersonId"];
+                if ([tempId isEqualToString:@"protectedPersonId"]) {
+                    [tempDict setObject:@"1" forKey:@"protectedDefault"];
+                }
+                [tempArray addObject:tempDict];
+            }
+            dataSource = [[NSMutableArray alloc] initWithArray:tempArray];
+            [tableview performSelector:@selector(reloadData) withObject:nil afterDelay:0.0];
             if (protectedPersonId == nil) {
                 protectedPersonId = @"";
             }
