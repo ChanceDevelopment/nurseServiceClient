@@ -1251,7 +1251,7 @@
                                  @"orderSendStoptime":orderSendStoptime
                                  };
     
-    NSString *requestUrl = [NSString stringWithFormat:@"%@/orderSend/orderSend.action",BASEURL];
+    NSString *requestUrl = [NSString stringWithFormat:@"%@orderSend/orderSend.action",BASEURL];
     [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:paramsDict success:^(AFHTTPRequestOperation* operation,id response){
         [self hideHud];
         NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];

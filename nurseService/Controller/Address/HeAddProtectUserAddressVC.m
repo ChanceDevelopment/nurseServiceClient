@@ -105,7 +105,9 @@
     _geoSearch = [[BMKGeoCodeSearch alloc] init];
     _geoSearch.delegate = self;
     
-    NSDictionary *dict = @{@"subAddress":@"[当前]",@"address":[HeSysbsModel getSysModel].addressResult.address};
+    NSString *latitudeStr = [NSString stringWithFormat:@"%.6f",[HeSysbsModel getSysModel].addressResult.location.latitude];
+    NSString *longitudeStr = [NSString stringWithFormat:@"%.6f",[HeSysbsModel getSysModel].addressResult.location.longitude];
+    NSDictionary *dict = @{@"subAddress":@"[当前]",@"address":[HeSysbsModel getSysModel].addressResult.address,@"latitude":latitudeStr,@"longitude":longitudeStr};
     [dataSource addObject:dict];
 }
 
@@ -197,7 +199,10 @@
         NSArray *poiInfoList = poiResultList.poiInfoList;
         
         [dataSource removeAllObjects];
-        NSDictionary *dict = @{@"subAddress":@"[当前]",@"address":[HeSysbsModel getSysModel].addressResult.address};
+        NSString *latitudeStr = [NSString stringWithFormat:@"%.6f",[HeSysbsModel getSysModel].addressResult.location.latitude];
+        NSString *longitudeStr = [NSString stringWithFormat:@"%.6f",[HeSysbsModel getSysModel].addressResult.location.longitude];
+        
+        NSDictionary *dict = @{@"subAddress":@"[当前]",@"address":[HeSysbsModel getSysModel].addressResult.address,@"latitude":latitudeStr,@"longitude":longitudeStr};
         [dataSource addObject:dict];
         
         for (NSInteger index = 0; index < [poiInfoList count]; index++) {
@@ -210,7 +215,10 @@
             if (!address) {
                 address = @"";
             }
-            NSDictionary *dict = @{@"subAddress":name,@"address":address};
+            NSString *latitudeStr = [NSString stringWithFormat:@"%.6f",info.pt.latitude];
+            NSString *longitudeStr = [NSString stringWithFormat:@"%.6f",info.pt.longitude];
+            
+            NSDictionary *dict = @{@"subAddress":name,@"address":address,@"latitude":latitudeStr,@"longitude":longitudeStr};
             [dataSource addObject:dict];
         }
         if ([dataSource count] == 0) {

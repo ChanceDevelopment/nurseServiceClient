@@ -680,6 +680,8 @@
         orderSendTotalmoney = @"";
     }
     cell.orderMoney.text = [NSString stringWithFormat:@"￥%@",orderSendTotalmoney];
+    UIView *subview = [cell viewWithTag:404];
+    subview.hidden = NO;
     if (currentOrderType == 3) {
         NSString *stateStr = @"";
         switch ([dict[@"orderSendState"] integerValue]) {
@@ -696,8 +698,12 @@
                 stateStr = @"完成";
                 break;
             case 4:
+            {
                 stateStr = @"待退款";
+                UIView *subview = [cell viewWithTag:404];
+                subview.hidden = YES;
                 break;
+            }
             case 8:
                 stateStr = @"待客服介入";
                 break;

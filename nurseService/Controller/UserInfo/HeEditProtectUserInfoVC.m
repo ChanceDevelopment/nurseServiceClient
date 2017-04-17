@@ -25,6 +25,8 @@
 @property(strong,nonatomic)IBOutlet UITableView *tableview;
 @property(strong,nonatomic)NSArray *dataSource;
 @property(strong,nonatomic)UITextField *addressTextField;
+@property(strong,nonatomic)NSString *userlatitude;
+@property(strong,nonatomic)NSString *userlongitude;
 
 @end
 
@@ -59,6 +61,7 @@
     // Do any additional setup after loading the view from its nib.
     [self initializaiton];
     [self initView];
+    [self getPaitentInfo];
 }
 
 - (void)initializaiton
@@ -80,7 +83,8 @@
     if ([protectedPersonSex integerValue] == 1) {
         userSex = ENUM_SEX_Boy;
     }
-    
+    _userlongitude = [NSString stringWithFormat:@"%@",[[[HeSysbsModel getSysModel] userLocationDict] objectForKey:@"longitude"]];
+    _userlatitude = [NSString stringWithFormat:@"%@",[[[HeSysbsModel getSysModel] userLocationDict] objectForKey:@"latitude"]];
 }
 
 - (void)initView
@@ -119,6 +123,53 @@
 //    [footerView addSubview:tipLabel];
 }
 
+- (void)getPaitentInfo
+{
+    NSString *personId = userInfoDict[@"protectedPersonId"];
+    if ([personId isMemberOfClass:[NSNull class]] || personId == nil) {
+        personId = @"";
+        return;
+    }
+    NSDictionary * params = @{@"personId":personId};
+    NSString *url = [NSString stringWithFormat:@"%@/protected/selectprotectedbyid.action",BASEURL];
+    
+    [AFHttpTool requestWihtMethod:RequestMethodTypePost url:url params:params success:^(AFHTTPRequestOperation* operation,id response){
+        [self hideHud];
+        NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
+        NSDictionary *respondDict = [NSDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
+        if ([[respondDict valueForKey:@"errorCode"] integerValue] == REQUESTCODE_SUCCEED) {
+            NSLog(@"success");
+            NSDictionary *userDetail = respondDict[@"json"];
+            id protectedAddress = userDetail[@"protectedAddress"];
+            if ([protectedAddress isMemberOfClass:[NSNull class]] || protectedAddress == nil) {
+                protectedAddress = @"";
+            }
+            NSArray *addressArray = [protectedAddress componentsSeparatedByString:@","];
+            @try {
+                NSString *longitude = addressArray[0];
+                NSString *latitude = addressArray[1];
+                _userlatitude = [NSString stringWithFormat:@"%@",latitude];
+                _userlongitude = [NSString stringWithFormat:@"%@",longitude];
+            } @catch (NSException *exception) {
+                
+            } @finally {
+                
+            }
+//            
+//            if ([userInfoDict isMemberOfClass:[NSNull class]]) {
+//                userInfoDict = nil;
+//            }
+//            [tableview reloadData];
+        }else if ([[[respondDict valueForKey:@"errorCode"] stringValue] isEqualToString:@"400"]){
+            NSLog(@"faile");
+            [self.view makeToast:[NSString stringWithFormat:@"%@",[respondDict valueForKey:@"data"]] duration:1.2 position:@"center"];
+        }
+    } failure:^(NSError* err){
+        NSLog(@"err:%@",err);
+        [self hideHud];
+        [self.view makeToast:ERRORREQUESTTIP duration:2.0 position:@"center"];
+    }];
+}
 
 - (IBAction)saveProtectUserInfo:(id)sender
 {
@@ -559,6 +610,18 @@
     if ([addressId isMemberOfClass:[NSNull class]] || addressId == nil) {
         addressId = @"";
     }
+    NSString *longitude = addressDcit[@"longitude"];
+    if ([longitude isMemberOfClass:[NSNull class]] || longitude == nil) {
+        longitude = @"";
+    }
+    NSString *latitude = addressDcit[@"latitude"];
+    if ([latitude isMemberOfClass:[NSNull class]] || latitude == nil) {
+        latitude = @"";
+    }
+    
+    _userlongitude = [NSString stringWithFormat:@"%@",longitude];
+    _userlatitude = [NSString stringWithFormat:@"%@",latitude];
+    
     if (isEdit) {
         [userInfoDict setObject:address forKey:@"protectedAddress"];
         [userInfoDict setObject:addressId forKey:@"protectedAddressId"];
@@ -748,8 +811,8 @@
                                @"personNote": [userInfoDict objectForKey:@"protectedPersonNote"],
                                @"address": [userInfoDict objectForKey:@"protectedAddress"],
                                @"isdefault": [userInfoDict objectForKey:@"protectedDefault"],
-                               @"longitude": [[[HeSysbsModel getSysModel] userLocationDict] objectForKey:@"longitude"],
-                               @"latitude": [[[HeSysbsModel getSysModel] userLocationDict] objectForKey:@"latitude"],
+                               @"longitude": _userlongitude,
+                               @"latitude": _userlatitude,
                                @"detailedAddress":detailedAddress};
 
     [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
@@ -921,8 +984,8 @@
                                @"addressId": userAddressId,
                                @"isdefault": @"0",
                                @"userId": userid,
-                               @"longitude": longitude,
-                               @"latitude": latitude,
+                               @"longitude": _userlongitude,
+                               @"latitude": _userlatitude,
                                @"detailedAddress":detailedAddress};
     [self showHudInView:tableview hint:@"添加中..."];
     [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){

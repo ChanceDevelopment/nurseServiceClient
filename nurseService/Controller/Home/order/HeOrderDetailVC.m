@@ -78,7 +78,7 @@
 - (void)initializaiton
 {
     [super initializaiton];
-    statusArray = @[@"已接单",@"已出发",@"已服务",@"已完成"];
+    statusArray = @[@"已接单",@"已出发",@"开始服务",@"已完成"];
     imageScrollViewHeigh = 80;
     paperArray = [[NSMutableArray alloc] initWithCapacity:0];
     nurseArray = [[NSMutableArray alloc] initWithCapacity:0];
@@ -92,10 +92,18 @@
     [super initView];
     //订单状态（0正在发布/1已被接取/2已服务/3已完成/4被取消/为空为待预约
     id orderSendStateObj = orderDetailDict[@"orderReceivestate"];
+//    orderDetailDict[@"orderReceivestate"];
     if ([orderSendStateObj isMemberOfClass:[NSNull class]] || orderSendStateObj == nil) {
         orderSendStateObj = @"";
     }
     NSInteger orderSendState = [orderSendStateObj integerValue];
+    if (_currentOrderType >= 2 && orderSendState == 0) {
+        orderSendStateObj = orderDetailDict[@"orderSendState"];
+        if ([orderSendStateObj isMemberOfClass:[NSNull class]] || orderSendStateObj == nil) {
+            orderSendStateObj = @"";
+        }
+        orderSendState = [orderSendStateObj integerValue];
+    }
 //    if (orderSendState == 1) {
 //        UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] init];
 //        rightItem.tintColor = [UIColor whiteColor];

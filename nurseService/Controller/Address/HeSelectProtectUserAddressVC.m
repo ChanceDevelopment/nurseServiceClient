@@ -125,7 +125,16 @@
     if ([protectedAddress isMemberOfClass:[NSNull class]]) {
         protectedAddress = @"";
     }
-    NSDictionary *addressDict = @{@"address":protectedAddress};
+    NSString *latitude = addressInfo[@"latitude"];
+    NSString *longitude = addressInfo[@"longitude"];
+    if ([latitude isMemberOfClass:[NSNull class]] || latitude == nil) {
+        latitude = @"";
+    }
+    if ([longitude isMemberOfClass:[NSNull class]] || longitude == nil) {
+        longitude = @"";
+    }
+    
+    NSDictionary *addressDict = @{@"address":protectedAddress,@"latitude":latitude,@"longitude":longitude};
     [_addressDeleage selectAddressWithAddressInfo:addressDict];
     
     NSArray *viewControllers =  self.navigationController.viewControllers;

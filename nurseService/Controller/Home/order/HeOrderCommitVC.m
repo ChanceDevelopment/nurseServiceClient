@@ -145,7 +145,7 @@
     tableview.backgroundColor = [UIColor colorWithWhite:237.0 / 255.0 alpha:1.0];
     [Tool setExtraCellLineHidden:tableview];
     [self loadOrderDetail];
-    
+
 }
 
 - (void)initializaiton

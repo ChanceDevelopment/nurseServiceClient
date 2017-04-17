@@ -157,6 +157,7 @@
         [bgView addSubview:userInfoL];
         
         UIImageView *rightV = [[UIImageView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(userInfoL.frame), stopTimeLY-10, 20, 20)];
+        rightV.tag = 404;
         rightV.backgroundColor = [UIColor clearColor];
         rightV.image = [UIImage imageNamed:@"icon_into_right"];
         rightV.userInteractionEnabled = YES;
