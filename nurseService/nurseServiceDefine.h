@@ -18,7 +18,7 @@
 #define IOS7OFFSET        64
 
 //百度地图的key
-#define BAIDUMAPKEY @"wahybut4ENzt0edEW9GWvxGGQU0z6dt5"
+#define BAIDUMAPKEY @"BszHTrrHpvPyNvz7lfiUtoCiHiYXtte3"
 
 #define kRemarKString @"kRemarKString"
 
