@@ -11,6 +11,7 @@
 
 @interface OrderViewController : HeBaseViewController
 
+//提供外部方法，选择跳到某个tab
 - (void)selectOrderIndex:(NSInteger)orderIndex;
 
 @end

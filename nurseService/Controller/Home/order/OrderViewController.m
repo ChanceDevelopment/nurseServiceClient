@@ -4,7 +4,7 @@
 //
 //  Created by 梅阳阳 on 16/12/9.
 //  Copyright © 2016年 iMac. All rights reserved.
-//
+//  订单控制器
 
 #import "OrderViewController.h"
 #import "DLNavigationTabBar.h"
@@ -34,9 +34,14 @@
     //已完成
     NSMutableArray *finishOrderArray;
 }
+
+//订单四个tab
 @property(nonatomic,strong)DLNavigationTabBar *navigationTabBar;
+//订单列表视图
 @property(strong,nonatomic)IBOutlet UITableView *tableview;
+//订单的资源
 @property(strong,nonatomic)NSMutableArray *dataSource;
+//当前选正在操作的订单
 @property(strong,nonatomic)NSDictionary *currentHandleOrderInfo;
 
 @end
@@ -63,6 +68,7 @@
     return self;
 }
 
+//订单页面顶部四个tab的选项
 -(DLNavigationTabBar *)navigationTabBar
 {
     if (!_navigationTabBar) {
@@ -83,14 +89,21 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    //初始化资源
     [self initializaiton];
+    //初始化视图
     [self initView];
+    //加载待支付订单数据
     [self loadOrderDataWithOrderState:0];
+    //加载已预约订单数据
     [self loadOrderDataWithOrderState:1];
+    //加载进行中订单数据
     [self loadOrderDataWithOrderState:2];
+    //加载已完成订单数据
     [self loadOrderDataWithOrderState:3];
 }
 
+//提供外部方法，选择跳到某个tab
 - (void)selectOrderIndex:(NSInteger)orderIndex
 {
     //跳转到待支付
@@ -110,11 +123,13 @@
     [dataSource addObject:hadBookOrderArray];
     [dataSource addObject:nowOrderArray];
     [dataSource addObject:finishOrderArray];
-    
+    //注册订单更新通知
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateOrder:) name:kUpdateOrderNotification object:nil];
+    //注册选择订单通知
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(selectOrder:) name:@"selectOrderNotification" object:nil];
 }
 
+//初始化视图
 - (void)initView
 {
     [super initView];
@@ -123,6 +138,7 @@
     tableview.backgroundView = nil;
     tableview.separatorStyle = UITableViewCellSeparatorStyleNone;
     tableview.backgroundColor = [UIColor colorWithWhite:237.0 / 255.0 alpha:1.0];
+    //下拉刷新
     self.tableview.header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
         // 进入刷新状态后会自动调用这个block,刷新
         [self.tableview.header performSelector:@selector(endRefreshing) withObject:nil afterDelay:0.5];
@@ -146,6 +162,7 @@
     [self selectOrderIndex:orderIndex];
 }
 
+//加载更多的方法
 - (void)endRefreshing
 {
     [self.tableview.footer endRefreshing];
@@ -160,6 +177,7 @@
     NSLog(@"endRefreshing");
 }
 
+//更新订单的通知方法
 - (void)updateOrder:(NSNotification *)notification
 {
     //更新所有订单的状态
@@ -169,20 +187,31 @@
     [self loadOrderDataWithOrderState:3];
 }
 
+//选择页面四个tab的某个tab的回调方法
 #pragma mark - PrivateMethod
 - (void)navigationDidSelectedControllerIndex:(NSInteger)index {
     NSLog(@"index = %ld",index);
     currentOrderType = index;
+    //加载当前选中tab的订单数据
     [self loadOrderDataWithOrderState:currentOrderType];
 //    [tableview reloadData];
 }
 
+
+/*
+ @brief 加载订单数据
+ @param orderState订单状态  0:待支付  1:已预约  2:进行中  3:已完成
+ @return
+ */
 - (void)loadOrderDataWithOrderState:(NSInteger)orderState
 {
     NSString *requestUrl = [NSString stringWithFormat:@"%@/orderSend/OrderSendDescription.action",BASEURL];
     NSString *userId = [[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY];
     NSString *orderStateStr = [NSString stringWithFormat:@"%ld",orderState];
+    //userId：用户的ID
+    //orderState：订单状态
     NSDictionary * params  = @{@"userId":userId,@"orderState":orderStateStr};
+    //网络请求，加载订单数据
     [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
         NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
         NSDictionary *respondDict = [NSDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
@@ -194,7 +223,7 @@
             NSMutableArray *orderArray = dataSource[orderState];
             [orderArray removeAllObjects];
             [orderArray addObjectsFromArray:jsonArray];
-            
+            //筛选出当前选中tab的订单数据
             if (orderState == currentOrderType) {
                 if ([jsonArray count] == 0) {
                     UIView *bgView = [[UIView alloc] initWithFrame:self.view.bounds];
@@ -229,8 +258,14 @@
     }];
 }
 
+/*
+ @brief 浏览患者信息
+ @prama dict:患者的信息
+ @return
+ */
 - (void)showPaitentInfoWith:(NSDictionary *)dict
 {
+    //提取患者的username
     NSString *orderSendUsername = dict[@"orderSendUsername"];
     NSArray *orderSendUsernameArray = [orderSendUsername componentsSeparatedByString:@","];
     @try {
@@ -242,14 +277,21 @@
     }
     NSString *personId = orderSendUsername;
     NSDictionary *paitentInfoDict = @{@"personId":personId};
+    //进入患者控制器视图
     HePaitentInfoVC *paitentInfoVC = [[HePaitentInfoVC alloc] init];
     paitentInfoVC.userInfoDict = [[NSDictionary alloc] initWithDictionary:paitentInfoDict];
     paitentInfoVC.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:paitentInfoVC animated:YES];
 }
 
+/*
+ @brief 浏览护士信息详情
+ @prama orderDict:护士的信息
+ @return
+ */
 - (void)showNurseDetailWithOrder:(NSDictionary *)orderDict
 {
+    //nurseId：护士的ID
     NSString *nurseId = orderDict[@"nurseId"];
     if ([nurseId isMemberOfClass:[NSNull class]] || nurseId == nil) {
         nurseId = @"";
@@ -261,6 +303,11 @@
     [self.navigationController pushViewController:nurseDetailVC animated:YES];
 }
 
+/*
+ @brief 浏览订单详情
+ @prama orderDict:订单的信息
+ @return
+ */
 - (void)showOrderDetailWithOrder:(NSDictionary *)orderDict
 {
     if (currentOrderType == 0) {
@@ -278,7 +325,6 @@
     else if((currentOrderType == 3 && [orderDict[@"orderSendState"] isEqualToString:@"3"]) || currentOrderType == 1 || currentOrderType == 2){
         //已完成->  已完成订单才能查看订单详情
         
-        
         NSString *orderSendId = orderDict[@"orderSendId"];
         if ([orderSendId isMemberOfClass:[NSNull class]]) {
             orderSendId = @"";
@@ -287,6 +333,7 @@
         if ([isEvaluate isMemberOfClass:[NSNull class]] || isEvaluate == nil) {
             isEvaluate = @"";
         }
+        //跳订单详情控制器
         HeOrderDetailVC *orderDetailVC = [[HeOrderDetailVC alloc] init];
         orderDetailVC.currentOrderType = currentOrderType;
         orderDetailVC.isEvaluate = [isEvaluate boolValue];
@@ -297,6 +344,11 @@
     
 }
 
+/*
+ @brief 跳转到给出的位置信息界面
+ @prama locationDict:位置的信息
+ @return
+ */
 - (void)goLocationWithLocation:(NSDictionary *)locationDict
 {
     HeUserLocatiVC *userLocationVC = [[HeUserLocatiVC alloc] init];
@@ -304,6 +356,7 @@
     userLocationVC.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:userLocationVC animated:YES];
 }
+
 //预约框
 //删除服务
 - (void)deleteServiceWithDict:(NSDictionary *)orderInfo
@@ -348,9 +401,15 @@
     
 }
 
+/*
+ @brief 删除订单
+ @prama orderInfo:订单的信息
+ @return
+ */
 - (void)requestDeleteOrder:(NSDictionary *)orderInfo
 {
     NSLog(@"cancelService");
+    //orderSendId:订单的ID
     NSString *orderSendId = orderInfo[@"orderSendId"];
     if ([orderSendId isMemberOfClass:[NSNull class]] || orderSendId == nil) {
         orderSendId = @"";
@@ -365,6 +424,7 @@
         if ([[respondDict valueForKey:@"errorCode"] integerValue] == REQUESTCODE_SUCCEED){
             
             [self showHint:@"成功删除服务"];
+            //成功删除之后发出通知，更新界面
             [[NSNotificationCenter defaultCenter] postNotificationName:kUpdateOrderNotification object:nil];
             
         }
@@ -382,9 +442,15 @@
     }];
 }
 
+/*
+ @brief 取消订单
+ @prama orderInfo:订单的信息
+ @return
+ */
 - (void)requestCancelOrder:(NSDictionary *)orderInfo
 {
     NSLog(@"cancelService");
+    //orderSendId：订单的ID
     NSString *orderSendId = orderInfo[@"orderSendId"];
     if ([orderSendId isMemberOfClass:[NSNull class]] || orderSendId == nil) {
         orderSendId = @"";
@@ -396,6 +462,8 @@
     //0用户 1护士
     NSString *identity = @"0";
     [self showHudInView:tableview hint:@"取消中..."];
+    //userId：用户的ID
+    //identity：用户标示  0用户 1护士
     NSDictionary * params  = @{@"orderSendId":orderSendId,@"userId":userId,@"identity":identity};
     NSString *requestUrl = [NSString stringWithFormat:@"%@/orderSend/cancelOrder.action",BASEURL];
     [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
@@ -405,6 +473,7 @@
         if ([[respondDict valueForKey:@"errorCode"] integerValue] == REQUESTCODE_SUCCEED){
             
             [self showHint:@"成功取消服务"];
+            //发出通知
             [[NSNotificationCenter defaultCenter] postNotificationName:kUpdateOrderNotification object:nil];
             
         }
@@ -485,7 +554,11 @@
 //    }];
 }
 
-//进行中
+/*
+ @brief 联系护士
+ @prama orderInfo:订单的信息
+ @return
+ */
 - (void)contactNurseWithDict:(NSDictionary *)orderInfo
 {
     NSLog(@"contactNurse");
@@ -595,6 +668,7 @@
     return [orderArray count];
 }
 
+//设置列表的显示格式
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *cellIndentifier = @"HeOrderTableViewCell";
@@ -675,6 +749,7 @@
     
     cell.serviceInfoL.text = serviceInfoStr;
     
+    //订单下单的费用
     id orderSendTotalmoney = dict[@"orderSendTotalmoney"];
     if ([orderSendTotalmoney isMemberOfClass:[NSNull class]] || orderSendTotalmoney == nil) {
         orderSendTotalmoney = @"";
@@ -682,6 +757,7 @@
     cell.orderMoney.text = [NSString stringWithFormat:@"￥%@",orderSendTotalmoney];
     UIView *subview = [cell viewWithTag:404];
     subview.hidden = NO;
+    //如果是已完成，进行另外的处理，需要显示待退款按钮
     if (currentOrderType == 3) {
         NSString *stateStr = @"";
         switch ([dict[@"orderSendState"] integerValue]) {
@@ -713,7 +789,7 @@
         cell.orderState.text = stateStr;
     }
 
-    
+    //获取订单开始时间
     id zoneCreatetimeObj = [dict objectForKey:@"orderSendBegintime"];
     if ([zoneCreatetimeObj isMemberOfClass:[NSNull class]] || zoneCreatetimeObj == nil) {
         NSTimeInterval  timeInterval = [[NSDate date] timeIntervalSince1970];
@@ -725,7 +801,7 @@
         //时间戳
         zoneCreatetime = [zoneCreatetime substringToIndex:[zoneCreatetime length] - 3];
     }
-    
+    //时间格式转换
     NSString *time = [Tool convertTimespToString:[zoneCreatetime longLongValue] dateFormate:@"MM-dd EEE HH:mm"];
     cell.stopTimeL.text = time;
     
@@ -752,7 +828,7 @@
         protectedPersonNexus = @"";
     }
     NSString *protectedPersonNexusStr = [NSString stringWithFormat:@"%@",protectedPersonNexus];
-    
+    //名字
     NSString *username = dict[@"orderSendUsername"];
     NSArray *userArray = [username componentsSeparatedByString:@","];
     NSString *nickname = nil;
@@ -763,7 +839,7 @@
     } @finally {
         
     }
-    
+    //患者性别
     id orderSendSex = dict[@"orderSendSex"];
     NSString *sexStr = @"女";
     if ([orderSendSex isMemberOfClass:[NSNull class]]) {
@@ -772,19 +848,21 @@
     if ([orderSendSex integerValue] == ENUM_SEX_Boy) {
         sexStr = @"男";
     }
-    
+    //患者年龄
     id orderSendAge = dict[@"orderSendAge"];
     if ([orderSendAge isMemberOfClass:[NSNull class]]) {
         orderSendAge = @"";
     }
     NSString *ageStr = [NSString stringWithFormat:@"%@",orderSendAge];
     
+    //身高
     id protectedPersonHeight = dict[@"protectedPersonHeight"];
     if ([protectedPersonHeight isMemberOfClass:[NSNull class]]) {
         protectedPersonHeight = @"";
     }
     NSString *protectedPersonHeightStr = [NSString stringWithFormat:@"%@",protectedPersonHeight];
     
+    //体重
     id protectedPersonWeight = dict[@"protectedPersonWeight"];
     if ([protectedPersonWeight isMemberOfClass:[NSNull class]]) {
         protectedPersonWeight = @"";
@@ -1447,6 +1525,7 @@
     return 180;
 }
 
+//选中某个列表之后跳到订单详情
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
