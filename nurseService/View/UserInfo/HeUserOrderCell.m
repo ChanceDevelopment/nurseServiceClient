@@ -4,7 +4,7 @@
 //
 //  Created by Tony on 2017/1/17.
 //  Copyright © 2017年 iMac. All rights reserved.
-//
+//  患者信息的列表视图模板
 
 #import "HeUserOrderCell.h"
 
@@ -35,6 +35,7 @@
         CGFloat bgView_W = SCREENWIDTH - 2 * bgView_X;
         CGFloat bgView_H = cellsize.height - 2 * bgView_Y;
         
+        //订单视图的背景图
         UIView *bgView = [[UIView alloc] initWithFrame:CGRectMake(bgView_X, bgView_Y, bgView_W, bgView_H)];
         bgView.backgroundColor = [UIColor whiteColor];
         bgView.userInteractionEnabled = YES;
@@ -58,7 +59,7 @@
         CGFloat serviceContentLY = 0;
         CGFloat serviceContentLW = orderViewW;
         CGFloat serviceContentLH = orderViewH;
-        
+        //服务内容
         serviceContentL = [[UILabel alloc] initWithFrame:CGRectMake(serviceContentLX, serviceContentLY, serviceContentLW, serviceContentLH)];
         serviceContentL.text = @"产妇护理套餐";
         serviceContentL.userInteractionEnabled = YES;
@@ -72,7 +73,7 @@
         CGFloat payStatusLabelW = 100;
         CGFloat payStatusLabelH = serviceContentLH;
         CGFloat payStatusLabelX = orderViewW - payStatusLabelW - 5;
-        
+        //支付状态
         payStatusLabel = [[UILabel alloc] initWithFrame:CGRectMake(payStatusLabelX, payStatusLabelY, payStatusLabelW, payStatusLabelH)];
         if (orderType == 0) {
             payStatusLabel.text = @"待支付";
@@ -137,6 +138,7 @@
         CGFloat stopTimeLW = 200;
         CGFloat stopTimeLH = timeAddressViewH / 2.0;
         
+        //时间
         stopTimeL = [[UILabel alloc] initWithFrame:CGRectMake(stopTimeLX, stopTimeLY, stopTimeLW, stopTimeLH)];
         stopTimeL.text = @"01/10 周二 08:00";
         stopTimeL.textColor = [UIColor blackColor];
@@ -150,6 +152,7 @@
         CGFloat orderMoneyX = timeAddressViewW - orderMoneyW - 10;
         CGFloat orderMoneyH = stopTimeLH;
         
+        //订单价格
         orderMoney = [[UILabel alloc] initWithFrame:CGRectMake(orderMoneyX, orderMoneyY, orderMoneyW, orderMoneyH)];
         orderMoney.text = @"￥335";
         orderMoney.textColor = [UIColor redColor];
@@ -163,6 +166,7 @@
         CGFloat addressLW = timeAddressViewW - 2 *addressLX;
         CGFloat addressLH = stopTimeLH;
         
+        //地址
         addressL = [[UILabel alloc] initWithFrame:CGRectMake(addressLX, addressLY, addressLW, addressLH)];
         addressL.text = @"广东省中山市西区";
         addressL.textColor = [UIColor blackColor];
@@ -209,6 +213,7 @@
         
         CGFloat userInfoLH = userTipH;
         
+        //患者基本信息
         userInfoL = [[UILabel alloc] initWithFrame:CGRectMake(userInfoLX, userInfoLY, userInfoLW, userInfoLH)];
         userInfoL.textColor = [UIColor blackColor];
         userInfoL.text = @"小明 男 22岁";
@@ -223,7 +228,7 @@
 
 - (void)drawRect:(CGRect)rect
 {
-    
+    //代码话分割线
     CGContextRef context = UIGraphicsGetCurrentContext();
     
     CGContextSetFillColorWithColor(context, [UIColor clearColor].CGColor);

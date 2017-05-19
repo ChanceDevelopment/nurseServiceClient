@@ -4,7 +4,7 @@
 //
 //  Created by Tony on 2017/1/9.
 //  Copyright © 2017年 iMac. All rights reserved.
-//
+//  服务列表视图的模板
 
 #import "HeServiceTableCell.h"
 

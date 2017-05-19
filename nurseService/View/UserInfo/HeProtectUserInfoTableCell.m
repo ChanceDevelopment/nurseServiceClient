@@ -141,17 +141,20 @@
     return self;
 }
 
+//选择改变默认受护人
 - (void)selectedAction:(YLButton *)sender{
     if (self.selectBlock){
+        //在回调的block里面实现
         self.selectBlock();
     }
     
 }
-
+//编辑受护人信息
 - (void)editButtonClick:(YLButton *)sender
 {
-    if (self.self.editBlock){
-        self.self.editBlock();
+    if (self.editBlock){
+        //在回调的block里面实现
+        self.editBlock();
     }
 }
 

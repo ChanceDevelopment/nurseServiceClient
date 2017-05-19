@@ -4,7 +4,7 @@
 //
 //  Created by HeDongMing on 2017/1/8.
 //  Copyright © 2017年 iMac. All rights reserved.
-//
+//  订单列表信息模板
 
 #import "HeOrderTableViewCell.h"
 
@@ -52,7 +52,7 @@
         CGFloat serviceContentLY = 0;
         CGFloat serviceContentLW = orderViewW-120;
         CGFloat serviceContentLH = orderViewH;
-        
+        //内容
         serviceContentL = [[UILabel alloc] initWithFrame:CGRectMake(serviceContentLX, serviceContentLY, serviceContentLW, serviceContentLH)];
         serviceContentL.text = @"产妇护理套餐";
         serviceContentL.userInteractionEnabled = YES;
@@ -65,7 +65,7 @@
         CGFloat orderMoneyW = 90;
         CGFloat orderMoneyX = orderViewW - orderMoneyW-10;
         CGFloat orderMoneyH = serviceContentLH;
-        
+        //订单状态
         orderState = [[UILabel alloc] initWithFrame:CGRectMake(orderMoneyX-50, orderMoneyY, 80, orderMoneyH)];
 //        orderState.text = @"待客服接入";
         orderState.textColor = [UIColor grayColor];
@@ -73,7 +73,7 @@
         orderState.font = [UIFont systemFontOfSize:14.0];
         orderState.backgroundColor = [UIColor clearColor];
         [orderView addSubview:orderState];
-        
+        //价格
         orderMoney = [[UILabel alloc] initWithFrame:CGRectMake(orderMoneyX+30, orderMoneyY, orderMoneyW, orderMoneyH)];
         orderMoney.text = @"￥335";
         orderMoney.textColor = [UIColor redColor];
@@ -81,24 +81,6 @@
         orderMoney.font = [UIFont systemFontOfSize:14.0];
         orderMoney.backgroundColor = [UIColor clearColor];
         [orderView addSubview:orderMoney];
-        
-//        CGFloat payStatusLabelY = 0;
-//        CGFloat payStatusLabelW = 100;
-//        CGFloat payStatusLabelH = serviceContentLH;
-//        CGFloat payStatusLabelX = orderViewW - payStatusLabelW - 25;
-        
-//        payStatusLabel = [[UILabel alloc] initWithFrame:CGRectMake(payStatusLabelX, payStatusLabelY, payStatusLabelW, payStatusLabelH)];
-//        payStatusLabel.text = @"待付款";
-//        payStatusLabel.textAlignment = NSTextAlignmentRight;
-//        payStatusLabel.userInteractionEnabled = YES;
-//        payStatusLabel.textColor = [UIColor blackColor];
-//        payStatusLabel.font = [UIFont systemFontOfSize:15.0];
-//        payStatusLabel.backgroundColor = [UIColor clearColor];
-//        [orderView addSubview:payStatusLabel];
-        
-//
-//        UITapGestureRecognizer *showOrderDetailTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showOrderDetail)];
-//        [orderView addGestureRecognizer:showOrderDetailTap];
         
         CGFloat lineX = 5;
         CGFloat lineY = CGRectGetMaxY(orderView.frame);
@@ -113,7 +95,7 @@
         CGFloat serviceInfoLY = CGRectGetMaxY(orderView.frame);
         CGFloat serviceInfoLW = bgView_W-20;
         CGFloat serviceInfoLH = orderViewH;
-        
+        //服务内容
         serviceInfoL = [[UILabel alloc] initWithFrame:CGRectMake(serviceInfoLX, serviceInfoLY, serviceInfoLW, serviceInfoLH)];
         serviceInfoL.userInteractionEnabled = YES;
         serviceInfoL.textColor = [UIColor blackColor];
@@ -138,7 +120,7 @@
         CGFloat stopTimeLY = CGRectGetMaxY(line1.frame);
         CGFloat stopTimeLW = SCREENWIDTH-100;
         CGFloat stopTimeLH = 44;
-        
+        //截止时间
         stopTimeL = [[UILabel alloc] initWithFrame:CGRectMake(stopTimeLX, stopTimeLY, stopTimeLW, stopTimeLH)];
         stopTimeL.text = @"01/10 周二 08:00";
         stopTimeL.textColor = [UIColor blackColor];
@@ -146,6 +128,7 @@
         stopTimeL.backgroundColor = [UIColor clearColor];
         [bgView addSubview:stopTimeL];
         
+        //用户的基本信息
         stopTimeLY = CGRectGetMaxY(stopTimeL.frame);
         stopTimeLH = 80;
         userInfoL = [[UILabel alloc] initWithFrame:CGRectMake(stopTimeLX, stopTimeLY-30, stopTimeLW, stopTimeLH)];
@@ -317,30 +300,35 @@
 }
 
 - (void)showOrderDetail{
+    //查看订单详情
     if (self.showOrderDetailBlock) {
         self.showOrderDetailBlock();
     }
 }
 
 - (void)cancelOrder{
+    //取消订单
     if (self.cancleOrderBlock) {
         self.cancleOrderBlock();
     }
 }
 
 - (void)payMoney{
+    //支付订单
     if (self.payMoneyBlock) {
         self.payMoneyBlock();
     }
 }
 
 - (void)goToLocationView{
+    //查看为孩子
     if (self.locationBlock) {
         self.locationBlock();
     }
 }
 
 - (void)showUserInfo{
+    //查看患者信息
     if (self.showUserInfoBlock) {
         self.showUserInfoBlock();
     }
@@ -348,7 +336,7 @@
 
 - (void)drawRect:(CGRect)rect
 {
-    
+    //代码画分割线
     CGContextRef context = UIGraphicsGetCurrentContext();
     
     CGContextSetFillColorWithColor(context, [UIColor clearColor].CGColor);

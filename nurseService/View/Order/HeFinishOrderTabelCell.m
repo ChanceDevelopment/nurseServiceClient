@@ -4,7 +4,7 @@
 //
 //  Created by HeDongMing on 2017/1/8.
 //  Copyright © 2017年 iMac. All rights reserved.
-//
+//  完成订单列表信息模板
 
 #import "HeFinishOrderTabelCell.h"
 

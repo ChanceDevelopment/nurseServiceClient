@@ -36,6 +36,7 @@
         bgView.backgroundColor = [UIColor whiteColor];
         [self addSubview:bgView];
         
+        //消费或者支出的内容
         UIFont *bigFont = [UIFont systemFontOfSize:17.0];
         CGFloat contentX = 5;
         CGFloat contentY = 10;
@@ -55,6 +56,7 @@
         CGFloat userX = bgViewW - userW - contentX;
         CGFloat userH = (bgViewH - 2 * userY) / 2.0;
         
+        //消费或者支出的金额
         moneyLabel = [[UILabel alloc] initWithFrame:CGRectMake(userX, userY, userW, userH)];
         moneyLabel.textAlignment = NSTextAlignmentRight;
         moneyLabel.backgroundColor = [UIColor clearColor];
@@ -63,6 +65,7 @@
         [bgView addSubview:moneyLabel];
         moneyLabel.font = [UIFont systemFontOfSize:18.0];
         
+        //消费或者支出的时间
         CGFloat timeY = CGRectGetMaxY(moneyLabel.frame);
         CGFloat timeW = (bgViewW - 2 * contentX) / 2.0;
         CGFloat timeX = userX;

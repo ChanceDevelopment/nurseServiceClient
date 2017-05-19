@@ -34,6 +34,7 @@
         CGFloat timeLabelW = 80;
         CGFloat timeLabelH = 50;
         
+        //时间
         timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(timeLabelX, timeLabelY, timeLabelW, timeLabelH)];
         timeLabel.text = @"2016-01-09 10:09";
         timeLabel.font = [UIFont systemFontOfSize:13.0];
@@ -91,6 +92,7 @@
         titleView.backgroundColor = color;
         [rightView addSubview:titleView];
         
+        //服务项目
         serviceLabel = [[UILabel alloc] initWithFrame:titleView.bounds];
         serviceLabel.font = [UIFont systemFontOfSize:15.0];
         serviceLabel.backgroundColor = [UIColor clearColor];
@@ -113,7 +115,7 @@
         CGFloat nameLabelY = (contentView.frame.size.height - nameLabelH * 2) / 2.0;
         CGFloat nameLabelW = contentViewW - 2 * nameLabelX;
         
-        
+        //姓名
         nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(nameLabelX, nameLabelY, nameLabelW, nameLabelH)];
         nameLabel.text = @"里";
         nameLabel.font = [UIFont systemFontOfSize:16.0];
@@ -121,6 +123,7 @@
         nameLabel.backgroundColor = [UIColor clearColor];
         [contentView addSubview:nameLabel];
         
+        //科室标签
         officeLabel = [[UILabel alloc] initWithFrame:CGRectMake(nameLabelX + 30, nameLabelY + 3, nameLabelW, nameLabelH - 3)];
         officeLabel.text = @"科室:测试";
         officeLabel.font = [UIFont systemFontOfSize:12.0];
@@ -142,6 +145,7 @@
         CGFloat addressLabelW = contentViewW - addressLabelX - 10;
         CGFloat addressLabelH = nameLabelH;
         
+        //地址信息
         addressLabel = [[UILabel alloc] initWithFrame:CGRectMake(addressLabelX, addressLabelY, addressLabelW, addressLabelH)];
         addressLabel.text = @"广东省中医院";
         addressLabel.numberOfLines = 2;
@@ -158,6 +162,7 @@
     return self;
 }
 
+//查看报告的方法
 - (void)scanReportDetail
 {
     if (self.showReportDetailBlock) {
@@ -167,10 +172,12 @@
 
 - (void)setArrowImageWithImage:(UIImage *)arrowImage
 {
+    //设置箭头 2000是箭头视图的标签tag
     UIImageView *arrowImageView = [self viewWithTag:2000];
     arrowImageView.image = arrowImage;
 }
 
+//更新视图
 - (void)updateFrame
 {
     CGRect frame = officeLabel.frame;
