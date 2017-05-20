@@ -20,7 +20,7 @@
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier cellSize:cellsize];
     if (self) {
-        
+        //服务banner图
         CGFloat userImageX = 10;
         CGFloat userImageY = 15;
         CGFloat userImageH = cellsize.height - 2 * userImageY;
@@ -41,7 +41,7 @@
         CGFloat nameLabelY = userImageY;
         CGFloat nameLabelW = SCREENWIDTH - nameLabelX - 80;
         CGFloat nameLabelH = userImageH / 4.0;
-        
+        //服务标题
         serviceTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(nameLabelX, nameLabelY, nameLabelW, nameLabelH)];
         serviceTitleLabel.backgroundColor = [UIColor clearColor];
         serviceTitleLabel.textColor = [UIColor blackColor];
@@ -53,7 +53,7 @@
         CGFloat peopleLabelY = CGRectGetMaxY(serviceTitleLabel.frame);
         CGFloat peopleLabelW = SCREENWIDTH - peopleLabelX - 70;
         CGFloat peopleLabelH = userImageH / 4.0 * 2.0;
-        
+        //服务适用人群
         peopleLabel = [[UILabel alloc] initWithFrame:CGRectMake(peopleLabelX, peopleLabelY, peopleLabelW, peopleLabelH)];
         peopleLabel.backgroundColor = [UIColor clearColor];
         peopleLabel.textColor = [UIColor blackColor];
@@ -62,6 +62,7 @@
         peopleLabel.numberOfLines = 2;
         [self addSubview:peopleLabel];
         
+        //服务次数
         CGFloat numberLabelX = nameLabelX;
         CGFloat numberLabelY = CGRectGetMaxY(peopleLabel.frame);
         CGFloat numberLabelW = 150;
@@ -93,7 +94,7 @@
         [self addSubview:bookButton];
     
         
-        
+        //服务价格
         CGFloat priceLabelY = CGRectGetMaxY(bookButton.frame) + 2;
         CGFloat priceLabelW = 80;
         CGFloat priceLabelX = SCREENWIDTH - priceLabelW - 10;
@@ -113,6 +114,7 @@
     return self;
 }
 
+//预约服务事件
 - (void)bookButtonClick:(id)sender
 {
     if (self.booklBlock) {

@@ -38,7 +38,7 @@
         [self addSubview:bgView];
         [bgView setImage:[UIImage imageNamed:@"icon_coupon_bg"]];
         
-        
+        //优惠券banner图
         CGFloat itemX = 10;
         CGFloat itemY = 15;
         CGFloat itemW = 50;
@@ -58,6 +58,7 @@
         CGFloat contentLabelW = 200;
         CGFloat contentLabelH = 25;
         
+        //优惠券内容
         contentLabel = [[UILabel alloc] initWithFrame:CGRectMake(contentLabelX, contentLabelY, contentLabelW, contentLabelH)];
         contentLabel.backgroundColor = [UIColor clearColor];
         contentLabel.font = [UIFont systemFontOfSize:17.0];
@@ -74,6 +75,7 @@
         line.backgroundColor = [UIColor lightGrayColor];
         [bgView addSubview:line];
         
+        //有效期
         timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(timeLabelX, timeLabelY, timeLabelW, timeLabelH)];
         timeLabel.numberOfLines = 2;
         timeLabel.backgroundColor = [UIColor clearColor];
@@ -87,6 +89,7 @@
         CGFloat priceLabelW = 100;
         CGFloat priceLabelH = contentLabelH;
         
+        //优惠价格
         priceLabel = [[UILabel alloc] initWithFrame:CGRectMake(priceLabelX, priceLabelY, priceLabelW, priceLabelH)];
         priceLabel.backgroundColor = [UIColor clearColor];
         priceLabel.font = [UIFont systemFontOfSize:18.0];

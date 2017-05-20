@@ -4,7 +4,7 @@
 //
 //  Created by Tony on 16/3/9.
 //  Copyright © 2016年 HeDongMing. All rights reserved.
-//
+//  基本的发布信息界面（已弃用）
 
 #import "HeBaseViewController.h"
 #import "SAMTextView.h"
@@ -17,6 +17,7 @@
 
 @end
 
+// 基本的发布信息界面（已弃用）
 @interface HeBaseDistributeVC : HeBaseViewController<DeleteImageProtocol,ReceiveProtocol,UITextViewDelegate,UINavigationControllerDelegate,UIImagePickerControllerDelegate,UIActionSheetDelegate>
 
 @property(strong,nonatomic)UIScrollView *scrollView;

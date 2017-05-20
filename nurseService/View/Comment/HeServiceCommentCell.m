@@ -21,6 +21,7 @@
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier cellSize:cellsize];
     if (self) {
+        //评论人头像
         CGFloat userImageX = 10;
         CGFloat userImageY = 10;
         CGFloat userImageH = 70;
@@ -39,7 +40,7 @@
         CGFloat nameLabelY = userImageY;
         CGFloat nameLabelW = 100;
         CGFloat nameLabelH = 20;
-        
+        //评论人联系方式
         phoneLabel = [[UILabel alloc] initWithFrame:CGRectMake(nameLabelX, nameLabelY, nameLabelW, nameLabelH)];
         phoneLabel.backgroundColor = [UIColor clearColor];
         phoneLabel.textColor = [UIColor blackColor];
@@ -51,7 +52,7 @@
         CGFloat serviceLabelX = CGRectGetMaxX(userImage.frame) + 5;
         CGFloat serviceLabelY = CGRectGetMaxY(userImage.frame) - serviceLabelH;
         CGFloat serviceLabelW = SCREENWIDTH - serviceLabelX - 10;
-        
+        //评论的服务项目
         serviceLabel = [[UILabel alloc] initWithFrame:CGRectMake(serviceLabelX, serviceLabelY, serviceLabelW, serviceLabelH)];
         serviceLabel.backgroundColor = [UIColor clearColor];
         serviceLabel.textColor = [UIColor grayColor];
@@ -64,7 +65,7 @@
         CGFloat commentContentLabelX = CGRectGetMinX(userImage.frame) + 5;
         CGFloat commentContentLabelY = CGRectGetMaxY(userImage.frame);
         CGFloat commentContentLabelW = SCREENWIDTH - commentContentLabelX - 10;
-        
+        //评论内容
         commentContentLabel = [[UILabel alloc] initWithFrame:CGRectMake(commentContentLabelX, commentContentLabelY, commentContentLabelW, commentContentLabelH)];
         commentContentLabel.backgroundColor = [UIColor clearColor];
         commentContentLabel.textColor = [UIColor blackColor];
@@ -78,7 +79,7 @@
         CGFloat timeLabelY = cellsize.height - timeLabelH;
         CGFloat timeLabelW = 150;
         CGFloat timeLabelX = SCREENWIDTH - timeLabelW - 10;
-        
+        //评论时间
         timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(timeLabelX, timeLabelY, timeLabelW, timeLabelH)];
         timeLabel.backgroundColor = [UIColor clearColor];
         timeLabel.textColor = [UIColor grayColor];
@@ -94,14 +95,14 @@
         CGFloat commentRankViewY = userImageY;
         CGFloat commentRankViewW = 120;
         CGFloat commentRankViewX = SCREENWIDTH - commentRankViewW - 10;
-        
+        //评论等级
         commentRankView = [[UIView alloc] initWithFrame:CGRectMake(commentRankViewX, commentRankViewY, commentRankViewW, commentRankViewH)];
         [self addSubview:commentRankView];
         
     }
     return self;
 }
-
+//设置评论等级
 - (void)setCommentRank:(NSInteger)_commentRank
 {
     commentRank = _commentRank;

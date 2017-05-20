@@ -4,7 +4,7 @@
 //
 //  Created by Tony on 16/3/9.
 //  Copyright © 2016年 HeDongMing. All rights reserved.
-//  发布页面的基类
+//  发布页面的基类， 基本的发布信息界面（已弃用）
 
 #import "HeBaseDistributeVC.h"
 #import "ScanPictureView.h"
@@ -20,6 +20,8 @@
 #define MAXUPLOADIMAGE 3
 #define MAX_column  4
 #define MAX_row 3
+
+// 基本的发布信息界面（已弃用）
 
 @interface HeBaseDistributeVC ()<TZImagePickerControllerDelegate>
 @property(strong,nonatomic)NSMutableArray *selectedAssets;

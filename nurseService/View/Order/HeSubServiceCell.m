@@ -29,7 +29,7 @@
         CGFloat serviceNameLabelY = 0;
         CGFloat serviceNameLabelH = cellsize.height;
         CGFloat serviceNameLabelW = cellsize.width - serviceNameLabelX - 60;
-        
+        //服务名称
         serviceNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(serviceNameLabelX, serviceNameLabelY, serviceNameLabelW, serviceNameLabelH)];
         serviceNameLabel.backgroundColor = [UIColor blackColor];
         serviceNameLabel.font = [UIFont systemFontOfSize:15.0];
@@ -40,7 +40,7 @@
         CGFloat serviceButtonH = 20;
         CGFloat serviceButtonX = cellsize.width - serviceButtonW - 20;
         CGFloat serviceButtonY = (cellsize.height - serviceButtonH) / 2.0;
-        
+        //服务按钮
         serviceButton = [[UIButton alloc] initWithFrame:CGRectMake(serviceButtonX, serviceButtonY, serviceButtonW, serviceButtonH)];
         [serviceButton setImage:[UIImage imageNamed:@"icon_hook"] forState:UIControlStateSelected];
         [serviceButton setImage:[UIImage imageNamed:@""] forState:UIControlStateNormal];
@@ -49,7 +49,7 @@
     }
     return self;
 }
-
+//服务按钮事件
 - (void)serviceButtonClick:(UIButton *)button
 {
     button.selected = !button.selected;

@@ -4,22 +4,27 @@
 //
 //  Created by Tony on 2017/1/16.
 //  Copyright © 2017年 iMac. All rights reserved.
-//
+//  评论视图控制器
 
 #import "HeCommentNurseVC.h"
 #import "IQTextView.h"
 #import "SAMTextView.h"
 
 @interface HeCommentNurseVC ()
+//输入框
 @property(strong,nonatomic)IBOutlet SAMTextView *textView;
+//护士头像
 @property(strong,nonatomic)IBOutlet UIImageView *nurseImage;
+//护士基本信息
 @property(strong,nonatomic)IBOutlet UILabel *nurseLabel;
+//评论等级的视图
 @property(strong,nonatomic)IBOutlet UIView *markView;
 
 @end
 
 @implementation HeCommentNurseVC
 {
+    //当前的评论等级
     NSInteger currentRank;
 }
 @synthesize nurseDict;
@@ -54,11 +59,13 @@
     [self initView];
 }
 
+//初始化资源
 - (void)initializaiton
 {
     [super initializaiton];
 }
 
+//初始化各个视图
 - (void)initView
 {
     [super initView];
@@ -99,6 +106,7 @@
     }
 }
 
+//更新评论等级
 - (void)updateStart:(UIButton *)button
 {
     button.selected = !button.selected;
@@ -123,6 +131,7 @@
     }
 }
 
+//评价事件
 - (IBAction)commitButtonClick:(id)sender
 {
     if ([textView isFirstResponder]) {
@@ -145,6 +154,7 @@
     
     
     NSString *mark = [NSString stringWithFormat:@"%ld",currentRank];
+    //评价接口的请求参数
     NSDictionary * params  = @{@"userId":userId,@"nurseId":nurseId,@"sendId":sendId,@"content":content,@"mark":mark};
     NSString *requestUrl = [NSString stringWithFormat:@"%@/evaluate/addevaluate.action",BASEURL];
     [self showHudInView:self.view hint:@"评价中..."];
@@ -155,6 +165,7 @@
         if ([[respondDict valueForKey:@"errorCode"] integerValue] == REQUESTCODE_SUCCEED){
             
             [self showHint:@"评价成功"];
+            //评价成功，发出通知，通知各个界面进行页面更新
             [[NSNotificationCenter defaultCenter] postNotificationName:@"kUpdateOrderDetailNotification" object:nil];
             [self performSelector:@selector(backToLastView) withObject:nil afterDelay:0.8];
         }

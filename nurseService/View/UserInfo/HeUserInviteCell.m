@@ -41,7 +41,7 @@
         CGFloat userImageY = 5;
         CGFloat userImageW = 50;
         CGFloat userImageH = 50;
-        
+        //邀请人头像
         userImage = [[UIImageView alloc] initWithFrame:CGRectMake(userImageX, userImageY, userImageW, userImageH)];
         userImage.image = [UIImage imageNamed:@"defalut_icon"];
         userImage.layer.masksToBounds = YES;
@@ -52,7 +52,7 @@
         CGFloat nameLabelY = userImageY;
         CGFloat nameLabelW = bgViewW - nameLabelX - 10;
         CGFloat nameLabelH = userImageH;
-        
+        //邀请人名字
         nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(nameLabelX, nameLabelY, nameLabelW, nameLabelH)];
         nameLabel.backgroundColor = [UIColor clearColor];
         nameLabel.font = [UIFont systemFontOfSize:18.0];

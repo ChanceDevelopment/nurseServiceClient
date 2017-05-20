@@ -4,7 +4,7 @@
 //
 //  Created by HeDongMing on 2017/1/8.
 //  Copyright © 2017年 iMac. All rights reserved.
-//
+//  护士列表视图模板
 
 #import "HeNurseTableViewCell.h"
 #import "ImageScale.h"
@@ -154,7 +154,7 @@
 {
     NSLog(@"Ges = %@",ges);
 }
-
+//加载该护士服务项目
 - (void)selectButtonClick:(UIButton *)button
 {
     NSLog(@"selectButtonClick");

@@ -4,7 +4,7 @@
 //
 //  Created by HeDongMing on 2017/1/8.
 //  Copyright © 2017年 iMac. All rights reserved.
-//  进行中
+//  进行中订单模板，属性意义参考HeOrderTableViewCell
 
 #import "HeBaseTableViewCell.h"
 

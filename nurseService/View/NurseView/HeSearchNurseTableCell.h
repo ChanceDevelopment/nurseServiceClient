@@ -4,7 +4,7 @@
 //
 //  Created by HeDongMing on 2017/1/8.
 //  Copyright © 2017年 iMac. All rights reserved.
-//
+//  搜索护士列表视图模板，参考HeSearchNurseTableCell
 
 #import "HeBaseTableViewCell.h"
 

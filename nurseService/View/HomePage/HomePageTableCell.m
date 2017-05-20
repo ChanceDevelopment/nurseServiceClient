@@ -4,7 +4,7 @@
 //
 //  Created by HeDongMing on 2017/1/8.
 //  Copyright © 2017年 iMac. All rights reserved.
-//
+//  首页视图列表模板
 
 #import "HomePageTableCell.h"
 
@@ -15,6 +15,7 @@
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier cellSize:cellsize];
     if (self) {
+        //banner图
         CGFloat bgImageX = 10;
         CGFloat bgImageY = 5;
         CGFloat bgImageW = cellsize.width - 2 *bgImageX;
@@ -33,7 +34,7 @@
 
 - (void)drawRect:(CGRect)rect
 {
-    
+    //画分割线
     CGContextRef context = UIGraphicsGetCurrentContext();
     
     CGContextSetFillColorWithColor(context, [UIColor clearColor].CGColor);
