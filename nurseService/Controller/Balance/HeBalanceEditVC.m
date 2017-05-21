@@ -4,7 +4,7 @@
 //
 //  Created by Tony on 16/10/8.
 //  Copyright © 2016年 iMac. All rights reserved.
-//
+//  用户资金编辑视图控制前
 
 #import "HeBalanceEditVC.h"
 #import "UIButton+Bootstrap.h"
@@ -16,8 +16,11 @@
 #define WITHDRAWMAX 2000
 
 @interface HeBalanceEditVC ()<UITextFieldDelegate>
+//编辑输入框
 @property(strong,nonatomic)IBOutlet UITextField *editField;
+//提交按钮
 @property(strong,nonatomic)IBOutlet UIButton *commitButton;
+//提示的标签
 @property(strong,nonatomic)IBOutlet UILabel *tipLabel;
 
 @end

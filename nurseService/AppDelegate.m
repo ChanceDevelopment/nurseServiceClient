@@ -4,7 +4,7 @@
 //
 //  Created by Tony on 16/7/29.
 //  Copyright © 2016年 iMac. All rights reserved.
-//
+//  App的入口代理
 
 #import "AppDelegate.h"
 #import "HomeTabbarController.h"
@@ -52,13 +52,19 @@ BMKMapManager* _mapManager;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
-    
+    //app的初始化，包括资源，导航栏等公共部分初始化
     [self initialization];
+    //启动百度地图
     [self launchBaiduMap];
+    //初始化激光推送
     [self initAPServiceWithOptions:launchOptions];
+    //初始化友盟SDK
     [self umengTrack];
+    //初始化分享SDK
     [self initshareSDK];
+    //获取已经取消的订单
     [self performSelector:@selector(getCancelOrder) withObject:nil afterDelay:1.0];
+    //设置当前的跟控制器
     self.window.rootViewController = self.viewController;
     //清除缓存
     NSInvocationOperation *operation = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(clearImg:) object:nil];
@@ -213,6 +219,7 @@ BMKMapManager* _mapManager;
     NSString *ss = [[NSUserDefaults standardUserDefaults] objectForKey:@"userAccountKey"];
 //    18606519253 13136170275
     if (haveLogin) {//登陆成功加载主窗口控制器
+        //登录状态下
         [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
         
         [[UINavigationBar appearance] setTitleTextAttributes:
@@ -240,6 +247,7 @@ BMKMapManager* _mapManager;
 
     }
     else{
+        //费登录状态下显示登录界面
         HeLoginVC *loginVC = [[HeLoginVC alloc] init];
         CustomNavigationController *loginNav = [[CustomNavigationController alloc] initWithRootViewController:loginVC];
         self.viewController = loginNav;
@@ -249,6 +257,7 @@ BMKMapManager* _mapManager;
 
 - (void)clearImg:(id)sender
 {
+    //清理图片缓存
     NSFileManager *manager = [NSFileManager defaultManager];
     NSString *folderPath = [NSHomeDirectory() stringByAppendingString:@"/tmp"];
     NSEnumerator *childFilesEnumerator = [[manager subpathsAtPath:folderPath] objectEnumerator];

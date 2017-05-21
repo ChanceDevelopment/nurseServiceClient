@@ -4,7 +4,7 @@
 //
 //  Created by Tony on 16/10/8.
 //  Copyright © 2016年 iMac. All rights reserved.
-//
+//  用户资金编辑视图控制前
 
 #import "HeBaseViewController.h"
 
@@ -17,8 +17,11 @@ typedef enum {
 
 @interface HeBalanceEditVC : HeBaseViewController
 
+//资金操作类型 0：充值 1：提现  2：绑定账号
 @property(assign,nonatomic)Balance_Edit_Type banlanceType;
+//最大的提现现金
 @property(assign,nonatomic)CGFloat maxWithDrawMoney;
+//用户资金的信息
 @property(strong,nonatomic)NSDictionary *balanceDict;
 
 @end

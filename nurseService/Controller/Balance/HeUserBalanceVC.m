@@ -4,7 +4,7 @@
 //
 //  Created by Tony on 2017/1/11.
 //  Copyright © 2017年 iMac. All rights reserved.
-//
+//  用户资金控制器
 
 #import "HeUserBalanceVC.h"
 #import "HeBaseTableViewCell.h"
@@ -15,12 +15,17 @@
 #define ALERTTAG 500
 
 @interface HeUserBalanceVC ()<UITableViewDelegate,UITableViewDataSource,UITextFieldDelegate>
+//用户余额的标签
 @property(strong,nonatomic)IBOutlet UILabel *balanceLabel;
+//列表
 @property(strong,nonatomic)IBOutlet UITableView *tableview;
+//列表的配置资源
 @property(strong,nonatomic)NSArray *dataSource;
+//列表的配置图标资源
 @property(strong,nonatomic)NSArray *iconDataSource;
+//用户支付的信息
 @property(strong,nonatomic)NSDictionary *userPayInfo;
-
+//阴影的视图，弹框用到
 @property(strong,nonatomic)UIView *dismissView;
 
 @end
@@ -60,20 +65,24 @@
     [self getUserPayInfo];
 }
 
+//资源的初始化
 - (void)initializaiton
 {
     [super initializaiton];
+    //注册用户支付信息发生变化的时候的通知
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getUserPayInfo) name:kUpdateUserPayInfoNotificaiton object:nil];
     dataSource = [[NSMutableArray alloc] initWithCapacity:0];
     dataSource = @[@[@"提现",@"充值",@"绑定支付宝",@"设置支付密码",@"交易明细"]];
     iconDataSource = @[@[@"icon_recharge",@"icon_withdrawals",@"icon_bind_alipay",@"icon_set_paypwd",@"icon_financial_details"]];
+    //用户的支付信息
     userPayInfo = [[NSUserDefaults standardUserDefaults] objectForKey:kUserPayInfoKey];
 }
 
+//视图的初始化
 - (void)initView
 {
     [super initView];
-    
+    //设置视图列表的背景颜色
     tableview.backgroundView = nil;
     tableview.backgroundColor = [UIColor colorWithWhite:237.0 /255.0 alpha:1.0];
     [Tool setExtraCellLineHidden:tableview];
@@ -94,12 +103,14 @@
     [dismissView addGestureRecognizer:tapGes];
 }
 
+//获取用户的支付信息
 - (void)getUserPayInfo
 {
     NSString *userId = [[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY];
     if (!userId) {
         userId = @"";
     }
+    //userId:用户的ID
     NSDictionary * params  = @{@"userId":userId};
     NSString *requestUrl = [NSString stringWithFormat:@"%@/nurseAnduser/selectUserThreeInfo.action",BASEURL];
     [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
@@ -123,7 +134,9 @@
                 balance = @"";
             }
             CGFloat balanceMoney = [balance floatValue];
+            //获取用户的余额
             balanceLabel.text = [NSString stringWithFormat:@"%@元",balance];
+            //保存用户的支付信息
             [[NSUserDefaults standardUserDefaults] setObject:payInfo forKey:kUserPayInfoKey];
             [[NSUserDefaults standardUserDefaults] synchronize];
         }
@@ -299,6 +312,7 @@
     return YES;
 }
 
+//弹框绑定的账号
 - (void)alertBindAccount
 {
     [self.view addSubview:dismissView];
@@ -417,6 +431,7 @@
     [self requestBindAccount:password];
 }
 
+//请求绑定账号
 - (void)requestBindAccount:(NSString *)alipayaccount
 {
     NSString *userId = [[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY];
@@ -424,6 +439,7 @@
         userId = @"";
     }
     [self showHudInView:tableview hint:@"绑定中..."];
+    //userId：用户的ID alipayaccount：绑定的账号
     NSDictionary * params  = @{@"userId":userId,@"alipayaccount":alipayaccount};
     NSString *requestUrl = [NSString stringWithFormat:@"%@/nurseAnduser/bindingAlipay.action",BASEURL];
     [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
@@ -433,6 +449,7 @@
         if ([[respondDict valueForKey:@"errorCode"] integerValue] == REQUESTCODE_SUCCEED){
             [self hideHud];
             [self showHint:@"绑定成功"];
+            //绑定成功，更新用户的支付信息
             [self getUserPayInfo];
         }
         else{
@@ -452,6 +469,7 @@
 
 - (void)dealloc
 {
+    //移除当前的观察者
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kUpdateUserPayInfoNotificaiton object:nil];
 }
 

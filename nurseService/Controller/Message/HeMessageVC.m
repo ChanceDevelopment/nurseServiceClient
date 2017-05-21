@@ -4,7 +4,7 @@
 //
 //  Created by Tony on 2017/1/11.
 //  Copyright © 2017年 iMac. All rights reserved.
-//
+//  站内信视图控制器
 
 #import "HeMessageVC.h"
 #import "HeBaseTableViewCell.h"
@@ -15,11 +15,16 @@
 
 @interface HeMessageVC ()<UITableViewDelegate,UITableViewDataSource>
 {
+    //当前的页码
     NSInteger pageNum;
+    //消息类型 0：@"全部", 1：@"系统消息",2：@"资金消息",3：@"订单消息"
     NSInteger currentType;
 }
+//站内信的列表视图
 @property(strong,nonatomic)IBOutlet UITableView *tableview;
+//站内信的资源存放器
 @property(strong,nonatomic)NSMutableArray *dataSource;
+//顶部导航栏的切换
 @property(nonatomic,strong)DLNavigationTabBar *navigationTabBar;
 
 @end
@@ -81,9 +86,11 @@
     // Do any additional setup after loading the view from its nib.
     [self initializaiton];
     [self initView];
+    //加载全部的消息
     [self loadMessageWithType:0];
 }
 
+//资源初始化
 - (void)initializaiton
 {
     [super initializaiton];
@@ -92,6 +99,7 @@
     dataSource = [[NSMutableArray alloc] initWithCapacity:0];
 }
 
+//控制器视图初始化
 - (void)initView
 {
     [super initView];
@@ -145,6 +153,10 @@
     [self loadMessageWithType:currentType];
 }
 
+/*
+ @brief 加载各种类型的消息
+ @param type 消息类型 0：@"全部", 1：@"系统消息",2：@"资金消息",3：@"订单消息"
+ */
 - (void)loadMessageWithType:(NSInteger)type
 {
     NSString *requestWorkingTaskPath = [NSString stringWithFormat:@"%@/nurseAnduser/selectStandInnerLetterInfo.action",BASEURL];
@@ -164,6 +176,7 @@
         NSLog(@"---%@",[[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding]);
         [self hideHud];
         if (dataSource) {
+            //先清除目前的数据
             [dataSource removeAllObjects];
         }
         NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
@@ -176,7 +189,7 @@
             if ([resultArray isMemberOfClass:[NSNull class]]) {
                 resultArray = [NSArray array];
             }
-
+      
             [dataSource addObjectsFromArray:resultArray];
         }
         else{
@@ -187,6 +200,7 @@
 //            [self showHint:data];
         }
         if ([dataSource count] == 0) {
+            //如果没有消息，显示内容为空的图片
             UIView *bgView = [[UIView alloc] initWithFrame:self.view.bounds];
             UIImage *noImage = [UIImage imageNamed:@"img_no_data_refresh"];
             CGFloat scale = noImage.size.height / noImage.size.width;
@@ -246,6 +260,8 @@
     CGFloat contentLabelX = 10;
     CGFloat contentLabelW = SCREENWIDTH - 2 * contentLabelX;
     UIFont *textFont = [UIFont systemFontOfSize:16.0];
+    
+    //站内信的内容
     NSString *standInnerLetterContent = dict[@"standInnerLetterContent"];
     if ([standInnerLetterContent isMemberOfClass:[NSNull class]] || standInnerLetterContent == nil) {
         standInnerLetterContent = @"";
@@ -274,7 +290,7 @@
     timeLabel.textColor = [UIColor grayColor];
     [cell addSubview:timeLabel];
     
-    
+    //站内信的创建时间
     id zoneCreatetimeObj = [dict objectForKey:@"standInnerLetterCreatetime"];
     if ([zoneCreatetimeObj isMemberOfClass:[NSNull class]] || zoneCreatetimeObj == nil) {
         NSTimeInterval  timeInterval = [[NSDate date] timeIntervalSince1970];

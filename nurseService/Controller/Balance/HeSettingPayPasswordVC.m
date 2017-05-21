@@ -4,17 +4,23 @@
 //
 //  Created by Tony on 2017/1/18.
 //  Copyright © 2017年 iMac. All rights reserved.
-//
+//  设置密码的视图控制器
 
 #import "HeSettingPayPasswordVC.h"
 #import "UIButton+countDown.h"
 
 @interface HeSettingPayPasswordVC ()<UITextFieldDelegate>
+//验证码输入框
 @property(strong,nonatomic)IBOutlet UITextField *codeField;
+//密码输入框
 @property(strong,nonatomic)IBOutlet UITextField *passwordField;
+//下一步的按钮
 @property(strong,nonatomic)IBOutlet UIButton *nextButton;
+//重置按钮
 @property(strong,nonatomic)IBOutlet UIButton *resetButton;
+//获取验证码按钮
 @property(strong,nonatomic)IBOutlet UIButton *getCodeButton;
+//提示的标签
 @property(strong,nonatomic)IBOutlet UILabel *tipLabel;
 
 @end
@@ -51,14 +57,17 @@
     [self initView];
 }
 
+//资源的初始化
 - (void)initializaiton
 {
     [super initializaiton];
 }
 
+//视图的初始化
 - (void)initView
 {
     [super initView];
+    //获取用户的手机号
     NSString *phone = [HeSysbsModel getSysModel].user.userPhone;
     self.tipLabel.text = [NSString stringWithFormat:@"请将手机号 %@ 收到的验证码填写到下面的输入框中",phone];
     
@@ -68,6 +77,7 @@
     getCodeButton.layer.masksToBounds = YES;
 }
 
+//下一步按钮的点击事件
 - (IBAction)nextButtonClick:(id)sender
 {
     NSString *drawcode = codeField.text;
@@ -81,6 +91,7 @@
     //验证验证码是否正确
     NSString *requestUrl = [NSString stringWithFormat:@"%@/nurseAnduser/SMSVerification.action",BASEURL];
     [self showHudInView:self.view hint:@"验证中..."];
+    //drawcode：验证码
     NSDictionary * params  = @{@"drawcode":drawcode};
     [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
         NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
@@ -88,6 +99,7 @@
         NSDictionary *respondDict = [NSDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
         NSInteger errorCode = [[respondDict objectForKey:@"errorCode"] integerValue];
         if (errorCode == REQUESTCODE_SUCCEED) {
+            //获取验证码成功，更新视图
             [self hideHud];
             tipLabel.hidden = YES;
             codeField.hidden = YES;
@@ -111,12 +123,9 @@
         [self hideHud];
         [self showHint:ERRORREQUESTTIP];
     }];
-    
-    
-    
-    
 }
 
+//重置密码按钮的点击事件
 - (IBAction)resetPassword:(id)sender
 {
     NSString *userId = [[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY];
@@ -131,6 +140,7 @@
     NSString *drawcode = codeField.text;
     NSString *requestUrl = [NSString stringWithFormat:@"%@/nurseAnduser/AlipayPassword.action",BASEURL];
     [self showHudInView:self.view hint:@"修改中..."];
+    //userId：用户的ID  alipayPassword：支付密码  drawcode：验证码
     NSDictionary * params  = @{@"userId": userId,@"alipayPassword":alipayPassword,@"drawcode":drawcode};
     [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
         NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
@@ -138,8 +148,9 @@
         NSDictionary *respondDict = [NSDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
         NSInteger errorCode = [[respondDict objectForKey:@"errorCode"] integerValue];
         if (errorCode == REQUESTCODE_SUCCEED) {
-            
+            //设置成功，更新用户的支付信息
             [self updateUserPayInfo];
+            //发出通知
             [[NSNotificationCenter defaultCenter] postNotificationName:kUpdateUserPayInfoNotificaiton object:nil];
             
         }
@@ -159,12 +170,14 @@
     }];
 }
 
+//更新用户的支付信息
 - (void)updateUserPayInfo
 {
     NSString *userId = [[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY];
     if (!userId) {
         userId = @"";
     }
+    //userId：用户的ID
     NSDictionary * params  = @{@"userId":userId};
     NSString *requestUrl = [NSString stringWithFormat:@"%@/nurseAnduser/selectUserThreeInfo.action",BASEURL];
     [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
@@ -187,6 +200,7 @@
             if ([balance isMemberOfClass:[NSNull class]]) {
                 balance = @"";
             }
+            //保存用户的支付信息
             [[NSUserDefaults standardUserDefaults] setObject:payInfo forKey:kUserPayInfoKey];
             [[NSUserDefaults standardUserDefaults] synchronize];
             
@@ -208,7 +222,7 @@
 }
 
 
-//获取验证码
+//获取验证码的点击事件
 - (IBAction)getCodeButtonClick:(UIButton *)sender
 {
     if ([codeField isFirstResponder]) {
@@ -221,6 +235,7 @@
         userId = @"";
     }
     NSString *requestUrl = [NSString stringWithFormat:@"%@/nurseAnduser/sendSmsByUserBindPassword.action",BASEURL];
+    //userId：用户的ID
     NSDictionary * params  = @{@"userId": userId};
     [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
         NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];

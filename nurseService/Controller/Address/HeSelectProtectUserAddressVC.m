@@ -4,7 +4,7 @@
 //
 //  Created by Tony on 2017/1/10.
 //  Copyright © 2017年 iMac. All rights reserved.
-//
+//  选择用户地址视图控制器
 
 #import "HeSelectProtectUserAddressVC.h"
 #import "HeAddProtectUserAddressVC.h"
@@ -13,9 +13,12 @@
 
 @interface HeSelectProtectUserAddressVC ()<AddProtectUserAddressProtocol>
 {
+    //存放地址的数据容器
     NSArray *sectionArr;
 }
+//列表
 @property (strong, nonatomic) IBOutlet UITableView *tableView;
+//数据容器
 @property (strong,nonatomic)NSMutableArray *dataSource;
 
 @end
@@ -51,6 +54,7 @@
     [self getDataSource];
 }
 
+//容器初始化
 - (void)initializaiton
 {
     [super initializaiton];
@@ -58,6 +62,7 @@
     sectionArr = @[@"当前地址",@"开通地区",@"受护人地址"];
 }
 
+//视图初始化
 - (void)initView
 {
     [super initView];
@@ -67,10 +72,12 @@
     tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
 }
 
+//获取受护人地址的数据
 - (void)getDataSource{
     NSString *userid = [[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY];
     
     NSString *requestUrl = [NSString stringWithFormat:@"%@/protected/selectprotectedbyuserid.action",BASEURL];
+    //userid:用户的ID
     NSDictionary * params  = @{@"userid": userid};
     [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
         NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
@@ -86,6 +93,7 @@
             [dataSource removeAllObjects];
             [dataSource addObjectsFromArray:tempArr];
             
+            //如果数据为空，显示数据为空的图片
             if ([dataSource count] == 0) {
                 UIView *bgView = [[UIView alloc] initWithFrame:self.view.bounds];
                 UIImage *noImage = [UIImage imageNamed:@"img_no_data_refresh"];
@@ -103,7 +111,7 @@
             else{
                 tableView.backgroundView = nil;
             }
-            
+            //刷新属兔
             [tableView reloadData];
         }else{
             NSString *errorInfo = [respondDict valueForKey:@"data"];
@@ -119,6 +127,7 @@
     }];
 }
 
+//通过代理者，添加受护人的地址信息
 - (void)addProtectUserAddressWithAddressInfo:(NSDictionary *)addressInfo
 {
     NSString *protectedAddress = addressInfo[@"address"];
@@ -135,6 +144,7 @@
     }
     
     NSDictionary *addressDict = @{@"address":protectedAddress,@"latitude":latitude,@"longitude":longitude};
+    //调用代理者协议里面的方法
     [_addressDeleage selectAddressWithAddressInfo:addressDict];
     
     NSArray *viewControllers =  self.navigationController.viewControllers;
@@ -155,6 +165,7 @@
     [self.navigationController popToViewController:popVC animated:YES];
 }
 
+//跳转到新增用户地址的界面
 - (IBAction)addUserAddress:(id)sender
 {
     HeAddProtectUserAddressVC *addProtectUserAddressVC = [[HeAddProtectUserAddressVC alloc] init];
@@ -163,6 +174,7 @@
     [self.navigationController pushViewController:addProtectUserAddressVC animated:YES];
 }
 
+//重新加载
 - (void)relocationButtonClick:(UIButton *)button
 {
     [tableView reloadData];
@@ -171,7 +183,7 @@
 
 
 #pragma mark - TableView Delegate
-
+//用户列表的代理方法
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     switch (section) {
@@ -182,6 +194,7 @@
             return 1;
             break;
         case 2:
+            //返回地址数目
             return [dataSource count];
             break;
         default:
@@ -294,13 +307,17 @@
             } @finally {
                 
             }
+            //配置选择受护人地址测视图模板
             HeSelectProtectedUserInfoCell *cell  = [tableView cellForRowAtIndexPath:indexPath];
             if (!cell) {
                 cell = [[HeSelectProtectedUserInfoCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIndentifier cellSize:cellSize];
                 cell.selectionStyle = UITableViewCellSelectionStyleNone;
             }
+            //受护人的名称
             NSString *name = [dict valueForKey:@"protectedPersonName"];
+            //受护人的性别
             NSString *sex = [[dict valueForKey:@"protectedPersonSex"] isEqualToString:@"1"] ? @"男" : @"女";
+            //受护人的年龄
             NSString *protectedPersonAge = [dict valueForKey:@"protectedPersonAge"];
             
             CGFloat baseInfoLabelX = 10;
@@ -313,7 +330,7 @@
             baseInfoLabel.font = [UIFont systemFontOfSize:15.0];
             baseInfoLabel.text = [NSString stringWithFormat:@"%@  %@  %@",name,sex,protectedPersonAge];
             [cell addSubview:baseInfoLabel];
-            
+            //受护人的地址
             NSString *protectedAddress = dict[@"protectedAddress"];
             if ([protectedAddress isMemberOfClass:[NSNull class]]) {
                 protectedAddress = @"";
@@ -412,8 +429,9 @@
         if ([protectedAddressId isMemberOfClass:[NSNull class]] || protectedAddressId == nil) {
             protectedAddressId = @"";
         }
-        
+        //当选择某个地址之后，回调选择的协议方法
         NSDictionary *addressDict = @{@"address":protectedAddress,@"addressId":protectedAddressId};
+        //调用代理者的方法
         [_addressDeleage selectAddressWithAddressInfo:addressDict];
         [self.navigationController popViewControllerAnimated:YES];
     }
