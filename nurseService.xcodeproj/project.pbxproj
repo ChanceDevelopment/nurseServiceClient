@@ -3146,7 +3146,6 @@
 				EAC2D79B1D4B063B00E282A8 /* Helper */,
 				EAC2D7A41D4B063B00E282A8 /* Model */,
 				EAC2D7A91D4B063B00E282A8 /* ThirdPartySDK */,
-				EAC2D8031D4B063B00E282A8 /* Waiting */,
 				EAC2D42B1D4B031500E282A8 /* AppDelegate.h */,
 				EAC2D42C1D4B031500E282A8 /* AppDelegate.m */,
 				EAC2D42E1D4B031500E282A8 /* ViewController.h */,
@@ -3294,6 +3293,7 @@
 		EAC2D4B61D4B063900E282A8 /* Custom */ = {
 			isa = PBXGroup;
 			children = (
+				EAC2D8031D4B063B00E282A8 /* Waiting */,
 				EADEBFDD1E6E512900803F93 /* YLButton */,
 				EA8CE3721E388954009FCCC6 /* DVYearMonthDatePicker */,
 				EA1D6FB11E34EB0E006DEEF7 /* SSPopup */,
@@ -4814,7 +4814,8 @@
 				EAC2D8071D4B063B00E282A8 /* Waiting.h */,
 				EAC2D8081D4B063B00E282A8 /* Waiting.m */,
 			);
-			path = Waiting;
+			name = Waiting;
+			path = ../Waiting;
 			sourceTree = "<group>";
 		};
 		EAC2D8041D4B063B00E282A8 /* loading_anim_Resource */ = {

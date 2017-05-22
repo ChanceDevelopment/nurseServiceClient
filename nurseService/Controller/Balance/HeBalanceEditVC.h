@@ -4,7 +4,7 @@
 //
 //  Created by Tony on 16/10/8.
 //  Copyright © 2016年 iMac. All rights reserved.
-//  用户资金编辑视图控制前
+//  用户资金编辑视图控制器
 
 #import "HeBaseViewController.h"
 

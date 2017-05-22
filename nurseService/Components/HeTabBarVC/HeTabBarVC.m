@@ -4,7 +4,7 @@
 //
 //  Created by HeDongMing on 16/3/2.
 //  Copyright © 2016年 HeDongMing. All rights reserved.
-//
+//  App底部4个tab的控制器
 
 #import "HeTabBarVC.h"
 #import "RDVTabBarItem.h"
@@ -23,7 +23,9 @@
 }
 //定位
 @property (nonatomic,assign)NSInteger locationSucceedNum; //定位成功的次数
+//用户的定位信息
 @property (nonatomic,strong)NSMutableDictionary *userLocationDict;
+//取消的订单
 @property (nonatomic,strong)NSMutableArray *cancerOrderArray;
 
 @end
@@ -76,7 +78,7 @@
 {
 //    [self getCancelOrder];
 }
-
+//获取取消订单
 - (void)getCancelOrder
 {
     NSString *userId = [[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY];
@@ -103,7 +105,7 @@
         
     }];
 }
-
+//统一取消订单
 - (void)agreeCancelOrder:(BOOL)isAgree
 {
     NSString *userId = [[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY];
@@ -132,6 +134,7 @@
         
     }];
 }
+//获取用户的支付信息
 - (void)getUserPayInfo
 {
     NSString *userId = [[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY];
@@ -165,6 +168,7 @@
     }];
 }
 
+//初始化定位服务
 - (void)initLocationService
 {
     //初始化BMKLocationService
@@ -236,7 +240,7 @@
         
     }];
 }
-
+//加载左边的菜单
 - (void)loadLeftMenu
 {
     NSString *requestUrl = [NSString stringWithFormat:@"%@/NursingReport.action",BASEURL];
@@ -256,7 +260,7 @@
         
     }];
 }
-
+//更新用户当前的位置信息
 - (void)udpateUserLocationWithLocation:(NSDictionary *)locationDict
 {
     NSString *userid = [[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY];
