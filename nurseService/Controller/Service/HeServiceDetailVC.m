@@ -4,7 +4,7 @@
 //
 //  Created by Tony on 2017/1/9.
 //  Copyright © 2017年 iMac. All rights reserved.
-//
+//  服务详情视图控制器
 
 #import "HeServiceDetailVC.h"
 #import "DLNavigationTabBar.h"
@@ -47,14 +47,21 @@
 }
 
 @property(nonatomic,strong)DLNavigationTabBar *navigationTabBar;
+//列表视图
 @property(strong,nonatomic)IBOutlet UITableView *tableview;
+//底部的视图
 @property(strong,nonatomic)IBOutlet UIView *footerBGView;
+//最大的内容偏移
 @property(assign,nonatomic)CGFloat maxContentOffSet_Y;
+//内容的view
 @property(strong,nonatomic)UIView *contentView;
+//头部的信息
 @property(strong,nonatomic)UILabel *headLab;
+//显示服务详情的网页
 @property(strong,nonatomic)UIWebView *webView;
+//存放webview的view
 @property(strong,nonatomic)UIView *webContentView;
-
+//服务时间选择器
 @property(strong,nonatomic)DVYearMonthDatePicker *yearMonth;
 
 //服务时间
@@ -129,6 +136,7 @@
     return self;
 }
 
+//顶部三大功能的选择
 -(DLNavigationTabBar *)navigationTabBar
 {
     if (!_navigationTabBar) {
@@ -146,6 +154,10 @@
     return _navigationTabBar;
 }
 
+/*
+ @brief 选择用户的信息之后回调回来的方法
+ @param userInfo 用户的信息
+ */
 #pragma mark - SelectProtectUserInfoProtocol
 - (void)selectUserInfoWithDict:(NSDictionary *)userInfo
 {
@@ -178,6 +190,7 @@
 }
 
 #pragma mark - PrivateMethod
+//选择顶部的tab之后的回调方法
 - (void)navigationDidSelectedControllerIndex:(NSInteger)index {
     NSLog(@"index = %ld",index);
     NSString *contentId = serviceDetailInfoDict[@"contentId"];
@@ -185,12 +198,15 @@
     NSString *webViewUrl = @"http://www.hao123.com/?tn=29065018_265_hao_pg";
     switch (index) {
         case 0:
+            //服务内容
             webViewUrl = [NSString stringWithFormat:@"%@nurseAnduser/contentPackaAge.action?contentId=%@",BASEURL,contentId];
             break;
         case 1:
+            //使用人群
             webViewUrl = [NSString stringWithFormat:@"%@nurseAnduser/contentForPeopleInfo.action?contentId=%@",BASEURL,contentId];
             break;
         case 2:
+            //注意事项
             webViewUrl = [NSString stringWithFormat:@"%@nurseAnduser/contentLook.action?contentId=%@",BASEURL,contentId];
             break;
         default:
@@ -207,10 +223,13 @@
     tableview.hidden = YES;
     footerBGView.hidden = YES;
     [self initializaiton];
+    //加载服务详情
     [self loadServiceDetail];
+    //加载服务的子服务项目
     [self loadServiceArray];
 }
 
+//加载服务的子服务项目
 - (void)loadServiceArray
 {
     NSString *contentId = serviceInfoDict[@"contentId"];
@@ -220,6 +239,7 @@
             contentId = @"";
         }
     }
+    //contentId；服务的ID
     NSDictionary *param = @{@"contentId":contentId};
     NSString *requestUrl = [NSString stringWithFormat:@"%@/goods/selectgoodsbycoentid.action",BASEURL];
     [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:param success:^(AFHTTPRequestOperation* operation,id response){
@@ -241,6 +261,7 @@
     }];
 }
 
+//资源初始化
 - (void)initializaiton
 {
     [super initializaiton];
@@ -251,6 +272,7 @@
     remarKStringArray = [[NSMutableArray alloc] initWithCapacity:0];
 }
 
+//当选择下单的时候，弹框选择详情的下单参数
 - (UIView *)selectMenuBgView
 {
     if (!_selectMenuBgView) {
@@ -612,6 +634,7 @@
     return YES;
 }
 
+//初始化视图
 - (void)initView
 {
     [super initView];
@@ -677,6 +700,7 @@
     [dismissView addGestureRecognizer:tapGes];
 }
 
+//选择相应的服务子项目回调
 - (void)selectButtonClick:(UIButton *)button
 {
     button.selected = !button.selected;
@@ -712,6 +736,7 @@
     
 }
 
+//加载服务详情
 - (void)loadServiceDetail
 {
     [self showHudInView:self.view hint:@"加载中..."];
@@ -807,6 +832,7 @@
     }];
 }
 
+//加载网页的详情
 - (void)loadContentView
 {
     // first view
@@ -903,7 +929,7 @@
         }
     }
 }
-
+//加载历史信息按钮点击事件
 - (void)historyButtonClick:(UIButton *)button
 {
     button.selected = !button.selected;
@@ -1015,6 +1041,7 @@
     }
 }
 
+//打电话点击事件
 - (IBAction)phoneCall:(id)sender
 {
     NSLog(@"phoneCall");
@@ -1051,6 +1078,7 @@
 }
 
 
+//收藏关注的方法
 - (IBAction)favButtonClick:(UIButton *)sender
 {
     id isfollow = serviceDetailInfoDict[@"iscollect"];
@@ -1064,6 +1092,7 @@
     
     NSString *requestUrl = [NSString stringWithFormat:@"%@/follow/addcollects.action",BASEURL];
     NSString *userId = [[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY];
+    //contentId：收藏关注的ID
     NSString *contentId = serviceDetailInfoDict[@"contentId"];
     if ([contentId isMemberOfClass:[NSNull class]] || contentId == nil) {
         contentId = serviceDetailInfoDict[@"manageNursingContentId"];
@@ -1149,6 +1178,7 @@
     
 }
 
+//提交按钮的点击事件
 - (void)commitButtonClick:(UIButton *)button
 {
     NSLog(@"commitButtonClick");
@@ -1233,7 +1263,15 @@
             orderSendBegintime = [NSString stringWithFormat:@"%@0",orderSendBegintime];
         }
     }
-    
+    //specifyNurseId:护士的ID
+    //goodId 服务项目的ID
+    //personId 受护人的ID
+    //orderSendUserpic 上传的图片
+    //orderSendNote 备注
+    //orderSendCoupon 优惠券
+    //orderSendTrafficmoney 运费
+    //orderSendBegintime 开始时间
+    //orderSendStoptime 结束时间
     NSString *orderSendStoptime = @"";
     NSDictionary *paramsDict = @{
                                  @"userId":userId,
@@ -1251,6 +1289,7 @@
                                  @"orderSendStoptime":orderSendStoptime
                                  };
     
+    //发出网络请求
     NSString *requestUrl = [NSString stringWithFormat:@"%@orderSend/orderSend.action",BASEURL];
     [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:paramsDict success:^(AFHTTPRequestOperation* operation,id response){
         [self hideHud];
@@ -1264,6 +1303,8 @@
             }
             NSString *orderId = [respondDict objectForKey:@"json"];
             if (!isBook) {
+                
+                //如果不是来自于预订界面，跳到订单确认界面
                 HeOrderCommitVC *commitVC = [[HeOrderCommitVC alloc] init];
                 commitVC.orderId = orderId;
                 commitVC.hidesBottomBarWhenPushed = YES;
@@ -1295,6 +1336,11 @@
     [self setInfoViewisDown:YES withView:_selectMenuBgView];
 }
 
+/*
+ @brief 弹出弹下的动画
+ @param isDown 是否弹下
+ @param infoView 目标视图
+ */
 - (void)setInfoViewisDown:(BOOL)isDown withView:(UIView *)infoView{
     CGFloat infoViewHeight = CGRectGetHeight(infoView.frame);
     CGFloat infoViewWidth = CGRectGetWidth(infoView.frame);
@@ -1343,6 +1389,7 @@
     }
 }
 
+//顶部轮播的回调
 #pragma mark LBBannerDelegate
 - (void)banner:(LBBanner *)banner didClickViewWithIndex:(NSInteger)index {
     NSLog(@"didClickViewWithIndex:%ld", index);
@@ -1352,6 +1399,7 @@
     NSLog(@"didChangeViewWithIndex:%ld", index);
 }
 
+//视图列表的代理方法
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     if (section == 0) {
@@ -1636,6 +1684,7 @@
     }
 }
 
+//选择设置服务时间
 - (void)selectDate
 {
     UIView *myview = [self.view viewWithTag:1000];
@@ -1694,7 +1743,7 @@
     [self.view viewWithTag:2000].hidden = YES;
 }
 
-
+//选择时间确认
 - (void)buttonClick:(UIButton *)button
 {
     UIView *myview = [self.view viewWithTag:1000];
@@ -1712,6 +1761,12 @@
     }
 }
 
+/*
+ 获取选择时间的内容
+ @param date 时间的字符串
+ @param type类型 DateTypeOfStart：日期确定选择
+                  DateTypeOfEnd：日期取消选择
+ */
 - (void)getSelectDate:(NSString *)date type:(DateType)type {
     
     NSLog(@"时间 : %@",date);
@@ -1730,6 +1785,7 @@
     }
 }
 
+//设置时间
 - (void)setupDateView:(DateType)type minDate:(NSDate *)minDate{
     
     UWDatePickerView *pickerView = [UWDatePickerView instanceDatePickerView];
@@ -1748,6 +1804,7 @@
     
 }
 
+//选择图片之后，更新视图
 - (void)updateImageBG
 {
     for (UIView *subview in bannerImageBG.subviews) {
@@ -1880,6 +1937,7 @@
     [self updateImageBG];
 }
 
+//添加图片的方法
 - (void)addButtonClick:(UIButton *)sender
 {
     if ([bannerImageDataSource count] > MAXUPLOADIMAGE) {
@@ -1945,6 +2003,7 @@
     }
 }
 
+//处理选择回来图片
 - (void)handleSelectPhoto
 {
     NSMutableArray *tempArray = [[NSMutableArray alloc] initWithCapacity:0];
@@ -2188,7 +2247,7 @@
     return YES;
 }
 
-
+//输入备注
 - (void)inputReamrk
 {
     [self.view addSubview:dismissView];
@@ -2289,6 +2348,7 @@
     [[UIApplication sharedApplication].keyWindow addSubview:shareAlert];
 }
 
+//提示信息
 - (void)alertbuttonClick:(UIButton *)button
 {
     UIView *mydismissView = dismissView;

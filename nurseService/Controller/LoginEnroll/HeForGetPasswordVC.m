@@ -4,17 +4,23 @@
 //
 //  Created by Tony on 2017/1/24.
 //  Copyright © 2017年 iMac. All rights reserved.
-//
+//  忘记密码视图控制器
 
 #import "HeForGetPasswordVC.h"
 #import "UIButton+countDown.h"
 
 @interface HeForGetPasswordVC ()<UITextFieldDelegate,UIAlertViewDelegate>
+//获取验证码的按钮
 @property(strong,nonatomic)IBOutlet UIButton *getCodeButton;
+//重置密码的按钮
 @property(strong,nonatomic)IBOutlet UIButton *resetButton;
+//账号输入框
 @property(strong,nonatomic)IBOutlet UITextField *accountField;
+//验证码输入框
 @property(strong,nonatomic)IBOutlet UITextField *codeField;
+//提交按钮
 @property(strong,nonatomic)IBOutlet UIButton *commitButton;
+//密码输入框
 @property(strong,nonatomic)IBOutlet UITextField *passwordField;
 @property(strong,nonatomic)IBOutlet UIView *secondLine;
 
@@ -61,6 +67,7 @@
     [super initializaiton];
 }
 
+//初始化视图
 - (void)initView
 {
     [super initView];
@@ -70,6 +77,7 @@
     getCodeButton.layer.borderColor = APPDEFAULTORANGE.CGColor;
 }
 
+//获取验证码的点击事件
 - (IBAction)getCodeButtonClick:(UIButton *)sender
 {
     if ([accountField isFirstResponder]) {
@@ -87,14 +95,17 @@
         [self showHint:@"请输入正确手机号"];
         return;
     }
-    
+    //获取验证码之后，进行60秒的倒计时
     [sender startWithTime:60 title:@"获取验证码" countDownTitle:@"s" mainColor:[UIColor whiteColor] countColor:[UIColor whiteColor]];
     NSString *userId = [[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY];
     if (!userId) {
         userId = @"";
     }
+    //0:客户端 1：护士端
     NSString *Identify = @"0";
     NSString *Phone = accountField.text;
+    //userId:护士的ID
+    //Phone:手机号码
     NSDictionary * params  = @{@"userId":userId,@"Identify":Identify,@"Phone":Phone};
     NSString *requestUrl = [NSString stringWithFormat:@"%@/nurseAnduser/ResetPasswordSMSVerification.action",BASEURL];
     [self showHudInView:self.view hint:@"发送中..."];
@@ -120,6 +131,7 @@
     }];
 }
 
+//重置密码的点击事件
 - (IBAction)resetButtonClick:(UIButton *)sender
 {
     if ([accountField isFirstResponder]) {
@@ -148,6 +160,9 @@
     }
     NSString *Identify = @"0";
     NSString *Passwordcode = code;
+    //userId：用户的ID
+    //Passwordcode：验证码
+    //Identify 标示 0:客户端 1：护士端
     NSDictionary * params  = @{@"userId":userId,@"Identify":Identify,@"Passwordcode":Passwordcode};
     NSString *requestUrl = [NSString stringWithFormat:@"%@/nurseAnduser/ResetPasswordComparison.action",BASEURL];
     [self showHudInView:self.view hint:@"验证中..."];
@@ -157,6 +172,7 @@
         NSDictionary *respondDict = [NSDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
         NSInteger errorCode = [[respondDict objectForKey:@"errorCode"] integerValue];
         if (errorCode == REQUESTCODE_SUCCEED) {
+            //密码重置成功之后，更新视图
             accountField.hidden = YES;
             codeField.hidden = YES;
             resetButton.hidden = YES;
@@ -180,6 +196,7 @@
     }];
 }
 
+//提交按钮点击事件
 - (IBAction)commitButtonClick:(id)sender
 {
     if ([passwordField isFirstResponder]) {
@@ -203,6 +220,10 @@
     }
     NSString *phone = accountField.text;
     NSString *Identify = @"0";
+    //phone：用户的手机号
+    //passWord：密码
+    //Identify 标示 0:客户端 1：护士端
+    
     NSDictionary * params  = @{@"phone":phone,@"Identify":Identify,@"passWord":passWord};
     NSString *requestUrl = [NSString stringWithFormat:@"%@/nurseAnduser/ResetPasswordUpdate.action",BASEURL];
     [self showHudInView:self.view hint:@"重置中..."];
@@ -229,6 +250,7 @@
     }];
 }
 
+//重置密码成功，返回到到跟控制器
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     [self.navigationController popToRootViewControllerAnimated:YES];

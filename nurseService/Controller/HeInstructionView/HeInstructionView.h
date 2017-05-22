@@ -4,7 +4,7 @@
 //
 //  Created by 何 栋明 on 13-11-13.
 //  Copyright (c) 2013年 何栋明. All rights reserved.
-//
+//  引导页视图控制器
 
 #import <UIKit/UIKit.h>
 #import "UIButton+Bootstrap.h"

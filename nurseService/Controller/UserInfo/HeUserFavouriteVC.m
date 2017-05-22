@@ -4,7 +4,7 @@
 //
 //  Created by Tony on 2017/1/11.
 //  Copyright © 2017年 iMac. All rights reserved.
-//
+//  我的收藏视图控制器
 
 #import "HeUserFavouriteVC.h"
 #import "DLNavigationTabBar.h"
@@ -101,6 +101,7 @@
     [self loadNurseData];
 }
 
+//资源初始化
 - (void)initializaiton
 {
     [super initializaiton];
@@ -113,6 +114,7 @@
     pageNum = 0;
 }
 
+//视图初始化
 - (void)initView
 {
     [super initView];
@@ -122,13 +124,14 @@
     tableview.separatorStyle = UITableViewCellSeparatorStyleNone;
     tableview.backgroundColor = [UIColor colorWithWhite:237.0 / 255.0 alpha:1.0];
     __weak HeUserFavouriteVC *weakSelf = self;
+    //下拉刷新的回调
     self.tableview.header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
         // 进入刷新状态后会自动调用这个block,刷新
         [weakSelf.tableview.header performSelector:@selector(endRefreshing) withObject:nil afterDelay:1.0];
         pageNum = 0;
         [weakSelf loadNurseData];
     }];
-    
+    //上拉加载更多回调
     self.tableview.footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
         self.tableview.footer.automaticallyHidden = YES;
         self.tableview.footer.hidden = NO;
@@ -154,12 +157,14 @@
     NSLog(@"endRefreshing");
 }
 
+//加载用户关注的数据
 - (void)loadNurseData
 {
     [self showHudInView:tableview hint:@"加载中..."];
     NSString *requestUrl = [NSString stringWithFormat:@"%@/follow/selectfollowbyfollowid.action",BASEURL];
     NSMutableString *followId = [[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY];
     NSString *pageNumStr = [NSString stringWithFormat:@"%ld",pageNum];
+    //followId：关注人的ID pageNum：当前的页码
     NSDictionary * params  = @{@"followId":followId,@"pageNum":pageNumStr};
     [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
         [self hideHud];
@@ -211,12 +216,14 @@
     }];
 }
 
+//加载关注的服务
 - (void)loadServiceData
 {
     [self showHudInView:tableview hint:@"加载中..."];
     NSString *requestUrl = [NSString stringWithFormat:@"%@/follow/selectcollects.action",BASEURL];
     NSMutableString *userId = [[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY];
     NSString *pageNumStr = [NSString stringWithFormat:@"%ld",servicePageNum];
+    //userId：用户的ID pageNum：当前页码
     NSDictionary * params  = @{@"userId":userId,@"pageNum":pageNumStr};
     [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
         [self hideHud];
@@ -291,6 +298,7 @@
     NSInteger section = indexPath.section;
     
     if (currentIndex == 1) {
+        //收藏服务的模板
         CGSize cellsize = [tableView rectForRowAtIndexPath:indexPath].size;
         static NSString *cellIndentifier = @"HeServiceTableCell";
         HeServiceTableCell *cell  = [tableView cellForRowAtIndexPath:indexPath];
@@ -369,6 +377,7 @@
     } @finally {
         
     }
+    //关注护士的模板
     CGSize cellsize = [tableView rectForRowAtIndexPath:indexPath].size;
     HeSearchNurseTableCell *cell  = [tableView cellForRowAtIndexPath:indexPath];
     if (!cell) {
@@ -443,6 +452,7 @@
     NSInteger row = indexPath.row;
     NSInteger section = indexPath.section;
     if (currentIndex == 1) {
+        //如果是收藏的是服务，不用跳转
         return;
     }
     NSDictionary *dict = nil;
@@ -457,6 +467,7 @@
     if ([nurseId isMemberOfClass:[NSNull class]]) {
         nurseId = @"";
     }
+    //护士详情
     NSMutableDictionary *nurseDict = [[NSMutableDictionary alloc] initWithDictionary:dict];
     [nurseDict setObject:nurseId forKey:@"nurseId"];
     HeNurseDetailVC *nurseDetailVC = [[HeNurseDetailVC alloc] init];

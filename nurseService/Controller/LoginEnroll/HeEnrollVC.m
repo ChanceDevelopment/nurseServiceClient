@@ -4,7 +4,7 @@
 //
 //  Created by Tony on 2016/12/14.
 //  Copyright © 2016年 iMac. All rights reserved.
-//
+//  注册视图控制器
 
 #import "HeEnrollVC.h"
 #import "UIButton+countDown.h"
@@ -71,6 +71,7 @@
     [super initializaiton];
 }
 
+//初始化视图
 - (void)initView
 {
     [super initView];
@@ -98,7 +99,7 @@
         [self showHint:@"请输入正确的手机号"];
         return;
     }
-    
+    //获取验证码之后，进行时间的倒数
     [sender startWithTime:60 title:@"获取验证码" countDownTitle:@"s" mainColor:[UIColor whiteColor] countColor:[UIColor whiteColor]];
 
     
@@ -172,7 +173,12 @@
         [self showHint:@"请阅读《安心护免责条款》"]; //安心护免责条款
         return;
     }
-    
+    //UserName:账号
+    //UserPwd:密码
+    //UserNick:用户昵称
+    //UserHeader:用户头像
+    //invitationcode:邀请码
+    //code:手机验证码
     NSDictionary * params  = @{@"UserName": userPhone,
                                @"UserPwd" : password,
                                @"UserNick" : @"",
@@ -214,6 +220,7 @@
         if ([[[respondDict valueForKey:@"errorCode"] stringValue] isEqualToString:@"200"]) {
             NSLog(@"success");
             [self showHint:@"注册成功"];
+            //注册成功，返回到登录界面
             [self performSelector:@selector(backToLoginView) withObject:nil afterDelay:0.5];
         }else {
             NSString *errorInfo = respondDict[@"data"];
@@ -422,6 +429,8 @@
     
     [self dismissViewControllerAnimated:YES completion:nil];
 }
+
+//查看注册的协议
 - (IBAction)tipAction:(id)sender {
     EnrollTipVC *enrollTipVC = [[EnrollTipVC alloc] init];
     enrollTipVC.hidesBottomBarWhenPushed = YES;

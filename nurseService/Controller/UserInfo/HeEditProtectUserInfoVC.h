@@ -12,7 +12,9 @@
 @interface HeEditProtectUserInfoVC : HeBaseViewController{
 
 }
+//用户的信息
 @property(strong,nonatomic)NSMutableDictionary *userInfoDict;
+//是否编辑
 @property(assign,nonatomic)BOOL isEdit;
 
 @end

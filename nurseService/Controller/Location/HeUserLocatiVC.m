@@ -4,7 +4,7 @@
 //
 //  Created by Danertu on 16/10/29.
 //  Copyright © 2016年 iMac. All rights reserved.
-//
+//  用户定位视图控制器
 
 #import "HeUserLocatiVC.h"
 #import <BaiduMapAPI_Utils/BMKUtilsComponent.h>
@@ -50,6 +50,7 @@
     [self initView];
 }
 
+//设置定位的代理，开启服务
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:YES];
@@ -61,6 +62,7 @@
     
 }
 
+//设置定位的代理
 -(void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:YES];
     [_mapView viewWillAppear];
@@ -69,7 +71,7 @@
     _geocodesearch.delegate = self;
     
 }
-
+//清楚定位的代理
 -(void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:YES];
     [_mapView removeAnnotations:_mapView.annotations];
@@ -121,6 +123,7 @@
     
 }
 
+//更新地图上面的大头针
 - (void)updateAnnotion
 {
     NSString *zoneLocationX = userLocationDict[@"zoneLocationX"];
@@ -146,6 +149,7 @@
     [_mapView setCenterCoordinate:coor animated:YES];
 }
 // Override
+//大头针的配置更新回调方法
 - (BMKAnnotationView *)mapView:(BMKMapView *)mapView viewForAnnotation:(id <BMKAnnotation>)annotation
 {
     if (editLocation) {
@@ -162,6 +166,7 @@
     return nil;
 }
 
+//当范围改变的时候的回调
 - (void)mapView:(BMKMapView *)mapView regionDidChangeAnimated:(BOOL)animated
 {
     NSLog(@"regionDidChangeAnimated");
@@ -173,6 +178,7 @@
     }
 }
 
+//反地理编码
 -(void)reverseGeocodeWithCLLocationCoordinate:(CLLocationCoordinate2D)pt
 {
     isGeoSearch = false;
@@ -189,7 +195,7 @@
     }
     
 }
-
+//反地理编码回调
 - (void)onGetReverseGeoCodeResult:(BMKGeoCodeSearch *)searcher result:(BMKReverseGeoCodeResult *)result errorCode:(BMKSearchErrorCode)error
 {
     UILabel *label = (UILabel *)self.navigationItem.titleView;

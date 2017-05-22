@@ -4,7 +4,7 @@
 //
 //  Created by Tony on 2016/12/14.
 //  Copyright © 2016年 iMac. All rights reserved.
-//
+//  登录视图控制器
 
 #import "HeLoginVC.h"
 #import "HeEnrollVC.h"
@@ -116,13 +116,14 @@
             if ([userId isMemberOfClass:[NSNull class]] || userId == nil) {
                 userId = @"";
             }
-            
+            //保存用户的信息
             [[NSUserDefaults standardUserDefaults] setObject:account forKey:USERACCOUNTKEY];
             [[NSUserDefaults standardUserDefaults] setObject:nurseDic forKey:kUserDataKey];
             [[NSUserDefaults standardUserDefaults] setObject:userId forKey:USERIDKEY];
             [[NSUserDefaults standardUserDefaults] setObject:password forKey:USERPASSWORDKEY];
             
             [[NSUserDefaults standardUserDefaults] synchronize];//强制写入,保存数据
+            //登录成功，发出登录通知，通知APP的代理更换跟控制器，跳转到主界面
             [[NSNotificationCenter defaultCenter] postNotificationName:KNOTIFICATION_LOGINCHANGE object:@YES];
         }else{
             NSString *errorInfo = [respondDict valueForKey:@"data"];

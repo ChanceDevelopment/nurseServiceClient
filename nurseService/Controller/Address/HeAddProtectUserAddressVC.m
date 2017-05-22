@@ -17,16 +17,26 @@
 
 @interface HeAddProtectUserAddressVC ()<UISearchBarDelegate,BMKMapViewDelegate,BMKLocationServiceDelegate,BMKPoiSearchDelegate,BMKGeoCodeSearchDelegate>
 {
+    //定位服务
     BMKLocationService* _locService;
+    //关键字
     NSString  *keyWord;
+    //POI搜索
     BMKPoiSearch *_searcher;
+    //当前的页码
     int curPage;
+    //当前的位置
     BMKUserLocation *currentLocation;
+    //搜索服务
     BMKGeoCodeSearch *_geoSearch;
 }
+//列表视图
 @property (strong, nonatomic) IBOutlet UITableView *tableview;
+//地图视图
 @property (strong, nonatomic) IBOutlet BMKMapView *mapView;
+//搜索框
 @property(strong,nonatomic)UISearchBar *searchBar;
+//存放地址的容器
 @property(strong,nonatomic)NSMutableArray *dataSource;
 
 @end
@@ -63,16 +73,22 @@
     [self initView];
 }
 
+//视图出现，启动各种代理
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:YES];
+    //赋值百度地图的定位代理
     _locService.delegate = self;
+    //开始定位
      [_locService startUserLocationService];
+    //赋值百度地图视图的代理
     _mapView.delegate = self;
     _mapView.showsUserLocation = NO;//先关闭显示的定位图层
     _mapView.userTrackingMode = BMKUserTrackingModeFollow;//设置定位的状态
+    //地图比例尺级别
     _mapView.zoomLevel = 10;
     _mapView.showsUserLocation = YES;//显示定位图层
+    //搜索服务的代理
     _geoSearch.delegate = self;
     
     self.navigationItem.titleView = searchBar;
@@ -84,6 +100,7 @@
     self.navigationItem.titleView = searchBar;
 }
 
+//视图消失，关闭各种代理
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:YES];
@@ -100,18 +117,20 @@
     [super initializaiton];
     dataSource = [[NSMutableArray alloc] initWithCapacity:0];
     
+    //初始化各种服务
     _locService = [[BMKLocationService alloc]init];
     curPage = 0;
     _geoSearch = [[BMKGeoCodeSearch alloc] init];
     _geoSearch.delegate = self;
     
+    //添加当前默认的地址
     NSString *latitudeStr = [NSString stringWithFormat:@"%.6f",[HeSysbsModel getSysModel].addressResult.location.latitude];
     NSString *longitudeStr = [NSString stringWithFormat:@"%.6f",[HeSysbsModel getSysModel].addressResult.location.longitude];
     NSDictionary *dict = @{@"subAddress":@"[当前]",@"address":[HeSysbsModel getSysModel].addressResult.address,@"latitude":latitudeStr,@"longitude":longitudeStr};
     [dataSource addObject:dict];
 }
 
-
+//初始化一些视图
 - (void)initView
 {
     [super initView];
@@ -163,6 +182,10 @@
     
 }
 
+/*
+ @brief 根据关键字进行地址的搜索
+ @param searchKey 搜索的关键字
+ */
 - (void)searchAddressWithKey:(NSString *)searchKey
 {
     [self showHudInView:self.view hint:@"搜索中..."];
@@ -205,6 +228,7 @@
         NSDictionary *dict = @{@"subAddress":@"[当前]",@"address":[HeSysbsModel getSysModel].addressResult.address,@"latitude":latitudeStr,@"longitude":longitudeStr};
         [dataSource addObject:dict];
         
+        //保存搜索回来的结果
         for (NSInteger index = 0; index < [poiInfoList count]; index++) {
             BMKPoiInfo *info = poiInfoList[index];
             NSString *name = info.name;
@@ -221,6 +245,7 @@
             NSDictionary *dict = @{@"subAddress":name,@"address":address,@"latitude":latitudeStr,@"longitude":longitudeStr};
             [dataSource addObject:dict];
         }
+        //如果搜索没有数据，直接显示数据为空的图片
         if ([dataSource count] == 0) {
             UIView *bgView = [[UIView alloc] initWithFrame:self.view.bounds];
             UIImage *noImage = [UIImage imageNamed:@"img_no_data_refresh"];
@@ -282,7 +307,7 @@
         cell = [[HeBaseTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIndentifier cellSize:cellSize];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
-    
+    //配置列表的视图模板
     CGFloat locationIconW = 20;
     CGFloat locationIconH = 20;
     CGFloat locationIconX = 20;
@@ -296,6 +321,7 @@
     CGFloat nameLabelH = cellSize.height / 2.0;
     CGFloat nameLabelW = SCREENWIDTH - nameLabelX - 10;
     
+    //详细地址
     NSString *name = dict[@"subAddress"];
     UILabel *nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(nameLabelX, nameLabelY, nameLabelW, nameLabelH)];
     nameLabel.font = [UIFont systemFontOfSize:15.0];
@@ -309,6 +335,7 @@
     }
     [cell addSubview:nameLabel];
     
+    //大概地址
     NSString *address = dict[@"address"];
     CGFloat addressLabelX = nameLabelX;
     CGFloat addressLabelY = CGRectGetMaxY(nameLabel.frame);
@@ -381,12 +408,13 @@
     NSString *longitudeStr = [NSString stringWithFormat:@"%.6f",coordinate.longitude];
     [HeSysbsModel getSysModel].userLocationDict = @{@"latitude":latitudeStr,@"longitude":longitudeStr};
     if (!currentLocation) {
+        //如果当前用户的位置为空，则进行赋值，更新当前用户的位置
         currentLocation = userLocation;
         [_mapView setCenterCoordinate:userLocation.location.coordinate animated:YES];
         BMKCoordinateSpan span = BMKCoordinateSpanMake(0.003971, 0.003971);
         BMKCoordinateRegion region = BMKCoordinateRegionMake(userLocation.location.coordinate, span);
         [_mapView setRegion:region animated:YES];
-        
+        //获取到位置之后，进行地理反编码
         BMKReverseGeoCodeOption *reverseGeoCodeOption = [[BMKReverseGeoCodeOption alloc] init];
         
         reverseGeoCodeOption.reverseGeoPoint = coordinate;
@@ -396,7 +424,7 @@
     }
     
 }
-
+//地理反编码的回调方法
 - (void)onGetReverseGeoCodeResult:(BMKGeoCodeSearch *)searcher result:(BMKReverseGeoCodeResult *)result errorCode:(BMKSearchErrorCode)error
 {
     NSLog(@"地址是：%@,%@",result.address,result.addressDetail);
@@ -408,12 +436,13 @@
     NSLog(@"当前城市是：%@",cityString);
     [HeSysbsModel getSysModel].addressResult = result;
     if (![[HeSysbsModel getSysModel].userCity isEqualToString:cityString]) {
+        //发出通知，获取用户当前城市成功
         [[NSNotificationCenter defaultCenter] postNotificationName:kGetCitySucceedNotification object:cityString];
     }
     
     
 }
-
+//地理编码的回调方法
 - (void)onGetGeoCodeResult:(BMKGeoCodeSearch *)searcher result:(BMKGeoCodeResult *)result errorCode:(BMKSearchErrorCode)error
 {
     NSLog(@"%@",result.address);

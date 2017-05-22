@@ -4,7 +4,7 @@
 //
 //  Created by 何 栋明 on 13-11-13.
 //  Copyright (c) 2013年 何栋明. All rights reserved.
-//
+//  引导页视图控制器
 
 #import "HeInstructionView.h"
 #import "AppDelegate.h"
@@ -90,7 +90,7 @@
     self.loadSucceedFlag = 1;
 }
 
-
+//配置布局，添加引导图片
 -(void)setupPage
 {
     myscrollView.delegate = self;

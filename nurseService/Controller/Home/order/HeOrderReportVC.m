@@ -4,7 +4,7 @@
 //
 //  Created by Tony on 2017/1/11.
 //  Copyright © 2017年 iMac. All rights reserved.
-//
+//  护理报告视图控制器
 
 #import "HeOrderReportVC.h"
 #import "RPRingedPages.h"
@@ -13,9 +13,13 @@
 #import "HeOrderReportDetailVC.h"
 
 @interface HeOrderReportVC ()<RPRingedPagesDelegate, RPRingedPagesDataSource>
+//轮播页视图
 @property (nonatomic, strong) RPRingedPages *pages;
+//存放护理报告的容器
 @property (nonatomic, strong) NSMutableArray *dataSource;
+//存放护理报告视图的容器
 @property (nonatomic,strong) NSMutableArray *reportViewDataSource;
+//存放图片的缓存
 @property (nonatomic,strong) NSCache *subViewCache;
 
 @end
@@ -25,6 +29,7 @@
 @synthesize reportViewDataSource;
 @synthesize subViewCache;
 
+//初始化轮播页视图
 - (RPRingedPages *)pages {
     if (_pages == nil) {
         
@@ -73,6 +78,7 @@
     [self getOrderReportData];
 }
 
+//初始化各种资源
 - (void)initializaiton
 {
     [super initializaiton];
@@ -81,6 +87,7 @@
     subViewCache = [[NSCache alloc] init];
 }
 
+//初始化视图
 - (void)initView
 {
     [super initView];
@@ -88,12 +95,13 @@
     [self.view addSubview:self.pages];
 }
 
+//获取护理报告数据
 - (void)getOrderReportData
 {
     [self showHudInView:self.view hint:@"获取中..."];
     NSString *requestUrl = [NSString stringWithFormat:@"%@/report/selectReportByUserId.action",BASEURL];
     NSString *userId = [[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY];
-    
+    //userId：用户ID
     NSDictionary *params = @{@"userId":userId};
     [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
         [self hideHud];
@@ -113,6 +121,7 @@
 //                [reportViewDataSource addObject:reportView];
 //                index++;
             }
+            //数据获取成功，刷新当前的视图
             [self.pages reloadData];
         }
         else{
@@ -128,8 +137,14 @@
     }];
 }
 
+/*
+ @brief 获取护理报告的视图
+ @param reportDict 护理报告的信息
+ @param title 护理报告的标题
+ */
 - (UIView *)getReportViewWithReportInfo:(NSDictionary *)reportDict title:(NSString *)title
 {
+    //按照设计图设置护理报告的布局
     UIView *reportView = [[UIView alloc] init];
     reportView.backgroundColor = APPDEFAULTORANGE;
     reportView.layer.backgroundColor = APPDEFAULTORANGE.CGColor;
@@ -303,6 +318,7 @@
     [self.navigationController pushViewController:orderReportDetailVC animated:YES];
 }
 
+//当轮播页滑动到某个页面的时候的回调方法
 - (void)pages:(RPRingedPages *)pages didScrollToIndex:(NSInteger)index
 {
     NSLog(@"pages scrolled to index: %zd", index);
@@ -313,6 +329,7 @@
 //    [self performSelector:@selector(updateFrameWithIndex:) withObject:[NSNumber numberWithInteger:index] afterDelay:2.0];
 }
 
+//更新轮播页姿势图的frame
 - (void)updateFrameWithIndex:(NSNumber *)indexObj
 {
     NSInteger index = [indexObj integerValue];

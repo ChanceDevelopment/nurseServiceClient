@@ -4,7 +4,7 @@
 //
 //  Created by Tony on 2017/1/11.
 //  Copyright © 2017年 iMac. All rights reserved.
-//
+//  用户的订单视图控制器
 
 #import "HeUserOrderVC.h"
 #import "MJRefreshAutoNormalFooter.h"
@@ -52,14 +52,17 @@
     [self loadOrderData];
 }
 
+//初始化资源
 - (void)initializaiton
 {
     [super initializaiton];
+    //注册更新订单通知的观察者
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateOrder:) name:kUpdateOrderNotification object:nil];
     dataSource = [[NSMutableArray alloc] initWithCapacity:0];
     pageNum = 0;
 }
 
+//初始化视图
 - (void)initView
 {
     [super initView];
@@ -67,13 +70,15 @@
     tableview.backgroundView = nil;
     tableview.separatorStyle = UITableViewCellSeparatorStyleNone;
     tableview.backgroundColor = [UIColor colorWithWhite:237.0 / 255.0 alpha:1.0];
+    
+    //下拉刷新的回调
     self.tableview.header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
         // 进入刷新状态后会自动调用这个block,刷新
         [self.tableview.header performSelector:@selector(endRefreshing) withObject:nil afterDelay:0.5];
         pageNum = 0;
         
     }];
-    
+    //上拉加载更多的回调
     self.tableview.footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
         self.tableview.footer.automaticallyHidden = YES;
         self.tableview.footer.hidden = NO;
@@ -97,6 +102,7 @@
     NSLog(@"endRefreshing");
 }
 
+//更新用户的订单列表
 - (void)updateOrder:(NSNotification *)notification
 {
     //重新刷新订单数据
@@ -104,12 +110,14 @@
     [self loadOrderData];
 }
 
+//加载用户的订单数据
 - (void)loadOrderData
 {
     [self showHudInView:tableview hint:@"加载中..."];
     NSString *requestUrl = [NSString stringWithFormat:@"%@/orderSend/OrderSendHostory.action",BASEURL];
     NSString *userId = [[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY];
     NSString *pageNumStr = [NSString stringWithFormat:@"%ld",pageNum];
+    //userId：用户的ID  pageNum：当前的页码
     NSDictionary * params  = @{@"userId":userId,@"pageNum":pageNumStr};
     [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
         [self hideHud];
@@ -119,16 +127,18 @@
             NSArray *jsonArray = [respondDict valueForKey:@"json"];
             if ([jsonArray isMemberOfClass:[NSNull class]] || jsonArray == nil || [jsonArray count] == 0) {
                 jsonArray = [NSArray array];
+                //如果加载更多没有数据，参数恢复到上次加载的状态
                 if (pageNum != 0) {
                     pageNum--;
                 }
             }
+            //如果是下拉刷新，先清空数据
             if (pageNum == 0) {
                 [dataSource removeAllObjects];
             }
             
             [dataSource addObjectsFromArray:jsonArray];
-            
+            //如果加载回来，整个容器都没有数据，显示数据为空的图片
             if ([dataSource count] == 0) {
                 UIView *bgView = [[UIView alloc] initWithFrame:self.view.bounds];
                 UIImage *noImage = [UIImage imageNamed:@"img_no_data_refresh"];
@@ -313,6 +323,7 @@
     if ([currentOrderTypeObj isMemberOfClass:[NSNull class]]) {
         currentOrderTypeObj = @"";
     }
+    //根据订单的类型进行判断跳转
     NSInteger currentOrderType = [currentOrderTypeObj integerValue];
     if (currentOrderType == 0) {
         //预约框，跳订单确认界面
@@ -327,6 +338,7 @@
         return;
     }
     else{
+        //提到订单详情界面
         NSString *orderSendId = orderDict[@"orderSendId"];
         if ([orderSendId isMemberOfClass:[NSNull class]]) {
             orderSendId = @"";

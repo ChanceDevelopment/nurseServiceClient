@@ -4,7 +4,7 @@
 //
 //  Created by apple on 15/12/17.
 //  Copyright (c) 2015年 apple. All rights reserved.
-//
+//  左边菜单视图控制器
 
 #import "LeftViewController.h"
 #import "HomeTabbarController.h"
@@ -40,10 +40,12 @@
 
 - (void)initializaiton
 {
+    //注册通知
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadLeftMenu:) name:kLoadLeftMenuNotification object:nil];
     [self initDataSource];
 }
 
+//对左边的分级数据进行筛选处理
 - (void)initDataSource
 {
     titleArr = [[NSMutableArray alloc] initWithCapacity:0];
@@ -53,7 +55,7 @@
     if ([menuArray count] == 0) {
         menuArray = [HeSysbsModel getSysModel].menuArray;
     }
-    
+    //初始化，获取整个的菜单
     if (menuArray == nil) {
         NSString *filePath = [[NSBundle mainBundle] pathForResource:@"leftMenu" ofType:@"plist"];
         NSDictionary *dict = [[NSDictionary alloc] initWithContentsOfFile:filePath];
@@ -61,6 +63,7 @@
         NSDictionary *menuDict = [menuString objectFromJSONString];
         menuArray = [[NSArray alloc] initWithArray:[menuDict valueForKey:@"json"]];
     }
+    //对菜单的数据进行处理
     for (id dict in menuArray) {
         NSString *manageNursingProjectNameId = dict[@"manageNursingProjectNameId"];
         if ([manageNursingProjectNameId isMemberOfClass:[NSNull class]] || manageNursingProjectNameId == nil) {
@@ -98,6 +101,7 @@
     }
 }
 
+//初始化视图
 - (void)initView
 {
     self.view.backgroundColor = APPDEFAULTORANGE;
@@ -120,6 +124,7 @@
     [self.view addSubview:_tableView];
 }
 
+//重新加载左边视图
 - (void)reloadLeftMenu:(NSNotification *)notification
 {
     NSLog(@"notification.object = %@",notification.object);
@@ -138,6 +143,7 @@
     return NO;
 }
 
+//配置列表视图
 #pragma mark - datasource
 - (NSInteger)mTableView:(XDMultTableView *)mTableView numberOfRowsInSection:(NSInteger)section{
     id obj = sectionArr[section];
@@ -232,6 +238,7 @@
 //    [menuVC hideMenuViewController];
 }
 
+//获取当前的导航控制器
 - (CustomNavigationController *)getCurrentNav
 {
     RESideMenu *menuVC = (RESideMenu *)((AppDelegate *)([UIApplication sharedApplication].delegate)).window.rootViewController;
@@ -239,6 +246,7 @@
     CustomNavigationController *selectedVC = (CustomNavigationController *)tabBarVC.selectedViewController;
     return selectedVC;
 }
+//预约服务
 - (void)bookServiceWithDict:(NSDictionary *)dict
 {
     //总控制器，控制商品、详情、评论三个子控制器
@@ -253,6 +261,7 @@
 }
 
 
+//跳到服务详情的页面
 - (HYPageView *)getPageViewWithParam:(NSDictionary *)dict
 {
     NSString *contentid = dict[@"contentid"];

@@ -4,7 +4,7 @@
 //
 //  Created by Tony on 2017/1/18.
 //  Copyright © 2017年 iMac. All rights reserved.
-//
+//  护理报告详情视图控制器
 
 #import "HeOrderReportDetailVC.h"
 #import "HeBaseTableViewCell.h"
@@ -70,6 +70,7 @@
    
 }
 
+//添加底部视图
 - (void)addFooterView
 {
     tableview.showsVerticalScrollIndicator = NO;
@@ -139,10 +140,10 @@
     [colorArray addObject:RGB(71, 100, 160, 1)];
     [colorArray addObject:RGB(73, 161, 118, 1)];
     
-
+    //创建每个报告的子视图
     for (NSInteger index = 0; index < [reportArray count]; index++) {
         NSDictionary *reportDict = reportArray[index];
-        
+        //报告创建时间
         id zoneCreatetimeObj = [reportDict objectForKey:@"nursingReportCreatetime"];
         if ([zoneCreatetimeObj isMemberOfClass:[NSNull class]] || zoneCreatetimeObj == nil) {
             NSTimeInterval  timeInterval = [[NSDate date] timeIntervalSince1970];
@@ -163,15 +164,18 @@
         NSArray *orderSendServicecontentArray = [orderSendServicecontent componentsSeparatedByString:@":"];
         orderSendServicecontent = orderSendServicecontentArray[0];
         
+        //护士名称
         NSString *nurseNick = reportDict[@"nurseNick"];
         if ([nurseNick isMemberOfClass:[NSNull class]]) {
             nurseNick = @"";
         }
+        //护士所属科室
         NSString *nurseOffice = reportDict[@"nurseOffice"];
         if ([nurseOffice isMemberOfClass:[NSNull class]]) {
             nurseOffice = @"";
         }
         nurseOffice = [NSString stringWithFormat:@"科室: %@",nurseOffice];
+        //订单的地址
         NSString *orderSendAddree = reportDict[@"orderSendAddree"];
         if ([orderSendAddree isMemberOfClass:[NSNull class]]) {
             orderSendAddree = @"";
@@ -179,6 +183,7 @@
         UIImage *arrow = [UIImage imageNamed:arrowImageArray[0]];
         UIColor *color = colorArray[0];
         
+        //护理报告列表视图的模板
         ReportCell *reportView = [[ReportCell alloc] initViewWithColor:color frame:CGRectMake(cellX, cellY, cellW, cellH)];
         reportView.backgroundColor = [UIColor colorWithWhite:237.0 / 255.0 alpha:1.0];
         reportView.timeLabel.text = time;
@@ -197,6 +202,7 @@
         [colorArray addObject:obj];
         
         __weak HeOrderReportDetailVC *weakSelf = self;
+        //查看护理报告详情的回调方法
         reportView.showReportDetailBlock = ^{
             NSString *nursingReportOrderid = reportDict[@"nursingReportOrderid"];
             if ([nursingReportOrderid isMemberOfClass:[NSNull class]]) {
@@ -206,7 +212,7 @@
             if ([protectedPersonId isMemberOfClass:[NSNull class]]) {
                 protectedPersonId = @"";
             }
-            
+            //护理报告详情是个页面
             NSString *url = [NSString stringWithFormat:@"%@selectReportdetails.action?orderSendId=%@&protectedPersonId=%@",BASEURL,nursingReportOrderid,protectedPersonId];
             NSString *title = @"护理报告";
             BrowserView *scanReportDetailVC = [[BrowserView alloc] initWithURL:url title:title];
@@ -223,6 +229,7 @@
    
 }
 
+//获取护理报告详情
 - (void)getReportDetail
 {
     [self showHudInView:self.view hint:@"获取中..."];
@@ -232,6 +239,7 @@
     if ([personCard isMemberOfClass:[NSNull class]] || personCard == nil) {
         personCard = @"";
     }
+    //userId:用户的ID  personCard：受护人身份证
     NSDictionary *params = @{@"userId":userId,@"personCard":personCard};
     [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
         [self hideHud];
@@ -242,7 +250,9 @@
             if ([jsonArray isMemberOfClass:[NSNull class]] || jsonArray == nil) {
                 return;
             }
+            //保存数据
             [reportArray addObjectsFromArray:jsonArray];
+            //添加底部视图
             [self addFooterView];
         }
         else{
@@ -295,11 +305,13 @@
     switch (row) {
         case 0:
         {
+            //用户名字
             content = [NSString stringWithFormat:@"%@：%@",datasSource[row],orderDict[@"protectedPersonName"]];
             break;
         }
         case 1:
         {
+            //年龄，性别
             id protectedPersonSex = orderDict[@"protectedPersonSex"];
             id protectedPersonAge = orderDict[@"protectedPersonAge"];
             if ([protectedPersonSex isMemberOfClass:[NSNull class]]) {
@@ -318,6 +330,7 @@
         }
         case 2:
         {
+            //用户身份证卡号
             NSString *protectedPersonCard = orderDict[@"protectedPersonCard"];
             if ([protectedPersonCard isMemberOfClass:[NSNull class]] || protectedPersonCard == nil) {
                 protectedPersonCard = @"";

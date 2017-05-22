@@ -4,7 +4,7 @@
 //
 //  Created by Tony on 2017/1/11.
 //  Copyright © 2017年 iMac. All rights reserved.
-//
+//  投诉建议视图控制器
 
 #import "HeReportVC.h"
 
@@ -64,6 +64,7 @@
     [self.scrollView addSubview:commitButton];
 }
 
+//投诉提交按钮
 - (void)commitButtonClick:(id)sender
 {
     if ([self.distributeTF isFirstResponder]) {
@@ -97,6 +98,7 @@
         }
     }
     NSString *requestRecommendDataPath = [NSString stringWithFormat:@"%@/nurseAnduser/complaintAdd.action",BASEURL];
+    //userId：用户ID  content：投诉内容  identity：0：护士 1：用户 complaintPic：上传的图片  orderSendId：订单的ID
     NSDictionary *params = @{@"userId":userId,@"content":content,@"identity":identity,@"complaintPic":complaintPic,@"orderSendId":orderSendId};
     
     [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestRecommendDataPath params:params success:^(AFHTTPRequestOperation* operation,id response){

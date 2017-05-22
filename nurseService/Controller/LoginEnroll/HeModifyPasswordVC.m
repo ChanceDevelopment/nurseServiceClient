@@ -9,8 +9,11 @@
 #import "HeModifyPasswordVC.h"
 
 @interface HeModifyPasswordVC ()<UIAlertViewDelegate>
+//原密码输入框
 @property(strong,nonatomic)IBOutlet UITextField *oldPasswordField;
+//新密码输入框
 @property(strong,nonatomic)IBOutlet UITextField *myNewPasswordField;
+//确认密码输入框
 @property(strong,nonatomic)IBOutlet UITextField *commitPasswordField;
 
 @end
@@ -127,7 +130,9 @@
     if (!userId) {
         userId = @"";
     }
+    
     NSString *Identify = @"0";
+    //userId：用户的ID passWord：密码  Identify:标示 0:客户端 1：护士端  newPassWord:新密码
     NSDictionary * params  = @{@"userId":userId,@"passWord":oldPassword,@"Identify":Identify,@"newPassWord":newPassword};
     NSString *requestUrl = [NSString stringWithFormat:@"%@/nurseAnduser/VerificationPasswordForNurseAndUser.action",BASEURL];
     [self showHudInView:self.view hint:@"修改中..."];
@@ -137,6 +142,7 @@
         NSDictionary *respondDict = [NSDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
         NSInteger errorCode = [[respondDict objectForKey:@"errorCode"] integerValue];
         if (errorCode == REQUESTCODE_SUCCEED) {
+            //弹窗提示修改密码成功
             UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"温馨提示" message:@"密码修改成功" delegate:self cancelButtonTitle:nil otherButtonTitles:@"知道了", nil];
             [alertView show];
         }
@@ -156,9 +162,11 @@
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
+    //注销登录
     [self signAccount];
 }
 
+//修改密码成功，清除用户的资料，注销本次登录，让用户重新登录
 - (void)signAccount
 {
     NSLog(@"signAccount");

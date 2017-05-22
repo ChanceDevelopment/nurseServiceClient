@@ -54,14 +54,16 @@
     [self getDataSource];
 }
 
+//初始化资源
 - (void)initializaiton
 {
     [super initializaiton];
     dataSource = [[NSMutableArray alloc] initWithCapacity:0];
-
+    //注册添加受护人信息成功的观察者
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addUserInfo:) name:kAddProtectedUserInfoNotification object:nil];
 }
 
+//初始化视图
 - (void)initView
 {
     [super initView];
@@ -90,11 +92,16 @@
     [self getDataSource];
 }
 
+/*
+ @brief 设置默认受护人
+ @param personId 受护人的ID号
+ */
 - (void)setDefaultProtectByProtectedPersonId:(NSString *)personId
 {
     NSString *userid = [[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY];
     
     NSString *requestUrl = [NSString stringWithFormat:@"%@/protected/personisdefault.action",BASEURL];
+    //userId：用户人的ID   personId：受护人的ID  isdefault：是否设为默认的受护人
     NSDictionary * params  = @{@"userId": userid,@"personId":personId,@"isdefault":@"1"};
     [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
         [self hideHud];
@@ -120,6 +127,7 @@
     }];
 }
 
+//添加受护人信息
 - (IBAction)addProtectUserInfo:(id)sender
 {
     HeEditProtectUserInfoVC *editProtectUserInfoVC = [[HeEditProtectUserInfoVC alloc] init];
@@ -243,6 +251,7 @@
 //    };
     cell.editBlock = ^(){
         NSLog(@"edit");
+        //编辑受护人信息
         HeEditProtectUserInfoVC *editProtectUserInfoVC = [[HeEditProtectUserInfoVC alloc] init];
         editProtectUserInfoVC.isEdit = YES;
         editProtectUserInfoVC.hidesBottomBarWhenPushed = YES;
@@ -277,12 +286,14 @@
         
     }
     if (!isFromOrder) {
+        //如果不是来自下单页面，点击跳到受护人信息编辑界面
         HeEditProtectUserInfoVC *editProtectUserInfoVC = [[HeEditProtectUserInfoVC alloc] init];
         editProtectUserInfoVC.isEdit = YES;
         editProtectUserInfoVC.hidesBottomBarWhenPushed = YES;
         editProtectUserInfoVC.userInfoDict = [Tools deleteNullFromDic:[[NSMutableDictionary alloc] initWithDictionary:dict]];
         [self.navigationController pushViewController:editProtectUserInfoVC animated:YES];
     }else{
+        //如果是来自下单页面，回调选择受护人信息的回调方法
         [_selectDelegate selectUserInfoWithDict:dict];
         [self.navigationController popViewControllerAnimated:YES];
     }

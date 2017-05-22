@@ -17,15 +17,22 @@
 {
     //用户性别 男 1 女 2
     ENUM_SEXType userSex;
+    //发送请求的参数
     NSMutableDictionary *postUserInfo;
+    //关系
     NSString *releation;
+    //地址
     NSString *userAddress;
+    //用户的地址ID
     NSString *userAddressId;
 }
 @property(strong,nonatomic)IBOutlet UITableView *tableview;
 @property(strong,nonatomic)NSArray *dataSource;
+//地址输入框
 @property(strong,nonatomic)UITextField *addressTextField;
+//纬度
 @property(strong,nonatomic)NSString *userlatitude;
+//经度
 @property(strong,nonatomic)NSString *userlongitude;
 
 @end
@@ -64,6 +71,7 @@
     [self getPaitentInfo];
 }
 
+//资源初始化
 - (void)initializaiton
 {
     [super initializaiton];
@@ -72,6 +80,7 @@
     tableview.backgroundColor = APPDEFAULTTABLEBACKGROUNDCOLOR;
     postUserInfo = [[NSMutableDictionary alloc] initWithCapacity:0];
 //    dataSource = @[@"姓名",@"性别",@"身份证号",@"年龄",@"联系电话",@"关系",@"地址",@"病史备注"];
+    //列表的配置
     dataSource = @[@"姓名",@"身份证号",@"身高",@"体重",@"地址",@"关系"];
 
     releation = @"自己";
@@ -83,10 +92,11 @@
     if ([protectedPersonSex integerValue] == 1) {
         userSex = ENUM_SEX_Boy;
     }
+    //用户的经纬度
     _userlongitude = [NSString stringWithFormat:@"%@",[[[HeSysbsModel getSysModel] userLocationDict] objectForKey:@"longitude"]];
     _userlatitude = [NSString stringWithFormat:@"%@",[[[HeSysbsModel getSysModel] userLocationDict] objectForKey:@"latitude"]];
 }
-
+//初始化视图
 - (void)initView
 {
     [super initView];
@@ -123,6 +133,7 @@
 //    [footerView addSubview:tipLabel];
 }
 
+//获取受护人的信息
 - (void)getPaitentInfo
 {
     NSString *personId = userInfoDict[@"protectedPersonId"];
@@ -130,6 +141,7 @@
         personId = @"";
         return;
     }
+    //personId：受护人ID
     NSDictionary * params = @{@"personId":personId};
     NSString *url = [NSString stringWithFormat:@"%@/protected/selectprotectedbyid.action",BASEURL];
     
@@ -171,15 +183,18 @@
     }];
 }
 
+//提交信息
 - (IBAction)saveProtectUserInfo:(id)sender
 {
     if (isEdit) {
+        //编辑用户信息
         [self editProtectedUserInfo];
     }else{
+        //添加用户信息
         [self addProtectedUserInfo];
     }
 }
-
+//更新输入框
 - (void)updateWithTextField:(UITextField *)textField
 {
     NSString *temp = textField.text;
@@ -600,6 +615,10 @@
     NSLog(@"row = %ld , section = %ld",row,section);
 }
 
+/*
+ @brief 选择用户的地址
+ @param addressDcit 地址信息
+ */
 - (void)selectAddressWithAddressInfo:(NSDictionary *)addressDcit
 {
     NSString *address = addressDcit[@"address"];
@@ -656,7 +675,7 @@
     }
 }
 
-//编辑
+//编辑用户的信息，发出网络请求
 - (void)editProtectedUserInfo{
 
     

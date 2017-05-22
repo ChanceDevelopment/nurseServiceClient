@@ -3,7 +3,7 @@
 //
 //  Created by apple on 15/12/15.
 //  Copyright (c) 2015年 apple. All rights reserved.
-//
+//  本类已弃用
 
 #import "HomeTabbarController.h"
 #import "FirstViewController.h"

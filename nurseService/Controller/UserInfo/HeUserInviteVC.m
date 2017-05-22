@@ -4,7 +4,7 @@
 //
 //  Created by Tony on 2017/1/11.
 //  Copyright © 2017年 iMac. All rights reserved.
-//
+//  邀请用户的视图控制器
 
 #import "HeUserInviteVC.h"
 #import "HeBaseTableViewCell.h"
@@ -21,6 +21,7 @@
 
 @interface HeUserInviteVC ()<UITableViewDelegate,UITableViewDataSource>
 {
+    //当前的页码
     NSInteger pageNum;
 }
 @property(strong,nonatomic)IBOutlet UITableView *tableview;
@@ -59,6 +60,7 @@
     [self loadInvite];
 }
 
+//初始化资源
 - (void)initializaiton
 {
     [super initializaiton];
@@ -67,6 +69,7 @@
     _imageCache = [[NSCache alloc] init];
 }
 
+//初始化视图
 - (void)initView
 {
     [super initView];
@@ -84,19 +87,21 @@
     self.navigationItem.rightBarButtonItem = shareItem;
     
     __weak HeUserInviteVC *weakSelf = self;
+    //下拉刷新回调
     self.tableview.header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
         // 进入刷新状态后会自动调用这个block,刷新
         [weakSelf.tableview.header performSelector:@selector(endRefreshing) withObject:nil afterDelay:1.0];
         pageNum = 0;
         [weakSelf loadInvite];
     }];
-    
+    //上拉加载更多回调
     self.tableview.footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
         self.tableview.footer.automaticallyHidden = YES;
         self.tableview.footer.hidden = NO;
         // 进入刷新状态后会自动调用这个block，加载更多
         [weakSelf performSelector:@selector(endRefreshing) withObject:nil afterDelay:1.0];
         pageNum++;
+        //加载邀请人数据
         [weakSelf loadInvite];
         
     }];
@@ -116,6 +121,7 @@
     NSLog(@"endRefreshing");
 }
 
+//加载邀请人数据
 - (void)loadInvite
 {
     NSString *requestWorkingTaskPath = [NSString stringWithFormat:@"%@/nurseAnduser/selectMyInvitationUserInfo.action",BASEURL];
@@ -124,6 +130,7 @@
     if (!userId) {
         userId = @"";
     }
+    //userId：用户的ID  pageNum：当前页码
     NSString *pageNumStr = [NSString stringWithFormat:@"%ld",pageNum];
     NSDictionary *requestMessageParams = @{@"userId":userId,@"pageNum":pageNumStr};
     [self showHudInView:self.view hint:@"正在获取..."];
@@ -140,14 +147,16 @@
             if ([resultArray isMemberOfClass:[NSNull class]]) {
                 resultArray = [NSArray array];
             }
+            //如果刷新，清除缓存数据
             if (pageNum == 0) {
                 [dataSource removeAllObjects];
             }
+            //上拉加载更多如果没数据，恢复参数
             if (pageNum != 0 && [resultArray count] == 0) {
                 pageNum--;
             }
             [dataSource addObjectsFromArray:resultArray];
-            
+            //如果没有数据，显示没有数据的图片
             if ([dataSource count] == 0) {
                 UIView *bgView = [[UIView alloc] initWithFrame:self.view.bounds];
                 UIImage *noImage = [UIImage imageNamed:@"img_no_data_refresh"];
@@ -209,7 +218,7 @@
     static NSString *cellIndentifier = @"HeUserInviteCell";
     CGSize cellSize = [tableView rectForRowAtIndexPath:indexPath].size;
     
-    
+    //配置邀请人列表的布局
     HeUserInviteCell *cell  = [tableView cellForRowAtIndexPath:indexPath];
     if (!cell) {
         cell = [[HeUserInviteCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIndentifier cellSize:cellSize];
@@ -252,6 +261,7 @@
     return 80.0;
 }
 
+//邀请朋友
 - (void)inviteFriend
 {
     //商品的分享

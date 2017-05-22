@@ -4,7 +4,7 @@
 //
 //  Created by Tony on 2017/1/10.
 //  Copyright © 2017年 iMac. All rights reserved.
-//
+//  选择受护人信息视图控制器
 
 #import "HeSelectProtectedUserInfoVC.h"
 #import "HeProtectUserInfoTableCell.h"
@@ -14,7 +14,9 @@
 #import "HeSelectProtectedUserInfoCell.h"
 
 @interface HeSelectProtectedUserInfoVC ()
+//视图列表
 @property(strong,nonatomic)IBOutlet UITableView *tableview;
+//受护人信息存放容器
 @property(strong,nonatomic)NSMutableArray *dataSource;
 
 @end
@@ -50,6 +52,7 @@
     [self getDataSource];
 }
 
+//初始化资源
 - (void)initializaiton
 {
     [super initializaiton];
@@ -62,11 +65,13 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addUserInfo:) name:kAddProtectedUserInfoNotification object:nil];
 }
 
+//初始化视图
 - (void)initView
 {
     [super initView];
 }
 
+//添加用户信息的通知回调方法
 - (void)addUserInfo:(NSNotification *)notification
 {
     NSLog(@"addUserInfo");
@@ -74,6 +79,7 @@
     [self getDataSource];
 }
 
+//编辑用户信息按钮的点击事件
 - (IBAction)addProtectUserInfo:(id)sender
 {
     HeEditProtectUserInfoVC *editProtectUserInfoVC = [[HeEditProtectUserInfoVC alloc] init];
@@ -109,11 +115,13 @@
     } @finally {
         
     }
+    //选择受护人信息模板，进行视图布局
     HeSelectProtectedUserInfoCell *cell  = [tableView cellForRowAtIndexPath:indexPath];
     if (!cell) {
         cell = [[HeSelectProtectedUserInfoCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIndentifier cellSize:cellSize];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
+    //名称，性别
     NSString *name = [dict valueForKey:@"protectedPersonName"];
     NSString *sex = [[dict valueForKey:@"protectedPersonSex"] isEqualToString:@"1"] ? @"男" : @"女";
     NSString *protectedPersonAge = [dict valueForKey:@"protectedPersonAge"];
@@ -128,7 +136,7 @@
     baseInfoLabel.font = [UIFont systemFontOfSize:15.0];
     baseInfoLabel.text = [NSString stringWithFormat:@"%@  %@  %@",name,sex,protectedPersonAge];
     [cell addSubview:baseInfoLabel];
-    
+    //受护人的地址
     NSString *protectedAddress = dict[@"protectedAddress"];
     if ([protectedAddress isMemberOfClass:[NSNull class]]) {
         protectedAddress = @"";
@@ -174,10 +182,12 @@
     [self.navigationController popViewControllerAnimated:YES];
 }
 
+//获取受护人地址的方法
 - (void)getDataSource{
     NSString *userid = [[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY];
     
     NSString *requestUrl = [NSString stringWithFormat:@"%@/protected/selectprotectedbyuserid.action",BASEURL];
+    //userid：受护人的ID
     NSDictionary * params  = @{@"userid": userid};
     [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
         NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
@@ -192,6 +202,7 @@
             }
             [dataSource addObjectsFromArray:tempArr];
             
+            //当受护人地址没有，显示数据为空的图片
             if ([dataSource count] == 0) {
                 UIView *bgView = [[UIView alloc] initWithFrame:self.view.bounds];
                 UIImage *noImage = [UIImage imageNamed:@"img_no_data_refresh"];
@@ -223,6 +234,7 @@
     }];
 }
 
+//删除受护人的信息
 - (void)deletProtectedUserInfoWithId:(NSString *)userId{
     NSString *requestUrl = [NSString stringWithFormat:@"%@/address/deladdressbyid.action",BASEURL];
     
@@ -234,6 +246,7 @@
         if ([[[respondDict valueForKey:@"errorCode"] stringValue] isEqualToString:@"200"]) {
             NSLog(@"success");
             [self showHint:[respondDict valueForKey:@"data"]];
+            //重新获取受护人的信息
             [self getDataSource];
         }else{
             NSString *errorInfo = [respondDict valueForKey:@"data"];

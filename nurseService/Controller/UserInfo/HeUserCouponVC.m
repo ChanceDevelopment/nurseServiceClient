@@ -4,7 +4,7 @@
 //
 //  Created by Tony on 2017/1/11.
 //  Copyright © 2017年 iMac. All rights reserved.
-//
+//  用户的优惠券视图控制器
 
 #import "HeUserCouponVC.h"
 #import "HeBaseTableViewCell.h"
@@ -51,13 +51,14 @@
     [self loadCoupon];
 }
 
+//初始化资源
 - (void)initializaiton
 {
     [super initializaiton];
     pageNum = 0;
     dataSource = [[NSMutableArray alloc] initWithCapacity:0];
 }
-
+//初始化视图
 - (void)initView
 {
     [super initView];
@@ -69,13 +70,14 @@
     tableview.showsHorizontalScrollIndicator = NO;
     
     __weak HeUserCouponVC *weakSelf = self;
+    //下拉刷新的回调
     self.tableview.header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
         // 进入刷新状态后会自动调用这个block,刷新
         [weakSelf.tableview.header performSelector:@selector(endRefreshing) withObject:nil afterDelay:1.0];
         pageNum = 0;
         [weakSelf loadCoupon];
     }];
-    
+    //上拉加载更多的回调
     self.tableview.footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
         self.tableview.footer.automaticallyHidden = YES;
         self.tableview.footer.hidden = NO;
@@ -101,10 +103,11 @@
     NSLog(@"endRefreshing");
 }
 
+//加载优惠券
 - (void)loadCoupon
 {
     NSString *requestWorkingTaskPath = [NSString stringWithFormat:@"%@/nurseAnduser/selectAllUserCouponInfo.action",BASEURL];
-    
+    //userId:用户的ID
     NSString *userId = [[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY];
     if (!userId) {
         userId = @"";
@@ -126,9 +129,11 @@
             if ([resultArray isMemberOfClass:[NSNull class]]) {
                 resultArray = [NSArray array];
             }
+            //如果是刷新，清空缓存
             if (pageNum == 0) {
                 [dataSource removeAllObjects];
             }
+            //如果加载更多没有数据，恢复原来的
             if (pageNum != 0 && [resultArray count] == 0) {
                 pageNum--;
             }
@@ -212,7 +217,7 @@
         couponUserFullGiveObj = @"";
     }
     CGFloat couponUserFullGive = [couponUserFullGiveObj floatValue];
-
+    //优惠券有效期
     id zoneCreatetimeObj = [dict objectForKey:@"couponUserExpirationTime"];
     if ([zoneCreatetimeObj isMemberOfClass:[NSNull class]] || zoneCreatetimeObj == nil) {
         NSTimeInterval  timeInterval = [[NSDate date] timeIntervalSince1970];
