@@ -4,7 +4,7 @@
 //
 //  Created by Tony on 2017/1/3.
 //  Copyright © 2017年 iMac. All rights reserved.
-//
+//  订单详情视图控制器
 
 #import "HeOrderDetailVC.h"
 #import "HeBaseTableViewCell.h"
@@ -22,17 +22,27 @@
 
 @interface HeOrderDetailVC ()<UITableViewDelegate,UITableViewDataSource>
 {
+    //图片显示的高度
     CGFloat imageScrollViewHeigh;
 }
 @property(strong,nonatomic)IBOutlet UITableView *tableview;
+//订单状态的背景view
 @property(strong,nonatomic)UIView *statusView;
+//订单状态的数据
 @property(strong,nonatomic)NSArray *statusArray;
+//图片滑动区域
 @property(strong,nonatomic)UIScrollView *photoScrollView;
+//图片的数组
 @property(strong,nonatomic)NSMutableArray *paperArray;
+//服务的背景
 @property(strong,nonatomic)UIView *serviceBG;
+//护士头像的背景图
 @property(strong,nonatomic)UIScrollView *nurseBG;
+//护士数据
 @property(strong,nonatomic)NSMutableArray *nurseArray;
+//订单详情
 @property(strong,nonatomic)NSDictionary *orderDetailDict;
+//临时的日期字符串
 @property(strong,nonatomic)NSString *tmpDateString;
 
 @end
@@ -75,6 +85,7 @@
     [self loadOrderDetail];
 }
 
+//初始化资源
 - (void)initializaiton
 {
     [super initializaiton];
@@ -82,11 +93,12 @@
     imageScrollViewHeigh = 80;
     paperArray = [[NSMutableArray alloc] initWithCapacity:0];
     nurseArray = [[NSMutableArray alloc] initWithCapacity:0];
-    
+    //注册订单更新的观察者
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadOrderDetail) name:@"kUpdateOrderDetailNotification" object:nil];
 
 }
 
+//初始化视图
 - (void)initView
 {
     [super initView];
@@ -131,19 +143,22 @@
     
     NSInteger orderSendType = [orderSendTypeObj integerValue];
     orderSendState = [orderSendStateObj integerValue];
-    
+    //订单状态（0正在发布/1已被接取/2已服务/3已完成/4被取消/为空为待预约
     if (_currentOrderType == 1) {
-        //已预约状态
+        //已预约状态，如果当前的订单已经被接收，，则为已预约状态
         [self addStatueViewWithStatus:0];
     }
     else{
+        
         if (orderSendType == 1 && orderSendState == 0) {
-            
+            //如果已经预约，但是还没有接单
             [self addStatueViewWithStatus:0];
         }
         else{
+            //如果已经完成状态
             if (orderSendState >= 3) {
                 if (self.isEvaluate) {
+                    //如果订单已经评价
                     orderSendState = orderSendState + 1;
                 }
             }
@@ -188,7 +203,7 @@
     photoScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(scrollX, scrollY, scrollW, scrollH)];
     [self addPhotoScrollView];
     serviceBG = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH - 20, 0)];
-    
+    //添加服务的标签
     [self addServiceLabel];
     
     CGFloat receivescrollX = 5;
@@ -196,9 +211,10 @@
     CGFloat receivescrollW = SCREENWIDTH - 2 * receivescrollX;
     CGFloat receivescrollH = 80;
     nurseBG = [[UIScrollView alloc] initWithFrame:CGRectMake(receivescrollX, receivescrollY, receivescrollW, receivescrollH)];
+    //添加显示护士头像
     [self addNurseHead];
 }
-
+//查看护理报告
 - (void)reportAction:(id)sender
 {
     HeReportVC *reportVC = [[HeReportVC alloc] init];
@@ -206,7 +222,7 @@
     reportVC.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:reportVC animated:YES];
 }
-
+//显示护士的头像
 - (void)addNurseHead
 {
     CGFloat imageX = 0;
@@ -252,6 +268,7 @@
     }
 }
 
+//显示服务项目
 - (void)addServiceLabel
 {
     NSString *orderSendServicecontent = orderDetailDict[@"orderSendServicecontent"];
@@ -324,6 +341,10 @@
     serviceBG.frame = serviceFrame;
 }
 
+/*
+ @brief 添加订单的状态视图
+ @param statusType 0正在发布/1已被接取/2已服务/3已完成/4被取消/为空为待预约
+ */
 - (void)addStatueViewWithStatus:(NSInteger)statusType
 {    
     CGFloat statusLabelX = 5;
@@ -386,6 +407,7 @@
 
 }
 
+//添加图片的滑动视图
 - (void)addPhotoScrollView
 {
     CGFloat imageX = 0;
@@ -426,6 +448,7 @@
     }
 }
 
+//点击显示第几张图片
 - (void)scanlargeImage:(UITapGestureRecognizer *)tap
 {
     NSInteger index = 0;
@@ -447,6 +470,7 @@
     [browser show];
 }
 
+//放大全屏显示
 - (void)enlargeImage:(UITapGestureRecognizer *)tap
 {
     NSString *zoneCover = [NSString stringWithFormat:@"%@/%@",HYTIMAGEURL,paperArray[0]];
@@ -462,6 +486,7 @@
     browser.photos = photos;
     [browser show];
 }
+
 
 - (void)buttonClick:(UIButton *)button
 {
@@ -479,6 +504,7 @@
     else if(button.tag == 1){
         NSLog(@"联系客服");
 //        [self showHint:@"暂无客服"];
+        //联系客服
         [self callServicerPhone];
         return;
     }else if(button.tag == 10){
@@ -489,6 +515,7 @@
     }
 }
 
+//联系客服，获取联系电话
 - (void)callServicerPhone{
     NSString *requestUrl = [NSString stringWithFormat:@"%@/orderReceiver/selectUseCustomerServicePhone.action",BASEURL];
     [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:nil success:^(AFHTTPRequestOperation* operation,id response){
@@ -517,6 +544,7 @@
         [self showHint:ERRORREQUESTTIP];
     }];
 }
+//加载订单详情
 - (void)loadOrderDetail
 {
     NSString *userId = [[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY];
@@ -529,6 +557,7 @@
     if (!longitude) {
         longitude = @"";
     }
+    //userId：用户的ID  orderSendId：订单的ID  latitude/longitude：经纬度
     NSDictionary * params  = @{@"userId":userId,@"orderSendId":orderSendId,@"latitude":latitude,@"longitude":longitude};
     NSString *requestUrl = [NSString stringWithFormat:@"%@/orderSend/OrderSendDescriptionById.action",BASEURL];
     [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
@@ -564,7 +593,7 @@
             self.tmpDateString = time;
             
             
-            
+            //保存用户上传的图片
             paperArray = [[NSMutableArray alloc] initWithCapacity:0];
             NSString *orderSendUserpic = orderDetailDict[@"orderSendUserpic"];
             if ([orderSendUserpic isMemberOfClass:[NSNull class]] || orderSendUserpic == nil) {
@@ -575,11 +604,12 @@
                 NSString *myurl = [NSString stringWithFormat:@"%@/%@",HYTIMAGEURL,url];
                 [paperArray addObject:myurl];
             }
-            
+            //获取订单发送状态
             id orderSendTypeObj = orderDetailDict[@"orderSendType"];
             if ([orderSendTypeObj isMemberOfClass:[NSNull class]]) {
                 orderSendTypeObj = @"";
             }
+            //获取订单状态
             id orderSendStateObj = orderDetailDict[@"orderSendState"];
             if ([orderSendStateObj isMemberOfClass:[NSNull class]]) {
                 orderSendStateObj = @"";
@@ -591,7 +621,7 @@
             }
             else{
                 
-                
+                //获取护士头像信息
                 NSString *nurseHeader = orderDetailDict[@"nurseHeader"];
                 if ([nurseHeader isMemberOfClass:[NSNull class]] || nurseHeader == nil) {
                     nurseHeader = @"";
@@ -607,6 +637,7 @@
                 }
                 
             }
+            //初始化视图
             [self initView];
             [tableview reloadData];
         }
@@ -698,6 +729,7 @@
     //    NSDictionary *dict = [NSDictionary dictionaryWithDictionary:[dataArr objectAtIndex:row]];
     orderDetailDict = [Tool deleteNullFromDic:orderDetailDict];
     
+    //配置订单详情列表的视图
     HeBaseTableViewCell *cell  = [tableView cellForRowAtIndexPath:indexPath];
     if (!cell) {
         cell = [[HeBaseTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIndentifier cellSize:cellSize];
@@ -1565,6 +1597,7 @@
             switch (row) {
                 case 0:
                 {
+                    //动态计算其高度
                     id orderSendStateObj = orderDetailDict[@"orderSendState"];
                     if ([orderSendStateObj isMemberOfClass:[NSNull class]] || orderSendStateObj == nil) {
                         orderSendStateObj = @"";
@@ -1705,6 +1738,7 @@
                         //还没接单
                         return;
                     }
+                    //查看护士详情
                     HeNurseDetailVC *nurseDetailVC = [[HeNurseDetailVC alloc] init];
                     nurseDetailVC.nurseDictInfo = [[NSDictionary alloc] initWithDictionary:orderDetailDict];
                     nurseDetailVC.hidesBottomBarWhenPushed = YES;
@@ -1723,6 +1757,7 @@
     NSLog(@"row = %ld, section = %ld",row,section);
 }
 
+//联系客服
 - (void)callCustomer{
     NSLog(@"点击了打电话");
     NSString *nursePhone = orderDetailDict[@"nursePhone"];
@@ -1734,7 +1769,7 @@
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:phoneStr]];
     
 }
-
+//去到当前提交的定位
 - (void)goToLocationView{
     //位置
     NSString *orderSendAddree = orderDetailDict[@"orderSendAddree"];
@@ -1755,7 +1790,7 @@
     } @finally {
         
     }
-    
+    //去到当前提交的定位
     NSDictionary *userLocationDict = @{@"zoneLocationX":zoneLocationX,@"zoneLocationY":zoneLocationY};
     HeUserLocatiVC *userLocationVC = [[HeUserLocatiVC alloc] init];
     userLocationVC.userLocationDict = [[NSDictionary alloc] initWithDictionary:userLocationDict];
@@ -1793,6 +1828,7 @@
 
 }
 
+//请求取消订单
 - (void)requestCancelOrder:(NSDictionary *)orderInfo
 {
     NSLog(@"cancelService");
@@ -1807,6 +1843,9 @@
     //0用户 1护士
     NSString *identity = @"0";
     [self showHudInView:tableview hint:@"取消中..."];
+    //userId：用户的ID
+    //orderSendId：订单的ID
+    //identity：标示 0用户 1护士
     NSDictionary * params  = @{@"orderSendId":orderSendId,@"userId":userId,@"identity":identity};
     NSString *requestUrl = [NSString stringWithFormat:@"%@orderSend/cancelOrder.action",BASEURL];
     [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
@@ -1866,6 +1905,7 @@
     [self showViewController:serviceDetailVC sender:nil];
 }
 
+//获取视图控制器
 - (HYPageView *)getPageViewWithParam:(NSDictionary *)dict
 {
     
@@ -1873,7 +1913,7 @@
     NSString *nurseId = dict[@"nurseId"];
     NSDictionary *nurseDict = @{@"nurseId":nurseId};
     paramDict = @{@"service":dict,@"nurse":nurseDict};
-    
+    //总控制器，控制商品、详情、评论三个子控制器
     HYPageView *pageView = [[HYPageView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, SCREENHEIGH) withTitles:@[@"商品",@"详情",@"评论"] withViewControllers:@[@"HeServiceDetailVC",@"HeServiceInfoVC",@"HeCommentVC"] withParameters:@[paramDict,dict,dict]];
     
     pageView.isTranslucent = NO;

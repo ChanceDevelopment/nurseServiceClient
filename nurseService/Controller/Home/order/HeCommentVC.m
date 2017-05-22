@@ -4,7 +4,7 @@
 //
 //  Created by Tony on 2017/1/9.
 //  Copyright © 2017年 iMac. All rights reserved.
-//
+//  服务评价视图控制器
 
 #import "HeCommentVC.h"
 #import "HeCommentCell.h"
@@ -19,14 +19,22 @@
 {
     //@"全部 0",@"好评 1",@"一般 2",@"不满意 3"
     NSInteger currentCommentType;
+    //当前的页码
     NSInteger pageNum;
 }
+//视图列表
 @property(strong,nonatomic)IBOutlet UITableView *tableview;
+//筛选的背景图
 @property(strong,nonatomic)IBOutlet UIView *filterBgView;
+//顶部的选择条
 @property(nonatomic,strong)DLNavigationTabBar *navigationTabBar;
+//不同控制器的参数
 @property(strong,nonatomic)id parameter;
+//服务的信息
 @property(strong,nonatomic)NSDictionary *serviceInfoDict;
+//图片缓存
 @property(strong,nonatomic)NSCache *imageCache;
+//数据源
 @property(strong,nonatomic)NSMutableArray *dataSource;
 
 @end
@@ -84,6 +92,7 @@
 }
 
 #pragma mark - PrivateMethod
+//顶部选择条滑动的回调方法
 - (void)navigationDidSelectedControllerIndex:(NSInteger)index {
     NSLog(@"index = %ld",index);
     currentCommentType = index;
@@ -96,6 +105,7 @@
             contentId = @"";
         }
     }
+    //根据服务ID加载评价
     [self loadCommentDataWihtContentId:contentId];
 }
 
@@ -113,9 +123,11 @@
             contentId = @"";
         }
     }
+    //加载评价
     [self loadCommentDataWihtContentId:contentId];
 }
 
+//资源初始化
 - (void)initializaiton
 {
     [super initializaiton];
@@ -123,6 +135,7 @@
     serviceInfoDict = parameter;
 }
 
+//视图初始化
 - (void)initView
 {
     [super initView];
@@ -133,6 +146,7 @@
     
     tableview.separatorStyle = UITableViewCellSeparatorStyleNone;
     
+    //下拉刷新的回调
     __weak HeCommentVC *weakSelf = self;
     self.tableview.header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
         // 进入刷新状态后会自动调用这个block,刷新
@@ -147,10 +161,11 @@
                 contentId = @"";
             }
         }
+        //加载评价信息
         [self loadCommentDataWihtContentId:contentId];
         
     }];
-    
+    //上拉加载更多回调
     self.tableview.footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
         self.tableview.footer.automaticallyHidden = YES;
         self.tableview.footer.hidden = NO;
@@ -160,7 +175,7 @@
         
     }];
 }
-
+//结束刷新的回调
 - (void)endRefreshing
 {
     [self.tableview.footer endRefreshing];
@@ -174,7 +189,10 @@
     NSLog(@"endRefreshing");
 }
 
-//服务评价
+/*
+ @brief 加载服务评价
+ @param contentId:服务的ID
+ */
 - (void)loadCommentDataWihtContentId:(NSString *)contentId
 {
     NSString *requestUrl = [NSString stringWithFormat:@"%@/content/selectEvaluateByContentId.action",BASEURL];
@@ -187,11 +205,13 @@
         if ([[respondDict valueForKey:@"errorCode"] integerValue] == REQUESTCODE_SUCCEED){
             id jsonObj = respondDict[@"json"];
             if ([jsonObj isMemberOfClass:[NSNull class]] || jsonObj == nil) {
+                //加载更多没有数据，恢复到上次加载的状态
                 if ([jsonObj count] == 0 && pageNum != 0) {
                     pageNum--;
                 }
                 return;
             }
+            //如果是刷新，先清空缓存
             if (pageNum == 0) {
                 [dataSource removeAllObjects];
             }
@@ -202,7 +222,7 @@
             }
             
             [dataSource addObjectsFromArray:jsonObj];
-            
+            //如果没有数据，显示数据为空的图片
             if ([dataSource count] == 0) {
                 UIView *bgView = [[UIView alloc] initWithFrame:self.view.bounds];
                 UIImage *noImage = [UIImage imageNamed:@"img_no_data_refresh"];
@@ -249,6 +269,7 @@
     NSInteger section = indexPath.section;
     CGSize cellsize = [tableView rectForRowAtIndexPath:indexPath].size;
     static NSString *cellIndentifier = @"HeServiceCommentCell";
+    //服务评价的视图模板
     HeServiceCommentCell *cell  = [tableView cellForRowAtIndexPath:indexPath];
     if (!cell) {
         cell = [[HeServiceCommentCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIndentifier cellSize:cellsize];
@@ -262,7 +283,7 @@
     } @finally {
         
     }
-    
+    //banner图
     NSString *contentImgurl = dict[@"userHeader"];
     if ([contentImgurl isMemberOfClass:[NSNull class]] || contentImgurl == nil) {
         contentImgurl = @"";
@@ -277,13 +298,13 @@
     }
     cell.userImage = imageview;
     [cell addSubview:cell.userImage];
-    
+    //用户昵称
     NSString *userNike = dict[@"userNike"];
     if ([userNike isMemberOfClass:[NSNull class]] || userNike == nil) {
         userNike = @"";
     }
     cell.phoneLabel.text = userNike;
-    
+    //评论的名称
     NSString *manageNursingContenName = dict[@"manageNursingContentName"];
     if ([manageNursingContenName isMemberOfClass:[NSNull class]] || manageNursingContenName == nil) {
         manageNursingContenName = @"";
@@ -293,19 +314,19 @@
         }
     }
     cell.serviceLabel.text = [NSString stringWithFormat:@"%@",manageNursingContenName];
-    
+    //评价内容
     NSString *commentContent = dict[@"evaluateContent"];
     if ([commentContent isMemberOfClass:[NSNull class]] || commentContent == nil) {
         commentContent = @"";
     }
     cell.commentContentLabel.text = commentContent;
-    
+    //评价等级
     id evaluateMark = dict[@"evaluateMark"];
     if ([evaluateMark isMemberOfClass:[NSNull class]]) {
         evaluateMark = @"";
     }
     cell.commentRank = [evaluateMark integerValue];
-    
+    //评价时间
     id zoneCreatetimeObj = [dict objectForKey:@"evaluateCreatetime"];
     if ([zoneCreatetimeObj isMemberOfClass:[NSNull class]] || zoneCreatetimeObj == nil) {
         NSTimeInterval  timeInterval = [[NSDate date] timeIntervalSince1970];

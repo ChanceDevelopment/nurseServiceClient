@@ -4,7 +4,7 @@
 //
 //  Created by Tony on 2017/1/9.
 //  Copyright © 2017年 iMac. All rights reserved.
-//
+//  订单提交视图控制器
 
 #import "HeOrderCommitVC.h"
 #import "HeBaseTableViewCell.h"
@@ -46,30 +46,45 @@
 
 @interface HeOrderCommitVC ()<DeleteImageProtocol,UITableViewDataSource,UITableViewDelegate,UIActionSheetDelegate,UINavigationControllerDelegate,UIImagePickerControllerDelegate,UIAlertViewDelegate,TZImagePickerControllerDelegate,UWDatePickerViewDelegate,UITextFieldDelegate,SelectProtectUserInfoProtocol,SSPopupDelegate,SelectCouponDelegate,DVYearMonthDatePickerDelegate>
 {
+    //当前是否选择的banner
     BOOL currentSelectBanner;
     NSInteger payType; //支付方式 0：在线 1：支付宝
 }
+//列表视图
 @property(strong,nonatomic)IBOutlet UITableView *tableview;
+//banner背景图
 @property(strong,nonatomic)UIView *bannerImageBG;
+//服务背景图
 @property(strong,nonatomic)UIView *serviceBG;
+//数据源
 @property(strong,nonatomic)NSArray *dataSource;
+//支付图标数据源
 @property(strong,nonatomic)NSArray *payIconDataSource;
+//支付方法数据源
 @property(strong,nonatomic)NSArray *payMethodDataSource;
+//banner图
 @property(strong,nonatomic)NSMutableArray *bannerImageDataSource;
+//添加图片的按钮
 @property(strong,nonatomic)UIButton *addPictureButton;
-
+//选择图片的配置
 @property(strong,nonatomic)NSMutableArray *selectedAssets;
+//存放已经选择图片
 @property(strong,nonatomic)NSMutableArray *selectedPhotos;
+//存放照相的图片
 @property(strong,nonatomic)NSMutableArray *takePhotoArray;
-
+//支付视图的背景
 @property(strong,nonatomic)IBOutlet UIView *payBGView;
+//临时日期字符串
 @property(strong,nonatomic)NSString *tmpDateString;
-
+//订单的详细信息
 @property(strong,nonatomic)NSDictionary *orderDetailDict;
+//取消背景图
 @property(strong,nonatomic)UIView *dismissView;
+//显示头像的滑动区域
 @property(strong,nonatomic)UIScrollView *myScrollView;
+//服务的数据
 @property(strong,nonatomic)NSArray *subServiceArray;
-
+//年月时间选择器
 @property(strong,nonatomic)DVYearMonthDatePicker *yearMonth;
 
 @end
@@ -144,10 +159,12 @@
     tableview.backgroundView = nil;
     tableview.backgroundColor = [UIColor colorWithWhite:237.0 / 255.0 alpha:1.0];
     [Tool setExtraCellLineHidden:tableview];
+    //加载订单详情
     [self loadOrderDetail];
 
 }
 
+//初始化变量资源
 - (void)initializaiton
 {
     [super initializaiton];
@@ -168,6 +185,7 @@
     
 }
 
+//初始化视图
 - (void)initView
 {
     [super initView];
@@ -253,7 +271,7 @@
     tipContentLabel.numberOfLines = 0;
     tipContentLabel.text = @"除套餐外，每个单项服务报价不含上门费50元，需要外加手，每个订单只收取一次上门费";
     [footerView addSubview:tipContentLabel];
-    
+    //添加图片的按钮
     addPictureButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, IMAGEWIDTH, IMAGEWIDTH)];
     [addPictureButton setBackgroundImage:[UIImage imageNamed:@"icon_add_photo"] forState:UIControlStateNormal];
     addPictureButton.tag = 100;
@@ -275,10 +293,11 @@
     
     
     serviceBG = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH - 20, 0)];
-    
+    //添加服务的标签
     [self addServiceLabel];
 }
 
+//获取支付的回调结果
 - (void)GetAlipayResult:(NSNotification *)notification
 {
     NSDictionary *userInfo = notification.userInfo;
@@ -291,17 +310,21 @@
     [self.navigationController popViewControllerAnimated:YES];
 }
 
+//支付按钮点击事件
 - (void)payButtonClick:(UIButton *)sender
 {
     NSLog(@"payButtonClick");
     if (payType == 1) {
         sender.enabled = NO;
+        //支付宝支付
         [self alipay];
         return;
     }
+    //自带的支付
     [self inputPayPassword];
 }
 
+//支付宝支付，获取支付参数
 - (void)alipay
 {
     NSString *requestWorkingTaskPath = [NSString stringWithFormat:@"%@/alipay/signProve.action",BASEURL];
@@ -317,6 +340,7 @@
     CGFloat money = [finalyMoney floatValue];
     
     NSString *moneyStr = [NSString stringWithFormat:@"%.2f",money];
+    //userId:订单号  money:金额  Type：支付类型  1：自带支付  2：支付宝支付  orderId：订单ID
     NSDictionary *requestMessageParams = @{@"userId":userId,@"money":moneyStr,@"Type":@"2",@"orderId":_orderId,@"couponId":@""};
     [self showHudInView:self.view hint:@"支付中..."];
     
@@ -353,6 +377,7 @@
     }];
 }
 
+//加载订单详情
 - (void)loadOrderDetail
 {
     NSString *userId = [[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY];
@@ -365,6 +390,7 @@
     if (!longitude) {
         longitude = @"";
     }
+    //userId：用户的ID   orderSendId：订单的ID   latitude/longitude 经纬度
     NSDictionary * params  = @{@"userId":userId,@"orderSendId":orderSendId,@"latitude":latitude,@"longitude":longitude};
     NSString *requestUrl = [NSString stringWithFormat:@"%@/orderSend/OrderSendDescriptionById.action",BASEURL];
     [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
@@ -378,8 +404,9 @@
             if ([contentId isMemberOfClass:[NSNull class]] || contentId == nil) {
                 contentId = @"";
             }
+            //加载该护士的服务项目
             [self loadOrderServiceArrayWithContentId:contentId];
-            
+            //获取订单的创建时间
             id zoneCreatetimeObj = [orderDetailDict objectForKey:@"orderSendBegintime"];
             if ([zoneCreatetimeObj isMemberOfClass:[NSNull class]] || zoneCreatetimeObj == nil) {
                 NSTimeInterval  timeInterval = [[NSDate date] timeIntervalSince1970];
@@ -396,6 +423,7 @@
             self.tmpDateString = time;
             //所有数据重新刷新一次
             [self initializaiton];
+            //初始化视图
             [self initView];
             
             bannerImageDataSource = [[NSMutableArray alloc] initWithCapacity:0];
@@ -408,6 +436,7 @@
                 NSString *myurl = [NSString stringWithFormat:@"%@/%@",HYTIMAGEURL,url];
                 [bannerImageDataSource addObject:myurl];
             }
+            //更新用户上传的图片
             [self updateImageBG];
             [tableview reloadData];
         }
@@ -426,7 +455,7 @@
     }];
 }
 
-
+//选择图片上传的方式
 - (void)addButtonClick:(UIButton *)sender
 {
     if ([bannerImageDataSource count] > MAXUPLOADIMAGE) {
@@ -492,7 +521,7 @@
     }
 }
 
-
+//更新用户上传的图片
 - (void)updateImageBG
 {
     CGFloat imageX = 5;
@@ -531,6 +560,7 @@
     }
 }
 
+//浏览图片
 - (void)scanImageTap:(UITapGestureRecognizer *)tap
 {
     return;
@@ -542,7 +572,7 @@
             [array addObject:asyImage];
         }
     }
-    
+    //浏览图片
     ScanPictureView *scanPictureView = [[ScanPictureView alloc] initWithArray:array selectButtonIndex:selectIndex];
     scanPictureView.deleteDelegate = self;
     UIBarButtonItem *backButton = [[UIBarButtonItem alloc] init];
@@ -556,9 +586,10 @@
 -(void)deleteImageAtIndex:(int)index
 {
     [bannerImageDataSource removeObjectAtIndex:index];
+    //刷新用户上传图片
     [self updateImageBG];
 }
-
+//添加服务标签
 - (void)addServiceLabel
 {
     NSString *orderSendServicecontent = orderDetailDict[@"orderSendServicecontent"];
@@ -655,7 +686,7 @@
     static NSString *cellIndentifier = @"OrderFinishedTableViewCell";
     CGSize cellSize = [tableView rectForRowAtIndexPath:indexPath].size;
     //    NSDictionary *dict = [NSDictionary dictionaryWithDictionary:[dataArr objectAtIndex:row]];
-    
+    //配置列表的信息
     HeBaseTableViewCell *cell  = [tableView cellForRowAtIndexPath:indexPath];
     if (!cell) {
         cell = [[HeBaseTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIndentifier cellSize:cellSize];
@@ -1068,7 +1099,7 @@
     NSLog(@"row = %ld, section = %ld",row,section);
 }
 
-
+//选择服务日期
 - (void)selectDate
 {
     UIView *myview = [self.view viewWithTag:1000];
@@ -1127,7 +1158,7 @@
     [self.view viewWithTag:2000].hidden = YES;
 }
 
-
+//选择日期按钮点击事件
 - (void)buttonClick:(UIButton *)button
 {
     UIView *myview = [self.view viewWithTag:1000];
@@ -1140,13 +1171,13 @@
         tempString = [tempString stringByReplacingOccurrencesOfString:@"年" withString:@"-"];
         tempString = [tempString stringByReplacingOccurrencesOfString:@"月" withString:@"-"];
         tempString = [tempString stringByReplacingOccurrencesOfString:@"日" withString:@""];
-        
+        //选择日期
         [self selectWithDate:tempString];
         
     }
 }
 
-
+//获取可以选择的日期
 - (void)getSelectDate:(NSString *)date type:(DateType)type {
     
     NSLog(@"时间 : %@",date);
@@ -1166,6 +1197,7 @@
     }
 }
 
+//选择日期后的回调方法
 - (void)selectWithDate:(NSString *)date
 {
     //更新订单信息
@@ -1195,10 +1227,18 @@
     if ([orderSendSavemoney isMemberOfClass:[NSNull class]] || orderSendSavemoney == nil) {
         orderSendSavemoney = @"";
     }
+    //orderSendId:订单的ID
+    //orderSendBegintime：订单的开始时间
+    //personId：用户的ID
+    //orderSendSavemoney:优惠价格
+    //goodId：服务的ID
+    //orderSendTrafficmoney:运费
     NSDictionary *paramDict = @{@"orderSendId":orderSendId,@"orderSendBegintime":orderSendBegintime,@"personId":personId,@"goodId":goodId,@"orderSendTrafficmoney":orderSendTrafficmoney,@"orderSendSavemoney":orderSendSavemoney};
+    //选择日期之后，更新订单的信息
     [self updateOrderInfoWithParam:paramDict];
 }
 
+//日期选择
 - (void)setupDateView:(DateType)type minDate:(NSDate *)minDate{
     
     UWDatePickerView *pickerView = [UWDatePickerView instanceDatePickerView];
@@ -1454,6 +1494,7 @@
     [alertview removeFromSuperview];
 }
 
+//输入支付密码弹窗
 - (void)inputPayPassword
 {
     [self.view addSubview:dismissView];
@@ -1625,6 +1666,7 @@
     }];
 }
 
+//创建订单
 - (void)creatOrder
 {
     if (payType == 1) {
@@ -1638,6 +1680,7 @@
         finalyMoney = @"";
     }
     NSString *userCouponId = @"";
+    //创建订单的信息
     NSDictionary *param = @{@"userId":userId,@"orderSendId":_orderId,@"finalyMoney":finalyMoney,@"userCouponId":userCouponId};
     [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestRecommendDataPath params:param success:^(AFHTTPRequestOperation* operation,id response){
         [self hideHud];
@@ -1647,6 +1690,7 @@
         if (errorCode == REQUESTCODE_SUCCEED) {
             //验证密码成功，发布
             [self showHint:@"支付成功"];
+            //支付成功，发出通知
             [[NSNotificationCenter defaultCenter] postNotificationName:kUpdateOrderNotification object:nil];
             
             
@@ -1688,6 +1732,7 @@
 }
 
 #pragma mark - SelectProtectUserInfoProtocol
+ //更新订单信息
 - (void)selectUserInfoWithDict:(NSDictionary *)userInfo
 {
     //更新订单信息
@@ -1709,10 +1754,20 @@
     if ([orderSendSavemoney isMemberOfClass:[NSNull class]] || orderSendSavemoney == nil) {
         orderSendSavemoney = @"";
     }
+    //orderSendId:订单的ID
+    //orderSendBegintime：订单的开始时间
+    //personId：用户的ID
+    //orderSendSavemoney:优惠价格
+    //goodId：服务的ID
+    //orderSendTrafficmoney:运费
     NSDictionary *paramDict = @{@"orderSendId":orderSendId,@"orderSendBegintime":orderSendBegintime,@"personId":personId,@"goodId":goodId,@"orderSendTrafficmoney":orderSendTrafficmoney,@"orderSendSavemoney":orderSendSavemoney};
     [self updateOrderInfoWithParam:paramDict];
 }
 
+/*
+ @brief 更新订单的信息
+ @param param 订单的信息
+ */
 - (void)updateOrderInfoWithParam:(NSDictionary *)param
 {
     NSString *requestWorkingTaskPath = [NSString stringWithFormat:@"%@/orderSend/updateOrderInfo.action",BASEURL];
@@ -1747,6 +1802,10 @@
     }];
 }
 
+/*
+ @brief 加载服务项目
+ @param contentId 护士的ID
+ */
 - (void)loadOrderServiceArrayWithContentId:(NSString *)contentId
 {
     NSDictionary *param = @{@"contentId":contentId};
@@ -1769,6 +1828,7 @@
     }];
 }
 
+//选择服务套餐
 - (void)selectService
 {
 //    goodsId,goodsName
@@ -1810,7 +1870,7 @@
     }];
     
 }
-
+//选择套餐
 - (void)selectWithArray:(NSArray *)array
 {
     NSMutableString *goodsString = [[NSMutableString alloc] initWithCapacity:0];
@@ -1855,7 +1915,14 @@
     if ([orderSendSavemoney isMemberOfClass:[NSNull class]] || orderSendSavemoney == nil) {
         orderSendSavemoney = @"";
     }
+    //orderSendId:订单的ID
+    //orderSendBegintime：订单的开始时间
+    //personId：用户的ID
+    //orderSendSavemoney:优惠价格
+    //goodId：服务的ID
+    //orderSendTrafficmoney:运费
     NSDictionary *paramDict = @{@"orderSendId":orderSendId,@"orderSendBegintime":orderSendBegintime,@"personId":personId,@"goodId":goodId,@"orderSendTrafficmoney":orderSendTrafficmoney,@"orderSendSavemoney":orderSendSavemoney};
+    //更新用户的信息
     [self updateOrderInfoWithParam:paramDict];
     
 }
@@ -1897,6 +1964,7 @@
         NSString *myurl = [NSString stringWithFormat:@"%@/%@",HYTIMAGEURL,url];
         [bannerImageDataSource addObject:myurl];
     }
+    //更新用户上传的图片
     [self updateImageBG];
     [tableview reloadData];
 }
@@ -1932,6 +2000,11 @@
         [self requestDeleteOrder:orderDetailDict];
     }
 }
+
+/*
+ @brief 删除订单
+ @param orderInfo 用户的订单
+ */
 - (void)requestDeleteOrder:(NSDictionary *)orderInfo
 {
     NSLog(@"cancelService");
@@ -1939,6 +2012,7 @@
     if ([orderSendId isMemberOfClass:[NSNull class]] || orderSendId == nil) {
         orderSendId = @"";
     }
+    //orderSenderId:订单的ID
     NSDictionary * params  = @{@"orderSendId":orderSendId};
     [self showHudInView:tableview hint:@"删除中..."];
     NSString *requestUrl = [NSString stringWithFormat:@"%@/orderSend/delOrderSend.action",BASEURL];
@@ -1949,6 +2023,7 @@
         if ([[respondDict valueForKey:@"errorCode"] integerValue] == REQUESTCODE_SUCCEED){
             
             [self showHint:@"成功删除服务"];
+            //删除订单成功，发出通知
             [[NSNotificationCenter defaultCenter] postNotificationName:kUpdateOrderNotification object:nil];
             [self performSelector:@selector(backToRootView) withObject:nil afterDelay:1.2];
         }

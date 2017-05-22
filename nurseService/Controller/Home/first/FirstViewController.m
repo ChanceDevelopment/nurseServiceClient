@@ -28,8 +28,11 @@
 @interface FirstViewController ()<LBBannerDelegate,UITableViewDelegate,UITableViewDataSource>
 {
     NSInteger addStatusBarHeight;
+    //首页顶部的轮播图数据源
     NSMutableArray *bannerDataSource;
+    //当前页码
     NSInteger pageNum;
+    //定位的按钮
     UIButton *locationButton;
 }
 @property(strong,nonatomic)IBOutlet UITableView *tableview;
@@ -73,6 +76,7 @@
     [self loadRecommendService];
 }
 
+//初始化资源
 - (void)initializaiton
 {
     [super initializaiton];
@@ -82,6 +86,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getCitySucceed:) name:kGetCitySucceedNotification object:nil];
 }
 
+//初始化视图
 - (void)initView
 {
     [super initView];
@@ -130,12 +135,14 @@
     
     CGFloat bannerHeight = 200;
     NSArray * imageNames = @[@"index1", @"index2"];
+    //轮播
     LBBanner * banner = [[LBBanner alloc] initWithImageNames:imageNames andFrame:CGRectMake(0, 0, SCREENWIDTH, bannerHeight)];
     banner.tag = LBBannerTag;
     banner.delegate = self;
     
     [headerView addSubview:banner];
     
+    //首页中间两个筛选按钮
     CGFloat buttonBGHeight = 120;
     UIView *buttonBG = [[UIView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(banner.frame), SCREENWIDTH, buttonBGHeight)];
     NSArray *iconArray = @[@[@"icon_nurse_door",@"icon_personal"]];
@@ -155,6 +162,7 @@
     
     self.tableview.tableHeaderView = headerView;
     
+    //下拉刷新回调
     __weak FirstViewController *weakSelf = self;
     self.tableview.header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
         // 进入刷新状态后会自动调用这个block,刷新
@@ -163,7 +171,7 @@
         [weakSelf loadBannerImage];
         [weakSelf loadRecommendService];
     }];
-    
+    //上拉加载更多回调
     self.tableview.footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
         self.tableview.footer.automaticallyHidden = YES;
         self.tableview.footer.hidden = NO;
@@ -175,6 +183,7 @@
     }];
 }
 
+//结束刷新的回调
 - (void)endRefreshing
 {
     [self.tableview.footer endRefreshing];
@@ -188,6 +197,7 @@
     NSLog(@"endRefreshing");
 }
 
+//获取成功成功的回调
 - (void)getCitySucceed:(NSNotification *)notification
 {
     NSString *city = notification.object;
@@ -212,6 +222,7 @@
             NSMutableArray *imageUrlArray = [[NSMutableArray alloc] initWithCapacity:0];
             
             for (NSDictionary *dict in jsonArray) {
+                //保存banner图的资源
                 [bannerDataSource addObject:dict];
                 NSString *rollPicUrl = dict[@"rollPicUrl"];
                 if ([rollPicUrl isMemberOfClass:[NSNull class]] || rollPicUrl == nil) {
@@ -221,6 +232,7 @@
                 [imageUrlArray addObject:rollPicUrl];
                 
             }
+            //创建轮播图
             CGFloat bannerHeight = 200;
             LBBanner *banner1 = [tableview.tableHeaderView viewWithTag:LBBannerTag];
             LBBanner *banner = [[LBBanner alloc] initWithImageURLArray:imageUrlArray andFrame:CGRectMake(0, 0, SCREENWIDTH, bannerHeight)];
@@ -334,6 +346,7 @@
     }
 }
 
+//中间两个按钮的点击事件
 - (void)buttonClick:(UIButton *)button
 {
     if (button.tag == 0) {
@@ -346,6 +359,7 @@
         NSLog(@"私人定制");
     }
 }
+//左边菜单按钮事件
 - (void)menuButtonClick:(id)sender
 {
     //展示左边菜单
@@ -363,6 +377,7 @@
     
 }
 
+//轮播图轮播的回调方法
 #pragma mark LBBannerDelegate
 - (void)banner:(LBBanner *)banner didClickViewWithIndex:(NSInteger)index {
     NSLog(@"didClickViewWithIndex:%ld", index);
@@ -382,6 +397,7 @@
             
         }
         else{
+            //如果是链接，直接跳网页
             NSString *url = rollPicId;
             BrowserView *scanReportDetailVC = [[BrowserView alloc] initWithURL:url title:nil];
             scanReportDetailVC.hidesBottomBarWhenPushed = YES;
@@ -389,6 +405,7 @@
         }
     }
     else{
+        //如果是服务，直接跳服务详情
         NSDictionary *myDict = @{@"contentId":rollPicId};
         [self bookServiceWithDict:myDict];
     }
@@ -419,7 +436,7 @@
     static NSString *cellIndentifier = @"HomePageTableCell";
     CGSize cellSize = [tableView rectForRowAtIndexPath:indexPath].size;
     NSDictionary *dict = nil;
-    
+    //首页列表视图的模板
     HomePageTableCell *cell  = [tableView cellForRowAtIndexPath:indexPath];
     if (!cell) {
         cell = [[HomePageTableCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIndentifier cellSize:cellSize];
@@ -483,6 +500,7 @@
     [self bookServiceWithDict:myDict];
 }
 
+//预约服务
 - (void)bookServiceWithDict:(NSDictionary *)dict
 {
     //总控制器，控制商品、详情、评论三个子控制器
@@ -492,6 +510,7 @@
     [self showViewController:serviceDetailVC sender:nil];
 }
 
+//获取预约服务的控制器
 - (HYPageView *)getPageViewWithParam:(NSDictionary *)dict
 {
     NSString *contentid = dict[@"contentId"];
@@ -499,7 +518,7 @@
         contentid = @"";
     }
     NSDictionary *myDict = @{@"contentId":contentid};
-    
+    //总控制器，控制商品、详情、评论三个子控制器
     NSDictionary *paramDict = @{@"service":myDict};
     HYPageView *pageView = [[HYPageView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, SCREENHEIGH) withTitles:@[@"商品",@"详情",@"评论"] withViewControllers:@[@"HeServiceDetailVC",@"HeServiceInfoVC",@"HeCommentVC"] withParameters:@[paramDict,myDict,myDict]];
     pageView.isTranslucent = NO;
@@ -511,7 +530,7 @@
     [backImage addTarget:self action:@selector(backItemClick:) forControlEvents:UIControlEventTouchUpInside];
     
     backImage.frame = CGRectMake(0, 0, 25, 25);
-    
+    //返回按钮
     pageView.leftButton = backImage;
     
     return pageView;

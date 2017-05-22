@@ -4,7 +4,7 @@
 //
 //  Created by Tony on 2017/1/11.
 //  Copyright © 2017年 iMac. All rights reserved.
-//
+//  用户信息详情视图控制器
 
 #import "HeUserInfoVC.h"
 #import "HeBaseTableViewCell.h"
@@ -14,14 +14,18 @@
 
 @interface HeUserInfoVC ()<UITableViewDelegate,UITableViewDataSource,UITextFieldDelegate>
 {
+    //用户头像
     UIImageView *portrait;
+    //当前选择的ROW
     NSInteger currentSelectRow;
+    //是否选择用户的图片
     BOOL haveSelectUserImage;
 }
 @property(strong,nonatomic)IBOutlet UITableView *tableview;
 @property(strong,nonatomic)NSArray *dataSource;
 
 @property(strong,nonatomic)UIView *dismissView;
+//用户信息的模型
 @property(strong,nonatomic)User *userInfoModel;
 
 @end
@@ -57,6 +61,7 @@
     [self initView];
 }
 
+//资源初始化
 - (void)initializaiton
 {
     [super initializaiton];
@@ -65,6 +70,7 @@
     userInfoModel = [HeSysbsModel getSysModel].user;
 }
 
+//初始化视图
 - (void)initView
 {
     [super initView];
@@ -103,6 +109,7 @@
     [portrait sd_setImageWithURL:[NSURL URLWithString:userHeader] placeholderImage:[UIImage imageNamed:@"defalut_icon"]];
 }
 
+//提交按钮的点击事件
 - (IBAction)commitUserInfo:(id)sender
 {
     //判断用户是否已经签到
@@ -139,6 +146,8 @@
         return;
     }
     
+    //userId：用户的ID  userHeader：用户的头像  userNick：用户的昵称  userPhone：用户的手机号码
+    //userSex：用户的性别  userEmail：用户邮箱
     if (email) {
         [self showHudInView:tableview hint:@"修改中..."];
     NSDictionary *params = @{@"userId":userId,@"userHeader":userHeader,@"userNick":userNick,@"userPhone":userPhone,@"userSex":userSex,@"userEmail":userEmail};
@@ -152,6 +161,7 @@
            
             [self showHint:@"修改成功"];
             [self performSelector:@selector(backToLastView) withObject:nil afterDelay:0.8];
+            //发出通知，更新用户的资料
             [[NSNotificationCenter defaultCenter] postNotificationName:kUpdateUserInfoNotification object:nil];
             
         }
@@ -201,6 +211,7 @@
         cell = [[HeBaseTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIndentifier cellSize:cellSize];
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     }
+    //配置列表视图
     NSInteger row = indexPath.row;
     NSInteger section = indexPath.section;
     
@@ -345,6 +356,7 @@
     return YES;
 }
 
+//弹窗输入
 - (void)inputContentWithTitle:(NSString *)title
 {
     [self.view addSubview:dismissView];
@@ -473,6 +485,7 @@
 
 - (void)alertbuttonClick:(UIButton *)button
 {
+    //当确认按钮点击之后，视图消失
     UIView *mydismissView = dismissView;
     mydismissView.hidden = YES;
     

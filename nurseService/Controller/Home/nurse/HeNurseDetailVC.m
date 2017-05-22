@@ -4,7 +4,7 @@
 //
 //  Created by HeDongMing on 2017/1/8.
 //  Copyright © 2017年 iMac. All rights reserved.
-//
+//  护士详情视图控制器
 
 #import "HeNurseDetailVC.h"
 #import "HeServiceTableCell.h"
@@ -25,21 +25,32 @@
 {
     
 }
+//顶部的视图
 @property(strong,nonatomic)IBOutlet UIImageView *headerView;
+//列表视图
 @property(strong,nonatomic)IBOutlet UITableView *tableview;
+//列表的数据源
 @property(strong,nonatomic)NSMutableArray *dataSource;
+//提交按钮
 @property(strong,nonatomic)IBOutlet UIButton *commentButton;
+//预约按钮
 @property(strong,nonatomic)IBOutlet UIButton *serviceButton;
+//关注按钮
 @property(strong,nonatomic)IBOutlet UIButton *followButton;
+//关注人数
 @property(strong,nonatomic)IBOutlet UIButton *followNumButton;
+//护士名称
 @property(strong,nonatomic)IBOutlet UILabel *nameLabel;
+//护士所属医院
 @property(strong,nonatomic)IBOutlet UILabel *hospitalLabel;
+//用户头像
 @property(strong,nonatomic)IBOutlet UIImageView *userImage;
 
 @property(strong,nonatomic)IBOutlet UIView *otherInfoView;
 @property(nonatomic,strong)DLNavigationTabBar *navigationTabBar;
+//底部的视图
 @property(strong,nonatomic)IBOutlet UIView *footerView;
-
+//护士详细信息
 @property(strong,nonatomic)NSDictionary *nurseDetailInfo;
 
 
@@ -79,6 +90,7 @@
     return self;
 }
 
+//顶部选择条
 -(DLNavigationTabBar *)navigationTabBar
 {
     if (!_navigationTabBar) {
@@ -126,12 +138,14 @@
     self.navigationController.navigationBarHidden = NO;
 }
 
+//初始化资源
 - (void)initializaiton
 {
     [super initializaiton];
     dataSource = [[NSMutableArray alloc] initWithCapacity:0];
 }
 
+//初始化视图
 - (void)initView
 {
     [super initView];
@@ -254,6 +268,7 @@
     [headerView addSubview:bgView];
 }
 
+//初始化订单信息的view
 - (void)initOtherInfoView
 {
     CGFloat cellHeight = 40;
@@ -322,6 +337,7 @@
     
 }
 
+//添加底部视图
 - (void)addFooterView
 {
     
@@ -340,7 +356,7 @@
 {
     [self.navigationController popViewControllerAnimated:YES];
 }
-
+//关注护士
 - (IBAction)followButtonClick:(UIButton *)sender
 {
     NSLog(@"followButtonClick");
@@ -402,7 +418,10 @@
     }];
 }
 
-//加载该护士的详细信息
+/*
+ @brief 加载该护士的详细信息
+ @param nurseId 护士的ID
+ */
 - (void)loadNurserDetailInfo:(NSString *)nurseId
 {
     tableview.hidden = YES;
@@ -417,6 +436,7 @@
     if (!longitude) {
         longitude = @"";
     }
+    //userId：用户的ID  nurseid：护士的ID  latitude longitude：经纬度
     NSDictionary * params  = @{@"userId":userId,@"nurseid":nurseId,@"latitude":latitude,@"longitude":longitude};
     [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
         [self hideHud];

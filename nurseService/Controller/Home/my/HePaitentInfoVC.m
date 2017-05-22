@@ -4,7 +4,7 @@
 //
 //  Created by HeDongMing on 2017/1/7.
 //  Copyright © 2017年 iMac. All rights reserved.
-//
+//  病人信息视图控制器
 
 #import "HePaitentInfoVC.h"
 #import "HeBaseTableViewCell.h"
@@ -70,8 +70,10 @@
     
 }
 
+//获取患者的信息
 - (void)getPaitentInfo
 {
+    //personId：患者的ID
     NSString *personId = userInfoDict[@"personId"];
     if ([personId isMemberOfClass:[NSNull class]] || personId == nil) {
         personId = @"";
@@ -85,6 +87,7 @@
         NSDictionary *respondDict = [NSDictionary dictionaryWithDictionary:[respondString objectFromJSONString]];
         if ([[respondDict valueForKey:@"errorCode"] integerValue] == REQUESTCODE_SUCCEED) {
             NSLog(@"success");
+            //患者信息的详情
             userInfoDetailDict = respondDict[@"json"];
             if ([userInfoDetailDict isMemberOfClass:[NSNull class]]) {
                 userInfoDetailDict = nil;
@@ -119,7 +122,7 @@
     static NSString *cellIndentifier = @"HeUserCellIndentifier";
     CGSize cellSize = [tableView rectForRowAtIndexPath:indexPath].size;
     
-    
+    //配置患者信息的列表视图
     HeBaseTableViewCell *cell  = [tableView cellForRowAtIndexPath:indexPath];
     if (!cell) {
         cell = [[HeBaseTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIndentifier];

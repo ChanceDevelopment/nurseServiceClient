@@ -4,7 +4,7 @@
 //
 //  Created by HeDongMing on 16/6/18.
 //  Copyright © 2016年 Jitsun. All rights reserved.
-//
+//  搜索信息控制器
 
 
 #import "DCPicScrollView.h"
@@ -27,13 +27,20 @@
 
 @interface HeSearchInfoVC ()<UISearchBarDelegate>
 {
+    //关键字
     NSString  *keyWord;
+    //当前页码
     NSInteger pageNum;
 }
+//视图的列表
 @property(strong,nonatomic)IBOutlet UITableView *tableview;
+//搜索框
 @property(strong,nonatomic)UISearchBar *searchBar;
+//数据源
 @property(strong,nonatomic)NSMutableArray *dataSource;
+//头部信息数据
 @property(strong,nonatomic)NSMutableArray *headerArray;
+//图片缓存
 @property(strong,nonatomic)NSCache *imageCache;
 @end
 
@@ -99,11 +106,12 @@
     searchBar.barStyle = UIBarStyleDefault;
     searchBar.placeholder = @"搜索护士";
     self.navigationItem.titleView = searchBar;
+    //下拉刷新回调
     self.tableview.header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
         // 进入刷新状态后会自动调用这个block,刷新
         [self.tableview.header performSelector:@selector(endRefreshing) withObject:nil afterDelay:1.0];
     }];
-    
+    //上拉加载更多回调
     self.tableview.footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
         self.tableview.footer.automaticallyHidden = YES;
         self.tableview.footer.hidden = NO;
@@ -112,7 +120,7 @@
         pageNum = 0;
     }];
 }
-
+//结束刷新回调
 - (void)endRefreshing
 {
     [self.tableview.footer endRefreshing];
@@ -133,11 +141,12 @@
 {
     
 }
-
+//加载护士的信息，根据关键字
 - (void)loadNurseData
 {
     NSString *requestUrl = [NSString stringWithFormat:@"%@/nurseAnduser/searchNurse.action",BASEURL];
     NSString *pageNumStr = [NSString stringWithFormat:@"%ld",pageNum];
+    //keyWord:关键字 pageNum：当前页码
     NSDictionary * params  = @{@"keyWord":keyWord,@"pageNum":pageNumStr};
     [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
         NSString *respondString = [[NSString alloc] initWithData:operation.responseData encoding:NSUTF8StringEncoding];
@@ -229,6 +238,7 @@
     }
     pageNum = 0;
     keyWord = searchKey;
+    //加载护士数据
     [self loadNurseData];
     NSLog(@"searchKey = %@",searchKey);
     
@@ -259,7 +269,7 @@
     } @finally {
         
     }
-    
+    //搜索护士的视图模板
     HeSearchNurseTableCell *cell  = [tableView cellForRowAtIndexPath:indexPath];
     if (!cell) {
         cell = [[HeSearchNurseTableCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIndentifier cellSize:cellsize];
@@ -280,25 +290,25 @@
     }
     cell.userImage = imageview;
     [cell insertSubview:cell.userImage atIndex:0];
-    
+    //护士昵称
     NSString *nurseNick = dict[@"nurseNick"];
     if ([nurseNick isMemberOfClass:[NSNull class]] || nurseNick == nil) {
         nurseNick = @"";
     }
     cell.nameLabel.text = nurseNick;
-    
+    //护士工作单位
     NSString *nurseWorkUnit = dict[@"nurseWorkUnit"];
     if ([nurseWorkUnit isMemberOfClass:[NSNull class]] || nurseWorkUnit == nil) {
         nurseWorkUnit = @"";
     }
     cell.hospitalLabel.text = nurseWorkUnit;
-    
+    //护士的备注
     NSString *nurseNote = dict[@"nurseNote"];
     if ([nurseNote isMemberOfClass:[NSNull class]] || nurseNote == nil) {
         nurseNote = @"";
     }
     cell.addresssLabel.text = nurseNote;
-    
+    //距离
     CGFloat distance = [dict[@"distance"] floatValue] / 1000.0;
     NSString *distanceStr = [NSString stringWithFormat:@"%.2fkm",distance];
     CGSize distanceSize = [MLLabel getViewSizeByString:distanceStr maxWidth:cell.addresssLabel.frame.size.width font:cell.distanceLabel.font lineHeight:1.2f lines:0];
@@ -340,6 +350,7 @@
     } @finally {
         
     }
+    //查看护士详情
     HeNurseDetailVC *nurseDetailVC = [[HeNurseDetailVC alloc] init];
     nurseDetailVC.nurseDictInfo = [[NSDictionary alloc] initWithDictionary:dict];
     nurseDetailVC.hidesBottomBarWhenPushed = YES;

@@ -4,7 +4,7 @@
 //
 //  Created by 梅阳阳 on 16/12/9.
 //  Copyright © 2016年 iMac. All rights reserved.
-//
+//  护士列表信息视图控制器
 
 #import "NurseViewController.h"
 #import "DropDownListView.h"
@@ -25,29 +25,38 @@
 
 @interface NurseViewController ()<UITableViewDelegate,UITableViewDataSource,DOPDropDownMenuDataSource,DOPDropDownMenuDelegate>
 {
+    //医院的ID
     NSString *hospitalNameID;
+    //专业的ID
     NSString *majorNameID;
+    //经纬度
     NSString *latitude;
     NSString *longitude;
+    //当前页码
     NSInteger pageNum;
 }
-@property (nonatomic, strong) NSArray *classifys;
-@property (nonatomic, strong) NSArray *cates;
-@property (nonatomic, strong) NSArray *movices;
-@property (nonatomic, strong) NSArray *hostels;
-@property (nonatomic, strong) NSArray *areas;
-
+//@property (nonatomic, strong) NSArray *classifys;
+//@property (nonatomic, strong) NSArray *cates;
+//@property (nonatomic, strong) NSArray *movices;
+//@property (nonatomic, strong) NSArray *hostels;
+//@property (nonatomic, strong) NSArray *areas;
+//图片资源缓存区
 @property(strong,nonatomic)NSCache *imageCache;
 
-@property (nonatomic, strong) NSArray *sorts;
+//@property (nonatomic, strong) NSArray *sorts;
+//选择菜单视图
 @property (nonatomic, weak) DOPDropDownMenu *menu;
 
 @property(strong,nonatomic)IBOutlet UITableView *tableview;
 @property(strong,nonatomic)IBOutlet UITableView *servicetableview;
 
+//选择的数据
 @property(strong,nonatomic)NSMutableArray *chooseArray;
+//当前选择的分别数据
 @property(strong,nonatomic)NSMutableArray *currentClassArray;
+//头部属兔
 @property(strong,nonatomic)IBOutlet UIView *sectionHeaderView;
+//数据源
 @property(strong,nonatomic)NSMutableArray *dataSource;
 //医院分类数据
 @property(strong,nonatomic)NSMutableArray *hospitalNameArray;  //医院名字
@@ -57,15 +66,19 @@
 
 //专业分类数据
 @property(strong,nonatomic)NSMutableArray *majorNameArray;  //专业名字
+//自专业名字
 @property(strong,nonatomic)NSMutableArray *subMajorNameArray;
+//专业的model
 @property(strong,nonatomic)NSMutableArray *majorModelArray;
+//自专业的model
 @property(strong,nonatomic)NSMutableArray *subMajorModelArray;
-
+//已经选择的护士的ID数据
 @property(strong,nonatomic)NSMutableArray *selectNurseIdArray;
-
+//已经选择的服务数据
 @property(strong,nonatomic)NSMutableArray *serviceItemArray;
-
+//最新的医院ID
 @property(strong,nonatomic)NSString *lastHospitalNameID;
+//最新的专业ID
 @property(strong,nonatomic)NSString *lastMajorNameID;
 
 @end
@@ -106,6 +119,7 @@
     [self loadNurseData];
 }
 
+//初始化资源
 - (void)initializaiton
 {
     [super initializaiton];
@@ -163,6 +177,7 @@
     
     self.navigationItem.rightBarButtonItems = @[searchItem];
     
+    //下拉刷新回调
     __weak NurseViewController *weakSelf = self;
     self.tableview.header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
         // 进入刷新状态后会自动调用这个block,刷新
@@ -170,7 +185,7 @@
         pageNum = 0;
         [weakSelf loadNurseData];
     }];
-    
+    //上拉加载更多回调
     self.tableview.footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
         self.tableview.footer.automaticallyHidden = YES;
         self.tableview.footer.hidden = NO;
@@ -182,7 +197,7 @@
     }];
     
 }
-
+//结束刷新回调
 - (void)endRefreshing
 {
     [self.tableview.footer endRefreshing];
@@ -196,6 +211,7 @@
     NSLog(@"endRefreshing");
 }
 
+//初始化选择菜单
 - (void)initSelectView
 {
     // 添加下拉菜单
@@ -209,7 +225,7 @@
     [menu selectDefalutIndexPath];
 }
 
-
+//初始化选择菜单的数据源
 - (void)initCategoryData
 {
     _hospitalNameArray = [[NSMutableArray alloc] initWithCapacity:0];
@@ -341,10 +357,12 @@
     
 }
 
+//加载护士数据信息
 - (void)loadNurseData
 {
     NSString *requestUrl = [NSString stringWithFormat:@"%@/nurseAnduser/selectnursebyhosandmaj.action",BASEURL];
     NSString *pageNumStr = [NSString stringWithFormat:@"%ld",pageNum];
+    //参数意义参数变量说明
     NSDictionary * params  = @{@"hospitalName":hospitalNameID,@"majorName":majorNameID,@"latitude":latitude,@"longitude":longitude,@"pageNum":pageNumStr};
     [self showHudInView:tableview hint:@"加载中..."];
     [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
@@ -440,7 +458,7 @@
 {
     NSLog(@"scanOrder");
 }
-
+//重新加载子菜单
 - (void)menuReloadData
 {
     [self initCategoryData];
@@ -584,7 +602,7 @@
         
     }
 }
-
+//加载服务
 - (void)loadNurseService
 {
     if ([_selectNurseIdArray count] == 0) {
@@ -605,6 +623,7 @@
             [nurseid appendFormat:@",%@",tempString];
         }
     }
+    //nurseid：当前被选中的护士的ID
     NSDictionary * params  = @{@"nurseid":nurseid};
     [_serviceItemArray removeAllObjects];
     [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
@@ -656,6 +675,7 @@
     }];
 }
 
+//预约服务
 - (void)bookServiceWithDict:(NSDictionary *)dict
 {
     //总控制器，控制商品、详情、评论三个子控制器
@@ -665,6 +685,10 @@
     [self showViewController:serviceDetailVC sender:nil];
 }
 
+/*
+ @brief 获取预约服务详情的视图控制器
+ @param dict服务的信息
+ */
 - (HYPageView *)getPageViewWithParam:(NSDictionary *)dict
 {
     
@@ -685,7 +709,7 @@
         NSDictionary *nurseDict = @{@"nurseId":nurseId};
         paramDict = @{@"service":dict,@"nurse":nurseDict};
     }
-    
+    //总控制器，控制商品、详情、评论三个子控制器
     HYPageView *pageView = [[HYPageView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, SCREENHEIGH) withTitles:@[@"商品",@"详情",@"评论"] withViewControllers:@[@"HeServiceDetailVC",@"HeServiceInfoVC",@"HeCommentVC"] withParameters:@[paramDict,dict,dict]];
     pageView.isTranslucent = NO;
     pageView.topTabBottomLineColor = [UIColor whiteColor];
@@ -731,6 +755,7 @@
     if (tableView.tag == 100) {
         CGSize cellsize = [tableView rectForRowAtIndexPath:indexPath].size;
         static NSString *cellIndentifier = @"HeServiceTableCell";
+        //服务列表视图模板
         HeServiceTableCell *cell  = [tableView cellForRowAtIndexPath:indexPath];
         if (!cell) {
             cell = [[HeServiceTableCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIndentifier cellSize:cellsize];
@@ -747,6 +772,7 @@
         }
         __weak NurseViewController *weakSelf = self;
         cell.booklBlock = ^{
+            //查看服务详情
             [weakSelf bookServiceWithDict:dict];
         };
         
@@ -770,13 +796,13 @@
         [cell.userImage removeFromSuperview];
         cell.userImage = imageview;
         [cell addSubview:cell.userImage];
-        
+        //manageNursingContentName 护士名称
         NSString *manageNursingContentName = dict[@"manageNursingContentName"];
         if ([manageNursingContentName isMemberOfClass:[NSNull class]] || manageNursingContentName == nil) {
             manageNursingContentName = @"";
         }
         cell.serviceTitleLabel.text = manageNursingContentName;
-        
+        //manageNursingContentContent 护士服务内容
         NSString *manageNursingContentContent = dict[@"manageNursingContentContent"];
         if ([manageNursingContentContent isMemberOfClass:[NSNull class]] || manageNursingContentContent == nil) {
             manageNursingContentContent = @"";
@@ -810,7 +836,7 @@
     } @finally {
         
     }
-    
+    //护士列表视图模板
     HeNurseTableViewCell *cell  = [tableView cellForRowAtIndexPath:indexPath];
     if (!cell) {
         cell = [[HeNurseTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIndentifier cellSize:cellSize];
@@ -844,7 +870,7 @@
         [weakSelf loadNurseService];
     };
     
-    
+    //护士的头像
 //    nurseCardpic
     NSString *nurseHeader = dict[@"nurseHeader"];
     if ([nurseHeader isMemberOfClass:[NSNull class]] || nurseHeader == nil) {
@@ -867,19 +893,19 @@
         nurseNick = @"";
     }
     cell.nameLabel.text = nurseNick;
-    
+    //工作的单位
     NSString *nurseWorkUnit = dict[@"nurseWorkUnit"];
     if ([nurseWorkUnit isMemberOfClass:[NSNull class]] || nurseWorkUnit == nil) {
         nurseWorkUnit = @"";
     }
     cell.hospitalLabel.text = nurseWorkUnit;
-    
+    //护士的备注
     NSString *nurseNote = dict[@"nurseNote"];
     if ([nurseNote isMemberOfClass:[NSNull class]] || nurseNote == nil) {
         nurseNote = @"";
     }
     cell.addresssLabel.text = nurseNote;
-    
+    //距离
     CGFloat distance = [dict[@"distance"] floatValue] / 1000.0;
     NSString *distanceStr = [NSString stringWithFormat:@"%.2fkm",distance];
     CGSize distanceSize = [MLLabel getViewSizeByString:distanceStr maxWidth:cell.addresssLabel.frame.size.width font:cell.distanceLabel.font lineHeight:1.2f lines:0];

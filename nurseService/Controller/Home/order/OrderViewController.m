@@ -4,7 +4,7 @@
 //
 //  Created by 梅阳阳 on 16/12/9.
 //  Copyright © 2016年 iMac. All rights reserved.
-//  订单控制器
+//  用户订单视图控制器
 
 #import "OrderViewController.h"
 #import "DLNavigationTabBar.h"

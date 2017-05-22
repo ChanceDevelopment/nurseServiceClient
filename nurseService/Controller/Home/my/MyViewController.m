@@ -4,7 +4,7 @@
 //
 //  Created by 梅阳阳 on 16/12/9.
 //  Copyright © 2016年 iMac. All rights reserved.
-//
+//  用户个人中心视图控制器
 
 #import "MyViewController.h"
 #import "Tools.h"
@@ -101,6 +101,7 @@
 - (void)initialization
 {
     [super initializaiton];
+    //初始化各种资源
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUserBalanceInfo:) name:kUpdateUserPayInfoNotificaiton object:nil];
     iconArr = @[@"icon_protected_person_gray",@"icon_report_gray",@"icon_favorites_gray",@"icon_myinvite_gray",@"icon_advice_gray",@"icon_aboutus_gray",@"icon_advice_gray"];
     tableItemArr = @[@"受护人信息",@"护理报告",@"收藏夹",@"我的邀请",@"修改密码",@"关于我们",@"投诉建议"];
@@ -111,6 +112,7 @@
 
 }
 
+//初始化视图
 - (void)initView
 {
     [super initView];
@@ -125,7 +127,7 @@
     myTableView.showsHorizontalScrollIndicator = NO;
     [self.view addSubview:myTableView];
 
-    
+    //列表的头部用户信息
     CGFloat viewHeight = 300;
     
     UIView *headerView = [[UIView alloc] init];
@@ -269,7 +271,7 @@
     couponLabel.backgroundColor = [UIColor clearColor];
     couponLabel.userInteractionEnabled = YES;
     [otherInfoLabelBG addSubview:couponLabel];
-    
+    //优惠券
     NSInteger couponNum = [userInfoModel.couponCount integerValue];
     couponNumLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, commonlabelW, otherInfoLabelBGH / 2.0)];
     couponNumLabel.backgroundColor = [UIColor clearColor];
@@ -278,6 +280,7 @@
     couponNumLabel.textAlignment = NSTextAlignmentCenter;
     couponNumLabel.textColor = [UIColor colorWithRed:133.0 / 255.0 green:144.0 / 255.0 blue:205.0 / 255.0 alpha:1.0];
     [couponLabel addSubview:couponNumLabel];
+    
     
     titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, otherInfoLabelBGH / 2.0, commonlabelW, otherInfoLabelBGH / 2.0)];
     titleLabel.backgroundColor = [UIColor clearColor];
@@ -299,7 +302,7 @@
     [otherInfoLabelBG addSubview:pointLabel];
     
 //    NSInteger point = [userInfoModel.userMark integerValue];
-    
+    //未支付的订单
     pointNumLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, commonlabelW, otherInfoLabelBGH / 2.0)];
     pointNumLabel.backgroundColor = [UIColor clearColor];
 //    pointNumLabel.text = [NSString stringWithFormat:@"%ld单",point];
@@ -327,7 +330,7 @@
     myTableView.tableFooterView = footerView;
     
     NSString *inviteCode = userInfoModel.userInvitationcode;
-    
+    //邀请码
     UILabel *inviteLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, footHeight / 2.0)];
     inviteLabel.font = [UIFont systemFontOfSize:18.0];
     inviteLabel.tag = InviteLabelTag;
@@ -345,6 +348,7 @@
     [signOutButton addTarget:self action:@selector(signOutButtonClick:) forControlEvents:UIControlEventTouchUpInside];
     [footerView addSubview:signOutButton];
     
+    //上拉刷新回调
     __weak MyViewController *weakSelf = self;
     self.myTableView.header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
         // 进入刷新状态后会自动调用这个block,刷新
@@ -357,22 +361,28 @@
     
 }
 
+//更新用户的资源通知
 - (void)updateUserInfo:(NSNotification *)notification
 {
+    //获取用户最新的资料
     [self getUserInfoWithUserID:[[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY]];
 }
 
+//更新用户的余额信息通知
 - (void)updateUserBalanceInfo:(NSNotification *)notification
 {
+    //获取用户的余额信息
     [self getUserPayInfo];
 }
 
+//获取用户的余额信息
 - (void)getUserPayInfo
 {
     NSString *userId = [[NSUserDefaults standardUserDefaults] objectForKey:USERIDKEY];
     if (!userId) {
         userId = @"";
     }
+    //userId：用户的ID
     NSDictionary * params  = @{@"userId":userId};
     NSString *requestUrl = [NSString stringWithFormat:@"%@/nurseAnduser/selectUserThreeInfo.action",BASEURL];
     [AFHttpTool requestWihtMethod:RequestMethodTypePost url:requestUrl params:params success:^(AFHTTPRequestOperation* operation,id response){
@@ -395,6 +405,7 @@
             if ([balance isMemberOfClass:[NSNull class]]) {
                 balance = @"";
             }
+            //刷新余额区域的显示
             CGFloat balanceMoney = [balance floatValue];
 //            _balanceLabel.text = [NSString stringWithFormat:@"%@元",balance];
             [[NSUserDefaults standardUserDefaults] setObject:payInfo forKey:kUserPayInfoKey];
@@ -437,7 +448,10 @@
 }
 
 
-//获取用户的信息
+/*
+ @brief 获取用户的信息
+ @param userid 用户的ID
+ */
 - (void)getUserInfoWithUserID:(NSString *)userid
 {
     if (!userid) {
@@ -465,10 +479,10 @@
                 }
                 [infoDict setObject:obj forKey:key];
             }
-            
+            //保存用户的详细信息
             [[NSUserDefaults standardUserDefaults] setObject:infoDict forKey:kUserDetailDataKey];
             [[NSUserDefaults standardUserDefaults] synchronize];
-            
+            //对用户的数据进行异常处理
             User *userModel = [[User alloc] init];
             for (NSString *keyString in infoDict.allKeys) {
                 NSString *firstString = [keyString substringWithRange:NSMakeRange(0, 1)];
@@ -493,6 +507,7 @@
             }
 //            [userModel setValuesForKeysWithDictionary:infoDict];
             NSLog(@"userModel = %@",userModel);
+            //保存到用户信息
             NSDictionary *dict = [[NSUserDefaults standardUserDefaults] objectForKey:kUserDetailDataKey];
             [HeSysbsModel getSysModel].user = userModel;
             //刷新视图
@@ -541,6 +556,7 @@
     }];
 }
 
+//加载用户的其他信息。比如用户是否签到
 - (void)loadUserOtherInfo
 {
     //判断用户是否已经签到
@@ -573,7 +589,7 @@
     
 }
 
-
+//查看用户的余额
 - (void)scanUserBalance:(UITapGestureRecognizer *)tap
 {
     HeUserBalanceVC *userBalanceVC = [[HeUserBalanceVC alloc] init];
@@ -582,6 +598,7 @@
     [self.navigationController pushViewController:userBalanceVC animated:YES];
 }
 
+//查看用户的优惠券
 - (void)scanUserCoupon:(UITapGestureRecognizer *)tap
 {
     HeUserCouponVC *userCouponVC = [[HeUserCouponVC alloc] init];
@@ -589,6 +606,7 @@
     [self.navigationController pushViewController:userCouponVC animated:YES];
 }
 
+//查看用户的未支付订单
 - (void)scanUserPoint:(UITapGestureRecognizer *)tap
 {
     [[NSNotificationCenter defaultCenter] postNotificationName:@"selectOrderNotification" object:@[@"index",@0]];
@@ -600,6 +618,7 @@
     [tabbarVC setSelectedIndex:orderTabbarIndex];
 }
 
+//查看用户的信息详情
 - (void)scanUserInfo:(UITapGestureRecognizer *)tap
 {
     HeUserInfoVC *userInfoVC = [[HeUserInfoVC alloc] init];
@@ -607,6 +626,7 @@
     [self.navigationController pushViewController:userInfoVC animated:YES];
 }
 
+//查看站内信
 - (void)messageButtonClick:(UIButton *)button
 {
     HeMessageVC *messageVC = [[HeMessageVC alloc] init];
@@ -614,6 +634,7 @@
     [self.navigationController pushViewController:messageVC animated:YES];
 }
 
+//显示各种视图的内容的安全按钮
 - (void)securityButtonClick:(UIButton *)button
 {
     button.selected = !button.selected;
@@ -648,6 +669,7 @@
     }
 }
 
+//注销登录点击事件
 - (void)signOutButtonClick:(UIButton *)button
 {
     if (ISIOS7) {
@@ -670,7 +692,7 @@
     
 }
 
-
+//注销登录
 - (void)signAccount
 {
     NSLog(@"signAccount");
@@ -693,6 +715,7 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:KNOTIFICATION_LOGINCHANGE object:@NO];
 }
 
+//请求接口已签到
 - (void)toSignInView
 {
     UIButton *signButton = [myTableView.tableHeaderView viewWithTag:SignButtonTag];
@@ -966,6 +989,7 @@
     return UIStatusBarStyleLightContent;
 }
 
+//加载订单数据信息
 - (void)loadOrderData
 {
     NSString *requestUrl = [NSString stringWithFormat:@"%@/orderSend/OrderSendDescription.action",BASEURL];
