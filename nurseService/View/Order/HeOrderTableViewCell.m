@@ -306,7 +306,7 @@
     }
 }
 
-- (void)cancelOrder{
+- (void)caqncelOrder{
     //取消订单
     if (self.cancleOrderBlock) {
         self.cancleOrderBlock();
